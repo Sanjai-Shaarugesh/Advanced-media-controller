@@ -22,25 +22,28 @@ export const MediaIndicator = GObject.registerClass(
       this._settingsChangedId = 0;
       this._sessionModeId = 0;
       this._updateThrottle = null;
+      this._capturedEventId = null;
+      this._lastUpdateTime = 0;
 
       // Create horizontal layout for icon and controls
       this._box = new St.BoxLayout({
-        style_class: "panel-status-menu-box",
-        style: "spacing: 6px;",
+        style_class: "panel-status-menu-box panel-button-box",
+        style: "spacing: 4px;",
       });
       this.add_child(this._box);
 
-      // Panel icon - shows app logo
+      // Panel icon
       this._icon = new St.Icon({
         icon_name: "audio-x-generic-symbolic",
-        style_class: "system-status-icon",
+        style_class: "system-status-icon colored-icon",
         icon_size: 16,
       });
       this._box.add_child(this._icon);
 
       // Panel control buttons container
       this._panelControlsBox = new St.BoxLayout({
-        style: "spacing: 3px;",
+        style_class: "panel-controls-box",
+        style: "spacing: 2px;",
       });
       this._box.add_child(this._panelControlsBox);
 
@@ -112,8 +115,10 @@ export const MediaIndicator = GObject.registerClass(
       this.menu.connect("open-state-changed", (menu, open) => {
         if (open) {
           this._controls.startPositionUpdate();
+          this._setupClickOutsideHandler();
         } else {
           this._controls.stopPositionUpdate();
+          this._removeClickOutsideHandler();
         }
       });
 
@@ -143,10 +148,40 @@ export const MediaIndicator = GObject.registerClass(
       this.hide();
     }
 
+    _setupClickOutsideHandler() {
+      if (this._capturedEventId) return;
+
+      this._capturedEventId = global.stage.connect("button-press-event", (actor, event) => {
+        if (!this.menu.isOpen) {
+          return Clutter.EVENT_PROPAGATE;
+        }
+
+        const clickedActor = global.stage.get_actor_at_pos(
+          Clutter.PickMode.ALL,
+          event.get_coords()[0],
+          event.get_coords()[1]
+        );
+
+        if (this.menu.actor.contains(clickedActor) || this.contains(clickedActor)) {
+          return Clutter.EVENT_PROPAGATE;
+        }
+
+        this.menu.close();
+        return Clutter.EVENT_PROPAGATE;
+      });
+    }
+
+    _removeClickOutsideHandler() {
+      if (this._capturedEventId) {
+        global.stage.disconnect(this._capturedEventId);
+        this._capturedEventId = null;
+      }
+    }
+
     _createPanelButton(iconName) {
       const button = new St.Button({
         style_class: "panel-button",
-        style: "padding: 3px 5px; border-radius: 3px;",
+        style: "padding: 2px 4px; border-radius: 3px;",
         can_focus: true,
         track_hover: true,
         reactive: true,
@@ -160,11 +195,11 @@ export const MediaIndicator = GObject.registerClass(
       button.set_child(icon);
 
       button.connect("enter-event", () => {
-        button.style = "padding: 3px 5px; border-radius: 3px; background-color: rgba(255,255,255,0.1);";
+        button.style = "padding: 2px 4px; border-radius: 3px; background-color: rgba(255,255,255,0.1);";
       });
 
       button.connect("leave-event", () => {
-        button.style = "padding: 3px 5px; border-radius: 3px;";
+        button.style = "padding: 2px 4px; border-radius: 3px;";
       });
 
       return button;
@@ -176,18 +211,15 @@ export const MediaIndicator = GObject.registerClass(
       const position = this._settings.get_string("panel-position");
       const index = this._settings.get_int("panel-index");
       
-      // Save state
       const wasVisible = this.visible;
       const manager = this._manager;
       const player = this._currentPlayer;
       
       try {
-        // Remove from current position
         if (this.container && this.container.get_parent()) {
           this.container.get_parent().remove_child(this.container);
         }
         
-        // Determine target box
         let targetBox;
         switch (position) {
           case "left":
@@ -202,13 +234,9 @@ export const MediaIndicator = GObject.registerClass(
             break;
         }
         
-        // Calculate actual index
         const actualIndex = index === -1 ? 0 : Math.min(index, targetBox.get_n_children());
-        
-        // Insert at new position
         targetBox.insert_child_at_index(this.container, actualIndex);
         
-        // Restore state
         this._manager = manager;
         this._currentPlayer = player;
         
@@ -307,25 +335,36 @@ export const MediaIndicator = GObject.registerClass(
     }
 
     _onPlayerChanged(name) {
-      const info = this._manager.getPlayerInfo(name);
-
-      if (this._currentPlayer === name) {
-        // Throttle UI updates to reduce CPU usage
+      const now = GLib.get_monotonic_time();
+      
+      // Throttle updates to max 20 FPS
+      if (now - this._lastUpdateTime < 50000) {
         if (this._updateThrottle) {
           GLib.source_remove(this._updateThrottle);
         }
         
         this._updateThrottle = GLib.timeout_add(GLib.PRIORITY_LOW, 50, () => {
-          this._updateUI();
-          this._updateVisibility();
-          
-          if (this.menu.isOpen && this._controls) {
-            this._controls.update(info, name, this._manager);
-          }
-          
+          this._performUpdate(name);
           this._updateThrottle = null;
           return GLib.SOURCE_REMOVE;
         });
+        return;
+      }
+      
+      this._performUpdate(name);
+    }
+
+    _performUpdate(name) {
+      this._lastUpdateTime = GLib.get_monotonic_time();
+      const info = this._manager.getPlayerInfo(name);
+
+      if (this._currentPlayer === name) {
+        this._updateUI();
+        this._updateVisibility();
+        
+        if (this.menu.isOpen && this._controls) {
+          this._controls.update(info, name, this._manager);
+        }
       } else if (info && info.status === "Playing") {
         this._currentPlayer = name;
         this._updateUI();
@@ -383,22 +422,15 @@ export const MediaIndicator = GObject.registerClass(
         return;
       }
 
-      // Update media controls
       this._controls.update(info, this._currentPlayer, this._manager);
-
-      // Update panel icon to show app logo
       this._updateAppIcon();
 
-      // Update panel play button icon
       const playIcon = info.status === "Playing" 
         ? "media-playback-pause-symbolic" 
         : "media-playback-start-symbolic";
       this._panelPlayBtn.child.icon_name = playIcon;
 
-      // Update scrolling text in panel
       this._updateLabel();
-
-      // Update tabs
       this._updateTabs();
     }
 
@@ -459,7 +491,7 @@ export const MediaIndicator = GObject.registerClass(
       const paddedText = this._fullText + "   •   ";
       const interval = Math.max(50, 300 - scrollSpeed * 25);
 
-      this._scrollTimeout = GLib.timeout_add(GLib.PRIORITY_DEFAULT, interval, () => {
+      this._scrollTimeout = GLib.timeout_add(GLib.PRIORITY_LOW, interval, () => {
         this._scrollPosition++;
 
         if (this._scrollPosition >= paddedText.length) {
@@ -552,6 +584,7 @@ export const MediaIndicator = GObject.registerClass(
 
     destroy() {
       this._stopScrolling();
+      this._removeClickOutsideHandler();
       
       if (this._updateThrottle) {
         GLib.source_remove(this._updateThrottle);

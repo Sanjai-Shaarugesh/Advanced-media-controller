@@ -7,9 +7,38 @@ const MPRIS_PATH = "/org/mpris/MediaPlayer2";
 const MPRIS_PLAYER_IFACE = "org.mpris.MediaPlayer2.Player";
 const MPRIS_IFACE = "org.mpris.MediaPlayer2";
 
+// Helper functions for variant extraction
+function getString(variant) {
+  if (!variant) return null;
+  try {
+    const str = variant.get_string ? variant.get_string()[0] : null;
+    return str || null;
+  } catch (e) {
+    return null;
+  }
+}
+
+function getInt64(variant) {
+  if (!variant) return null;
+  try {
+    return variant.get_int64();
+  } catch (e) {
+    return null;
+  }
+}
+
+function getInt32(variant) {
+  if (!variant) return null;
+  try {
+    return variant.get_int32();
+  } catch (e) {
+    return null;
+  }
+}
+
 export class MprisManager {
   constructor() {
-    this._bus = Gio.DBus.session;
+    this._bus = null;
     this._proxies = new Map();
     this._identities = new Map();
     this._desktopEntries = new Map();
@@ -21,11 +50,13 @@ export class MprisManager {
   }
 
   async init(callbacks) {
+    this._bus = Gio.DBus.session;
     this._onPlayerAdded = callbacks.added || null;
     this._onPlayerRemoved = callbacks.removed || null;
     this._onPlayerChanged = callbacks.changed || null;
     this._onSeeked = callbacks.seeked || null;
 
+    // Subscribe to NameOwnerChanged signals
     const watchId = this._bus.signal_subscribe(
       "org.freedesktop.DBus",
       "org.freedesktop.DBus",
@@ -37,6 +68,7 @@ export class MprisManager {
     );
     this._subscriptions.push(watchId);
 
+    // Scan for existing players
     await this._scanExistingPlayers();
   }
 
@@ -56,15 +88,14 @@ export class MprisManager {
           try {
             const reply = conn.call_finish(result);
             const [names] = reply.deep_unpack();
+            const players = names.filter(name => name.startsWith(`${MPRIS_PREFIX}.`));
 
-            for (const name of names) {
-              if (name.startsWith(`${MPRIS_PREFIX}.`)) {
-                await this._addPlayer(name);
-              }
+            for (const name of players) {
+              await this._addPlayer(name);
             }
             resolve();
           } catch (e) {
-            logError(e);
+            logError(e, "Failed to scan existing players");
             resolve();
           }
         }
@@ -77,8 +108,10 @@ export class MprisManager {
     if (!name.startsWith(`${MPRIS_PREFIX}.`)) return;
 
     if (!oldOwner && newOwner) {
+      // Player started
       await this._addPlayer(name);
     } else if (oldOwner && !newOwner) {
+      // Player exited
       this._removePlayer(name);
     }
   }
@@ -90,10 +123,11 @@ export class MprisManager {
       const proxy = await this._createProxy(name);
       this._proxies.set(name, proxy);
 
-      // Get identity and desktop entry
+      // Fetch metadata
       await this._fetchIdentity(name);
       await this._fetchDesktopEntry(name);
 
+      // Connect property change signal
       proxy.connect("g-properties-changed", (p, changed) => {
         const props = changed.deep_unpack();
         if (
@@ -106,13 +140,14 @@ export class MprisManager {
         }
       });
 
+      // Connect seeked signal
       proxy.connectSignal("Seeked", (proxy, sender, [position]) => {
         this._onSeeked?.(name, position);
       });
 
       this._onPlayerAdded?.(name);
     } catch (e) {
-      logError(e);
+      logError(e, `Failed to add player ${name}`);
     }
   }
 
@@ -133,12 +168,11 @@ export class MprisManager {
             const reply = conn.call_finish(result);
             const identity = reply.deep_unpack()[0].unpack();
             this._identities.set(name, identity);
-            resolve();
           } catch (e) {
             const shortName = name.replace(`${MPRIS_PREFIX}.`, "");
             this._identities.set(name, shortName);
-            resolve();
           }
+          resolve();
         }
       );
     });
@@ -161,18 +195,26 @@ export class MprisManager {
             const reply = conn.call_finish(result);
             const desktopEntry = reply.deep_unpack()[0].unpack();
             this._desktopEntries.set(name, desktopEntry);
-            log(`MediaControls: Desktop entry for ${name} = ${desktopEntry}`);
-            resolve();
           } catch (e) {
-            log(`MediaControls: No desktop entry for ${name}`);
-            resolve();
+            // Desktop entry is optional
           }
+          resolve();
         }
       );
     });
   }
 
   _removePlayer(name) {
+    const proxy = this._proxies.get(name);
+    if (proxy) {
+      try {
+        // Disconnect all signals to prevent memory leaks
+        GObject.signal_handlers_destroy(proxy);
+      } catch (e) {
+        // Ignore cleanup errors
+      }
+    }
+    
     this._proxies.delete(name);
     this._identities.delete(name);
     this._desktopEntries.delete(name);
@@ -205,28 +247,74 @@ export class MprisManager {
     const proxy = this._proxies.get(name);
     if (!proxy) return null;
 
-    const metadata = proxy.get_cached_property("Metadata");
-    const status = proxy.get_cached_property("PlaybackStatus");
-    const position = proxy.get_cached_property("Position");
-    const shuffle = proxy.get_cached_property("Shuffle");
-    const loopStatus = proxy.get_cached_property("LoopStatus");
+    try {
+      // Get playback status
+      const statusV = proxy.get_cached_property("PlaybackStatus");
+      const status = statusV ? statusV.deep_unpack() : "Stopped";
 
-    if (!metadata) return null;
+      // Validate status
+      if (status !== "Playing" && status !== "Paused" && status !== "Stopped") {
+        logError(null, `Unknown playback status: ${status}`);
+        return null;
+      }
 
-    const meta = metadata.deep_unpack();
-    const length = meta["mpris:length"]?.unpack();
+      // Get metadata
+      const metaV = proxy.get_cached_property("Metadata");
+      if (!metaV) return null;
 
-    return {
-      title: meta["xesam:title"]?.unpack() || null,
-      artists: meta["xesam:artist"]?.deep_unpack() || null,
-      album: meta["xesam:album"]?.unpack() || null,
-      artUrl: meta["mpris:artUrl"]?.unpack() || null,
-      status: status?.unpack() || "Stopped",
-      position: position ? position.unpack() : 0,
-      length: length || 0,
-      shuffle: shuffle ? shuffle.unpack() : false,
-      loopStatus: loopStatus ? loopStatus.unpack() : "None",
-    };
+      // Parse metadata dictionary (reference implementation style)
+      const meta = {};
+      const len = metaV.n_children();
+      
+      if (!len) return null;
+
+      for (let i = 0; i < len; i++) {
+        const item = metaV.get_child_value(i);
+        const key = getString(item.get_child_value(0));
+        const valueVariant = item.get_child_value(1).get_variant();
+        
+        if (!key) continue;
+        meta[key] = valueVariant;
+      }
+
+      // Get additional properties
+      const positionV = proxy.get_cached_property("Position");
+      const shuffleV = proxy.get_cached_property("Shuffle");
+      const loopStatusV = proxy.get_cached_property("LoopStatus");
+
+      // Extract values using helper functions (like the reference code)
+      const lengthMicroseconds = getInt64(meta["mpris:length"]);
+      const artUrl = getString(meta["mpris:artUrl"]);
+      
+      // Debug logging for artUrl
+      if (artUrl) {
+        log(`MediaControls: Got artUrl from MPRIS: ${artUrl}`);
+      } else {
+        log(`MediaControls: No artUrl in metadata for ${name}`);
+        // Log all metadata keys for debugging
+        const keys = Object.keys(meta);
+        log(`MediaControls: Available metadata keys: ${keys.join(", ")}`);
+      }
+      
+      return {
+        title: getString(meta["xesam:title"]),
+        artists: meta["xesam:artist"]?.deep_unpack() ?? null,
+        album: getString(meta["xesam:album"]),
+        artUrl: artUrl, // Album art URL
+        trackNumber: getInt32(meta["xesam:trackNumber"]),
+        discNumber: getInt32(meta["xesam:discNumber"]),
+        genres: meta["xesam:genre"]?.deep_unpack() ?? null,
+        contentCreated: getString(meta["xesam:contentCreated"]),
+        status: status,
+        position: positionV ? positionV.unpack() : 0,
+        length: lengthMicroseconds || 0,
+        shuffle: shuffleV ? shuffleV.unpack() : false,
+        loopStatus: loopStatusV ? loopStatusV.unpack() : "None",
+      };
+    } catch (e) {
+      logError(e, `Failed to get player info for ${name}`);
+      return null;
+    }
   }
 
   getPlayerIdentity(name) {
@@ -251,7 +339,6 @@ export class MprisManager {
         
         for (const iconName of iconNames) {
           if (iconTheme.has_icon(iconName)) {
-            log(`MediaControls: Found icon via desktop entry: ${iconName}`);
             return iconName;
           }
         }
@@ -279,6 +366,8 @@ export class MprisManager {
         'lollypop': 'lollypop',
         'celluloid': 'celluloid',
         'brave': 'brave-browser',
+        'gnome-music': 'org.gnome.Music',
+        'amberol': 'io.bassi.Amberol',
       };
 
       const mappedName = appMappings[cleanName] || cleanName;
@@ -293,15 +382,13 @@ export class MprisManager {
 
       for (const iconName of iconNames) {
         if (iconTheme.has_icon(iconName)) {
-          log(`MediaControls: Found icon: ${iconName} for ${name}`);
           return iconName;
         }
       }
       
-      log(`MediaControls: Using fallback icon for ${name}`);
       return "audio-x-generic-symbolic";
     } catch (e) {
-      logError(e, `MediaControls: Error getting icon for ${name}`);
+      logError(e, `Error getting icon for ${name}`);
       return "audio-x-generic-symbolic";
     }
   }
@@ -311,20 +398,27 @@ export class MprisManager {
     if (!proxy) throw new Error(`No proxy for ${name}`);
 
     return new Promise((resolve, reject) => {
-      proxy.call(method, params, Gio.DBusCallFlags.NONE, -1, null, (p, result) => {
-        try {
-          p.call_finish(result);
-          resolve();
-        } catch (e) {
-          reject(e);
+      proxy.call(
+        method,
+        params,
+        Gio.DBusCallFlags.NONE,
+        -1,
+        null,
+        (p, result) => {
+          if (!p) return reject(new Error("Proxy was NULL"));
+          try {
+            p.call_finish(result);
+            resolve();
+          } catch (e) {
+            reject(new Error(`Method ${method} failed on ${name}: ${e}`));
+          }
         }
-      });
+      );
     });
   }
 
   async setProperty(name, property, value) {
-    const proxy = this._proxies.get(name);
-    if (!proxy) throw new Error(`No proxy for ${name}`);
+    if (!this._bus) throw new Error("Bus not initialized");
 
     return new Promise((resolve, reject) => {
       this._bus.call(
@@ -392,12 +486,26 @@ export class MprisManager {
   }
 
   destroy() {
-    this._subscriptions.forEach((id) => {
-      this._bus.signal_unsubscribe(id);
-    });
+    // Unsubscribe from all signals
+    if (this._bus) {
+      for (const id of this._subscriptions) {
+        this._bus.signal_unsubscribe(id);
+      }
+    }
+
+    // Clean up proxies
+    for (const [name, proxy] of this._proxies) {
+      try {
+        GObject.signal_handlers_destroy(proxy);
+      } catch (e) {
+        // Ignore cleanup errors
+      }
+    }
+
     this._subscriptions = [];
     this._proxies.clear();
     this._identities.clear();
     this._desktopEntries.clear();
+    this._bus = null;
   }
 }

@@ -21,8 +21,8 @@ export const MediaControls = GObject.registerClass(
     _init() {
       super._init({
         vertical: true,
-        style_class: "media-controls-modern",
-        style: "padding: 24px; width: 400px; background: rgba(0,0,0,0.85); border-radius: 20px; backdrop-filter: blur(20px);",
+        style_class: "popup-menu-container",
+        style: "padding: 8px;",
       });
 
       this._coverCache = new Map();
@@ -43,7 +43,7 @@ export const MediaControls = GObject.registerClass(
     _buildUI() {
       // Player tabs - modern rounded pills
       const headerBox = new St.BoxLayout({
-        style: "margin-bottom: 20px; spacing: 8px;",
+        style: "margin-bottom: 2px; spacing: 4px;",
         x_align: Clutter.ActorAlign.CENTER,
       });
 
@@ -61,11 +61,11 @@ export const MediaControls = GObject.registerClass(
 
       this._coverArt = new St.Bin({
         style: `
-          width: 300px; 
-          height: 300px; 
-          border-radius: 16px;
-          box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-          background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+        width: 240px;
+         height: 240px;
+         border-radius: 16px;
+         overflow: hidden;
+          
         `,
       });
 
@@ -172,8 +172,8 @@ export const MediaControls = GObject.registerClass(
 
       // Control buttons - modern rounded design
       const controlsBox = new St.BoxLayout({
-        style: "spacing: 16px;",
         x_align: Clutter.ActorAlign.CENTER,
+        style: "margin-top: 8px; spacing: 6px;",
       });
 
       this._shuffleBtn = this._createModernButton("media-playlist-shuffle-symbolic", 18);
@@ -203,10 +203,9 @@ export const MediaControls = GObject.registerClass(
       const button = new St.Button({
         style_class: "media-button-modern",
         style: `
-          padding: 12px;
-          border-radius: 12px;
-          background: rgba(255,255,255,0.08);
-          transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+          padding: 2px;
+          
+          
         `,
         child: new St.Icon({
           icon_name: iconName,
@@ -217,18 +216,15 @@ export const MediaControls = GObject.registerClass(
 
       button.connect("enter-event", () => {
         button.style = `
-          padding: 12px;
-          border-radius: 12px;
-          background: rgba(255,255,255,0.15);
-          transform: scale(1.05);
+          padding: 2px;
+          
         `;
       });
 
       button.connect("leave-event", () => {
         button.style = `
-          padding: 12px;
-          border-radius: 12px;
-          background: rgba(255,255,255,0.08);
+          padding: 2px;
+          
         `;
       });
 
@@ -239,10 +235,8 @@ export const MediaControls = GObject.registerClass(
       const button = new St.Button({
         style_class: "media-play-button-modern",
         style: `
-          padding: 16px;
-          border-radius: 50%;
-          background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.1) 100%);
-          box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+          padding: 6px;
+          
         `,
         child: new St.Icon({
           icon_name: iconName,
@@ -253,20 +247,15 @@ export const MediaControls = GObject.registerClass(
 
       button.connect("enter-event", () => {
         button.style = `
-          padding: 16px;
-          border-radius: 50%;
-          background: linear-gradient(135deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.15) 100%);
-          box-shadow: 0 6px 20px rgba(0,0,0,0.4);
-          transform: scale(1.08);
+          padding: 6px;
+         
         `;
       });
 
       button.connect("leave-event", () => {
         button.style = `
-          padding: 16px;
-          border-radius: 50%;
-          background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.1) 100%);
-          box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+          padding: 6px;
+         
         `;
       });
 
