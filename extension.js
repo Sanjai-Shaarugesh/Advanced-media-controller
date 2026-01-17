@@ -1,7 +1,6 @@
 import { Extension } from "resource:///org/gnome/shell/extensions/extension.js";
 import * as Main from "resource:///org/gnome/shell/ui/main.js";
 import { MediaIndicator } from "./indicator.js";
-import { SessionMode } from "resource:///org/gnome/shell/ui/sessionMode.js";
 
 export default class MediaExtension extends Extension {
   enable() {
@@ -43,8 +42,17 @@ export default class MediaExtension extends Extension {
     // Monitor session mode changes
     this._sessionModeChangedId = Main.sessionMode.connect(
       "updated",
-      () => this._updateLockScreenVisibility()
+      () => {
+        log(`MediaControls: Session mode changed to: ${Main.sessionMode.currentMode}, isLocked: ${Main.sessionMode.isLocked}`);
+        this._updateLockScreenVisibility();
+      }
     );
+
+    // Also monitor lock screen state separately
+    this._lockStateId = Main.screenShield?.connect('active-changed', () => {
+      log(`MediaControls: Screen shield active changed: ${Main.screenShield.locked}`);
+      this._updateLockScreenVisibility();
+    });
 
     this._updateLockScreenVisibility();
   }
@@ -53,21 +61,31 @@ export default class MediaExtension extends Extension {
     if (!this._indicator) return;
 
     const showOnLockScreen = this._settings.get_boolean("show-on-lock-screen");
-    const isLocked = Main.sessionMode.isLocked;
+    const isLocked = Main.sessionMode.isLocked || 
+                     Main.sessionMode.currentMode === 'unlock-dialog' ||
+                     (Main.screenShield && Main.screenShield.locked);
 
-    if (isLocked && !showOnLockScreen) {
-      this._indicator.hide();
-    } else if (!isLocked) {
-      // Show only if there are active players
+    log(`MediaControls Extension: isLocked=${isLocked}, showOnLockScreen=${showOnLockScreen}`);
+
+    // Force indicator to update its visibility
+    if (this._indicator._manager) {
       const hasPlayers = this._indicator._manager.getPlayers().length > 0;
+      log(`MediaControls Extension: hasPlayers=${hasPlayers}`);
+      
       if (hasPlayers) {
-        this._indicator.show();
-      }
-    } else if (isLocked && showOnLockScreen) {
-      // Show on lock screen if there are active players
-      const hasPlayers = this._indicator._manager.getPlayers().length > 0;
-      if (hasPlayers) {
-        this._indicator.show();
+        if (isLocked && showOnLockScreen) {
+          this._indicator.show();
+          log("MediaControls Extension: Showing on lock screen");
+        } else if (isLocked && !showOnLockScreen) {
+          this._indicator.hide();
+          log("MediaControls Extension: Hiding on lock screen");
+        } else if (!isLocked) {
+          this._indicator.show();
+          log("MediaControls Extension: Showing (not locked)");
+        }
+      } else {
+        this._indicator.hide();
+        log("MediaControls Extension: No players, hiding");
       }
     }
   }
@@ -106,6 +124,11 @@ export default class MediaExtension extends Extension {
     if (this._sessionModeChangedId) {
       Main.sessionMode.disconnect(this._sessionModeChangedId);
       this._sessionModeChangedId = 0;
+    }
+
+    if (this._lockStateId && Main.screenShield) {
+      Main.screenShield.disconnect(this._lockStateId);
+      this._lockStateId = 0;
     }
 
     if (this._indicator) {

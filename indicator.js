@@ -22,10 +22,10 @@ export const MediaIndicator = GObject.registerClass(
       this._settingsChangedId = 0;
       this._sessionModeId = 0;
 
-      // Create horizontal layout for icon and text
+      // Create horizontal layout for icon, controls and text
       this._box = new St.BoxLayout({
         style_class: "panel-status-menu-box",
-        style: "spacing: 6px;",
+        style: "spacing: 8px;",
       });
       this.add_child(this._box);
 
@@ -37,6 +37,27 @@ export const MediaIndicator = GObject.registerClass(
       });
       this._box.add_child(this._icon);
 
+      // Panel control buttons container
+      this._panelControlsBox = new St.BoxLayout({
+        style: "spacing: 4px;",
+      });
+      this._box.add_child(this._panelControlsBox);
+
+      // Previous button
+      this._panelPrevBtn = this._createPanelButton("media-skip-backward-symbolic");
+      this._panelPrevBtn.connect("clicked", () => this._onPrevious());
+      this._panelControlsBox.add_child(this._panelPrevBtn);
+
+      // Play/Pause button
+      this._panelPlayBtn = this._createPanelButton("media-playback-start-symbolic");
+      this._panelPlayBtn.connect("clicked", () => this._onPlayPause());
+      this._panelControlsBox.add_child(this._panelPlayBtn);
+
+      // Next button
+      this._panelNextBtn = this._createPanelButton("media-skip-forward-symbolic");
+      this._panelNextBtn.connect("clicked", () => this._onNext());
+      this._panelControlsBox.add_child(this._panelNextBtn);
+
       // Scrolling label
       this._label = new St.Label({
         text: "",
@@ -46,7 +67,7 @@ export const MediaIndicator = GObject.registerClass(
       this._box.add_child(this._label);
       this._label.hide();
 
-      // Media controls UI
+      // Media controls UI (popup)
       this._controls = new MediaControls();
       const item = new PopupMenu.PopupBaseMenuItem({
         reactive: false,
@@ -95,6 +116,33 @@ export const MediaIndicator = GObject.registerClass(
       this.hide();
     }
 
+    _createPanelButton(iconName) {
+      const button = new St.Button({
+        style_class: "panel-button",
+        style: "padding: 2px 4px; border-radius: 4px;",
+        can_focus: true,
+        track_hover: true,
+      });
+
+      const icon = new St.Icon({
+        icon_name: iconName,
+        icon_size: 14,
+        style: "color: #ffffff;",
+      });
+
+      button.set_child(icon);
+
+      button.connect("enter-event", () => {
+        button.style = "padding: 2px 4px; border-radius: 4px; background-color: rgba(255,255,255,0.15);";
+      });
+
+      button.connect("leave-event", () => {
+        button.style = "padding: 2px 4px; border-radius: 4px;";
+      });
+
+      return button;
+    }
+
     async _initManager() {
       try {
         await this._manager.init({
@@ -127,9 +175,12 @@ export const MediaIndicator = GObject.registerClass(
     }
 
     _updateVisibility() {
-      const isLocked = Main.sessionMode.isLocked || Main.sessionMode.currentMode === 'unlock-dialog';
+      const isLocked = Main.sessionMode.isLocked;
+      const isUnlockDialog = Main.sessionMode.currentMode === 'unlock-dialog';
       const showOnLockScreen = this._settings.get_boolean("show-on-lock-screen");
       const hasPlayers = this._manager && this._manager.getPlayers().length > 0;
+
+      log(`MediaControls: isLocked=${isLocked}, isUnlockDialog=${isUnlockDialog}, showOnLockScreen=${showOnLockScreen}, hasPlayers=${hasPlayers}`);
 
       if (!hasPlayers) {
         this.hide();
@@ -139,11 +190,13 @@ export const MediaIndicator = GObject.registerClass(
       const info = this._currentPlayer ? this._manager.getPlayerInfo(this._currentPlayer) : null;
       const hasMedia = info && (info.status === "Playing" || info.status === "Paused");
 
-      if (isLocked) {
-        // On lock screen - show if setting enabled and has media
+      if (isLocked || isUnlockDialog) {
+        // On lock screen or unlock dialog
         if (showOnLockScreen && hasMedia) {
+          log("MediaControls: Showing on lock screen");
           this.show();
         } else {
+          log("MediaControls: Hiding on lock screen");
           this.hide();
         }
       } else {
@@ -248,6 +301,12 @@ export const MediaIndicator = GObject.registerClass(
 
       // Update panel icon to show app logo
       this._updateAppIcon();
+
+      // Update panel play button icon
+      const playIcon = info.status === "Playing" 
+        ? "media-playback-pause-symbolic" 
+        : "media-playback-start-symbolic";
+      this._panelPlayBtn.child.icon_name = playIcon;
 
       // Update scrolling text in panel
       this._updateLabel();

@@ -1,6 +1,6 @@
 import Gio from "gi://Gio";
 import GLib from "gi://GLib";
-import St from "gi://St";
+import Gtk from "gi://Gtk";
 
 const MPRIS_PREFIX = "org.mpris.MediaPlayer2";
 const MPRIS_PATH = "/org/mpris/MediaPlayer2";
@@ -12,6 +12,7 @@ export class MprisManager {
     this._bus = Gio.DBus.session;
     this._proxies = new Map();
     this._identities = new Map();
+    this._desktopEntries = new Map();
     this._subscriptions = [];
     this._onPlayerAdded = null;
     this._onPlayerRemoved = null;
@@ -89,8 +90,9 @@ export class MprisManager {
       const proxy = await this._createProxy(name);
       this._proxies.set(name, proxy);
 
-      // Get identity
+      // Get identity and desktop entry
       await this._fetchIdentity(name);
+      await this._fetchDesktopEntry(name);
 
       proxy.connect("g-properties-changed", (p, changed) => {
         const props = changed.deep_unpack();
@@ -133,9 +135,36 @@ export class MprisManager {
             this._identities.set(name, identity);
             resolve();
           } catch (e) {
-            // Fallback to bus name
             const shortName = name.replace(`${MPRIS_PREFIX}.`, "");
             this._identities.set(name, shortName);
+            resolve();
+          }
+        }
+      );
+    });
+  }
+
+  async _fetchDesktopEntry(name) {
+    return new Promise((resolve) => {
+      this._bus.call(
+        name,
+        MPRIS_PATH,
+        "org.freedesktop.DBus.Properties",
+        "Get",
+        new GLib.Variant("(ss)", [MPRIS_IFACE, "DesktopEntry"]),
+        null,
+        Gio.DBusCallFlags.NONE,
+        -1,
+        null,
+        (conn, result) => {
+          try {
+            const reply = conn.call_finish(result);
+            const desktopEntry = reply.deep_unpack()[0].unpack();
+            this._desktopEntries.set(name, desktopEntry);
+            log(`MediaControls: Desktop entry for ${name} = ${desktopEntry}`);
+            resolve();
+          } catch (e) {
+            log(`MediaControls: No desktop entry for ${name}`);
             resolve();
           }
         }
@@ -146,6 +175,7 @@ export class MprisManager {
   _removePlayer(name) {
     this._proxies.delete(name);
     this._identities.delete(name);
+    this._desktopEntries.delete(name);
     this._onPlayerRemoved?.(name);
   }
 
@@ -205,22 +235,73 @@ export class MprisManager {
 
   getAppIcon(name) {
     try {
-      // Get clean app name without instance numbers
-      let cleanName = name.replace(`${MPRIS_PREFIX}.`, "").toLowerCase();
+      const iconTheme = Gtk.IconTheme.get_for_display(
+        require('gi://Gdk').Display.get_default()
+      );
       
-      // Remove instance numbers (e.g., instance_1_01)
+      // Try desktop entry first
+      const desktopEntry = this._desktopEntries.get(name);
+      if (desktopEntry) {
+        const iconNames = [
+          desktopEntry,
+          desktopEntry.toLowerCase(),
+          `${desktopEntry}-symbolic`,
+          `${desktopEntry.toLowerCase()}-symbolic`,
+        ];
+        
+        for (const iconName of iconNames) {
+          if (iconTheme.has_icon(iconName)) {
+            log(`MediaControls: Found icon via desktop entry: ${iconName}`);
+            return iconName;
+          }
+        }
+      }
+
+      // Fallback to bus name parsing
+      let cleanName = name.replace(`${MPRIS_PREFIX}.`, "").toLowerCase();
       cleanName = cleanName.replace(/\.instance_\d+_\d+$/, "");
       
-      const iconNames = [cleanName, `${cleanName}-symbolic`, "audio-x-generic-symbolic"];
+      // Common app name mappings
+      const appMappings = {
+        'spotify': 'spotify',
+        'vlc': 'vlc',
+        'firefox': 'firefox',
+        'chromium': 'chromium',
+        'chrome': 'google-chrome',
+        'rhythmbox': 'rhythmbox',
+        'totem': 'totem',
+        'mpv': 'mpv',
+        'smplayer': 'smplayer',
+        'audacious': 'audacious',
+        'clementine': 'clementine',
+        'strawberry': 'strawberry',
+        'elisa': 'elisa',
+        'lollypop': 'lollypop',
+        'celluloid': 'celluloid',
+        'brave': 'brave-browser',
+      };
 
-      const iconTheme = St.IconTheme.get_default();
+      const mappedName = appMappings[cleanName] || cleanName;
+      
+      const iconNames = [
+        mappedName,
+        `${mappedName}-symbolic`,
+        cleanName,
+        `${cleanName}-symbolic`,
+        "audio-x-generic-symbolic"
+      ];
+
       for (const iconName of iconNames) {
         if (iconTheme.has_icon(iconName)) {
+          log(`MediaControls: Found icon: ${iconName} for ${name}`);
           return iconName;
         }
       }
+      
+      log(`MediaControls: Using fallback icon for ${name}`);
       return "audio-x-generic-symbolic";
     } catch (e) {
+      logError(e, `MediaControls: Error getting icon for ${name}`);
       return "audio-x-generic-symbolic";
     }
   }
@@ -317,5 +398,6 @@ export class MprisManager {
     this._subscriptions = [];
     this._proxies.clear();
     this._identities.clear();
+    this._desktopEntries.clear();
   }
 }
