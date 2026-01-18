@@ -10,7 +10,7 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Made with GJS](https://img.shields.io/badge/Made%20with-GJS-orange.svg)](https://gjs.guide/)
 [![JavaScript](https://img.shields.io/badge/Language-JavaScript-yellow.svg)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
-[![Flathub](https://img.shields.io/badge/Download-Flathub-blue.svg)](https://flathub.org/apps/io.gitlab.Sanjai_Shaarugesh.Markforge)
+
 
 </div>
 
