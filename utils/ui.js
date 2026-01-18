@@ -34,6 +34,9 @@ export const MediaControls = GObject.registerClass(
       this._lastUpdateTime = 0;
       this._ignoreNextUpdate = false;
       this._justResumed = false;
+      this._currentPlayerName = null; // NEW: Track current player
+      this._playerSliderPositions = new Map(); // NEW: Per-player slider positions
+      this._playerArtCache = new Map(); // NEW: Per-player art cache
 
       this._buildUI();
     }
@@ -68,7 +71,6 @@ export const MediaControls = GObject.registerClass(
         `,
       });
 
-      // GPU-accelerated image rendering
       this._coverImage = new St.Widget({
         style_class: "cover-art-image",
         width: 300,
@@ -138,6 +140,15 @@ export const MediaControls = GObject.registerClass(
         const newPosition = this._positionSlider.value * this._trackLength;
         this._currentPosition = newPosition;
         this._lastUpdateTime = GLib.get_monotonic_time();
+        
+        // NEW: Save slider position for this player
+        if (this._currentPlayerName) {
+          this._playerSliderPositions.set(this._currentPlayerName, {
+            position: this._currentPosition,
+            length: this._trackLength,
+            value: this._positionSlider.value
+          });
+        }
         
         this.emit("seek", newPosition / 1000000);
         
@@ -281,9 +292,51 @@ export const MediaControls = GObject.registerClass(
     update(info, playerName, manager) {
       if (!info) return;
 
+      // NEW: Handle player switch
+      const playerChanged = this._currentPlayerName !== playerName;
+      const previousPlayer = this._currentPlayerName;
+      this._currentPlayerName = playerName;
+
+      if (playerChanged) {
+        // Save previous player state
+        if (previousPlayer) {
+          this._playerSliderPositions.set(previousPlayer, {
+            position: this._currentPosition,
+            length: this._trackLength,
+            value: this._positionSlider.value
+          });
+        }
+
+        // Restore this player's state
+        const savedState = this._playerSliderPositions.get(playerName);
+        if (savedState) {
+          this._currentPosition = savedState.position;
+          this._trackLength = savedState.length;
+          this._positionSlider.value = savedState.value;
+        } else {
+          this._currentPosition = info.position || 0;
+          this._trackLength = info.length || 0;
+        }
+
+        // Force art refresh on player change
+        const savedArt = this._playerArtCache.get(playerName);
+        if (savedArt && savedArt === info.artUrl) {
+          this._loadCover(info.artUrl, true); // Force refresh
+        } else if (info.artUrl) {
+          this._loadCover(info.artUrl, true);
+        } else {
+          this._setDefaultCover();
+        }
+      } else {
+        // Same player, update normally
+        this._trackLength = info.length;
+        if (info.artUrl && this._playerArtCache.get(playerName) !== info.artUrl) {
+          this._loadCover(info.artUrl);
+        }
+      }
+
       const wasPlaying = this._isPlaying;
       const newPlayState = info.status === "Playing";
-      this._trackLength = info.length;
 
       this._titleLabel.text = info.title || "Unknown";
       
@@ -367,7 +420,7 @@ export const MediaControls = GObject.registerClass(
             this._justResumed = false;
             return GLib.SOURCE_REMOVE;
           });
-        } else if (newPlayState && !this._justResumed) {
+        } else if (newPlayState && !this._justResumed && !playerChanged) {
           const timeSinceUpdate = (now - this._lastUpdateTime) / 1000000;
           
           if (timeSinceUpdate > 2.0) {
@@ -385,12 +438,6 @@ export const MediaControls = GObject.registerClass(
         }
         
         this._updateSliderPosition();
-      }
-
-      if (info.artUrl) {
-        this._loadCover(info.artUrl);
-      } else {
-        this._setDefaultCover();
       }
     }
 
@@ -414,7 +461,6 @@ export const MediaControls = GObject.registerClass(
           : `padding: 10px 14px; border-radius: 12px; background: rgba(255,255,255,0.05); opacity: 0.6;`,
       });
 
-      // Use actual app icon (colored)
       let icon;
       if (appInfo && appInfo.get_icon()) {
         icon = new St.Icon({
@@ -449,13 +495,17 @@ export const MediaControls = GObject.registerClass(
       return button;
     }
 
-    _loadCover(url) {
-      // Check cache first
-      if (this._coverCache.has(url)) {
-        const cachedStyle = this._coverCache.get(url);
-        this._coverImage.style = cachedStyle;
-        return;
+    _loadCover(url, forceRefresh = false) {
+      // NEW: Cache per player
+      if (!forceRefresh && this._playerArtCache.get(this._currentPlayerName) === url) {
+        const cached = this._coverCache.get(url);
+        if (cached) {
+          this._coverImage.style = cached;
+          return;
+        }
       }
+
+      this._playerArtCache.set(this._currentPlayerName, url);
 
       try {
         let imageUrl = url;
@@ -469,7 +519,6 @@ export const MediaControls = GObject.registerClass(
           imageUrl = `file://${url}`;
         }
         
-        // GPU-accelerated rendering with contain (no crop)
         const coverStyle = `
           border-radius: 16px;
           background-image: url('${imageUrl}');
@@ -591,6 +640,15 @@ export const MediaControls = GObject.registerClass(
       this._currentPosition = position;
       this._lastUpdateTime = GLib.get_monotonic_time();
       
+      // Save to player position cache
+      if (this._currentPlayerName) {
+        this._playerSliderPositions.set(this._currentPlayerName, {
+          position: this._currentPosition,
+          length: this._trackLength,
+          value: this._currentPosition / this._trackLength
+        });
+      }
+      
       if (!this._sliderDragging) {
         this._updateSliderPosition();
       }
@@ -605,6 +663,8 @@ export const MediaControls = GObject.registerClass(
       }
       
       this._coverCache.clear();
+      this._playerSliderPositions.clear();
+      this._playerArtCache.clear();
       
       super.destroy();
     }
