@@ -71,7 +71,7 @@ export class IndicatorPlayerHandlers {
       this._indicator._state._lastUpdateTime = GLib.get_monotonic_time();
       const info = this._indicator._manager.getPlayerInfo(name);
 
-      // CRITICAL: Only update UI for the specific player that changed
+      // CRITICAL: Only update UI for the currently active player
       if (this._indicator._state._currentPlayer === name) {
         // This is the currently active player - update everything
         this._indicator._uiUpdater.updateUI();
@@ -106,8 +106,13 @@ export class IndicatorPlayerHandlers {
         this._indicator._state._sessionChanging) return;
     
     try {
-      // Only pass seek event to controls if it's for the current player
-      if (this._indicator._controls && this._indicator._state._currentPlayer === name) {
+      // Update position in manager for tracking
+      this._indicator._manager._playerPositions.set(name, position);
+      
+      // Only pass seek event to controls if it's for the current player AND menu is open
+      if (this._indicator._controls && 
+          this._indicator.menu.isOpen && 
+          this._indicator._state._currentPlayer === name) {
         this._indicator._controls.onSeeked(position);
       }
     } catch (e) {

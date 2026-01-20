@@ -51,6 +51,7 @@ export class MprisPlayer {
             ) {
               this._updateInstanceMetadata(name);
               
+              // Update position from property change
               if ("Position" in props) {
                 const pos = MprisUtils.getInt64(props["Position"]);
                 if (pos !== null) {
@@ -362,8 +363,14 @@ export class MprisPlayer {
       const artUrl = MprisUtils.getString(meta["mpris:artUrl"]);
       const trackId = MprisUtils.getString(meta["mpris:trackid"]) || "/";
       
-      const savedPosition = this._manager._playerPositions.get(name);
-      const currentPosition = positionV ? positionV.unpack() : (savedPosition || 0);
+      // Get position - prefer saved position over cached property for better accuracy
+      let currentPosition = this._manager._playerPositions.get(name);
+      
+      // Fallback to Position property if we don't have a saved position
+      if (currentPosition === undefined || currentPosition === null) {
+        currentPosition = positionV ? positionV.unpack() : 0;
+        this._manager._playerPositions.set(name, currentPosition);
+      }
       
       return {
         title: MprisUtils.getString(meta["xesam:title"]),

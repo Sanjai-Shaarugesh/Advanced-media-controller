@@ -26,6 +26,8 @@ export const ProgressSlider = GObject.registerClass(
       this._isPlaying = false;
       this._lastUpdateTime = 0;
       this._ignoreNextUpdate = false;
+      this._lastExternalPosition = 0;
+      this._positionDriftThreshold = 2000000; // 2 seconds in microseconds
 
       this._buildUI();
     }
@@ -56,6 +58,7 @@ export const ProgressSlider = GObject.registerClass(
         const newPosition = this._positionSlider.value * this._trackLength;
         this._currentPosition = newPosition;
         this._lastUpdateTime = GLib.get_monotonic_time();
+        this._lastExternalPosition = newPosition;
         
         this.emit("seek", newPosition / 1000000);
         this.emit("drag-end");
@@ -99,16 +102,17 @@ export const ProgressSlider = GObject.registerClass(
 
       const now = GLib.get_monotonic_time();
       
-      // Check if this is a significant position change (seek from external source)
-      const positionDrift = Math.abs((position - this._currentPosition) / 1000000);
-      const isExternalSeek = positionDrift > 2.0;
+      // Check for external position changes (e.g., user seeking in the media player app)
+      const positionDrift = Math.abs(position - this._lastExternalPosition);
+      const isExternalSeek = positionDrift > this._positionDriftThreshold;
       
       if (forceUpdate || isExternalSeek) {
-        // External change detected - reset everything
+        // External seek detected - sync immediately
         this._currentPosition = position;
         this._trackLength = length;
         this._isPlaying = isPlaying;
         this._lastUpdateTime = now;
+        this._lastExternalPosition = position;
         this._updateSliderPosition();
         
         if (isPlaying) {
@@ -117,12 +121,12 @@ export const ProgressSlider = GObject.registerClass(
           this.stopPositionUpdate();
         }
       } else {
-        // Normal update - just sync play state and length
+        // Normal update - handle play state changes
         const wasPlaying = this._isPlaying;
         this._isPlaying = isPlaying;
         this._trackLength = length;
+        this._lastExternalPosition = position;
         
-        // Handle play/pause transitions
         if (wasPlaying && !isPlaying) {
           // Just paused
           const elapsed = now - this._lastUpdateTime;
@@ -132,6 +136,7 @@ export const ProgressSlider = GObject.registerClass(
           this._updateSliderPosition();
         } else if (!wasPlaying && isPlaying) {
           // Just resumed
+          this._currentPosition = position;
           this._lastUpdateTime = now;
           this.startPositionUpdate();
         }
@@ -145,6 +150,7 @@ export const ProgressSlider = GObject.registerClass(
       this._trackLength = length;
       this._isPlaying = isPlaying;
       this._lastUpdateTime = lastUpdateTime || GLib.get_monotonic_time();
+      this._lastExternalPosition = position;
       
       this._updateSliderPosition();
       
@@ -213,8 +219,10 @@ export const ProgressSlider = GObject.registerClass(
     onSeeked(position) {
       if (this._ignoreNextUpdate || this._sliderDragging) return;
       
+      // External seek event from MPRIS
       this._currentPosition = position;
       this._lastUpdateTime = GLib.get_monotonic_time();
+      this._lastExternalPosition = position;
       this._updateSliderPosition();
     }
 

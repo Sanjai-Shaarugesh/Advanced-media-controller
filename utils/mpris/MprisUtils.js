@@ -36,9 +36,11 @@ export class MprisUtils {
     try {
       const desktopEntry = desktopEntries.get(name);
       if (desktopEntry) {
+        // Try with .desktop suffix first
         let appInfo = Gio.DesktopAppInfo.new(`${desktopEntry}.desktop`);
         if (appInfo) return appInfo;
         
+        // Try without suffix
         appInfo = Gio.DesktopAppInfo.new(desktopEntry);
         if (appInfo) return appInfo;
       }
@@ -47,10 +49,15 @@ export class MprisUtils {
       cleanName = cleanName.replace(/\.instance_\d+_\d+$/, "");
       
       const appSystem = Shell.AppSystem.get_default();
-      const app = appSystem.lookup_app(`${cleanName}.desktop`);
       
-      if (app) {
-        return app.get_app_info();
+      // Try direct lookup
+      let app = appSystem.lookup_app(`${cleanName}.desktop`);
+      if (app) return app.get_app_info();
+      
+      // For Flatpak apps, try com.spotify.Client format
+      if (cleanName === 'spotify') {
+        app = appSystem.lookup_app('com.spotify.Client.desktop');
+        if (app) return app.get_app_info();
       }
 
       return null;
@@ -107,11 +114,16 @@ export class MprisUtils {
 
       const mappedName = appMappings[cleanName] || cleanName;
       
+      // Expanded icon search including Flatpak paths
       const iconNames = [
         mappedName,
         `${mappedName}-symbolic`,
         cleanName,
         `${cleanName}-symbolic`,
+        // Flatpak-specific icon names
+        `com.${cleanName}.Client`,
+        `com.spotify.Client`, // Explicitly for Spotify Flatpak
+        `org.${cleanName}.${cleanName}`,
         "audio-x-generic-symbolic"
       ];
 
