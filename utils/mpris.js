@@ -7,9 +7,8 @@ const MPRIS_PREFIX = "org.mpris.MediaPlayer2";
 const MPRIS_PATH = "/org/mpris/MediaPlayer2";
 const MPRIS_PLAYER_IFACE = "org.mpris.MediaPlayer2.Player";
 const MPRIS_IFACE = "org.mpris.MediaPlayer2";
-const DBUS_TIMEOUT = 10000; // Increased for Flatpak stability
+const DBUS_TIMEOUT = 10000;
 
-// Helper functions for safe variant extraction
 function getString(variant) {
   if (!variant) return null;
   try {
@@ -45,7 +44,7 @@ export class MprisManager {
     this._identities = new Map();
     this._desktopEntries = new Map();
     this._instanceMetadata = new Map();
-    this._playerPositions = new Map(); // NEW: Track slider positions per player
+    this._playerPositions = new Map();
     this._subscriptions = [];
     this._onPlayerAdded = null;
     this._onPlayerRemoved = null;
@@ -55,7 +54,7 @@ export class MprisManager {
     this._proxySignals = new Map();
     this._pendingProxies = new Set();
     this._errorCounts = new Map();
-    this._maxErrorsPerPlayer = 10; // Increased tolerance
+    this._maxErrorsPerPlayer = 10;
     this._operationsPaused = false;
     this._cleanupTimers = new Map();
     this._proxyCleanupQueue = [];
@@ -75,7 +74,7 @@ export class MprisManager {
 
   async init(callbacks) {
     if (this._isDestroyed) return;
-    
+
     this._bus = Gio.DBus.session;
     this._onPlayerAdded = callbacks.added || null;
     this._onPlayerRemoved = callbacks.removed || null;
@@ -90,7 +89,7 @@ export class MprisManager {
         "/org/freedesktop/DBus",
         null,
         Gio.DBusSignalFlags.NONE,
-        this._onNameOwnerChanged.bind(this)
+        this._onNameOwnerChanged.bind(this),
       );
       this._subscriptions.push(watchId);
     } catch (e) {
@@ -102,7 +101,7 @@ export class MprisManager {
 
   async _scanExistingPlayers() {
     if (this._isDestroyed) return;
-    
+
     return new Promise((resolve) => {
       this._bus.call(
         "org.freedesktop.DBus",
@@ -120,10 +119,12 @@ export class MprisManager {
               resolve();
               return;
             }
-            
+
             const reply = conn.call_finish(result);
             const [names] = reply.deep_unpack();
-            const players = names.filter(name => name.startsWith(`${MPRIS_PREFIX}.`));
+            const players = names.filter((name) =>
+              name.startsWith(`${MPRIS_PREFIX}.`),
+            );
 
             for (const name of players) {
               if (this._isDestroyed) break;
@@ -134,20 +135,19 @@ export class MprisManager {
             logError(e, "Failed to scan existing players");
             resolve();
           }
-        }
+        },
       );
     });
   }
 
   async _onNameOwnerChanged(conn, sender, path, iface, signal, params) {
     if (this._isDestroyed || this._operationsPaused) return;
-    
+
     try {
       const [name, oldOwner, newOwner] = params.deep_unpack();
       if (!name.startsWith(`${MPRIS_PREFIX}.`)) return;
 
       if (!oldOwner && newOwner) {
-        // CRITICAL FIX: Longer delay for Flatpak apps
         GLib.timeout_add(GLib.PRIORITY_DEFAULT_IDLE, 800, () => {
           if (!this._isDestroyed && !this._operationsPaused) {
             this._addPlayer(name);
@@ -167,7 +167,6 @@ export class MprisManager {
       GLib.source_remove(this._cleanupTimers.get(name));
     }
 
-    // CRITICAL FIX: Queue cleanup instead of immediate removal
     const timerId = GLib.timeout_add(GLib.PRIORITY_LOW, 500, () => {
       if (!this._isDestroyed && !this._operationsPaused) {
         this._queueProxyCleanup(name);
@@ -179,12 +178,11 @@ export class MprisManager {
     this._cleanupTimers.set(name, timerId);
   }
 
-  // CRITICAL FIX: Queue-based proxy cleanup to prevent logout
   _queueProxyCleanup(name) {
     if (!this._proxies.has(name)) return;
-    
+
     this._proxyCleanupQueue.push(name);
-    
+
     if (!this._cleanupInProgress) {
       this._processCleanupQueue();
     }
@@ -203,18 +201,24 @@ export class MprisManager {
       if (!this._isDestroyed && !this._operationsPaused) {
         this._removePlayerSafe(name);
       }
-      
+
       GLib.timeout_add(GLib.PRIORITY_LOW, 100, () => {
         this._processCleanupQueue();
         return GLib.SOURCE_REMOVE;
       });
-      
+
       return GLib.SOURCE_REMOVE;
     });
   }
 
   async _addPlayer(name) {
-    if (this._proxies.has(name) || this._pendingProxies.has(name) || this._isDestroyed || this._operationsPaused) return;
+    if (
+      this._proxies.has(name) ||
+      this._pendingProxies.has(name) ||
+      this._isDestroyed ||
+      this._operationsPaused
+    )
+      return;
 
     this._pendingProxies.add(name);
 
@@ -225,10 +229,10 @@ export class MprisManager {
         this._pendingProxies.delete(name);
         return;
       }
-      
+
       this._proxies.set(name, proxy);
       this._errorCounts.set(name, 0);
-      
+
       const signals = new Map();
       this._proxySignals.set(name, signals);
 
@@ -241,66 +245,70 @@ export class MprisManager {
         return;
       }
 
-      // CRITICAL FIX: Wrap signal connections in try-catch
       try {
-        const propSignalId = proxy.connect("g-properties-changed", (p, changed) => {
-          if (this._isDestroyed || this._operationsPaused) return;
-          
-          try {
-            const props = changed.deep_unpack();
-            if (
-              "Metadata" in props ||
-              "PlaybackStatus" in props ||
-              "Shuffle" in props ||
-              "LoopStatus" in props ||
-              "Position" in props
-            ) {
-              this._updateInstanceMetadata(name);
-              
-              // Save position for this player
-              if ("Position" in props) {
-                const pos = getInt64(props["Position"]);
-                if (pos !== null) {
-                  this._playerPositions.set(name, pos);
+        const propSignalId = proxy.connect(
+          "g-properties-changed",
+          (p, changed) => {
+            if (this._isDestroyed || this._operationsPaused) return;
+
+            try {
+              const props = changed.deep_unpack();
+              if (
+                "Metadata" in props ||
+                "PlaybackStatus" in props ||
+                "Shuffle" in props ||
+                "LoopStatus" in props ||
+                "Position" in props
+              ) {
+                this._updateInstanceMetadata(name);
+
+                if ("Position" in props) {
+                  const pos = getInt64(props["Position"]);
+                  if (pos !== null) {
+                    this._playerPositions.set(name, pos);
+                  }
                 }
+
+                if (!this._operationsPaused) {
+                  this._onPlayerChanged?.(name);
+                }
+
+                this._errorCounts.set(name, 0);
               }
-              
-              if (!this._operationsPaused) {
-                this._onPlayerChanged?.(name);
-              }
-              
-              this._errorCounts.set(name, 0);
+            } catch (e) {
+              this._handlePlayerError(name, e, "property change");
             }
-          } catch (e) {
-            this._handlePlayerError(name, e, "property change");
-          }
-        });
-        signals.set('properties', propSignalId);
+          },
+        );
+        signals.set("properties", propSignalId);
       } catch (e) {
         logError(e, `Failed to connect property signals for ${name}`);
       }
 
       try {
-        const seekSignalId = proxy.connectSignal("Seeked", (proxy, sender, [position]) => {
-          if (this._isDestroyed || this._operationsPaused) return;
-          
-          try {
-            this._playerPositions.set(name, position);
-            if (!this._operationsPaused) {
-              this._onSeeked?.(name, position);
+        const seekSignalId = proxy.connectSignal(
+          "Seeked",
+          (proxy, sender, [position]) => {
+            if (this._isDestroyed || this._operationsPaused) return;
+
+            try {
+              this._playerPositions.set(name, position);
+              if (!this._operationsPaused) {
+                this._onSeeked?.(name, position);
+              }
+            } catch (e) {
+              this._handlePlayerError(name, e, "seek");
             }
-          } catch (e) {
-            this._handlePlayerError(name, e, "seek");
-          }
-        });
-        signals.set('seeked', seekSignalId);
+          },
+        );
+        signals.set("seeked", seekSignalId);
       } catch (e) {
         logError(e, `Failed to connect seek signal for ${name}`);
       }
 
       this._updateInstanceMetadata(name);
       this._pendingProxies.delete(name);
-      
+
       if (!this._isDestroyed && !this._operationsPaused) {
         this._onPlayerAdded?.(name);
       }
@@ -312,21 +320,23 @@ export class MprisManager {
     }
   }
 
-  // NEW: Get saved position for player
   getPlayerPosition(name) {
     return this._playerPositions.get(name) || 0;
   }
 
   _handlePlayerError(name, error, context) {
     if (this._isDestroyed || this._operationsPaused) return;
-    
+
     const errorCount = (this._errorCounts.get(name) || 0) + 1;
     this._errorCounts.set(name, errorCount);
-    
+
     if (errorCount < 3) {
-      logError(error, `Player ${name} error in ${context} (${errorCount}/${this._maxErrorsPerPlayer})`);
+      logError(
+        error,
+        `Player ${name} error in ${context} (${errorCount}/${this._maxErrorsPerPlayer})`,
+      );
     }
-    
+
     if (errorCount >= this._maxErrorsPerPlayer && !this._operationsPaused) {
       this._schedulePlayerRemoval(name);
     }
@@ -334,7 +344,7 @@ export class MprisManager {
 
   _updateInstanceMetadata(name) {
     if (this._isDestroyed || this._operationsPaused) return;
-    
+
     try {
       const info = this.getPlayerInfo(name);
       if (info && info.title) {
@@ -343,17 +353,15 @@ export class MprisManager {
           artists: info.artists,
           trackId: info.trackId,
           status: info.status,
-          artUrl: info.artUrl, // NEW: Save art URL
+          artUrl: info.artUrl,
         });
       }
-    } catch (e) {
-      // Silently handle
-    }
+    } catch (e) {}
   }
 
   async _fetchIdentity(name) {
     if (this._isDestroyed || this._operationsPaused) return;
-    
+
     return new Promise((resolve) => {
       this._bus.call(
         name,
@@ -370,7 +378,7 @@ export class MprisManager {
             resolve();
             return;
           }
-          
+
           try {
             const reply = conn.call_finish(result);
             const identity = reply.deep_unpack()[0].unpack();
@@ -380,14 +388,14 @@ export class MprisManager {
             this._identities.set(name, shortName);
           }
           resolve();
-        }
+        },
       );
     });
   }
 
   async _fetchDesktopEntry(name) {
     if (this._isDestroyed || this._operationsPaused) return;
-    
+
     return new Promise((resolve) => {
       this._bus.call(
         name,
@@ -404,72 +412,59 @@ export class MprisManager {
             resolve();
             return;
           }
-          
+
           try {
             const reply = conn.call_finish(result);
             const desktopEntry = reply.deep_unpack()[0].unpack();
             this._desktopEntries.set(name, desktopEntry);
-          } catch (e) {
-            // Desktop entry is optional
-          }
+          } catch (e) {}
           resolve();
-        }
+        },
       );
     });
   }
 
-  // CRITICAL FIX: Safe proxy disposal
   _safeDisposeProxy(proxy) {
     if (!proxy) return;
-    
+
     GLib.timeout_add(GLib.PRIORITY_LOW, 100, () => {
       try {
         proxy.run_dispose();
-      } catch (e) {
-        // Silently ignore
-      }
+      } catch (e) {}
       return GLib.SOURCE_REMOVE;
     });
   }
 
-  // CRITICAL FIX: Safe player removal
   _removePlayerSafe(name) {
     if (!this._proxies.has(name)) return;
-    
+
     const signals = this._proxySignals.get(name);
     const proxy = this._proxies.get(name);
-    
-    // Disconnect signals first
+
     if (signals && proxy) {
       for (const [signalType, signalId] of signals) {
         try {
           proxy.disconnect(signalId);
-        } catch (e) {
-          // Silently ignore
-        }
+        } catch (e) {}
       }
       this._proxySignals.delete(name);
     }
-    
-    // Remove from maps
+
     this._proxies.delete(name);
     this._identities.delete(name);
     this._desktopEntries.delete(name);
     this._instanceMetadata.delete(name);
     this._errorCounts.delete(name);
-    // Keep position for potential re-add
-    
-    // Dispose proxy later
+
     if (proxy) {
       this._safeDisposeProxy(proxy);
     }
-    
+
     if (!this._isDestroyed && !this._operationsPaused) {
       this._onPlayerRemoved?.(name);
     }
   }
 
-  // Legacy method for compatibility
   _removePlayer(name) {
     this._queueProxyCleanup(name);
   }
@@ -489,21 +484,21 @@ export class MprisManager {
             reject(new Error("Manager destroyed or paused"));
             return;
           }
-          
+
           try {
             const proxy = Gio.DBusProxy.new_finish(result);
             resolve(proxy);
           } catch (e) {
             reject(e);
           }
-        }
+        },
       );
     });
   }
 
   getPlayerInfo(name) {
     if (this._isDestroyed || this._operationsPaused) return null;
-    
+
     const proxy = this._proxies.get(name);
     if (!proxy) return null;
 
@@ -520,7 +515,7 @@ export class MprisManager {
 
       const meta = {};
       const len = metaV.n_children();
-      
+
       if (!len) return null;
 
       for (let i = 0; i < len; i++) {
@@ -528,7 +523,7 @@ export class MprisManager {
           const item = metaV.get_child_value(i);
           const key = getString(item.get_child_value(0));
           const valueVariant = item.get_child_value(1).get_variant();
-          
+
           if (!key) continue;
           meta[key] = valueVariant;
         } catch (e) {
@@ -543,11 +538,12 @@ export class MprisManager {
       const lengthMicroseconds = getInt64(meta["mpris:length"]);
       const artUrl = getString(meta["mpris:artUrl"]);
       const trackId = getString(meta["mpris:trackid"]) || "/";
-      
-      // Use saved position if available
+
       const savedPosition = this._playerPositions.get(name);
-      const currentPosition = positionV ? positionV.unpack() : (savedPosition || 0);
-      
+      const currentPosition = positionV
+        ? positionV.unpack()
+        : savedPosition || 0;
+
       return {
         title: getString(meta["xesam:title"]),
         artists: meta["xesam:artist"]?.deep_unpack() ?? null,
@@ -573,19 +569,20 @@ export class MprisManager {
   getPlayerDisplayLabel(name) {
     const baseApp = this._getBaseAppName(name);
     const instances = this._getInstancesOfApp(baseApp);
-    
+
     if (instances.length <= 1) {
       return this.getPlayerIdentity(name);
     }
-    
+
     const metadata = this._instanceMetadata.get(name);
     if (metadata && metadata.title) {
-      const shortTitle = metadata.title.length > 25 
-        ? metadata.title.substring(0, 25) + "..." 
-        : metadata.title;
+      const shortTitle =
+        metadata.title.length > 25
+          ? metadata.title.substring(0, 25) + "..."
+          : metadata.title;
       return `${this.getPlayerIdentity(name)}: ${shortTitle}`;
     }
-    
+
     return this.getPlayerIdentity(name);
   }
 
@@ -605,7 +602,7 @@ export class MprisManager {
 
   getGroupedPlayers() {
     const groups = new Map();
-    
+
     for (const name of this._proxies.keys()) {
       const baseApp = this._getBaseAppName(name);
       if (!groups.has(baseApp)) {
@@ -613,7 +610,7 @@ export class MprisManager {
       }
       groups.get(baseApp).push(name);
     }
-    
+
     return groups;
   }
 
@@ -623,23 +620,23 @@ export class MprisManager {
 
   getAppInfo(name) {
     if (this._isDestroyed || this._operationsPaused) return null;
-    
+
     try {
       const desktopEntry = this._desktopEntries.get(name);
       if (desktopEntry) {
         let appInfo = Gio.DesktopAppInfo.new(`${desktopEntry}.desktop`);
         if (appInfo) return appInfo;
-        
+
         appInfo = Gio.DesktopAppInfo.new(desktopEntry);
         if (appInfo) return appInfo;
       }
 
       let cleanName = name.replace(`${MPRIS_PREFIX}.`, "").toLowerCase();
       cleanName = cleanName.replace(/\.instance_\d+_\d+$/, "");
-      
+
       const appSystem = Shell.AppSystem.get_default();
       const app = appSystem.lookup_app(`${cleanName}.desktop`);
-      
+
       if (app) {
         return app.get_app_info();
       }
@@ -651,13 +648,14 @@ export class MprisManager {
   }
 
   getAppIcon(name) {
-    if (this._isDestroyed || this._operationsPaused) return "audio-x-generic-symbolic";
-    
+    if (this._isDestroyed || this._operationsPaused)
+      return "audio-x-generic-symbolic";
+
     try {
       const iconTheme = Gtk.IconTheme.get_for_display(
-        require('gi://Gdk').Display.get_default()
+        require("gi://Gdk").Display.get_default(),
       );
-      
+
       const desktopEntry = this._desktopEntries.get(name);
       if (desktopEntry) {
         const iconNames = [
@@ -666,7 +664,7 @@ export class MprisManager {
           `${desktopEntry}-symbolic`,
           `${desktopEntry.toLowerCase()}-symbolic`,
         ];
-        
+
         for (const iconName of iconNames) {
           if (iconTheme.has_icon(iconName)) {
             return iconName;
@@ -676,36 +674,36 @@ export class MprisManager {
 
       let cleanName = name.replace(`${MPRIS_PREFIX}.`, "").toLowerCase();
       cleanName = cleanName.replace(/\.instance_\d+_\d+$/, "");
-      
+
       const appMappings = {
-        'spotify': 'spotify',
-        'vlc': 'vlc',
-        'firefox': 'firefox',
-        'chromium': 'chromium',
-        'chrome': 'google-chrome',
-        'rhythmbox': 'rhythmbox',
-        'totem': 'totem',
-        'mpv': 'mpv',
-        'smplayer': 'smplayer',
-        'audacious': 'audacious',
-        'clementine': 'clementine',
-        'strawberry': 'strawberry',
-        'elisa': 'elisa',
-        'lollypop': 'lollypop',
-        'celluloid': 'celluloid',
-        'brave': 'brave-browser',
-        'gnome-music': 'org.gnome.Music',
-        'amberol': 'io.bassi.Amberol',
+        spotify: "spotify",
+        vlc: "vlc",
+        firefox: "firefox",
+        chromium: "chromium",
+        chrome: "google-chrome",
+        rhythmbox: "rhythmbox",
+        totem: "totem",
+        mpv: "mpv",
+        smplayer: "smplayer",
+        audacious: "audacious",
+        clementine: "clementine",
+        strawberry: "strawberry",
+        elisa: "elisa",
+        lollypop: "lollypop",
+        celluloid: "celluloid",
+        brave: "brave-browser",
+        "gnome-music": "org.gnome.Music",
+        amberol: "io.bassi.Amberol",
       };
 
       const mappedName = appMappings[cleanName] || cleanName;
-      
+
       const iconNames = [
         mappedName,
         `${mappedName}-symbolic`,
         cleanName,
         `${cleanName}-symbolic`,
-        "audio-x-generic-symbolic"
+        "audio-x-generic-symbolic",
       ];
 
       for (const iconName of iconNames) {
@@ -713,7 +711,7 @@ export class MprisManager {
           return iconName;
         }
       }
-      
+
       return "audio-x-generic-symbolic";
     } catch (e) {
       return "audio-x-generic-symbolic";
@@ -721,8 +719,9 @@ export class MprisManager {
   }
 
   async callMethod(name, method, params = null) {
-    if (this._isDestroyed || this._operationsPaused) throw new Error("Manager not available");
-    
+    if (this._isDestroyed || this._operationsPaused)
+      throw new Error("Manager not available");
+
     const proxy = this._proxies.get(name);
     if (!proxy) throw new Error(`No proxy for ${name}`);
 
@@ -738,7 +737,7 @@ export class MprisManager {
             reject(new Error("Call failed or manager unavailable"));
             return;
           }
-          
+
           try {
             p.call_finish(result);
             this._errorCounts.set(name, 0);
@@ -747,13 +746,14 @@ export class MprisManager {
             this._handlePlayerError(name, e, `method ${method}`);
             reject(e);
           }
-        }
+        },
       );
     });
   }
 
   async setProperty(name, property, value) {
-    if (this._isDestroyed || this._operationsPaused || !this._bus) throw new Error("Manager not available");
+    if (this._isDestroyed || this._operationsPaused || !this._bus)
+      throw new Error("Manager not available");
 
     return new Promise((resolve, reject) => {
       this._bus.call(
@@ -771,7 +771,7 @@ export class MprisManager {
             reject(new Error("Manager unavailable"));
             return;
           }
-          
+
           try {
             conn.call_finish(result);
             this._errorCounts.set(name, 0);
@@ -780,7 +780,7 @@ export class MprisManager {
             this._handlePlayerError(name, e, `set property ${property}`);
             reject(e);
           }
-        }
+        },
       );
     });
   }
@@ -803,14 +803,18 @@ export class MprisManager {
     return this.callMethod(
       name,
       "SetPosition",
-      new GLib.Variant("(ox)", [trackId, positionUs])
+      new GLib.Variant("(ox)", [trackId, positionUs]),
     );
   }
 
   toggleShuffle(name) {
     const info = this.getPlayerInfo(name);
     if (info) {
-      return this.setProperty(name, "Shuffle", new GLib.Variant("b", !info.shuffle));
+      return this.setProperty(
+        name,
+        "Shuffle",
+        new GLib.Variant("b", !info.shuffle),
+      );
     }
     return Promise.reject(new Error("No player info available"));
   }
@@ -834,16 +838,14 @@ export class MprisManager {
     if (this._isDestroyed) return;
     this._isDestroyed = true;
     this._operationsPaused = true;
-    
-    // Clear all timers
+
     for (const timerId of this._cleanupTimers.values()) {
       try {
         GLib.source_remove(timerId);
       } catch (e) {}
     }
     this._cleanupTimers.clear();
-    
-    // Unsubscribe from D-Bus
+
     if (this._bus) {
       for (const id of this._subscriptions) {
         try {
@@ -852,25 +854,24 @@ export class MprisManager {
       }
     }
 
-    // CRITICAL FIX: Gradual proxy cleanup
     const proxyNames = Array.from(this._proxies.keys());
     let cleanupIndex = 0;
-    
+
     const cleanupNext = () => {
       if (cleanupIndex >= proxyNames.length) {
         this._finalCleanup();
         return;
       }
-      
+
       const name = proxyNames[cleanupIndex++];
       this._removePlayerSafe(name);
-      
+
       GLib.timeout_add(GLib.PRIORITY_LOW, 50, () => {
         cleanupNext();
         return GLib.SOURCE_REMOVE;
       });
     };
-    
+
     cleanupNext();
   }
 

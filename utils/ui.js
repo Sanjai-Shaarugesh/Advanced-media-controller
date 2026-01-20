@@ -9,11 +9,11 @@ export const MediaControls = GObject.registerClass(
   {
     Signals: {
       "play-pause": {},
-      "next": {},
-      "previous": {},
-      "shuffle": {},
-      "repeat": {},
-      "seek": { param_types: [GObject.TYPE_DOUBLE] },
+      next: {},
+      previous: {},
+      shuffle: {},
+      repeat: {},
+      seek: { param_types: [GObject.TYPE_DOUBLE] },
       "player-changed": { param_types: [GObject.TYPE_STRING] },
     },
   },
@@ -27,22 +27,21 @@ export const MediaControls = GObject.registerClass(
       this._coverCache = new Map();
       this._updateInterval = null;
       this._sliderDragging = false;
-      
+
       this._currentPosition = 0;
       this._trackLength = 0;
       this._isPlaying = false;
       this._lastUpdateTime = 0;
       this._ignoreNextUpdate = false;
       this._justResumed = false;
-      this._currentPlayerName = null; // NEW: Track current player
-      this._playerSliderPositions = new Map(); // NEW: Per-player slider positions
-      this._playerArtCache = new Map(); // NEW: Per-player art cache
+      this._currentPlayerName = null;
+      this._playerSliderPositions = new Map();
+      this._playerArtCache = new Map();
 
       this._buildUI();
     }
 
     _buildUI() {
-      // Player tabs with app icons
       const headerBox = new St.BoxLayout({
         style: "margin-bottom: 20px; spacing: 8px;",
         x_align: Clutter.ActorAlign.CENTER,
@@ -54,7 +53,6 @@ export const MediaControls = GObject.registerClass(
       headerBox.add_child(this._tabsBox);
       this.add_child(headerBox);
 
-      // Album art
       const coverContainer = new St.BoxLayout({
         x_align: Clutter.ActorAlign.CENTER,
         style: "margin-bottom: 24px;",
@@ -63,8 +61,8 @@ export const MediaControls = GObject.registerClass(
       this._coverArt = new St.Bin({
         style_class: "media-album-art",
         style: `
-        width: 300px; 
-        height: 300px; 
+        width: 300px;
+        height: 300px;
         border-radius: 16px;
         box-shadow: 0 8px 24px rgba(0,0,0,0.4);
         background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
@@ -82,12 +80,11 @@ export const MediaControls = GObject.registerClass(
           min-height: 300px;
         `,
       });
-      
+
       this._coverArt.set_child(this._coverImage);
       coverContainer.add_child(this._coverArt);
       this.add_child(coverContainer);
 
-      // Track info
       const infoBox = new St.BoxLayout({
         vertical: true,
         style: "spacing: 6px; margin-bottom: 24px;",
@@ -96,20 +93,21 @@ export const MediaControls = GObject.registerClass(
 
       this._titleLabel = new St.Label({
         text: "No media playing",
-        style: "font-weight: 700; font-size: 16px; color: rgba(255,255,255,0.95);",
+        style:
+          "font-weight: 700; font-size: 16px; color: rgba(255,255,255,0.95);",
       });
       this._titleLabel.clutter_text.ellipsize = 3;
       infoBox.add_child(this._titleLabel);
 
       this._artistLabel = new St.Label({
         text: "",
-        style: "font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.6);",
+        style:
+          "font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.6);",
       });
       this._artistLabel.clutter_text.ellipsize = 3;
       infoBox.add_child(this._artistLabel);
       this.add_child(infoBox);
 
-      // Progress section
       const progressBox = new St.BoxLayout({
         vertical: true,
         style: "spacing: 10px; margin-bottom: 20px;",
@@ -122,11 +120,14 @@ export const MediaControls = GObject.registerClass(
       this._positionSlider = new Slider.Slider(0);
       this._positionSlider.accessible_name = "Position";
 
-      this._sliderChangedId = this._positionSlider.connect("notify::value", () => {
-        if (this._sliderDragging) {
-          this._updateTimeLabel();
-        }
-      });
+      this._sliderChangedId = this._positionSlider.connect(
+        "notify::value",
+        () => {
+          if (this._sliderDragging) {
+            this._updateTimeLabel();
+          }
+        },
+      );
 
       this._positionSlider.connect("drag-begin", () => {
         this._sliderDragging = true;
@@ -136,22 +137,21 @@ export const MediaControls = GObject.registerClass(
 
       this._positionSlider.connect("drag-end", () => {
         this._sliderDragging = false;
-        
+
         const newPosition = this._positionSlider.value * this._trackLength;
         this._currentPosition = newPosition;
         this._lastUpdateTime = GLib.get_monotonic_time();
-        
-        // NEW: Save slider position for this player
+
         if (this._currentPlayerName) {
           this._playerSliderPositions.set(this._currentPlayerName, {
             position: this._currentPosition,
             length: this._trackLength,
-            value: this._positionSlider.value
+            value: this._positionSlider.value,
           });
         }
-        
+
         this.emit("seek", newPosition / 1000000);
-        
+
         GLib.timeout_add(GLib.PRIORITY_DEFAULT, 500, () => {
           this._ignoreNextUpdate = false;
           if (this._isPlaying) {
@@ -164,19 +164,20 @@ export const MediaControls = GObject.registerClass(
       sliderContainer.add_child(this._positionSlider);
       progressBox.add_child(sliderContainer);
 
-      // Time labels
       const timeBox = new St.BoxLayout({
         style: "margin: 0 8px;",
       });
 
       this._currentTimeLabel = new St.Label({
         text: "0:00",
-        style: "font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.7);",
+        style:
+          "font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.7);",
       });
 
       this._totalTimeLabel = new St.Label({
         text: "0:00",
-        style: "font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.5);",
+        style:
+          "font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.5);",
         x_align: Clutter.ActorAlign.END,
         x_expand: true,
       });
@@ -186,25 +187,39 @@ export const MediaControls = GObject.registerClass(
       progressBox.add_child(timeBox);
       this.add_child(progressBox);
 
-      // Control buttons
       const controlsBox = new St.BoxLayout({
         style: "spacing: 16px;",
         x_align: Clutter.ActorAlign.CENTER,
       });
 
-      this._shuffleBtn = this._createModernButton("media-playlist-shuffle-symbolic", 18);
+      this._shuffleBtn = this._createModernButton(
+        "media-playlist-shuffle-symbolic",
+        18,
+      );
       this._shuffleBtn.connect("clicked", () => this.emit("shuffle"));
 
-      this._prevBtn = this._createModernButton("media-skip-backward-symbolic", 20);
+      this._prevBtn = this._createModernButton(
+        "media-skip-backward-symbolic",
+        20,
+      );
       this._prevBtn.connect("clicked", () => this.emit("previous"));
 
-      this._playBtn = this._createPlayButton("media-playback-start-symbolic", 26);
+      this._playBtn = this._createPlayButton(
+        "media-playback-start-symbolic",
+        26,
+      );
       this._playBtn.connect("clicked", () => this.emit("play-pause"));
 
-      this._nextBtn = this._createModernButton("media-skip-forward-symbolic", 20);
+      this._nextBtn = this._createModernButton(
+        "media-skip-forward-symbolic",
+        20,
+      );
       this._nextBtn.connect("clicked", () => this.emit("next"));
 
-      this._repeatBtn = this._createModernButton("media-playlist-repeat-symbolic", 18);
+      this._repeatBtn = this._createModernButton(
+        "media-playlist-repeat-symbolic",
+        18,
+      );
       this._repeatBtn.connect("clicked", () => this.emit("repeat"));
 
       controlsBox.add_child(this._shuffleBtn);
@@ -292,22 +307,19 @@ export const MediaControls = GObject.registerClass(
     update(info, playerName, manager) {
       if (!info) return;
 
-      // NEW: Handle player switch
       const playerChanged = this._currentPlayerName !== playerName;
       const previousPlayer = this._currentPlayerName;
       this._currentPlayerName = playerName;
 
       if (playerChanged) {
-        // Save previous player state
         if (previousPlayer) {
           this._playerSliderPositions.set(previousPlayer, {
             position: this._currentPosition,
             length: this._trackLength,
-            value: this._positionSlider.value
+            value: this._positionSlider.value,
           });
         }
 
-        // Restore this player's state
         const savedState = this._playerSliderPositions.get(playerName);
         if (savedState) {
           this._currentPosition = savedState.position;
@@ -318,19 +330,20 @@ export const MediaControls = GObject.registerClass(
           this._trackLength = info.length || 0;
         }
 
-        // Force art refresh on player change
         const savedArt = this._playerArtCache.get(playerName);
         if (savedArt && savedArt === info.artUrl) {
-          this._loadCover(info.artUrl, true); // Force refresh
+          this._loadCover(info.artUrl, true);
         } else if (info.artUrl) {
           this._loadCover(info.artUrl, true);
         } else {
           this._setDefaultCover();
         }
       } else {
-        // Same player, update normally
         this._trackLength = info.length;
-        if (info.artUrl && this._playerArtCache.get(playerName) !== info.artUrl) {
+        if (
+          info.artUrl &&
+          this._playerArtCache.get(playerName) !== info.artUrl
+        ) {
           this._loadCover(info.artUrl);
         }
       }
@@ -339,7 +352,7 @@ export const MediaControls = GObject.registerClass(
       const newPlayState = info.status === "Playing";
 
       this._titleLabel.text = info.title || "Unknown";
-      
+
       if (info.artists && info.artists.length > 0) {
         this._artistLabel.text = info.artists.join(", ");
         this._artistLabel.show();
@@ -347,10 +360,11 @@ export const MediaControls = GObject.registerClass(
         this._artistLabel.hide();
       }
 
-      const playIcon = newPlayState ? "media-playback-pause-symbolic" : "media-playback-start-symbolic";
+      const playIcon = newPlayState
+        ? "media-playback-pause-symbolic"
+        : "media-playback-start-symbolic";
       this._playBtn.child.icon_name = playIcon;
 
-      // Update shuffle button
       if (info.shuffle) {
         this._shuffleBtn.add_style_class_name("active");
         this._shuffleBtn.style = `
@@ -369,7 +383,6 @@ export const MediaControls = GObject.registerClass(
         this._shuffleBtn.child.style = "color: rgba(255,255,255,0.9);";
       }
 
-      // Update repeat button
       if (info.loopStatus === "Track") {
         this._repeatBtn.child.icon_name = "media-playlist-repeat-song-symbolic";
         this._repeatBtn.add_style_class_name("active");
@@ -403,7 +416,7 @@ export const MediaControls = GObject.registerClass(
         const now = GLib.get_monotonic_time();
         const justPaused = wasPlaying && !newPlayState;
         const justResumed = !wasPlaying && newPlayState;
-        
+
         if (justPaused) {
           const elapsed = now - this._lastUpdateTime;
           this._currentPosition = this._currentPosition + elapsed;
@@ -415,18 +428,19 @@ export const MediaControls = GObject.registerClass(
           this._isPlaying = true;
           this._justResumed = true;
           this.startPositionUpdate();
-          
+
           GLib.timeout_add(GLib.PRIORITY_DEFAULT, 100, () => {
             this._justResumed = false;
             return GLib.SOURCE_REMOVE;
           });
         } else if (newPlayState && !this._justResumed && !playerChanged) {
           const timeSinceUpdate = (now - this._lastUpdateTime) / 1000000;
-          
+
           if (timeSinceUpdate > 2.0) {
-            const expectedPosition = this._currentPosition + (now - this._lastUpdateTime);
+            const expectedPosition =
+              this._currentPosition + (now - this._lastUpdateTime);
             const drift = Math.abs(expectedPosition - info.position) / 1000000;
-            
+
             if (drift > 2.0) {
               this._currentPosition = info.position;
               this._lastUpdateTime = now;
@@ -436,7 +450,7 @@ export const MediaControls = GObject.registerClass(
         } else if (!newPlayState && !justPaused) {
           this._isPlaying = false;
         }
-        
+
         this._updateSliderPosition();
       }
     }
@@ -453,7 +467,7 @@ export const MediaControls = GObject.registerClass(
 
     _createTab(appInfo, playerName, currentPlayer) {
       const isActive = playerName === currentPlayer;
-      
+
       const button = new St.Button({
         style_class: "media-tab-modern",
         style: isActive
@@ -473,7 +487,7 @@ export const MediaControls = GObject.registerClass(
           icon_size: 20,
         });
       }
-      
+
       button.set_child(icon);
 
       button.connect("clicked", () => {
@@ -496,8 +510,10 @@ export const MediaControls = GObject.registerClass(
     }
 
     _loadCover(url, forceRefresh = false) {
-      // NEW: Cache per player
-      if (!forceRefresh && this._playerArtCache.get(this._currentPlayerName) === url) {
+      if (
+        !forceRefresh &&
+        this._playerArtCache.get(this._currentPlayerName) === url
+      ) {
         const cached = this._coverCache.get(url);
         if (cached) {
           this._coverImage.style = cached;
@@ -509,7 +525,7 @@ export const MediaControls = GObject.registerClass(
 
       try {
         let imageUrl = url;
-        
+
         if (url.startsWith("file://")) {
           imageUrl = url;
         } else if (url.startsWith("http://") || url.startsWith("https://")) {
@@ -518,7 +534,7 @@ export const MediaControls = GObject.registerClass(
         } else {
           imageUrl = `file://${url}`;
         }
-        
+
         const coverStyle = `
           border-radius: 16px;
           background-image: url('${imageUrl}');
@@ -527,18 +543,24 @@ export const MediaControls = GObject.registerClass(
           background-repeat: no-repeat;
           min-height: 300px;
         `;
-        
+
         this._coverImage.style = coverStyle;
         this._coverCache.set(url, coverStyle);
-        
       } catch (e) {
         this._setDefaultCover();
       }
     }
 
     _downloadCover(url) {
-      const hash = GLib.compute_checksum_for_string(GLib.ChecksumType.MD5, url, -1);
-      const cacheDir = GLib.build_filenamev([GLib.get_user_cache_dir(), "mpris-covers"]);
+      const hash = GLib.compute_checksum_for_string(
+        GLib.ChecksumType.MD5,
+        url,
+        -1,
+      );
+      const cacheDir = GLib.build_filenamev([
+        GLib.get_user_cache_dir(),
+        "mpris-covers",
+      ]);
       GLib.mkdir_with_parents(cacheDir, 0o755);
       const cachePath = GLib.build_filenamev([cacheDir, hash]);
       const cacheFile = Gio.File.new_for_path(cachePath);
@@ -565,10 +587,8 @@ export const MediaControls = GObject.registerClass(
             const gicon = new Gio.FileIcon({ file: cacheFile });
             this._coverImage.gicon = gicon;
             this._coverCache.set(url, gicon);
-          } catch (e) {
-            // Silent fail
-          }
-        }
+          } catch (e) {}
+        },
       );
     }
 
@@ -590,10 +610,14 @@ export const MediaControls = GObject.registerClass(
         displayPosition = this._currentPosition + elapsed;
       }
 
-      displayPosition = Math.max(0, Math.min(displayPosition, this._trackLength));
+      displayPosition = Math.max(
+        0,
+        Math.min(displayPosition, this._trackLength),
+      );
 
       this._positionSlider.block_signal_handler(this._sliderChangedId);
-      this._positionSlider.value = this._trackLength > 0 ? displayPosition / this._trackLength : 0;
+      this._positionSlider.value =
+        this._trackLength > 0 ? displayPosition / this._trackLength : 0;
       this._positionSlider.unblock_signal_handler(this._sliderChangedId);
 
       this._currentTimeLabel.text = this._formatTime(displayPosition / 1000000);
@@ -609,7 +633,7 @@ export const MediaControls = GObject.registerClass(
 
     _formatTime(seconds) {
       if (!seconds || isNaN(seconds) || seconds < 0) return "0:00";
-      
+
       seconds = Math.floor(seconds);
       const mins = Math.floor(seconds / 60);
       const secs = seconds % 60;
@@ -618,9 +642,13 @@ export const MediaControls = GObject.registerClass(
 
     startPositionUpdate() {
       this.stopPositionUpdate();
-      
+
       this._updateInterval = GLib.timeout_add(GLib.PRIORITY_LOW, 100, () => {
-        if (!this._sliderDragging && !this._ignoreNextUpdate && this._isPlaying) {
+        if (
+          !this._sliderDragging &&
+          !this._ignoreNextUpdate &&
+          this._isPlaying
+        ) {
           this._updateSliderPosition();
         }
         return GLib.SOURCE_CONTINUE;
@@ -636,19 +664,18 @@ export const MediaControls = GObject.registerClass(
 
     onSeeked(position) {
       if (this._ignoreNextUpdate) return;
-      
+
       this._currentPosition = position;
       this._lastUpdateTime = GLib.get_monotonic_time();
-      
-      // Save to player position cache
+
       if (this._currentPlayerName) {
         this._playerSliderPositions.set(this._currentPlayerName, {
           position: this._currentPosition,
           length: this._trackLength,
-          value: this._currentPosition / this._trackLength
+          value: this._currentPosition / this._trackLength,
         });
       }
-      
+
       if (!this._sliderDragging) {
         this._updateSliderPosition();
       }
@@ -656,17 +683,17 @@ export const MediaControls = GObject.registerClass(
 
     destroy() {
       this.stopPositionUpdate();
-      
+
       if (this._sliderChangedId) {
         this._positionSlider.disconnect(this._sliderChangedId);
         this._sliderChangedId = 0;
       }
-      
+
       this._coverCache.clear();
       this._playerSliderPositions.clear();
       this._playerArtCache.clear();
-      
+
       super.destroy();
     }
-  }
+  },
 );

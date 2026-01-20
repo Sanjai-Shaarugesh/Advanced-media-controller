@@ -1,5 +1,3 @@
-/* Media Controls Extension - Complete UI Styles */
-
 /* Icon styles */
 .colored-icon {
     -st-icon-style: requested;
@@ -165,7 +163,7 @@
 }
 
 .media-play-button-modern:active {
-    transform: scale(1.0);
+    transform: scale(1);
     background: rgba(255, 255, 255, 0.3);
 }
 
@@ -183,20 +181,6 @@
 
 .panel-media-button:active {
     background-color: rgba(255, 255, 255, 0.15);
-}
-
-/* Slider Customization */
-.popup-menu-item slider {
-    -slider-height: 4px;
-    -slider-background-color: rgba(255, 255, 255, 0.2);
-    -slider-border-color: transparent;
-    -slider-active-background-color: @theme_selected_bg_color;
-    -slider-active-border-color: transparent;
-    -slider-border-width: 0;
-    -slider-handle-radius: 8px;
-    -slider-handle-border-width: 0;
-    -slider-handle-border-color: transparent;
-    -barlevel-overdrive-color: @theme_selected_bg_color;
 }
 
 /* Legacy control icons */

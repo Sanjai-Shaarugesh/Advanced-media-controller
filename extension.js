@@ -7,34 +7,22 @@ export default class MediaExtension extends Extension {
     log("Media Controls Extension Enabled");
 
     this._settings = this.getSettings();
-    
-    // Create indicator
+
     this._indicator = new MediaIndicator(this._settings);
-    
-    // Add to panel with configured position
+
     this._addToPanel();
 
-    
-
-    // Monitor session mode changes
-    this._sessionModeChangedId = Main.sessionMode.connect(
-      "updated",
-      () => {
-        log(`MediaControls: Session mode changed to: ${Main.sessionMode.currentMode}`);
-        
-      }
-    );
-
-   
-
-   
+    this._sessionModeChangedId = Main.sessionMode.connect("updated", () => {
+      log(
+        `MediaControls: Session mode changed to: ${Main.sessionMode.currentMode}`,
+      );
+    });
   }
 
   _addToPanel() {
     const position = this._settings.get_string("panel-position");
     const index = this._settings.get_int("panel-index");
-    
-    // Determine target box
+
     let targetBox;
     switch (position) {
       case "left":
@@ -48,29 +36,22 @@ export default class MediaExtension extends Extension {
         targetBox = Main.panel._rightBox;
         break;
     }
-    
-    // Calculate actual index
-    const actualIndex = index === -1 ? 0 : Math.min(index, targetBox.get_n_children());
-    
-    // Add indicator
+
+    const actualIndex =
+      index === -1 ? 0 : Math.min(index, targetBox.get_n_children());
+
     targetBox.insert_child_at_index(this._indicator.container, actualIndex);
-    
+
     log(`MediaControls: Added to panel at ${position}[${actualIndex}]`);
   }
 
-  
-
   disable() {
     log("Media Controls Extension Disabled");
-
-    
 
     if (this._sessionModeChangedId) {
       Main.sessionMode.disconnect(this._sessionModeChangedId);
       this._sessionModeChangedId = 0;
     }
-
-   
 
     if (this._indicator) {
       this._indicator.destroy();

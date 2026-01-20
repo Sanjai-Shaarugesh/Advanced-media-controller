@@ -13,42 +13,38 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     window.set_default_size(700, 650);
     window.set_resizable(true);
 
-    // General page
     const generalPage = new Adw.PreferencesPage({
       title: "General",
       icon_name: "preferences-system-symbolic",
     });
     window.add(generalPage);
 
-    // Panel Settings Group
     const panelGroup = new Adw.PreferencesGroup({
       title: "Panel Settings",
       description: "Configure the position and appearance in the top panel",
     });
     generalPage.add(panelGroup);
 
-    // Panel Position
     const positionRow = new Adw.ComboRow({
       title: "Panel Position",
     });
-    
+
     const positionModel = new Gtk.StringList();
     positionModel.append("Left");
     positionModel.append("Center");
     positionModel.append("Right");
     positionRow.model = positionModel;
-    
+
     const positions = ["left", "center", "right"];
     const currentPos = settings.get_string("panel-position");
     positionRow.selected = positions.indexOf(currentPos);
-    
+
     positionRow.connect("notify::selected", (widget) => {
       settings.set_string("panel-position", positions[widget.selected]);
     });
-    
+
     panelGroup.add(positionRow);
 
-    // Panel Index
     const indexRow = new Adw.SpinRow({
       title: "Panel Index",
       subtitle: "Position within the panel area (-1 for automatic)",
@@ -59,54 +55,50 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
         page_increment: 1,
       }),
     });
-    
+
     settings.bind(
       "panel-index",
       indexRow,
       "value",
-      Gio.SettingsBindFlags.DEFAULT
+      Gio.SettingsBindFlags.DEFAULT,
     );
-    
+
     panelGroup.add(indexRow);
 
-    // Display Settings Group
     const displayGroup = new Adw.PreferencesGroup({
       title: "Display Settings",
       description: "Configure what appears in the panel",
     });
     generalPage.add(displayGroup);
 
-    // Show Track Name
     const showTrackRow = new Adw.SwitchRow({
       title: "Show Track Name",
       subtitle: "Display track information in the panel",
     });
-    
+
     settings.bind(
       "show-track-name",
       showTrackRow,
       "active",
-      Gio.SettingsBindFlags.DEFAULT
+      Gio.SettingsBindFlags.DEFAULT,
     );
-    
+
     displayGroup.add(showTrackRow);
 
-    // Show Artist
     const showArtistRow = new Adw.SwitchRow({
       title: "Show Artist Name",
       subtitle: "Include artist name with track title",
     });
-    
+
     settings.bind(
       "show-artist",
       showArtistRow,
       "active",
-      Gio.SettingsBindFlags.DEFAULT
+      Gio.SettingsBindFlags.DEFAULT,
     );
-    
+
     displayGroup.add(showArtistRow);
 
-    // Max Title Length
     const maxLengthRow = new Adw.SpinRow({
       title: "Maximum Title Length",
       subtitle: "Characters to display before scrolling starts",
@@ -117,17 +109,16 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
         page_increment: 10,
       }),
     });
-    
+
     settings.bind(
       "max-title-length",
       maxLengthRow,
       "value",
-      Gio.SettingsBindFlags.DEFAULT
+      Gio.SettingsBindFlags.DEFAULT,
     );
-    
+
     displayGroup.add(maxLengthRow);
 
-    // Scroll Speed
     const scrollSpeedRow = new Adw.SpinRow({
       title: "Scroll Speed",
       subtitle: "1 = slowest, 10 = fastest",
@@ -138,29 +129,27 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
         page_increment: 1,
       }),
     });
-    
+
     settings.bind(
       "scroll-speed",
       scrollSpeedRow,
       "value",
-      Gio.SettingsBindFlags.DEFAULT
+      Gio.SettingsBindFlags.DEFAULT,
     );
-    
+
     displayGroup.add(scrollSpeedRow);
 
-    // Separator Text
     const separatorRow = new Adw.EntryRow({
       title: "Separator Text",
       text: settings.get_string("separator-text"),
     });
-    
+
     separatorRow.connect("apply", () => {
       settings.set_string("separator-text", separatorRow.text);
     });
-    
+
     displayGroup.add(separatorRow);
 
-    // About page
     const aboutPage = this._createAboutPage(settings);
     window.add(aboutPage);
   }
@@ -173,7 +162,8 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
 
     const infoGroup = new Adw.PreferencesGroup({
       title: "Advanced Media Controller",
-      description: "Beautiful and modern media controls with multi-instance support",
+      description:
+        "Beautiful and modern media controls with multi-instance support",
     });
 
     const headerBox = new Gtk.Box({
@@ -184,7 +174,6 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
       halign: Gtk.Align.CENTER,
     });
 
-    // Try to load extension logo
     const logoPath = `${this.dir.get_path()}/icons/media-logo.png`;
     let logoImage;
     try {
@@ -255,14 +244,13 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
       try {
         Gio.AppInfo.launch_default_for_uri(
           "https://github.com/Sanjai-Shaarugesh/Advance-media-controller",
-          null
+          null,
         );
       } catch (error) {
         console.error("Could not open GitHub link:", error);
       }
     });
 
-    // QR Code Section
     const qrGroup = new Adw.PreferencesGroup({
       title: "☕ Support by buying me a coffee — just scan the QR code!",
       description: "Preferred Method - Scan QR code to support development",
@@ -308,7 +296,6 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     });
     qrRow.set_child(qrContainer);
 
-    // Donation Address Section
     const addressGroup = new Adw.PreferencesGroup({
       title: "Donation Address",
       css_classes: ["address-group"],
@@ -355,7 +342,10 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     sponsorRow.add_suffix(sponsorIcon);
     sponsorRow.connect("activated", () => {
       try {
-        Gio.AppInfo.launch_default_for_uri("https://buymeacoffee.com/sanjai", null);
+        Gio.AppInfo.launch_default_for_uri(
+          "https://buymeacoffee.com/sanjai",
+          null,
+        );
       } catch (error) {
         console.error("Could not open sponsor link:", error);
       }
@@ -379,7 +369,8 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
 
     const creditsRow = new Adw.ActionRow({
       title: "Media Data Sources",
-      subtitle: "MPRIS D-Bus interface - Standard media player remote interfacing",
+      subtitle:
+        "MPRIS D-Bus interface - Standard media player remote interfacing",
       activatable: false,
     });
     const apiIcon = new Gtk.Image({
@@ -390,7 +381,8 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
 
     const featuresRow = new Adw.ActionRow({
       title: "Key Features",
-      subtitle: "• Multi-instance browser support\n• Album art display\n• Smooth animations\n• Lock screen controls",
+      subtitle:
+        "• Multi-instance browser support\n• Album art display\n• Smooth animations\n• Lock screen controls",
       activatable: false,
     });
     const featuresIcon = new Gtk.Image({
@@ -399,7 +391,6 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     });
     featuresRow.add_prefix(featuresIcon);
 
-    // Add all rows to their respective groups
     infoGroup.add(headerRow);
     linksGroup.add(githubRow);
     linksGroup.add(sponsorRow);
@@ -409,7 +400,6 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     licenseGroup.add(creditsRow);
     licenseGroup.add(featuresRow);
 
-    // Add all groups to the page
     page.add(infoGroup);
     page.add(linksGroup);
     page.add(qrGroup);
@@ -444,7 +434,13 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
       const tempPath = `${tempDir}/github-icon-${Date.now()}.svg`;
       const tempFile = Gio.File.new_for_path(tempPath);
 
-      tempFile.replace_contents(githubSvg, null, false, Gio.FileCreateFlags.NONE, null);
+      tempFile.replace_contents(
+        githubSvg,
+        null,
+        false,
+        Gio.FileCreateFlags.NONE,
+        null,
+      );
 
       const githubIcon = new Gtk.Image({
         file: tempPath,
@@ -483,7 +479,7 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
       clipboard.set_text_async(text, -1, null, (clipboard, result) => {
         try {
           clipboard.set_text_finish(result);
-          this._showToast(`✅ ${label || 'Text'} copied to clipboard!`);
+          this._showToast(`✅ ${label || "Text"} copied to clipboard!`);
         } catch (error) {
           console.log("Async clipboard set failed:", error.message);
           this._trySync(clipboard, text, label);
@@ -512,7 +508,7 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
   _trySync(clipboard, text, label) {
     try {
       clipboard.set_text(text);
-      this._showToast(`✅ ${label || 'Text'} copied to clipboard!`);
+      this._showToast(`✅ ${label || "Text"} copied to clipboard!`);
       return true;
     } catch (error) {
       console.log("Synchronous clipboard failed:", error.message);
@@ -521,7 +517,7 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
         const contentProvider = Gdk.ContentProvider.new_for_value(text);
         if (contentProvider) {
           clipboard.set_content(contentProvider);
-          this._showToast(`✅ ${label || 'Text'} copied to clipboard!`);
+          this._showToast(`✅ ${label || "Text"} copied to clipboard!`);
           return true;
         }
       } catch (providerError) {
@@ -535,7 +531,7 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
   _showCopyDialog(text, label = null) {
     const dialog = new Adw.MessageDialog({
       heading: "Copy to Clipboard",
-      body: `Unable to automatically copy to clipboard. Please manually copy the ${label || 'text'} below:`,
+      body: `Unable to automatically copy to clipboard. Please manually copy the ${label || "text"} below:`,
       modal: true,
     });
 
@@ -600,7 +596,7 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
             const clipboard = display.get_clipboard();
             if (clipboard) {
               clipboard.set_text(text);
-              this._showToast(`✅ ${label || 'Text'} copied to clipboard!`);
+              this._showToast(`✅ ${label || "Text"} copied to clipboard!`);
               dialog.close();
               return;
             }
