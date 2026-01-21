@@ -68,7 +68,7 @@ Works flawlessly with **multiple browser tabs** playing media simultaneously!
 - ⚡ **Adjustable scroll speed** - Control animation speed
 - ⏸️ **Scroll pause time** - Configure pause between scrolls
 
-![Label Settings](docs/images/label-settings.png)
+![Label Settings](docs/images/img4.png)
 *Make it display exactly what you want*
 
 
