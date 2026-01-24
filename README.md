@@ -35,7 +35,7 @@
 - 📊 **Progress slider** - Seek to any position in your track
 - 🎵 **Track information** - Artist, title, and album display
 
-![Panel Controls](icons/img1.png)
+![Panel Controls](icons/img5.png)
 *Quick controls right in your top panel*
 
 ### 🌐 Multi-Instance Browser Support
@@ -68,7 +68,7 @@ Works flawlessly with **multiple browser tabs** playing media simultaneously!
 - ⚡ **Adjustable scroll speed** - Control animation speed
 - ⏸️ **Scroll pause time** - Configure pause between scrolls
 
-![Label Settings](docs/images/label-settings.png)
+![Label Settings](icons/img4.png)
 *Make it display exactly what you want*
 
 
@@ -148,7 +148,7 @@ gnome-extensions enable Advanced-media-controller.github.com
 *Clean, modern interface with album art*
 
 ### Panel Integration
-![Panel Integration](icons/impg4.png)
+![Panel Integration](icons/img5.png)
 *Perfectly integrated into GNOME's top panel*
 
 ### Multiple Players
