@@ -26,8 +26,7 @@ export const ProgressSlider = GObject.registerClass(
       this._isPlaying = false;
       this._lastUpdateTime = 0;
       this._ignoreNextUpdate = false;
-      this._lastExternalPosition = 0;
-      this._positionDriftThreshold = 2000000; // 2 seconds in microseconds
+      this._justResumed = false;
 
       this._buildUI();
     }
@@ -58,7 +57,6 @@ export const ProgressSlider = GObject.registerClass(
         const newPosition = this._positionSlider.value * this._trackLength;
         this._currentPosition = newPosition;
         this._lastUpdateTime = GLib.get_monotonic_time();
-        this._lastExternalPosition = newPosition;
         
         this.emit("seek", newPosition / 1000000);
         this.emit("drag-end");
@@ -97,65 +95,57 @@ export const ProgressSlider = GObject.registerClass(
       this.add_child(timeBox);
     }
 
-    updateFromExternalSource(position, length, isPlaying, forceUpdate = false) {
-      if (this._sliderDragging || this._ignoreNextUpdate) return;
-
-      const now = GLib.get_monotonic_time();
-      
-      // Check for external position changes (e.g., user seeking in the media player app)
-      const positionDrift = Math.abs(position - this._lastExternalPosition);
-      const isExternalSeek = positionDrift > this._positionDriftThreshold;
-      
-      if (forceUpdate || isExternalSeek) {
-        // External seek detected - sync immediately
-        this._currentPosition = position;
-        this._trackLength = length;
-        this._isPlaying = isPlaying;
-        this._lastUpdateTime = now;
-        this._lastExternalPosition = position;
-        this._updateSliderPosition();
-        
-        if (isPlaying) {
-          this.startPositionUpdate();
-        } else {
-          this.stopPositionUpdate();
-        }
-      } else {
-        // Normal update - handle play state changes
-        const wasPlaying = this._isPlaying;
-        this._isPlaying = isPlaying;
-        this._trackLength = length;
-        this._lastExternalPosition = position;
-        
-        if (wasPlaying && !isPlaying) {
-          // Just paused
-          const elapsed = now - this._lastUpdateTime;
-          this._currentPosition = this._currentPosition + elapsed;
-          this._lastUpdateTime = now;
-          this.stopPositionUpdate();
-          this._updateSliderPosition();
-        } else if (!wasPlaying && isPlaying) {
-          // Just resumed
-          this._currentPosition = position;
-          this._lastUpdateTime = now;
-          this.startPositionUpdate();
-        }
+    setPosition(position, length, value) {
+      this._currentPosition = position;
+      this._trackLength = length;
+      if (value !== undefined) {
+        this._positionSlider.value = value;
       }
     }
 
-    restoreState(position, length, sliderValue, isPlaying, lastUpdateTime) {
-      this.stopPositionUpdate();
-      
-      this._currentPosition = position;
-      this._trackLength = length;
-      this._isPlaying = isPlaying;
-      this._lastUpdateTime = lastUpdateTime || GLib.get_monotonic_time();
-      this._lastExternalPosition = position;
-      
-      this._updateSliderPosition();
-      
-      if (isPlaying) {
-        this.startPositionUpdate();
+    updatePlaybackState(isPlaying, position, playerChanged) {
+      const wasPlaying = this._isPlaying;
+      const newPlayState = isPlaying;
+
+      if (!this._sliderDragging && !this._ignoreNextUpdate) {
+        const now = GLib.get_monotonic_time();
+        const justPaused = wasPlaying && !newPlayState;
+        const justResumed = !wasPlaying && newPlayState;
+        
+        if (justPaused) {
+          const elapsed = now - this._lastUpdateTime;
+          this._currentPosition = this._currentPosition + elapsed;
+          this._lastUpdateTime = now;
+          this._isPlaying = false;
+          this.stopPositionUpdate();
+        } else if (justResumed) {
+          this._lastUpdateTime = now;
+          this._isPlaying = true;
+          this._justResumed = true;
+          this.startPositionUpdate();
+          
+          GLib.timeout_add(GLib.PRIORITY_DEFAULT, 100, () => {
+            this._justResumed = false;
+            return GLib.SOURCE_REMOVE;
+          });
+        } else if (newPlayState && !this._justResumed && !playerChanged) {
+          const timeSinceUpdate = (now - this._lastUpdateTime) / 1000000;
+          
+          if (timeSinceUpdate > 2.0) {
+            const expectedPosition = this._currentPosition + (now - this._lastUpdateTime);
+            const drift = Math.abs(expectedPosition - position) / 1000000;
+            
+            if (drift > 2.0) {
+              this._currentPosition = position;
+              this._lastUpdateTime = now;
+            }
+          }
+          this._isPlaying = true;
+        } else if (!newPlayState && !justPaused) {
+          this._isPlaying = false;
+        }
+        
+        this._updateSliderPosition();
       }
     }
 
@@ -166,7 +156,7 @@ export const ProgressSlider = GObject.registerClass(
 
       let displayPosition = this._currentPosition;
 
-      if (this._isPlaying) {
+      if (this._isPlaying && !this._justResumed) {
         const now = GLib.get_monotonic_time();
         const elapsed = now - this._lastUpdateTime;
         displayPosition = this._currentPosition + elapsed;
@@ -217,21 +207,20 @@ export const ProgressSlider = GObject.registerClass(
     }
 
     onSeeked(position) {
-      if (this._ignoreNextUpdate || this._sliderDragging) return;
+      if (this._ignoreNextUpdate) return;
       
-      // External seek event from MPRIS
       this._currentPosition = position;
       this._lastUpdateTime = GLib.get_monotonic_time();
-      this._lastExternalPosition = position;
-      this._updateSliderPosition();
+      
+      if (!this._sliderDragging) {
+        this._updateSliderPosition();
+      }
     }
 
     get currentPosition() { return this._currentPosition; }
     get trackLength() { return this._trackLength; }
+    set trackLength(value) { this._trackLength = value; }
     get sliderValue() { return this._positionSlider.value; }
-    get isDragging() { return this._sliderDragging; }
-    get isPlaying() { return this._isPlaying; }
-    get lastUpdateTime() { return this._lastUpdateTime; }
 
     destroy() {
       this.stopPositionUpdate();
