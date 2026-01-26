@@ -26,8 +26,6 @@ export class MprisManager {
     this._cleanupTimers = new Map();
     this._proxyCleanupQueue = [];
     this._cleanupInProgress = false;
-    
-    // FIX: Initialize polling-related variables
     this._pollingPlayers = new Set();
     this._positionPollingInterval = null;
 
@@ -40,19 +38,15 @@ export class MprisManager {
     this._pollingPlayers.add(name);
 
     if (!this._positionPollingInterval) {
-      this._positionPollingInterval = GLib.timeout_add(
-        GLib.PRIORITY_LOW,
-        1000,
-        () => {
-          if (this._isDestroyed) return GLib.SOURCE_REMOVE;
+      this._positionPollingInterval = GLib.timeout_add(GLib.PRIORITY_LOW, 1000, () => {
+        if (this._isDestroyed) return GLib.SOURCE_REMOVE;
 
-          for (const playerName of this._pollingPlayers) {
-            this._pollPlayerPosition(playerName);
-          }
+        for (const playerName of this._pollingPlayers) {
+          this._pollPlayerPosition(playerName);
+        }
 
-          return GLib.SOURCE_CONTINUE;
-        },
-      );
+        return GLib.SOURCE_CONTINUE;
+      });
     }
   }
 
@@ -82,10 +76,7 @@ export class MprisManager {
         MprisConstants.MPRIS_PATH,
         "org.freedesktop.DBus.Properties",
         "Get",
-        new GLib.Variant("(ss)", [
-          MprisConstants.MPRIS_PLAYER_IFACE,
-          "Position",
-        ]),
+        new GLib.Variant("(ss)", [MprisConstants.MPRIS_PLAYER_IFACE, "Position"]),
         null,
         Gio.DBusCallFlags.NONE,
         1000,
@@ -96,7 +87,6 @@ export class MprisManager {
           try {
             const reply = conn.call_finish(result);
             const position = reply.deep_unpack()[0].unpack();
-
             const oldPosition = this._playerPositions.get(name) || 0;
 
             if (Math.abs(position - oldPosition) > 500000) {
@@ -229,10 +219,7 @@ export class MprisManager {
   }
 
   getPlayerIdentity(name) {
-    return (
-      this._identities.get(name) ||
-      name.replace(`${MprisConstants.MPRIS_PREFIX}.`, "")
-    );
+    return this._identities.get(name) || name.replace(`${MprisConstants.MPRIS_PREFIX}.`, "");
   }
 
   getAppInfo(name) {
@@ -286,11 +273,7 @@ export class MprisManager {
         MprisConstants.MPRIS_PATH,
         "org.freedesktop.DBus.Properties",
         "Set",
-        new GLib.Variant("(ssv)", [
-          MprisConstants.MPRIS_PLAYER_IFACE,
-          property,
-          value,
-        ]),
+        new GLib.Variant("(ssv)", [MprisConstants.MPRIS_PLAYER_IFACE, property, value]),
         null,
         Gio.DBusCallFlags.NO_AUTO_START,
         MprisConstants.DBUS_TIMEOUT,
@@ -329,7 +312,6 @@ export class MprisManager {
   setPosition(name, trackId, position) {
     const positionUs = Math.floor(position * 1000000);
     this._playerPositions.set(name, positionUs);
-
     const trackIdStr = trackId.toString();
 
     return new Promise((resolve, reject) => {
@@ -357,11 +339,7 @@ export class MprisManager {
   toggleShuffle(name) {
     const info = this.getPlayerInfo(name);
     if (info) {
-      return this.setProperty(
-        name,
-        "Shuffle",
-        new GLib.Variant("b", !info.shuffle),
-      );
+      return this.setProperty(name, "Shuffle", new GLib.Variant("b", !info.shuffle));
     }
     return Promise.reject(new Error("No player info available"));
   }
@@ -386,7 +364,6 @@ export class MprisManager {
     this._isDestroyed = true;
     this._operationsPaused = true;
 
-    // FIX: Clean up polling interval
     if (this._positionPollingInterval) {
       GLib.source_remove(this._positionPollingInterval);
       this._positionPollingInterval = null;

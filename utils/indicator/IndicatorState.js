@@ -28,19 +28,11 @@ export class IndicatorState {
   }
 
   safeExecute(fn) {
-    if (
-      this._isDestroyed ||
-      this._sessionChanging ||
-      this._safetyLock ||
-      this._preventLogout
-    )
+    if (this._isDestroyed || this._sessionChanging || this._safetyLock || this._preventLogout)
       return;
 
     const now = Date.now();
-    if (
-      now - this._lastErrorTime < 1000 &&
-      this._errorCount >= this._maxErrors
-    ) {
+    if (now - this._lastErrorTime < 1000 && this._errorCount >= this._maxErrors) {
       return;
     }
 
@@ -67,11 +59,7 @@ export class IndicatorState {
 
     const id = GLib.timeout_add(GLib.PRIORITY_DEFAULT_IDLE, delay, () => {
       this._pendingOperations.delete(id);
-      if (
-        !this._isDestroyed &&
-        !this._sessionChanging &&
-        !this._preventLogout
-      ) {
+      if (!this._isDestroyed && !this._sessionChanging && !this._preventLogout) {
         this.safeExecute(fn);
       }
       return GLib.SOURCE_REMOVE;

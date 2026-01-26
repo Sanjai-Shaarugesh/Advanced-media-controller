@@ -1,5 +1,4 @@
 #!/bin/bash
-# Build script for Advanced Media Controller translations
 
 set -e
 
@@ -7,19 +6,16 @@ EXTENSION_NAME="advanced-media-controller"
 LOCALE_DIR="locale"
 POT_FILE="$LOCALE_DIR/$EXTENSION_NAME.pot"
 
-# Supported languages
 SUPPORTED_LANGUAGES=("es" "fr" "de" "ja" "zh_CN" "zh_TW")
 
-# Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
-NC='\033[0m' # No Color
+NC='\033[0m'
 
 echo -e "${GREEN}Advanced Media Controller Translation Builder${NC}"
 echo "=============================================="
 
-# Check if gettext is installed
 if ! command -v msgfmt &> /dev/null; then
     echo -e "${RED}Error: msgfmt not found. Please install gettext:${NC}"
     echo "  Debian/Ubuntu: sudo apt install gettext"
@@ -28,14 +24,11 @@ if ! command -v msgfmt &> /dev/null; then
     exit 1
 fi
 
-# Function to extract translatable strings
 extract_strings() {
     echo -e "\n${YELLOW}Extracting translatable strings...${NC}"
     
-    # Create locale directory if it doesn't exist
     mkdir -p "$LOCALE_DIR"
     
-    # Extract strings from JavaScript files
     xgettext --from-code=UTF-8 \
              --keyword=_ \
              --keyword=_n:1,2 \
@@ -52,7 +45,6 @@ extract_strings() {
     fi
 }
 
-# Function to compile a single translation
 compile_translation() {
     local lang=$1
     local po_file="$LOCALE_DIR/$lang/LC_MESSAGES/$EXTENSION_NAME.po"
@@ -63,12 +55,8 @@ compile_translation() {
         return 1
     fi
     
-    # Check for errors in .po file
     if msgfmt -c "$po_file" -o /dev/null 2>&1; then
-        # Compile .po to .mo
         msgfmt "$po_file" -o "$mo_file"
-        
-        # Get translation statistics
         local stats=$(msgfmt --statistics "$po_file" 2>&1)
         echo -e "${GREEN}✓${NC} $lang: Compiled successfully"
         echo "  └─ $stats"
@@ -80,14 +68,12 @@ compile_translation() {
     fi
 }
 
-# Function to compile all translations
 compile_all() {
     echo -e "\n${YELLOW}Compiling all translations...${NC}"
     
     local success=0
     local failed=0
     
-    # Compile all supported languages
     for lang in "${SUPPORTED_LANGUAGES[@]}"; do
         if [ -f "$LOCALE_DIR/$lang/LC_MESSAGES/$EXTENSION_NAME.po" ]; then
             if compile_translation "$lang"; then
@@ -100,12 +86,10 @@ compile_all() {
         fi
     done
     
-    # Also compile any other languages found
     for po_file in "$LOCALE_DIR"/*/LC_MESSAGES/*.po; do
         if [ -f "$po_file" ]; then
             local lang=$(basename $(dirname $(dirname "$po_file")))
             
-            # Skip if already compiled
             local already_compiled=false
             for supported_lang in "${SUPPORTED_LANGUAGES[@]}"; do
                 if [ "$lang" = "$supported_lang" ]; then
@@ -133,13 +117,11 @@ compile_all() {
     return 0
 }
 
-# Function to compile default languages
 compile_defaults() {
     echo -e "\n${YELLOW}Compiling default translations...${NC}"
     
     cd "$LOCALE_DIR" || exit 1
     
-    # Compile each supported language
     for lang in "${SUPPORTED_LANGUAGES[@]}"; do
         if [ -f "$lang/LC_MESSAGES/$EXTENSION_NAME.po" ]; then
             echo -e "${YELLOW}Compiling $lang...${NC}"
@@ -159,7 +141,6 @@ compile_defaults() {
     cd - > /dev/null
 }
 
-# Function to update translation from template
 update_translation() {
     local lang=$1
     local po_file="$LOCALE_DIR/$lang/LC_MESSAGES/$EXTENSION_NAME.po"
@@ -184,7 +165,6 @@ update_translation() {
     echo -e "${GREEN}✓${NC} $lang: Updated"
 }
 
-# Function to list all translations
 list_translations() {
     echo -e "\n${YELLOW}Available translations:${NC}"
     
@@ -206,7 +186,6 @@ list_translations() {
                     compiled="${RED}[not compiled]${NC}"
                 fi
                 
-                # Get translation statistics
                 local stats=$(msgfmt --statistics "$po_file" 2>&1 | head -n1)
                 echo -e "  $lang $compiled"
                 echo "    └─ $stats"
@@ -215,7 +194,6 @@ list_translations() {
     done
 }
 
-# Function to create new translation
 create_translation() {
     local lang=$1
     
@@ -255,7 +233,6 @@ create_translation() {
     echo "  3. Test the translation"
 }
 
-# Function to clean backup files
 clean_backups() {
     echo -e "\n${YELLOW}Cleaning backup files...${NC}"
     
@@ -269,7 +246,6 @@ clean_backups() {
     fi
 }
 
-# Show help
 show_help() {
     cat << EOF
 Advanced Media Controller Translation Builder
@@ -319,12 +295,10 @@ Additional language codes:
   nl        Dutch
   pl        Polish
   tr        Turkish
-  ...       (see ISO 639-1 codes)
 
 EOF
 }
 
-# Main script logic
 case "${1:-}" in
     --extract)
         extract_strings

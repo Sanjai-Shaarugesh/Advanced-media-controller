@@ -43,13 +43,10 @@ export class MprisUtils {
         if (appInfo) return appInfo;
       }
 
-      let cleanName = name
-        .replace(`${MprisConstants.MPRIS_PREFIX}.`, "")
-        .toLowerCase();
+      let cleanName = name.replace(`${MprisConstants.MPRIS_PREFIX}.`, "").toLowerCase();
       cleanName = cleanName.replace(/\.instance_\d+_\d+$/, "");
 
       const appSystem = Shell.AppSystem.get_default();
-
       let app = appSystem.lookup_app(`${cleanName}.desktop`);
       if (app) return app.get_app_info();
 
@@ -86,9 +83,7 @@ export class MprisUtils {
         }
       }
 
-      let cleanName = name
-        .replace(`${MprisConstants.MPRIS_PREFIX}.`, "")
-        .toLowerCase();
+      let cleanName = name.replace(`${MprisConstants.MPRIS_PREFIX}.`, "").toLowerCase();
       cleanName = cleanName.replace(/\.instance_\d+_\d+$/, "");
 
       const appMappings = {
@@ -113,13 +108,11 @@ export class MprisUtils {
       };
 
       const mappedName = appMappings[cleanName] || cleanName;
-
       const iconNames = [
         mappedName,
         `${mappedName}-symbolic`,
         cleanName,
         `${cleanName}-symbolic`,
-
         `com.${cleanName}.Client`,
         `com.spotify.Client`,
         `org.${cleanName}.${cleanName}`,

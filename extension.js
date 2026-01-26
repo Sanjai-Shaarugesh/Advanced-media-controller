@@ -7,7 +7,6 @@ export default class MediaExtension extends Extension {
   enable() {
     log("Media Controls Extension Enabled");
 
-    // Initialize translations
     initTranslations(this);
 
     this._settings = this.getSettings();
@@ -15,9 +14,7 @@ export default class MediaExtension extends Extension {
     this._addToPanel();
 
     this._sessionModeChangedId = Main.sessionMode.connect("updated", () => {
-      log(
-        `MediaControls: Session mode changed to: ${Main.sessionMode.currentMode}`,
-      );
+      log(`MediaControls: Session mode changed to: ${Main.sessionMode.currentMode}`);
     });
   }
 
@@ -39,9 +36,7 @@ export default class MediaExtension extends Extension {
         break;
     }
 
-    const actualIndex =
-      index === -1 ? 0 : Math.min(index, targetBox.get_n_children());
-
+    const actualIndex = index === -1 ? 0 : Math.min(index, targetBox.get_n_children());
     targetBox.insert_child_at_index(this._indicator.container, actualIndex);
 
     log(`MediaControls: Added to panel at ${position}[${actualIndex}]`);

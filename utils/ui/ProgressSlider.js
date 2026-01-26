@@ -40,14 +40,11 @@ export const ProgressSlider = GObject.registerClass(
       this._positionSlider = new Slider.Slider(0);
       this._positionSlider.accessible_name = "Position";
 
-      this._sliderChangedId = this._positionSlider.connect(
-        "notify::value",
-        () => {
-          if (this._sliderDragging) {
-            this._updateTimeLabel();
-          }
-        },
-      );
+      this._sliderChangedId = this._positionSlider.connect("notify::value", () => {
+        if (this._sliderDragging) {
+          this._updateTimeLabel();
+        }
+      });
 
       this._positionSlider.connect("drag-begin", () => {
         this._sliderDragging = true;
@@ -81,14 +78,12 @@ export const ProgressSlider = GObject.registerClass(
 
       this._currentTimeLabel = new St.Label({
         text: "0:00",
-        style:
-          "font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.7);",
+        style: "font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.7);",
       });
 
       this._totalTimeLabel = new St.Label({
         text: "0:00",
-        style:
-          "font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.5);",
+        style: "font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.5);",
         x_align: Clutter.ActorAlign.END,
         x_expand: true,
       });
@@ -109,9 +104,7 @@ export const ProgressSlider = GObject.registerClass(
         this._trackLength = metadata["mpris:length"] || 0;
         this._trackId = metadata["mpris:trackid"] || null;
 
-        this._totalTimeLabel.text = this._formatTime(
-          this._trackLength / 1000000,
-        );
+        this._totalTimeLabel.text = this._formatTime(this._trackLength / 1000000);
 
         if (!this._trackId || !this._trackLength) {
           this._canSeek = false;
@@ -170,8 +163,7 @@ export const ProgressSlider = GObject.registerClass(
         position = Math.max(0, Math.min(position, this._trackLength));
 
         this._positionSlider.block_signal_handler(this._sliderChangedId);
-        this._positionSlider.value =
-          this._trackLength > 0 ? position / this._trackLength : 0;
+        this._positionSlider.value = this._trackLength > 0 ? position / this._trackLength : 0;
         this._positionSlider.unblock_signal_handler(this._sliderChangedId);
 
         this._currentTimeLabel.text = this._formatTime(position / 1000000);
@@ -196,19 +188,14 @@ export const ProgressSlider = GObject.registerClass(
 
     startPositionUpdate() {
       this.stopPositionUpdate();
-
       this._updateSliderPosition();
 
-      this._updateInterval = GLib.timeout_add(
-        GLib.PRIORITY_DEFAULT,
-        1000,
-        () => {
-          if (!this._sliderDragging && this._isPlaying) {
-            this._updateSliderPosition();
-          }
-          return GLib.SOURCE_CONTINUE;
-        },
-      );
+      this._updateInterval = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 1000, () => {
+        if (!this._sliderDragging && this._isPlaying) {
+          this._updateSliderPosition();
+        }
+        return GLib.SOURCE_CONTINUE;
+      });
     }
 
     stopPositionUpdate() {
@@ -229,12 +216,15 @@ export const ProgressSlider = GObject.registerClass(
     get currentPosition() {
       return this._currentPosition;
     }
+
     get trackLength() {
       return this._trackLength;
     }
+
     set trackLength(value) {
       this._trackLength = value;
     }
+
     get sliderValue() {
       return this._positionSlider.value;
     }

@@ -6,11 +6,8 @@ export class IndicatorPlayerHandlers {
   }
 
   onPlayerAdded(name) {
-    if (
-      this._indicator._state._isDestroyed ||
-      this._indicator._state._isInitializing ||
-      this._indicator._state._sessionChanging
-    )
+    if (this._indicator._state._isDestroyed || this._indicator._state._isInitializing ||
+        this._indicator._state._sessionChanging)
       return;
 
     try {
@@ -30,15 +27,12 @@ export class IndicatorPlayerHandlers {
 
       this._indicator._uiUpdater.updateTabs();
     } catch (e) {
-      logError(e, "Error in _onPlayerAdded");
+      logError(e, "Error in onPlayerAdded");
     }
   }
 
   onPlayerRemoved(name) {
-    if (
-      this._indicator._state._isDestroyed ||
-      this._indicator._state._sessionChanging
-    )
+    if (this._indicator._state._isDestroyed || this._indicator._state._sessionChanging)
       return;
 
     try {
@@ -50,16 +44,13 @@ export class IndicatorPlayerHandlers {
       this._indicator._uiUpdater.updateTabs();
       this._indicator._uiUpdater.updateVisibility();
     } catch (e) {
-      logError(e, "Error in _onPlayerRemoved");
+      logError(e, "Error in onPlayerRemoved");
     }
   }
 
   onPlayerChanged(name) {
-    if (
-      this._indicator._state._isDestroyed ||
-      this._indicator._state._isInitializing ||
-      this._indicator._state._sessionChanging
-    )
+    if (this._indicator._state._isDestroyed || this._indicator._state._isInitializing ||
+        this._indicator._state._sessionChanging)
       return;
 
     const now = GLib.get_monotonic_time();
@@ -69,20 +60,13 @@ export class IndicatorPlayerHandlers {
         GLib.source_remove(this._indicator._state._updateThrottle);
       }
 
-      this._indicator._state._updateThrottle = GLib.timeout_add(
-        GLib.PRIORITY_LOW,
-        50,
-        () => {
-          if (
-            !this._indicator._state._isDestroyed &&
-            !this._indicator._state._sessionChanging
-          ) {
-            this._performUpdate(name);
-          }
-          this._indicator._state._updateThrottle = null;
-          return GLib.SOURCE_REMOVE;
-        },
-      );
+      this._indicator._state._updateThrottle = GLib.timeout_add(GLib.PRIORITY_LOW, 50, () => {
+        if (!this._indicator._state._isDestroyed && !this._indicator._state._sessionChanging) {
+          this._performUpdate(name);
+        }
+        this._indicator._state._updateThrottle = null;
+        return GLib.SOURCE_REMOVE;
+      });
       return;
     }
 
@@ -90,11 +74,8 @@ export class IndicatorPlayerHandlers {
   }
 
   _performUpdate(name) {
-    if (
-      this._indicator._state._isDestroyed ||
-      this._indicator._state._isInitializing ||
-      this._indicator._state._sessionChanging
-    )
+    if (this._indicator._state._isDestroyed || this._indicator._state._isInitializing ||
+        this._indicator._state._sessionChanging)
       return;
 
     try {
@@ -106,11 +87,7 @@ export class IndicatorPlayerHandlers {
         this._indicator._uiUpdater.updateVisibility();
 
         if (this._indicator.menu.isOpen && this._indicator._controls) {
-          this._indicator._controls.update(
-            info,
-            name,
-            this._indicator._manager,
-          );
+          this._indicator._controls.update(info, name, this._indicator._manager);
         }
       } else if (info && info.status === "Playing") {
         this._indicator._state._currentPlayer = name;
@@ -119,30 +96,25 @@ export class IndicatorPlayerHandlers {
         this._indicator._uiUpdater.updateVisibility();
       }
     } catch (e) {
-      logError(e, "Error in _performUpdate");
+      logError(e, "Error in performUpdate");
     }
   }
 
   onSeeked(name, position) {
-    if (
-      this._indicator._state._isDestroyed ||
-      this._indicator._state._currentPlayer !== name ||
-      this._indicator._state._sessionChanging
-    )
+    if (this._indicator._state._isDestroyed ||
+        this._indicator._state._currentPlayer !== name ||
+        this._indicator._state._sessionChanging)
       return;
 
     try {
       this._indicator._controls.onSeeked(position);
     } catch (e) {
-      logError(e, "Error in _onSeeked");
+      logError(e, "Error in onSeeked");
     }
   }
 
   _selectNextPlayer() {
-    if (
-      this._indicator._state._isDestroyed ||
-      this._indicator._state._sessionChanging
-    )
+    if (this._indicator._state._isDestroyed || this._indicator._state._sessionChanging)
       return;
 
     try {
@@ -171,7 +143,7 @@ export class IndicatorPlayerHandlers {
         this._indicator.hide();
       }
     } catch (e) {
-      logError(e, "Error in _selectNextPlayer");
+      logError(e, "Error in selectNextPlayer");
     }
   }
 }
