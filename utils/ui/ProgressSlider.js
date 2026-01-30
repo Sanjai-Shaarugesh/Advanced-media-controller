@@ -21,6 +21,7 @@ export const ProgressSlider = GObject.registerClass(
       });
 
       this._updateInterval = null;
+      this._resumeTimeout = null;
       this._sliderDragging = false;
       this._currentPosition = 0;
       this._trackLength = 0;
@@ -61,7 +62,12 @@ export const ProgressSlider = GObject.registerClass(
         this.emit("seek", newPosition / 1000000);
         this.emit("drag-end");
 
-        GLib.timeout_add(GLib.PRIORITY_DEFAULT, 200, () => {
+        if (this._resumeTimeout) {
+          GLib.source_remove(this._resumeTimeout);
+        }
+
+        this._resumeTimeout = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 200, () => {
+          this._resumeTimeout = null;
           if (this._isPlaying) {
             this.startPositionUpdate();
           }
@@ -111,11 +117,11 @@ export const ProgressSlider = GObject.registerClass(
           this._positionSlider.reactive = false;
           this.visible = false;
           return;
-        } else {
-          this._canSeek = true;
-          this._positionSlider.reactive = true;
-          this.visible = true;
         }
+        
+        this._canSeek = true;
+        this._positionSlider.reactive = true;
+        this.visible = true;
       }
 
       if (isPlaying) {
@@ -128,22 +134,18 @@ export const ProgressSlider = GObject.registerClass(
     _syncGetProperty(busName, property) {
       if (!busName) return null;
 
-      try {
-        const result = Gio.DBus.session.call_sync(
-          busName,
-          "/org/mpris/MediaPlayer2",
-          "org.freedesktop.DBus.Properties",
-          "Get",
-          new GLib.Variant("(ss)", ["org.mpris.MediaPlayer2.Player", property]),
-          null,
-          Gio.DBusCallFlags.NONE,
-          50,
-          null,
-        );
-        return result.recursiveUnpack()[0];
-      } catch (e) {
-        return null;
-      }
+      const result = Gio.DBus.session.call_sync(
+        busName,
+        "/org/mpris/MediaPlayer2",
+        "org.freedesktop.DBus.Properties",
+        "Get",
+        new GLib.Variant("(ss)", ["org.mpris.MediaPlayer2.Player", property]),
+        null,
+        Gio.DBusCallFlags.NONE,
+        50,
+        null,
+      );
+      return result.recursiveUnpack()[0];
     }
 
     _updateSliderPosition() {
@@ -151,23 +153,21 @@ export const ProgressSlider = GObject.registerClass(
         return;
       }
 
-      try {
-        let position = this._syncGetProperty(this._playerName, "Position");
+      let position = this._syncGetProperty(this._playerName, "Position");
 
-        if (position === null || position === 0) {
-          position = this._currentPosition;
-        } else {
-          this._currentPosition = position;
-        }
+      if (position === null || position === 0) {
+        position = this._currentPosition;
+      } else {
+        this._currentPosition = position;
+      }
 
-        position = Math.max(0, Math.min(position, this._trackLength));
+      position = Math.max(0, Math.min(position, this._trackLength));
 
-        this._positionSlider.block_signal_handler(this._sliderChangedId);
-        this._positionSlider.value = this._trackLength > 0 ? position / this._trackLength : 0;
-        this._positionSlider.unblock_signal_handler(this._sliderChangedId);
+      this._positionSlider.block_signal_handler(this._sliderChangedId);
+      this._positionSlider.value = this._trackLength > 0 ? position / this._trackLength : 0;
+      this._positionSlider.unblock_signal_handler(this._sliderChangedId);
 
-        this._currentTimeLabel.text = this._formatTime(position / 1000000);
-      } catch (e) {}
+      this._currentTimeLabel.text = this._formatTime(position / 1000000);
     }
 
     _updateTimeLabel() {
@@ -231,6 +231,11 @@ export const ProgressSlider = GObject.registerClass(
 
     destroy() {
       this.stopPositionUpdate();
+
+      if (this._resumeTimeout) {
+        GLib.source_remove(this._resumeTimeout);
+        this._resumeTimeout = null;
+      }
 
       if (this._sliderChangedId) {
         this._positionSlider.disconnect(this._sliderChangedId);

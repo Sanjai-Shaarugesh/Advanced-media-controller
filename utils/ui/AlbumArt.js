@@ -60,32 +60,28 @@ export const AlbumArt = GObject.registerClass(
         }
       }
 
-      try {
-        let imageUrl = url;
+      let imageUrl = url;
 
-        if (url.startsWith("file://")) {
-          imageUrl = url;
-        } else if (url.startsWith("http://") || url.startsWith("https://")) {
-          this._downloadCover(url);
-          return;
-        } else {
-          imageUrl = `file://${url}`;
-        }
-
-        const coverStyle = `
-          border-radius: 16px;
-          background-image: url('${imageUrl}');
-          background-size: contain;
-          background-position: center;
-          background-repeat: no-repeat;
-          min-height: 300px;
-        `;
-
-        this._coverImage.style = coverStyle;
-        this._coverCache.set(url, coverStyle);
-      } catch (e) {
-        this.setDefaultCover();
+      if (url.startsWith("file://")) {
+        imageUrl = url;
+      } else if (url.startsWith("http://") || url.startsWith("https://")) {
+        this._downloadCover(url);
+        return;
+      } else {
+        imageUrl = `file://${url}`;
       }
+
+      const coverStyle = `
+        border-radius: 16px;
+        background-image: url('${imageUrl}');
+        background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
+        min-height: 300px;
+      `;
+
+      this._coverImage.style = coverStyle;
+      this._coverCache.set(url, coverStyle);
     }
 
     _downloadCover(url) {
@@ -138,7 +134,9 @@ export const AlbumArt = GObject.registerClass(
             `;
             this._coverImage.style = coverStyle;
             this._coverCache.set(url, coverStyle);
-          } catch (e) {}
+          } catch (e) {
+            logError(e, 'Failed to download cover');
+          }
         },
       );
     }

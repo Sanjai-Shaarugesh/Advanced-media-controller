@@ -54,7 +54,6 @@ export const MediaControls = GObject.registerClass(
         x_align: Clutter.ActorAlign.CENTER,
       });
 
-      // Use translation for default text
       this._titleLabel = new St.Label({
         text: globalThis._?.("No media playing") || "No media playing",
         style:
@@ -129,7 +128,6 @@ export const MediaControls = GObject.registerClass(
 
       this._playerArtCache.set(playerName, info.artUrl);
 
-      // Use translation for Unknown
       this._titleLabel.text = info.title || (globalThis._?.("Unknown") || "Unknown");
 
       if (info.artists && info.artists.length > 0) {
@@ -151,34 +149,26 @@ export const MediaControls = GObject.registerClass(
     _getMetadata(playerName, manager) {
       if (!playerName || !manager) return null;
 
-      try {
-        const proxy = manager._proxies.get(playerName);
-        if (!proxy) return null;
+      const proxy = manager._proxies.get(playerName);
+      if (!proxy) return null;
 
-        const metaV = proxy.get_cached_property("Metadata");
-        if (!metaV) return null;
+      const metaV = proxy.get_cached_property("Metadata");
+      if (!metaV) return null;
 
-        const meta = {};
-        const len = metaV.n_children();
+      const meta = {};
+      const len = metaV.n_children();
 
-        for (let i = 0; i < len; i++) {
-          try {
-            const item = metaV.get_child_value(i);
-            const key = item.get_child_value(0).get_string()[0];
-            const valueVariant = item.get_child_value(1).get_variant();
+      for (let i = 0; i < len; i++) {
+        const item = metaV.get_child_value(i);
+        const key = item.get_child_value(0).get_string()[0];
+        const valueVariant = item.get_child_value(1).get_variant();
 
-            if (key) {
-              meta[key] = valueVariant ? valueVariant.recursiveUnpack() : null;
-            }
-          } catch (e) {
-            continue;
-          }
+        if (key) {
+          meta[key] = valueVariant ? valueVariant.recursiveUnpack() : null;
         }
-
-        return meta;
-      } catch (e) {
-        return null;
       }
+
+      return meta;
     }
 
     updateTabs(players, currentPlayer, manager) {
