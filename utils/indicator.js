@@ -1,5 +1,4 @@
 import GObject from "gi://GObject";
-import GLib from "gi://GLib";
 import * as PanelMenu from "resource:///org/gnome/shell/ui/panelMenu.js";
 import * as PopupMenu from "resource:///org/gnome/shell/ui/popupMenu.js";
 import * as Main from "resource:///org/gnome/shell/ui/main.js";
@@ -69,7 +68,7 @@ export const MediaIndicator = GObject.registerClass(
     }
 
     _repositionIndicator() {
-      if (this._state._isDestroyed || this._state._sessionChanging) return;
+      if (this._state._sessionChanging) return;
 
       const position = this._settings.get_string("panel-position");
       const index = this._settings.get_int("panel-index");
@@ -78,47 +77,37 @@ export const MediaIndicator = GObject.registerClass(
       const manager = this._manager;
       const player = this._state._currentPlayer;
 
-      try {
-        if (this.container && this.container.get_parent()) {
-          this.container.get_parent().remove_child(this.container);
-        }
+      if (this.container && this.container.get_parent()) {
+        this.container.get_parent().remove_child(this.container);
+      }
 
-        let targetBox;
-        switch (position) {
-          case "left":
-            targetBox = Main.panel._leftBox;
-            break;
-          case "center":
-            targetBox = Main.panel._centerBox;
-            break;
-          case "right":
-          default:
-            targetBox = Main.panel._rightBox;
-            break;
-        }
+      let targetBox;
+      switch (position) {
+        case "left":
+          targetBox = Main.panel._leftBox;
+          break;
+        case "center":
+          targetBox = Main.panel._centerBox;
+          break;
+        case "right":
+        default:
+          targetBox = Main.panel._rightBox;
+          break;
+      }
 
-        const actualIndex =
-          index === -1 ? 0 : Math.min(index, targetBox.get_n_children());
-        targetBox.insert_child_at_index(this.container, actualIndex);
+      const actualIndex =
+        index === -1 ? 0 : Math.min(index, targetBox.get_n_children());
+      targetBox.insert_child_at_index(this.container, actualIndex);
 
-        this._manager = manager;
-        this._state._currentPlayer = player;
+      this._manager = manager;
+      this._state._currentPlayer = player;
 
-        if (
-          wasVisible &&
-          !this._state._isDestroyed &&
-          !this._state._sessionChanging
-        ) {
-          this.show();
-        }
-      } catch (e) {
-        logError(e, "Failed to reposition");
+      if (wasVisible && !this._state._sessionChanging) {
+        this.show();
       }
     }
 
     async _initManager() {
-      if (this._state._isDestroyed) return;
-
       try {
         this._manager = new MprisManager();
 
@@ -140,8 +129,6 @@ export const MediaIndicator = GObject.registerClass(
               this._playerHandlers.onSeeked(name, position),
             ),
         });
-
-        if (this._state._isDestroyed) return;
 
         this._state._managerInitialized = true;
 
@@ -165,72 +152,59 @@ export const MediaIndicator = GObject.registerClass(
 
         this._state._isInitializing = false;
       } catch (e) {
-        logError(e, "Failed to initialize MPRIS");
+        console.error("Failed to initialize MPRIS:", e);
         this._state._isInitializing = false;
         this._state._managerInitialized = false;
       }
     }
 
     destroy() {
-      if (this._state._isDestroyed) return;
-      this._state._isDestroyed = true;
       this._state._sessionChanging = true;
       this._state._safetyLock = true;
       this._state._preventLogout = true;
 
-      for (const id of this._state._pendingOperations) {
-        try {
-          GLib.source_remove(id);
-        } catch (e) {}
-      }
-      this._state._pendingOperations.clear();
-
-      this._panelUI.stopScrolling();
-      this._eventHandlers.removeWindowMonitoring();
-
-      if (this._state._updateThrottle) {
-        try {
-          GLib.source_remove(this._state._updateThrottle);
-        } catch (e) {}
-        this._state._updateThrottle = null;
-      }
-
+      // Disconnect settings
       if (this._state._settingsChangedId) {
-        try {
-          this._settings.disconnect(this._state._settingsChangedId);
-        } catch (e) {}
+        this._settings.disconnect(this._state._settingsChangedId);
         this._state._settingsChangedId = 0;
       }
 
-      if (this._state._sessionModeId) {
-        try {
-          Main.sessionMode.disconnect(this._state._sessionModeId);
-        } catch (e) {}
-        this._state._sessionModeId = 0;
+      // Destroy event handlers
+      if (this._eventHandlers) {
+        this._eventHandlers.destroy();
+        this._eventHandlers = null;
       }
 
+      // Destroy player handlers
+      if (this._playerHandlers) {
+        this._playerHandlers.destroy();
+        this._playerHandlers = null;
+      }
+
+      // Destroy controls
       if (this._controls) {
-        try {
-          this._controls.destroy();
-        } catch (e) {}
+        this._controls.destroy();
         this._controls = null;
       }
 
-      if (this._manager) {
-        GLib.timeout_add(GLib.PRIORITY_LOW, 100, () => {
-          try {
-            if (this._manager) {
-              this._manager.destroy();
-              this._manager = null;
-            }
-          } catch (e) {}
-          return GLib.SOURCE_REMOVE;
-        });
+      // Destroy panel UI
+      if (this._panelUI) {
+        this._panelUI.destroy();
+        this._panelUI = null;
       }
 
-      try {
-        super.destroy();
-      } catch (e) {}
+      // Destroy state
+      if (this._state) {
+        this._state.destroy();
+      }
+
+      // Destroy manager
+      if (this._manager) {
+        this._manager.destroy();
+        this._manager = null;
+      }
+
+      super.destroy();
     }
   },
 );

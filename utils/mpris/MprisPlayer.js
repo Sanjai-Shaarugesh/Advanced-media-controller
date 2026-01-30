@@ -6,13 +6,14 @@ import { MprisUtils } from "./MprisUtils.js";
 export class MprisPlayer {
   constructor(manager) {
     this._manager = manager;
+    this._cleanupProcessTimeout = null;
+    this._nextCleanupTimeout = null;
   }
 
   async addPlayer(name) {
     if (
       this._manager._proxies.has(name) ||
       this._manager._pendingProxies.has(name) ||
-      this._manager._isDestroyed ||
       this._manager._operationsPaused
     )
       return;
@@ -21,8 +22,7 @@ export class MprisPlayer {
 
     try {
       const proxy = await this._createProxy(name);
-      if (this._manager._isDestroyed || this._manager._operationsPaused) {
-        this._safeDisposeProxy(proxy);
+      if (this._manager._operationsPaused) {
         this._manager._pendingProxies.delete(name);
         return;
       }
@@ -36,83 +36,67 @@ export class MprisPlayer {
       await this._fetchIdentity(name);
       await this._fetchDesktopEntry(name);
 
-      if (this._manager._isDestroyed || this._manager._operationsPaused) {
+      if (this._manager._operationsPaused) {
         this._queueProxyCleanup(name);
         this._manager._pendingProxies.delete(name);
         return;
       }
 
-      try {
-        const propSignalId = proxy.connect(
-          "g-properties-changed",
-          (p, changed) => {
-            if (this._manager._isDestroyed || this._manager._operationsPaused)
-              return;
+      const propSignalId = proxy.connect(
+        "g-properties-changed",
+        (p, changed) => {
+          if (this._manager._operationsPaused)
+            return;
 
-            try {
-              const props = changed.deep_unpack();
-              if (
-                "Metadata" in props ||
-                "PlaybackStatus" in props ||
-                "Shuffle" in props ||
-                "LoopStatus" in props ||
-                "Position" in props
-              ) {
-                this._updateInstanceMetadata(name);
+          const props = changed.deep_unpack();
+          if (
+            "Metadata" in props ||
+            "PlaybackStatus" in props ||
+            "Shuffle" in props ||
+            "LoopStatus" in props ||
+            "Position" in props
+          ) {
+            this._updateInstanceMetadata(name);
 
-                if ("Position" in props) {
-                  const pos = MprisUtils.getInt64(props["Position"]);
-                  if (pos !== null) {
-                    this._manager._playerPositions.set(name, pos);
-                  }
-                }
-
-                if (!this._manager._operationsPaused) {
-                  this._manager._onPlayerChanged?.(name);
-                }
-
-                this._manager._errorCounts.set(name, 0);
+            if ("Position" in props) {
+              const pos = MprisUtils.getInt64(props["Position"]);
+              if (pos !== null) {
+                this._manager._playerPositions.set(name, pos);
               }
-            } catch (e) {
-              this.handlePlayerError(name, e, "property change");
             }
-          },
-        );
-        signals.set("properties", propSignalId);
-      } catch (e) {
-        logError(e, `Failed to connect property signals for ${name}`);
-      }
 
-      try {
-        const seekSignalId = proxy.connectSignal(
-          "Seeked",
-          (proxy, sender, [position]) => {
-            if (this._manager._isDestroyed || this._manager._operationsPaused)
-              return;
-
-            try {
-              this._manager._playerPositions.set(name, position);
-              if (!this._manager._operationsPaused) {
-                this._manager._onSeeked?.(name, position);
-              }
-            } catch (e) {
-              this.handlePlayerError(name, e, "seek");
+            if (!this._manager._operationsPaused) {
+              this._manager._onPlayerChanged?.(name);
             }
-          },
-        );
-        signals.set("seeked", seekSignalId);
-      } catch (e) {
-        logError(e, `Failed to connect seek signal for ${name}`);
-      }
+
+            this._manager._errorCounts.set(name, 0);
+          }
+        },
+      );
+      signals.set("properties", propSignalId);
+
+      const seekSignalId = proxy.connectSignal(
+        "Seeked",
+        (proxy, sender, [position]) => {
+          if (this._manager._operationsPaused)
+            return;
+
+          this._manager._playerPositions.set(name, position);
+          if (!this._manager._operationsPaused) {
+            this._manager._onSeeked?.(name, position);
+          }
+        },
+      );
+      signals.set("seeked", seekSignalId);
 
       this._updateInstanceMetadata(name);
       this._manager._pendingProxies.delete(name);
 
-      if (!this._manager._isDestroyed && !this._manager._operationsPaused) {
+      if (!this._manager._operationsPaused) {
         this._manager._onPlayerAdded?.(name);
       }
     } catch (e) {
-      logError(e, `Failed to add player ${name}`);
+      console.error(`Failed to add player ${name}:`, e);
       this._manager._proxies.delete(name);
       this._manager._proxySignals.delete(name);
       this._manager._pendingProxies.delete(name);
@@ -120,15 +104,15 @@ export class MprisPlayer {
   }
 
   handlePlayerError(name, error, context) {
-    if (this._manager._isDestroyed || this._manager._operationsPaused) return;
+    if (this._manager._operationsPaused) return;
 
     const errorCount = (this._manager._errorCounts.get(name) || 0) + 1;
     this._manager._errorCounts.set(name, errorCount);
 
     if (errorCount < 3) {
-      logError(
-        error,
-        `Player ${name} error in ${context} (${errorCount}/${this._manager._maxErrorsPerPlayer})`,
+      console.error(
+        `Player ${name} error in ${context} (${errorCount}/${this._manager._maxErrorsPerPlayer}):`,
+        error
       );
     }
 
@@ -141,24 +125,22 @@ export class MprisPlayer {
   }
 
   _updateInstanceMetadata(name) {
-    if (this._manager._isDestroyed || this._manager._operationsPaused) return;
+    if (this._manager._operationsPaused) return;
 
-    try {
-      const info = this.getPlayerInfo(name);
-      if (info && info.title) {
-        this._manager._instanceMetadata.set(name, {
-          title: info.title,
-          artists: info.artists,
-          trackId: info.trackId,
-          status: info.status,
-          artUrl: info.artUrl,
-        });
-      }
-    } catch (e) {}
+    const info = this.getPlayerInfo(name);
+    if (info && info.title) {
+      this._manager._instanceMetadata.set(name, {
+        title: info.title,
+        artists: info.artists,
+        trackId: info.trackId,
+        status: info.status,
+        artUrl: info.artUrl,
+      });
+    }
   }
 
   async _fetchIdentity(name) {
-    if (this._manager._isDestroyed || this._manager._operationsPaused) return;
+    if (this._manager._operationsPaused) return;
 
     return new Promise((resolve) => {
       this._manager._bus.call(
@@ -172,7 +154,7 @@ export class MprisPlayer {
         MprisConstants.DBUS_TIMEOUT,
         null,
         (conn, result) => {
-          if (this._manager._isDestroyed || this._manager._operationsPaused) {
+          if (this._manager._operationsPaused) {
             resolve();
             return;
           }
@@ -195,7 +177,7 @@ export class MprisPlayer {
   }
 
   async _fetchDesktopEntry(name) {
-    if (this._manager._isDestroyed || this._manager._operationsPaused) return;
+    if (this._manager._operationsPaused) return;
 
     return new Promise((resolve) => {
       this._manager._bus.call(
@@ -209,7 +191,7 @@ export class MprisPlayer {
         MprisConstants.DBUS_TIMEOUT,
         null,
         (conn, result) => {
-          if (this._manager._isDestroyed || this._manager._operationsPaused) {
+          if (this._manager._operationsPaused) {
             resolve();
             return;
           }
@@ -226,12 +208,14 @@ export class MprisPlayer {
   }
 
   schedulePlayerRemoval(name) {
+    // Remove existing timeout before creating new one
     if (this._manager._cleanupTimers.has(name)) {
       GLib.source_remove(this._manager._cleanupTimers.get(name));
+      this._manager._cleanupTimers.delete(name);
     }
 
     const timerId = GLib.timeout_add(GLib.PRIORITY_LOW, 500, () => {
-      if (!this._manager._isDestroyed && !this._manager._operationsPaused) {
+      if (!this._manager._operationsPaused) {
         this._queueProxyCleanup(name);
       }
       this._manager._cleanupTimers.delete(name);
@@ -252,10 +236,7 @@ export class MprisPlayer {
   }
 
   _processCleanupQueue() {
-    if (
-      this._manager._proxyCleanupQueue.length === 0 ||
-      this._manager._isDestroyed
-    ) {
+    if (this._manager._proxyCleanupQueue.length === 0) {
       this._manager._cleanupInProgress = false;
       return;
     }
@@ -263,27 +244,30 @@ export class MprisPlayer {
     this._manager._cleanupInProgress = true;
     const name = this._manager._proxyCleanupQueue.shift();
 
-    GLib.timeout_add(GLib.PRIORITY_LOW, 150, () => {
-      if (!this._manager._isDestroyed && !this._manager._operationsPaused) {
+    // Remove existing timeout before creating new one
+    if (this._cleanupProcessTimeout) {
+      GLib.source_remove(this._cleanupProcessTimeout);
+      this._cleanupProcessTimeout = null;
+    }
+
+    this._cleanupProcessTimeout = GLib.timeout_add(GLib.PRIORITY_LOW, 150, () => {
+      if (!this._manager._operationsPaused) {
         this.removePlayerSafe(name);
       }
 
-      GLib.timeout_add(GLib.PRIORITY_LOW, 100, () => {
+      // Remove existing timeout before creating new one
+      if (this._nextCleanupTimeout) {
+        GLib.source_remove(this._nextCleanupTimeout);
+        this._nextCleanupTimeout = null;
+      }
+
+      this._nextCleanupTimeout = GLib.timeout_add(GLib.PRIORITY_LOW, 100, () => {
         this._processCleanupQueue();
+        this._nextCleanupTimeout = null;
         return GLib.SOURCE_REMOVE;
       });
 
-      return GLib.SOURCE_REMOVE;
-    });
-  }
-
-  _safeDisposeProxy(proxy) {
-    if (!proxy) return;
-
-    GLib.timeout_add(GLib.PRIORITY_LOW, 100, () => {
-      try {
-        proxy.run_dispose();
-      } catch (e) {}
+      this._cleanupProcessTimeout = null;
       return GLib.SOURCE_REMOVE;
     });
   }
@@ -296,9 +280,7 @@ export class MprisPlayer {
 
     if (signals && proxy) {
       for (const [signalType, signalId] of signals) {
-        try {
-          proxy.disconnect(signalId);
-        } catch (e) {}
+        proxy.disconnect(signalId);
       }
       this._manager._proxySignals.delete(name);
     }
@@ -309,11 +291,7 @@ export class MprisPlayer {
     this._manager._instanceMetadata.delete(name);
     this._manager._errorCounts.delete(name);
 
-    if (proxy) {
-      this._safeDisposeProxy(proxy);
-    }
-
-    if (!this._manager._isDestroyed && !this._manager._operationsPaused) {
+    if (!this._manager._operationsPaused) {
       this._manager._onPlayerRemoved?.(name);
     }
   }
@@ -329,7 +307,7 @@ export class MprisPlayer {
         MprisConstants.MPRIS_PLAYER_IFACE,
         null,
         (source, result) => {
-          if (this._manager._isDestroyed || this._manager._operationsPaused) {
+          if (this._manager._operationsPaused) {
             reject(new Error("Manager destroyed or paused"));
             return;
           }
@@ -346,94 +324,79 @@ export class MprisPlayer {
   }
 
   getPlayerInfo(name) {
-    if (this._manager._isDestroyed || this._manager._operationsPaused)
+    if (this._manager._operationsPaused)
       return null;
 
     const proxy = this._manager._proxies.get(name);
     if (!proxy) return null;
 
-    try {
-      const statusV = proxy.get_cached_property("PlaybackStatus");
-      const status = statusV ? statusV.deep_unpack() : "Stopped";
+    const statusV = proxy.get_cached_property("PlaybackStatus");
+    const status = statusV ? statusV.deep_unpack() : "Stopped";
 
-      if (status !== "Playing" && status !== "Paused" && status !== "Stopped") {
-        return null;
-      }
-
-      const metaV = proxy.get_cached_property("Metadata");
-      if (!metaV) return null;
-
-      const meta = {};
-      const len = metaV.n_children();
-
-      if (!len) return null;
-
-      for (let i = 0; i < len; i++) {
-        try {
-          const item = metaV.get_child_value(i);
-          const key = MprisUtils.getString(item.get_child_value(0));
-          const valueVariant = item.get_child_value(1).get_variant();
-
-          if (!key) continue;
-          meta[key] = valueVariant;
-        } catch (e) {
-          continue;
-        }
-      }
-
-      const positionV = proxy.get_cached_property("Position");
-      const shuffleV = proxy.get_cached_property("Shuffle");
-      const loopStatusV = proxy.get_cached_property("LoopStatus");
-
-      const lengthMicroseconds = MprisUtils.getInt64(meta["mpris:length"]);
-      const artUrl = MprisUtils.getString(meta["mpris:artUrl"]);
-      const trackId = MprisUtils.getString(meta["mpris:trackid"]) || "/";
-
-      let currentPosition = 0;
-
-      if (positionV) {
-        try {
-          currentPosition = positionV.unpack();
-        } catch (e) {
-          currentPosition = positionV.get_int64?.() || 0;
-        }
-      }
-
-      const savedPosition = this._manager._playerPositions.get(name);
-      if (currentPosition === 0 && savedPosition) {
-        currentPosition = savedPosition;
-      }
-
-      if (currentPosition === 0 && status === "Playing") {
-        try {
-          this._queryPositionAsync(name);
-        } catch (e) {}
-      }
-
-      return {
-        title: MprisUtils.getString(meta["xesam:title"]),
-        artists: meta["xesam:artist"]?.deep_unpack() ?? null,
-        album: MprisUtils.getString(meta["xesam:album"]),
-        artUrl: artUrl,
-        trackId: trackId,
-        trackNumber: MprisUtils.getInt32(meta["xesam:trackNumber"]),
-        discNumber: MprisUtils.getInt32(meta["xesam:discNumber"]),
-        genres: meta["xesam:genre"]?.deep_unpack() ?? null,
-        contentCreated: MprisUtils.getString(meta["xesam:contentCreated"]),
-        status: status,
-        position: currentPosition,
-        length: lengthMicroseconds || 0,
-        shuffle: shuffleV ? shuffleV.unpack() : false,
-        loopStatus: loopStatusV ? loopStatusV.unpack() : "None",
-      };
-    } catch (e) {
-      this.handlePlayerError(name, e, "getPlayerInfo");
+    if (status !== "Playing" && status !== "Paused" && status !== "Stopped") {
       return null;
     }
+
+    const metaV = proxy.get_cached_property("Metadata");
+    if (!metaV) return null;
+
+    const meta = {};
+    const len = metaV.n_children();
+
+    if (!len) return null;
+
+    for (let i = 0; i < len; i++) {
+      const item = metaV.get_child_value(i);
+      const key = MprisUtils.getString(item.get_child_value(0));
+      const valueVariant = item.get_child_value(1).get_variant();
+
+      if (!key) continue;
+      meta[key] = valueVariant;
+    }
+
+    const positionV = proxy.get_cached_property("Position");
+    const shuffleV = proxy.get_cached_property("Shuffle");
+    const loopStatusV = proxy.get_cached_property("LoopStatus");
+
+    const lengthMicroseconds = MprisUtils.getInt64(meta["mpris:length"]);
+    const artUrl = MprisUtils.getString(meta["mpris:artUrl"]);
+    const trackId = MprisUtils.getString(meta["mpris:trackid"]) || "/";
+
+    let currentPosition = 0;
+
+    if (positionV) {
+      currentPosition = positionV.unpack();
+    }
+
+    const savedPosition = this._manager._playerPositions.get(name);
+    if (currentPosition === 0 && savedPosition) {
+      currentPosition = savedPosition;
+    }
+
+    if (currentPosition === 0 && status === "Playing") {
+      this._queryPositionAsync(name);
+    }
+
+    return {
+      title: MprisUtils.getString(meta["xesam:title"]),
+      artists: meta["xesam:artist"]?.deep_unpack() ?? null,
+      album: MprisUtils.getString(meta["xesam:album"]),
+      artUrl: artUrl,
+      trackId: trackId,
+      trackNumber: MprisUtils.getInt32(meta["xesam:trackNumber"]),
+      discNumber: MprisUtils.getInt32(meta["xesam:discNumber"]),
+      genres: meta["xesam:genre"]?.deep_unpack() ?? null,
+      contentCreated: MprisUtils.getString(meta["xesam:contentCreated"]),
+      status: status,
+      position: currentPosition,
+      length: lengthMicroseconds || 0,
+      shuffle: shuffleV ? shuffleV.unpack() : false,
+      loopStatus: loopStatusV ? loopStatusV.unpack() : "None",
+    };
   }
 
   _queryPositionAsync(name) {
-    if (this._manager._isDestroyed || this._manager._operationsPaused) return;
+    if (this._manager._operationsPaused) return;
 
     this._manager._bus.call(
       name,
@@ -446,7 +409,7 @@ export class MprisPlayer {
       1000,
       null,
       (conn, result) => {
-        if (this._manager._isDestroyed || this._manager._operationsPaused)
+        if (this._manager._operationsPaused)
           return;
 
         try {
@@ -508,5 +471,18 @@ export class MprisPlayer {
     }
 
     return groups;
+  }
+
+  destroy() {
+    // Remove cleanup timeouts
+    if (this._cleanupProcessTimeout) {
+      GLib.source_remove(this._cleanupProcessTimeout);
+      this._cleanupProcessTimeout = null;
+    }
+
+    if (this._nextCleanupTimeout) {
+      GLib.source_remove(this._nextCleanupTimeout);
+      this._nextCleanupTimeout = null;
+    }
   }
 }

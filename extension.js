@@ -1,20 +1,17 @@
 import { Extension } from "resource:///org/gnome/shell/extensions/extension.js";
 import * as Main from "resource:///org/gnome/shell/ui/main.js";
 import { MediaIndicator } from "./utils/indicator.js";
-import { initTranslations, gettext as _ } from "./utils/locale.js";
 
 export default class MediaExtension extends Extension {
   enable() {
-    log("Media Controls Extension Enabled");
-
-    initTranslations(this);
+    console.debug("Media Controls Extension Enabled");
 
     this._settings = this.getSettings();
     this._indicator = new MediaIndicator(this._settings);
     this._addToPanel();
 
     this._sessionModeChangedId = Main.sessionMode.connect("updated", () => {
-      log(`MediaControls: Session mode changed to: ${Main.sessionMode.currentMode}`);
+      console.debug(`MediaControls: Session mode changed to: ${Main.sessionMode.currentMode}`);
     });
   }
 
@@ -39,11 +36,11 @@ export default class MediaExtension extends Extension {
     const actualIndex = index === -1 ? 0 : Math.min(index, targetBox.get_n_children());
     targetBox.insert_child_at_index(this._indicator.container, actualIndex);
 
-    log(`MediaControls: Added to panel at ${position}[${actualIndex}]`);
+    console.debug(`MediaControls: Added to panel at ${position}[${actualIndex}]`);
   }
 
   disable() {
-    log("Media Controls Extension Disabled");
+    console.debug("Media Controls Extension Disabled");
 
     if (this._sessionModeChangedId) {
       Main.sessionMode.disconnect(this._sessionModeChangedId);

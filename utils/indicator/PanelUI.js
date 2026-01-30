@@ -75,63 +75,57 @@ export class PanelUI {
   startScrolling(fullText, settings) {
     this.stopScrolling();
 
-    try {
-      const maxLength = settings.get_int("max-title-length");
-      const scrollSpeed = settings.get_int("scroll-speed");
-      const paddedText = fullText + "   •   ";
-      const interval = Math.max(50, 300 - scrollSpeed * 25);
+    const maxLength = settings.get_int("max-title-length");
+    const scrollSpeed = settings.get_int("scroll-speed");
+    const paddedText = fullText + "   •   ";
+    const interval = Math.max(50, 300 - scrollSpeed * 25);
 
-      this._indicator._state._scrollTimeout = GLib.timeout_add(GLib.PRIORITY_LOW, interval, () => {
-        if (this._indicator._state._isDestroyed || this._indicator._state._sessionChanging) {
-          return GLib.SOURCE_REMOVE;
-        }
+    this._indicator._state._scrollTimeout = GLib.timeout_add(GLib.PRIORITY_LOW, interval, () => {
+      if (this._indicator._state._sessionChanging) {
+        return GLib.SOURCE_REMOVE;
+      }
 
-        this._indicator._state._scrollPosition++;
+      this._indicator._state._scrollPosition++;
 
-        if (this._indicator._state._scrollPosition >= paddedText.length) {
-          this._indicator._state._scrollPosition = 0;
-        }
+      if (this._indicator._state._scrollPosition >= paddedText.length) {
+        this._indicator._state._scrollPosition = 0;
+      }
 
-        const displayText = paddedText.substring(this._indicator._state._scrollPosition) +
-                          paddedText.substring(0, this._indicator._state._scrollPosition);
+      const displayText = paddedText.substring(this._indicator._state._scrollPosition) +
+                        paddedText.substring(0, this._indicator._state._scrollPosition);
 
-        this._label.text = displayText.substring(0, maxLength);
+      this._label.text = displayText.substring(0, maxLength);
 
-        return GLib.SOURCE_CONTINUE;
-      });
-    } catch (e) {
-      logError(e, "Error in scrolling");
-    }
+      return GLib.SOURCE_CONTINUE;
+    });
   }
 
   stopScrolling() {
     if (this._indicator._state._scrollTimeout) {
-      try {
-        GLib.source_remove(this._indicator._state._scrollTimeout);
-      } catch (e) {}
+      GLib.source_remove(this._indicator._state._scrollTimeout);
       this._indicator._state._scrollTimeout = null;
     }
     this._indicator._state._scrollPosition = 0;
   }
 
   updateAppIcon(manager, currentPlayer) {
-    if (this._indicator._state._isDestroyed || this._indicator._state._sessionChanging)
+    if (this._indicator._state._sessionChanging)
       return;
 
-    try {
-      if (!currentPlayer) {
-        this._icon.set_gicon(Gio.icon_new_for_string("audio-x-generic-symbolic"));
-        return;
-      }
+    if (!currentPlayer) {
+      this._icon.set_gicon(Gio.icon_new_for_string("audio-x-generic-symbolic"));
+      return;
+    }
 
-      const appInfo = manager.getAppInfo(currentPlayer);
-      if (appInfo && appInfo.get_icon()) {
-        this._icon.set_gicon(appInfo.get_icon());
-      } else {
-        this._icon.set_gicon(Gio.icon_new_for_string("audio-x-generic-symbolic"));
-      }
-    } catch (e) {
+    const appInfo = manager.getAppInfo(currentPlayer);
+    if (appInfo && appInfo.get_icon()) {
+      this._icon.set_gicon(appInfo.get_icon());
+    } else {
       this._icon.set_gicon(Gio.icon_new_for_string("audio-x-generic-symbolic"));
     }
+  }
+
+  destroy() {
+    this.stopScrolling();
   }
 }
