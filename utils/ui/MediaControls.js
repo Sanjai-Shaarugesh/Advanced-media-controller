@@ -33,6 +33,8 @@ export const MediaControls = GObject.registerClass(
       this._playerArtCache = new Map();
       this._artistScrollTimeout = null;
       this._artistScrollPosition = 0;
+      this._titleScrollTimeout = null;
+      this._titleScrollPosition = 0;
 
       this._buildUI();
     }
@@ -50,7 +52,7 @@ export const MediaControls = GObject.registerClass(
       headerBox.add_child(this._playerTabs);
       this.add_child(headerBox);
 
-      this._albumArt = new AlbumArt();
+      this._albumArt = new AlbumArt(this._settings);
       this.add_child(this._albumArt);
 
       const infoBox = new St.BoxLayout({
@@ -161,6 +163,59 @@ export const MediaControls = GObject.registerClass(
       this._artistScrollPosition = 0;
     }
 
+    _startTitleScrolling(fullText) {
+      this._stopTitleScrolling();
+
+      const MAX_CHARS = 35;
+
+      // Check if scrolling is enabled in settings
+      const scrollEnabled = this._settings.get_boolean("enable-title-scroll");
+
+      if (fullText.length <= MAX_CHARS || !scrollEnabled) {
+        // If text is short enough or scrolling disabled, just display it
+        this._titleLabel.text =
+          fullText.length > MAX_CHARS
+            ? fullText.substring(0, MAX_CHARS - 3) + "..."
+            : fullText;
+        return;
+      }
+
+      const paddedText = fullText + "   •   ";
+
+      // Get scroll speed from settings (1-10)
+      const scrollSpeed = this._settings.get_int("title-scroll-speed");
+      // Convert speed to interval (lower interval = faster scroll)
+      const interval = Math.max(25, 275 - scrollSpeed * 25);
+
+      this._titleScrollTimeout = GLib.timeout_add(
+        GLib.PRIORITY_LOW,
+        interval,
+        () => {
+          this._titleScrollPosition++;
+
+          if (this._titleScrollPosition >= paddedText.length) {
+            this._titleScrollPosition = 0;
+          }
+
+          const displayText =
+            paddedText.substring(this._titleScrollPosition) +
+            paddedText.substring(0, this._titleScrollPosition);
+
+          this._titleLabel.text = displayText.substring(0, MAX_CHARS);
+
+          return GLib.SOURCE_CONTINUE;
+        },
+      );
+    }
+
+    _stopTitleScrolling() {
+      if (this._titleScrollTimeout) {
+        GLib.source_remove(this._titleScrollTimeout);
+        this._titleScrollTimeout = null;
+      }
+      this._titleScrollPosition = 0;
+    }
+
     update(info, playerName, manager) {
       if (!info) return;
 
@@ -191,8 +246,9 @@ export const MediaControls = GObject.registerClass(
 
       this._playerArtCache.set(playerName, info.artUrl);
 
-      this._titleLabel.text =
-        info.title || globalThis._?.("Unknown") || "Unknown";
+      // Use title scrolling instead of just setting text
+      const titleText = info.title || globalThis._?.("Unknown") || "Unknown";
+      this._startTitleScrolling(titleText);
 
       if (info.artists && info.artists.length > 0) {
         const artistText = info.artists.join(", ");
@@ -210,6 +266,15 @@ export const MediaControls = GObject.registerClass(
         metadata,
         info.status,
       );
+
+      // Control album art rotation based on playback status
+      if (info.status === "Playing") {
+        this._albumArt.startRotation(true);
+      } else if (info.status === "Paused") {
+        this._albumArt.pauseRotation();
+      } else {
+        this._albumArt.stopRotation();
+      }
     }
 
     _getMetadata(playerName, manager) {
@@ -248,6 +313,12 @@ export const MediaControls = GObject.registerClass(
     stopPositionUpdate() {
       this._progressSlider.stopPositionUpdate();
       this._stopArtistScrolling();
+      this._stopTitleScrolling();
+      
+      // Stop album art rotation when menu closes
+      if (this._albumArt) {
+        this._albumArt.pauseRotation();
+      }
     }
 
     onSeeked(position) {
@@ -267,6 +338,7 @@ export const MediaControls = GObject.registerClass(
     destroy() {
       this.stopPositionUpdate();
       this._stopArtistScrolling();
+      this._stopTitleScrolling();
 
       this._playerSliderPositions.clear();
       this._playerArtCache.clear();

@@ -48,10 +48,6 @@
     max-width: 256px;
 }
 
-/* Ensure popup menu items have proper theme background */
-.popup-menu-item {
-    /* Let the theme control the background */
-}
 
 .popup-menu-box {
     border-width: 0px;

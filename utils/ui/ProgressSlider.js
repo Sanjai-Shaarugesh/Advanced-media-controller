@@ -92,13 +92,13 @@ export const ProgressSlider = GObject.registerClass(
       this._currentTimeLabel = new St.Label({
         text: "0:00",
         style:
-          "font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.7);",
+          "font-size: 12px; font-weight: 600; color: color-mix(in srgb, currentColor 70%, transparent);",
       });
 
       this._totalTimeLabel = new St.Label({
         text: "0:00",
         style:
-          "font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.5);",
+          "font-size: 12px; font-weight: 600; color: color-mix(in srgb, currentColor 50%, transparent);",
         x_align: Clutter.ActorAlign.END,
         x_expand: true,
       });

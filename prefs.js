@@ -184,6 +184,80 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
 
     displayGroup.add(artistScrollSpeedRow);
 
+    // Album Art Settings Group
+    const albumArtGroup = new Adw.PreferencesGroup({
+      title: "Album Art Settings",
+      description: "Configure album art appearance and animations",
+    });
+    generalPage.add(albumArtGroup);
+
+    const enableRotationRow = new Adw.SwitchRow({
+      title: "Enable Album Art Rotation",
+      subtitle: "Rotate album art like a vinyl record when music is playing",
+      icon_name: "media-optical-cd-audio-symbolic",
+    });
+
+    settings.bind(
+      "enable-album-art-rotation",
+      enableRotationRow,
+      "active",
+      Gio.SettingsBindFlags.DEFAULT,
+    );
+
+    albumArtGroup.add(enableRotationRow);
+
+    const rotationSpeedRow = new Adw.SpinRow({
+      title: "Rotation Speed",
+      subtitle: "Seconds per full rotation (5 = fastest, 60 = slowest)",
+      adjustment: new Gtk.Adjustment({
+        lower: 5,
+        upper: 60,
+        step_increment: 1,
+        page_increment: 5,
+      }),
+    });
+
+    settings.bind(
+      "album-art-rotation-speed",
+      rotationSpeedRow,
+      "value",
+      Gio.SettingsBindFlags.DEFAULT,
+    );
+
+    albumArtGroup.add(rotationSpeedRow);
+
+    // Add expander with rotation preview info
+    const rotationInfoRow = new Adw.ExpanderRow({
+      title: "Rotation Effect Information",
+      subtitle: "Learn about the vinyl record effect",
+      icon_name: "dialog-information-symbolic",
+    });
+
+    const infoLabel = new Gtk.Label({
+      label: "The album art rotation creates a vinyl record effect:\n\n" +
+             "• Album cover appears on a spinning vinyl disc\n" +
+             "• Black vinyl record with grooves visible around edges\n" +
+             "• Smooth rotation animation while music plays\n" +
+             "• Automatically pauses when music is paused\n" +
+             "• Stops completely when music stops\n\n" +
+             "Recommended speed: 20-30 seconds for a realistic vinyl feel",
+      wrap: true,
+      xalign: 0,
+      margin_top: 12,
+      margin_bottom: 12,
+      margin_start: 12,
+      margin_end: 12,
+      css_classes: ["dim-label"],
+    });
+
+    const infoBox = new Gtk.Box({
+      orientation: Gtk.Orientation.VERTICAL,
+    });
+    infoBox.append(infoLabel);
+
+    rotationInfoRow.add_row(infoBox);
+    albumArtGroup.add(rotationInfoRow);
+
     const aboutPage = this._createAboutPage(settings);
     window.add(aboutPage);
   }
@@ -413,7 +487,7 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
 
     const featuresRow = new Adw.ActionRow({
       title: "Key Features",
-      subtitle: "• Multi-instance browser support\n• Album art display\n• Smooth animations\n• Lock screen controls",
+      subtitle: "• Multi-instance browser support\n• Rotating vinyl record album art\n• Smooth animations\n• Lock screen controls",
       activatable: false,
     });
     const featuresIcon = new Gtk.Image({

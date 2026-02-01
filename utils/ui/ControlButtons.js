@@ -66,13 +66,14 @@ export const ControlButtons = GObject.registerClass(
         style: `
           padding: 12px;
           border-radius: 12px;
-
+          background-color: rgba(127, 127, 127, 0.15);
+          border: 1px solid rgba(127, 127, 127, 0.1);
           transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
         `,
         child: new St.Icon({
           icon_name: iconName,
           icon_size: size,
-          style: "color: rgba(255,255,255,0.9);",
+          style_class: "media-icon",
         }),
       });
 
@@ -80,7 +81,8 @@ export const ControlButtons = GObject.registerClass(
         button.style = `
           padding: 12px;
           border-radius: 12px;
-
+          background-color: rgba(127, 127, 127, 0.25);
+          border: 1px solid rgba(127, 127, 127, 0.2);
           transform: scale(1.05);
         `;
       });
@@ -89,7 +91,8 @@ export const ControlButtons = GObject.registerClass(
         button.style = `
           padding: 12px;
           border-radius: 12px;
-
+          background-color: rgba(127, 127, 127, 0.15);
+          border: 1px solid rgba(127, 127, 127, 0.1);
         `;
       });
 
@@ -97,42 +100,43 @@ export const ControlButtons = GObject.registerClass(
     }
 
     _createPlayButton(iconName, size) {
-      const button = new St.Button({
-        style_class: "media-play-button-modern",
-        style: `
-          padding: 16px;
-          border-radius: 50%;
-          background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.1) 100%);
-          box-shadow: 0 4px 16px rgba(0,0,0,0.3);
-        `,
-        child: new St.Icon({
-          icon_name: iconName,
-          icon_size: size,
-          style: "color: #ffffff;",
-        }),
-      });
+        const button = new St.Button({
+          style_class: "media-play-button-modern",
+          style: `
+            padding: 16px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.1) 100%);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+          `,
+          child: new St.Icon({
+            icon_name: iconName,
+            icon_size: size,
+            style: "color: #ffffff;",
+          }),
+        });
+  
+        button.connect("enter-event", () => {
+          button.style = `
+            padding: 16px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.15) 100%);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+            transform: scale(1.08);
+          `;
+        });
+  
+        button.connect("leave-event", () => {
+          button.style = `
+            padding: 16px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.1) 100%);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+          `;
+        });
+  
+        return button;
+      }
 
-      button.connect("enter-event", () => {
-        button.style = `
-          padding: 16px;
-          border-radius: 50%;
-          background: linear-gradient(135deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.15) 100%);
-          box-shadow: 0 6px 20px rgba(0,0,0,0.4);
-          transform: scale(1.08);
-        `;
-      });
-
-      button.connect("leave-event", () => {
-        button.style = `
-          padding: 16px;
-          border-radius: 50%;
-          background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.1) 100%);
-          box-shadow: 0 4px 16px rgba(0,0,0,0.3);
-        `;
-      });
-
-      return button;
-    }
 
     updateButtons(info) {
       const playIcon =
@@ -146,7 +150,8 @@ export const ControlButtons = GObject.registerClass(
         this._shuffleBtn.style = `
           padding: 12px;
           border-radius: 12px;
-
+          background-color: rgba(29, 185, 84, 0.2);
+          border: 1px solid rgba(29, 185, 84, 0.3);
         `;
         this._shuffleBtn.child.style = "color: #1db954;";
       } else {
@@ -154,9 +159,11 @@ export const ControlButtons = GObject.registerClass(
         this._shuffleBtn.style = `
           padding: 12px;
           border-radius: 12px;
-
+          background-color: rgba(127, 127, 127, 0.15);
+          border: 1px solid rgba(127, 127, 127, 0.1);
         `;
-        this._shuffleBtn.child.style = "color: rgba(255,255,255,0.9);";
+        this._shuffleBtn.child.style_class = "media-icon";
+        this._shuffleBtn.child.style = "";
       }
 
       if (info.loopStatus === "Track") {
@@ -165,7 +172,8 @@ export const ControlButtons = GObject.registerClass(
         this._repeatBtn.style = `
           padding: 12px;
           border-radius: 12px;
-
+          background-color: rgba(29, 185, 84, 0.2);
+          border: 1px solid rgba(29, 185, 84, 0.3);
         `;
         this._repeatBtn.child.style = "color: #1db954;";
       } else if (info.loopStatus === "Playlist") {
@@ -174,7 +182,8 @@ export const ControlButtons = GObject.registerClass(
         this._repeatBtn.style = `
           padding: 12px;
           border-radius: 12px;
-
+          background-color: rgba(29, 185, 84, 0.2);
+          border: 1px solid rgba(29, 185, 84, 0.3);
         `;
         this._repeatBtn.child.style = "color: #1db954;";
       } else {
@@ -183,9 +192,11 @@ export const ControlButtons = GObject.registerClass(
         this._repeatBtn.style = `
           padding: 12px;
           border-radius: 12px;
-
+          background-color: rgba(127, 127, 127, 0.15);
+          border: 1px solid rgba(127, 127, 127, 0.1);
         `;
-        this._repeatBtn.child.style = "color: rgba(255,255,255,0.9);";
+        this._repeatBtn.child.style_class = "media-icon";
+        this._repeatBtn.child.style = "";
       }
     }
   },
