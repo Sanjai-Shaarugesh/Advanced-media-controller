@@ -69,6 +69,13 @@ Works flawlessly with **multiple browser tabs** playing media simultaneously!
 <img width="772" height="744" alt="image" src="https://github.com/user-attachments/assets/ca138070-44ed-4cfb-a468-4e07c8be5c08" />
 
 
+### Rotating album & artist name 
+
+
+https://github.com/user-attachments/assets/3eaafd95-1d8b-4a0f-b761-525e78cf8c20
+
+
+
 ### ⚙️ Highly Customizable
 
 #### Panel Position & Layout
