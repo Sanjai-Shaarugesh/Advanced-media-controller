@@ -7,7 +7,10 @@ export class IndicatorPlayerHandlers {
   }
 
   onPlayerAdded(name) {
-    if (this._indicator._state._isInitializing || this._indicator._state._sessionChanging)
+    if (
+      this._indicator._state._isInitializing ||
+      this._indicator._state._sessionChanging
+    )
       return;
 
     const info = this._indicator._manager.getPlayerInfo(name);
@@ -15,7 +18,10 @@ export class IndicatorPlayerHandlers {
     this._indicator._manager.startPositionPolling(name);
 
     if (info && info.status === "Playing") {
-      if (!this._indicator._state._currentPlayer || !this._indicator._state._manuallySelected) {
+      if (
+        !this._indicator._state._currentPlayer ||
+        !this._indicator._state._manuallySelected
+      ) {
         this._indicator._state._currentPlayer = name;
         this._indicator._uiUpdater.updateUI();
         this._indicator._uiUpdater.updateVisibility();
@@ -30,8 +36,7 @@ export class IndicatorPlayerHandlers {
   }
 
   onPlayerRemoved(name) {
-    if (this._indicator._state._sessionChanging)
-      return;
+    if (this._indicator._state._sessionChanging) return;
 
     this._indicator._manager.stopPositionPolling(name);
 
@@ -44,7 +49,10 @@ export class IndicatorPlayerHandlers {
   }
 
   onPlayerChanged(name) {
-    if (this._indicator._state._isInitializing || this._indicator._state._sessionChanging)
+    if (
+      this._indicator._state._isInitializing ||
+      this._indicator._state._sessionChanging
+    )
       return;
 
     const now = GLib.get_monotonic_time();
@@ -70,7 +78,10 @@ export class IndicatorPlayerHandlers {
   }
 
   _performUpdate(name) {
-    if (this._indicator._state._isInitializing || this._indicator._state._sessionChanging)
+    if (
+      this._indicator._state._isInitializing ||
+      this._indicator._state._sessionChanging
+    )
       return;
 
     this._indicator._state._lastUpdateTime = GLib.get_monotonic_time();
@@ -83,7 +94,11 @@ export class IndicatorPlayerHandlers {
       if (this._indicator.menu.isOpen && this._indicator._controls) {
         this._indicator._controls.update(info, name, this._indicator._manager);
       }
-    } else if (info && info.status === "Playing" && !this._indicator._state._manuallySelected) {
+    } else if (
+      info &&
+      info.status === "Playing" &&
+      !this._indicator._state._manuallySelected
+    ) {
       this._indicator._state._currentPlayer = name;
       this._indicator._uiUpdater.updateUI();
       this._indicator._uiUpdater.updateTabs();
@@ -92,15 +107,17 @@ export class IndicatorPlayerHandlers {
   }
 
   onSeeked(name, position) {
-    if (this._indicator._state._currentPlayer !== name || this._indicator._state._sessionChanging)
+    if (
+      this._indicator._state._currentPlayer !== name ||
+      this._indicator._state._sessionChanging
+    )
       return;
 
     this._indicator._controls.onSeeked(position);
   }
 
   _selectNextPlayer() {
-    if (this._indicator._state._sessionChanging)
-      return;
+    if (this._indicator._state._sessionChanging) return;
 
     const players = this._indicator._manager.getPlayers();
 

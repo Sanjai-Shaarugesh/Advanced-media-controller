@@ -1,3 +1,6 @@
+/* Theme-aware Media Controls Stylesheet */
+
+/* Use GNOME Shell's theme colors instead of hardcoded values */
 .colored-icon {
     -st-icon-style: requested;
 }
@@ -45,6 +48,11 @@
     max-width: 256px;
 }
 
+/* Ensure popup menu items have proper theme background */
+.popup-menu-item {
+    /* Let the theme control the background */
+}
+
 .popup-menu-box {
     border-width: 0px;
 }
@@ -54,17 +62,18 @@
     margin-bottom: 4px;
 }
 
+/* Theme-aware tabs - uses shell theme colors */
 .media-tab-modern {
     padding: 8px 12px;
     border-radius: 12px;
-    background: rgba(255, 255, 255, 0.05);
+    background-color: rgba(0, 0, 0, 0.1);
     opacity: 0.6;
-    transition-property: background, opacity, transform;
+    transition-property: background-color, opacity, transform;
     transition-duration: 200ms;
 }
 
 .media-tab-modern:hover {
-    background: rgba(255, 255, 255, 0.15);
+    background-color: rgba(0, 0, 0, 0.15);
     opacity: 1;
     transform: scale(1.05);
 }
@@ -74,103 +83,125 @@
 }
 
 .media-tab-modern.active {
-    background: rgba(255, 255, 255, 0.2);
+    background-color: rgba(0, 0, 0, 0.2);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     opacity: 1;
 }
 
+/* Album art container - increased size, no gaps */
 .media-album-art {
-    width: 240px;
-    height: 240px;
+    width: 340px;
+    height: 340px;
     border-radius: 16px;
     overflow: hidden;
-    background: rgba(0, 0, 0, 0.2);
+    background-color: rgba(0, 0, 0, 0.1);
 }
 
 .media-album-art-image {
     border-radius: 16px;
 }
 
+/* Cover art image */
+.cover-art-image {
+    width: 340px;
+    height: 340px;
+}
+
+/* Text labels - inherit color from theme, only set size/weight */
 .media-title-label {
     font-weight: 700;
     font-size: 16px;
-    color: rgba(255, 255, 255, 0.95);
+    /* Color inherited from popup menu theme */
 }
 
 .media-artist-label {
     font-size: 13px;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.6);
+    opacity: 0.7;
+    /* Color inherited from popup menu theme */
 }
 
 .media-time-label {
     font-size: 12px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.7);
+    /* Color inherited from popup menu theme */
 }
 
 .media-time-label-end {
     font-size: 12px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.5);
+    opacity: 0.7;
+    /* Color inherited from popup menu theme */
 }
 
+/* Control buttons - theme aware with proper contrast */
 .media-button-modern {
     padding: 12px;
-    border-radius: 50%;
-    background: transparent;
-    transition-property: background, transform, box-shadow;
+    border-radius: 12px;
+    background-color: rgba(0, 0, 0, 0.08);
+    transition-property: background-color, transform, box-shadow;
     transition-duration: 200ms;
 }
 
 .media-button-modern:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background-color: rgba(0, 0, 0, 0.12);
     transform: scale(1.1);
 }
 
 .media-button-modern:active {
     transform: scale(0.95);
-    background: rgba(255, 255, 255, 0.15);
+    background-color: rgba(0, 0, 0, 0.15);
 }
 
-.media-button-modern.active {
-    background: rgba(255, 255, 255, 0.12);
+/* Active state for shuffle/repeat - Spotify green */
+.media-button-modern.shuffle-active,
+.media-button-modern.repeat-active {
+    background-color: rgba(29, 185, 84, 0.2);
 }
 
+.media-button-modern.shuffle-active StIcon,
+.media-button-modern.repeat-active StIcon {
+    color: #1db954;
+}
+
+/* Play button - more prominent with theme-aware background */
 .media-play-button-modern {
     padding: 16px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.15);
-    transition-property: background, transform, box-shadow;
+    background-color: rgba(0, 0, 0, 0.12);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    transition-property: background-color, transform, box-shadow;
     transition-duration: 200ms;
 }
 
 .media-play-button-modern:hover {
-    background: rgba(255, 255, 255, 0.25);
+    background-color: rgba(0, 0, 0, 0.18);
     transform: scale(1.15);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
 .media-play-button-modern:active {
     transform: scale(1);
-    background: rgba(255, 255, 255, 0.3);
+    background-color: rgba(0, 0, 0, 0.22);
 }
 
+/* Panel buttons */
 .panel-media-button {
     padding: 2px 4px;
     border-radius: 3px;
-    transition-property: background;
+    transition-property: background-color;
     transition-duration: 150ms;
 }
 
 .panel-media-button:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(0, 0, 0, 0.1);
 }
 
 .panel-media-button:active {
-    background-color: rgba(255, 255, 255, 0.15);
+    background-color: rgba(0, 0, 0, 0.15);
 }
 
+/* Popup menu controls */
 .popup-menu-control-icon {
     padding: 4px;
     border-radius: 99px;
@@ -179,7 +210,7 @@
 }
 
 .popup-menu-control-icon:hover {
-    background-color: rgba(160, 160, 160, 0.25);
+    background-color: rgba(0, 0, 0, 0.1);
     transform: scale(1.1);
 }
 
@@ -187,6 +218,7 @@
     transform: scale(0.95);
 }
 
+/* Player icons */
 .popup-menu-player-icons {
     margin-top: 4px;
     border-radius: 6px;
@@ -194,7 +226,7 @@
 
 .popup-menu-player-icons-icon {
     padding: 4px;
-    background-color: rgba(0, 0, 0, 0.125);
+    background-color: rgba(0, 0, 0, 0.08);
     transition-property: background-color, transform;
     transition-duration: 150ms;
 }
@@ -208,7 +240,7 @@
 }
 
 .popup-menu-player-icons-icon:hover {
-    background-color: rgba(160, 160, 160, 0.25);
+    background-color: rgba(0, 0, 0, 0.12);
     transform: scale(1.05);
 }
 
@@ -217,9 +249,10 @@
 }
 
 .popup-menu-player-icons-icon-active {
-    background-color: rgba(160, 160, 160, 0.25);
+    background-color: rgba(0, 0, 0, 0.15);
 }
 
+/* Labels */
 .popup-menu-player-label {
     font-size: small;
     margin-right: 4px;

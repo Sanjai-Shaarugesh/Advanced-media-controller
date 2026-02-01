@@ -1,6 +1,7 @@
 import St from "gi://St";
 import GObject from "gi://GObject";
 import Clutter from "gi://Clutter";
+import GLib from "gi://GLib";
 import { ControlButtons } from "./ControlButtons.js";
 import { AlbumArt } from "./AlbumArt.js";
 import { ProgressSlider } from "./ProgressSlider.js";
@@ -19,15 +20,19 @@ export const MediaControls = GObject.registerClass(
     },
   },
   class MediaControls extends St.BoxLayout {
-    _init() {
+    _init(settings) {
       super._init({
         vertical: true,
         style_class: "media-controls-modern",
+        style: "min-width: 340px; max-width: 340px;",
       });
 
+      this._settings = settings;
       this._currentPlayerName = null;
       this._playerSliderPositions = new Map();
       this._playerArtCache = new Map();
+      this._artistScrollTimeout = null;
+      this._artistScrollPosition = 0;
 
       this._buildUI();
     }
@@ -57,17 +62,21 @@ export const MediaControls = GObject.registerClass(
       this._titleLabel = new St.Label({
         text: globalThis._?.("No media playing") || "No media playing",
         style:
-          "font-weight: 700; font-size: 16px; color: rgba(255,255,255,0.95);",
+          "font-weight: 700; font-size: 16px; text-align: center; max-width: 300px;",
+        x_align: Clutter.ActorAlign.CENTER,
       });
       this._titleLabel.clutter_text.ellipsize = 3;
+      this._titleLabel.clutter_text.line_alignment = 2;
       infoBox.add_child(this._titleLabel);
 
       this._artistLabel = new St.Label({
         text: "",
         style:
-          "font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.6);",
+          "font-size: 13px; font-weight: 500; text-align: center; max-width: 280px;",
+        x_align: Clutter.ActorAlign.CENTER,
       });
-      this._artistLabel.clutter_text.ellipsize = 3;
+      this._artistLabel.clutter_text.ellipsize = 0;
+      this._artistLabel.clutter_text.line_alignment = 2;
       infoBox.add_child(this._artistLabel);
       this.add_child(infoBox);
 
@@ -96,6 +105,60 @@ export const MediaControls = GObject.registerClass(
       this._controlButtons.connect("shuffle", () => this.emit("shuffle"));
       this._controlButtons.connect("repeat", () => this.emit("repeat"));
       this.add_child(this._controlButtons);
+    }
+
+    _startArtistScrolling(fullText) {
+      this._stopArtistScrolling();
+
+      const MAX_CHARS = 35;
+
+      // Check if scrolling is enabled in settings
+      const scrollEnabled = this._settings.get_boolean("enable-artist-scroll");
+
+      if (fullText.length <= MAX_CHARS || !scrollEnabled) {
+        // If text is short enough or scrolling disabled, just display it
+        this._artistLabel.text =
+          fullText.length > MAX_CHARS
+            ? fullText.substring(0, MAX_CHARS - 3) + "..."
+            : fullText;
+        return;
+      }
+
+      const paddedText = fullText + "   •   ";
+
+      // Get scroll speed from settings (1-10)
+      const scrollSpeed = this._settings.get_int("artist-scroll-speed");
+      // Convert speed to interval (lower interval = faster scroll)
+      // Speed 1 = 250ms, Speed 10 = 25ms
+      const interval = Math.max(25, 275 - scrollSpeed * 25);
+
+      this._artistScrollTimeout = GLib.timeout_add(
+        GLib.PRIORITY_LOW,
+        interval,
+        () => {
+          this._artistScrollPosition++;
+
+          if (this._artistScrollPosition >= paddedText.length) {
+            this._artistScrollPosition = 0;
+          }
+
+          const displayText =
+            paddedText.substring(this._artistScrollPosition) +
+            paddedText.substring(0, this._artistScrollPosition);
+
+          this._artistLabel.text = displayText.substring(0, MAX_CHARS);
+
+          return GLib.SOURCE_CONTINUE;
+        },
+      );
+    }
+
+    _stopArtistScrolling() {
+      if (this._artistScrollTimeout) {
+        GLib.source_remove(this._artistScrollTimeout);
+        this._artistScrollTimeout = null;
+      }
+      this._artistScrollPosition = 0;
     }
 
     update(info, playerName, manager) {
@@ -128,12 +191,15 @@ export const MediaControls = GObject.registerClass(
 
       this._playerArtCache.set(playerName, info.artUrl);
 
-      this._titleLabel.text = info.title || (globalThis._?.("Unknown") || "Unknown");
+      this._titleLabel.text =
+        info.title || globalThis._?.("Unknown") || "Unknown";
 
       if (info.artists && info.artists.length > 0) {
-        this._artistLabel.text = info.artists.join(", ");
+        const artistText = info.artists.join(", ");
+        this._startArtistScrolling(artistText);
         this._artistLabel.show();
       } else {
+        this._stopArtistScrolling();
         this._artistLabel.hide();
       }
 
@@ -181,6 +247,7 @@ export const MediaControls = GObject.registerClass(
 
     stopPositionUpdate() {
       this._progressSlider.stopPositionUpdate();
+      this._stopArtistScrolling();
     }
 
     onSeeked(position) {
@@ -199,6 +266,7 @@ export const MediaControls = GObject.registerClass(
 
     destroy() {
       this.stopPositionUpdate();
+      this._stopArtistScrolling();
 
       this._playerSliderPositions.clear();
       this._playerArtCache.clear();

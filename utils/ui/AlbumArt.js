@@ -21,8 +21,8 @@ export const AlbumArt = GObject.registerClass(
       this._coverArt = new St.Bin({
         style_class: "media-album-art",
         style: `
-          width: 300px;
-          height: 300px;
+          width: 340px;
+          height: 340px;
           border-radius: 16px;
           box-shadow: 0 8px 24px rgba(0,0,0,0.4);
           background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
@@ -31,13 +31,13 @@ export const AlbumArt = GObject.registerClass(
 
       this._coverImage = new St.Widget({
         style_class: "cover-art-image",
-        width: 300,
+        width: 340,
+        height: 340,
         style: `
           border-radius: 16px;
           background-size: contain;
           background-position: center;
           background-repeat: no-repeat;
-          min-height: 300px;
         `,
       });
 
@@ -72,12 +72,13 @@ export const AlbumArt = GObject.registerClass(
       }
 
       const coverStyle = `
+        width: 340px;
+        height: 340px;
         border-radius: 16px;
         background-image: url('${imageUrl}');
         background-size: contain;
         background-position: center;
         background-repeat: no-repeat;
-        min-height: 300px;
       `;
 
       this._coverImage.style = coverStyle;
@@ -100,12 +101,13 @@ export const AlbumArt = GObject.registerClass(
 
       if (cacheFile.query_exists(null)) {
         const coverStyle = `
+          width: 340px;
+          height: 340px;
           border-radius: 16px;
           background-image: url('file://${cachePath}');
           background-size: contain;
           background-position: center;
           background-repeat: no-repeat;
-          min-height: 300px;
         `;
         this._coverImage.style = coverStyle;
         this._coverCache.set(url, coverStyle);
@@ -125,17 +127,18 @@ export const AlbumArt = GObject.registerClass(
           try {
             src.copy_finish(res);
             const coverStyle = `
+              width: 340px;
+              height: 340px;
               border-radius: 16px;
               background-image: url('file://${cachePath}');
               background-size: contain;
               background-position: center;
               background-repeat: no-repeat;
-              min-height: 300px;
             `;
             this._coverImage.style = coverStyle;
             this._coverCache.set(url, coverStyle);
           } catch (e) {
-            logError(e, 'Failed to download cover');
+            console.error("Failed to download cover:", e);
           }
         },
       );
@@ -144,16 +147,16 @@ export const AlbumArt = GObject.registerClass(
     setDefaultCover() {
       this._currentArtUrl = null;
       const defaultStyle = `
+        width: 340px;
+        height: 340px;
         border-radius: 16px;
-        background-size: contain;
+        background-size: 128px;
         background-position: center;
         background-repeat: no-repeat;
-        min-height: 300px;
+        background-image: url('resource:///org/gnome/shell/theme/process-working.svg');
+        opacity: 0.3;
       `;
       this._coverImage.style = defaultStyle;
-
-      const gicon = Gio.icon_new_for_string("audio-x-generic-symbolic");
-      this._coverImage.gicon = gicon;
     }
 
     destroy() {

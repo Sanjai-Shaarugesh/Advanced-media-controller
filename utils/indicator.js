@@ -13,13 +13,14 @@ import { IndicatorUIUpdater } from "./indicator/IndicatorUIUpdater.js";
 export const MediaIndicator = GObject.registerClass(
   class MediaIndicator extends PanelMenu.Button {
     _init(settings) {
-      super._init(0.0, "Media Controls", false);
+      // 0.5 = center alignment for menu
+      super._init(0.5, "Media Controls", false);
 
       this._settings = settings;
       this._state = new IndicatorState();
 
       this._panelUI = new PanelUI(this);
-      this._controls = new MediaControls();
+      this._controls = new MediaControls(settings);
 
       this._eventHandlers = new IndicatorEventHandlers(this);
       this._playerHandlers = new IndicatorPlayerHandlers(this);
@@ -163,42 +164,35 @@ export const MediaIndicator = GObject.registerClass(
       this._state._safetyLock = true;
       this._state._preventLogout = true;
 
-      // Disconnect settings
       if (this._state._settingsChangedId) {
         this._settings.disconnect(this._state._settingsChangedId);
         this._state._settingsChangedId = 0;
       }
 
-      // Destroy event handlers
       if (this._eventHandlers) {
         this._eventHandlers.destroy();
         this._eventHandlers = null;
       }
 
-      // Destroy player handlers
       if (this._playerHandlers) {
         this._playerHandlers.destroy();
         this._playerHandlers = null;
       }
 
-      // Destroy controls
       if (this._controls) {
         this._controls.destroy();
         this._controls = null;
       }
 
-      // Destroy panel UI
       if (this._panelUI) {
         this._panelUI.destroy();
         this._panelUI = null;
       }
 
-      // Destroy state
       if (this._state) {
         this._state.destroy();
       }
 
-      // Destroy manager
       if (this._manager) {
         this._manager.destroy();
         this._manager = null;

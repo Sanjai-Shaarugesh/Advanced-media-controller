@@ -150,6 +150,40 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
 
     displayGroup.add(separatorRow);
 
+    const artistScrollRow = new Adw.SwitchRow({
+      title: "Enable Artist Scrolling",
+      subtitle: "Scroll long artist names in the popup media player",
+    });
+
+    settings.bind(
+      "enable-artist-scroll",
+      artistScrollRow,
+      "active",
+      Gio.SettingsBindFlags.DEFAULT,
+    );
+
+    displayGroup.add(artistScrollRow);
+
+    const artistScrollSpeedRow = new Adw.SpinRow({
+      title: "Artist Scroll Speed",
+      subtitle: "1 = slowest, 10 = fastest",
+      adjustment: new Gtk.Adjustment({
+        lower: 1,
+        upper: 10,
+        step_increment: 1,
+        page_increment: 1,
+      }),
+    });
+
+    settings.bind(
+      "artist-scroll-speed",
+      artistScrollSpeedRow,
+      "value",
+      Gio.SettingsBindFlags.DEFAULT,
+    );
+
+    displayGroup.add(artistScrollSpeedRow);
+
     const aboutPage = this._createAboutPage(settings);
     window.add(aboutPage);
   }

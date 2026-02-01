@@ -66,7 +66,7 @@ export const ControlButtons = GObject.registerClass(
         style: `
           padding: 12px;
           border-radius: 12px;
-          background: rgba(255,255,255,0.08);
+
           transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
         `,
         child: new St.Icon({
@@ -80,7 +80,7 @@ export const ControlButtons = GObject.registerClass(
         button.style = `
           padding: 12px;
           border-radius: 12px;
-          background: rgba(255,255,255,0.15);
+
           transform: scale(1.05);
         `;
       });
@@ -89,7 +89,7 @@ export const ControlButtons = GObject.registerClass(
         button.style = `
           padding: 12px;
           border-radius: 12px;
-          background: rgba(255,255,255,0.08);
+
         `;
       });
 
@@ -146,7 +146,7 @@ export const ControlButtons = GObject.registerClass(
         this._shuffleBtn.style = `
           padding: 12px;
           border-radius: 12px;
-          background: rgba(29, 185, 84, 0.2);
+
         `;
         this._shuffleBtn.child.style = "color: #1db954;";
       } else {
@@ -154,7 +154,7 @@ export const ControlButtons = GObject.registerClass(
         this._shuffleBtn.style = `
           padding: 12px;
           border-radius: 12px;
-          background: rgba(255,255,255,0.08);
+
         `;
         this._shuffleBtn.child.style = "color: rgba(255,255,255,0.9);";
       }
@@ -165,7 +165,7 @@ export const ControlButtons = GObject.registerClass(
         this._repeatBtn.style = `
           padding: 12px;
           border-radius: 12px;
-          background: rgba(29, 185, 84, 0.2);
+
         `;
         this._repeatBtn.child.style = "color: #1db954;";
       } else if (info.loopStatus === "Playlist") {
@@ -174,7 +174,7 @@ export const ControlButtons = GObject.registerClass(
         this._repeatBtn.style = `
           padding: 12px;
           border-radius: 12px;
-          background: rgba(29, 185, 84, 0.2);
+
         `;
         this._repeatBtn.child.style = "color: #1db954;";
       } else {
@@ -183,7 +183,7 @@ export const ControlButtons = GObject.registerClass(
         this._repeatBtn.style = `
           padding: 12px;
           border-radius: 12px;
-          background: rgba(255,255,255,0.08);
+
         `;
         this._repeatBtn.child.style = "color: rgba(255,255,255,0.9);";
       }
