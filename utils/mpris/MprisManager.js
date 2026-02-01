@@ -37,13 +37,17 @@ export class MprisManager {
     this._pollingPlayers.add(name);
 
     if (!this._positionPollingInterval) {
-      this._positionPollingInterval = GLib.timeout_add(GLib.PRIORITY_LOW, 1000, () => {
-        for (const playerName of this._pollingPlayers) {
-          this._pollPlayerPosition(playerName);
-        }
+      this._positionPollingInterval = GLib.timeout_add(
+        GLib.PRIORITY_LOW,
+        1000,
+        () => {
+          for (const playerName of this._pollingPlayers) {
+            this._pollPlayerPosition(playerName);
+          }
 
-        return GLib.SOURCE_CONTINUE;
-      });
+          return GLib.SOURCE_CONTINUE;
+        },
+      );
     }
   }
 
@@ -181,13 +185,17 @@ export class MprisManager {
         this._addPlayerTimeout = null;
       }
 
-      this._addPlayerTimeout = GLib.timeout_add(GLib.PRIORITY_DEFAULT_IDLE, 800, () => {
-        if (!this._operationsPaused) {
-          this._player.addPlayer(name);
-        }
-        this._addPlayerTimeout = null;
-        return GLib.SOURCE_REMOVE;
-      });
+      this._addPlayerTimeout = GLib.timeout_add(
+        GLib.PRIORITY_DEFAULT_IDLE,
+        800,
+        () => {
+          if (!this._operationsPaused) {
+            this._player.addPlayer(name);
+          }
+          this._addPlayerTimeout = null;
+          return GLib.SOURCE_REMOVE;
+        },
+      );
     } else if (oldOwner && !newOwner) {
       this._player.schedulePlayerRemoval(name);
     }
@@ -210,7 +218,10 @@ export class MprisManager {
   }
 
   getPlayerIdentity(name) {
-    return this._identities.get(name) || name.replace(`${MprisConstants.MPRIS_PREFIX}.`, "");
+    return (
+      this._identities.get(name) ||
+      name.replace(`${MprisConstants.MPRIS_PREFIX}.`, "")
+    );
   }
 
   getAppInfo(name) {
@@ -222,8 +233,7 @@ export class MprisManager {
   }
 
   async callMethod(name, method, params = null) {
-    if (this._operationsPaused)
-      throw new Error("Manager not available");
+    if (this._operationsPaused) throw new Error("Manager not available");
 
     const proxy = this._proxies.get(name);
     if (!proxy) throw new Error(`No proxy for ${name}`);
@@ -264,7 +274,11 @@ export class MprisManager {
         MprisConstants.MPRIS_PATH,
         "org.freedesktop.DBus.Properties",
         "Set",
-        new GLib.Variant("(ssv)", [MprisConstants.MPRIS_PLAYER_IFACE, property, value]),
+        new GLib.Variant("(ssv)", [
+          MprisConstants.MPRIS_PLAYER_IFACE,
+          property,
+          value,
+        ]),
         null,
         Gio.DBusCallFlags.NO_AUTO_START,
         MprisConstants.DBUS_TIMEOUT,
@@ -330,7 +344,11 @@ export class MprisManager {
   toggleShuffle(name) {
     const info = this.getPlayerInfo(name);
     if (info) {
-      return this.setProperty(name, "Shuffle", new GLib.Variant("b", !info.shuffle));
+      return this.setProperty(
+        name,
+        "Shuffle",
+        new GLib.Variant("b", !info.shuffle),
+      );
     }
     return Promise.reject(new Error("No player info available"));
   }

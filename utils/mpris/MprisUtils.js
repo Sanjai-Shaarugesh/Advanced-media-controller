@@ -43,7 +43,9 @@ export class MprisUtils {
         if (appInfo) return appInfo;
       }
 
-      let cleanName = name.replace(`${MprisConstants.MPRIS_PREFIX}.`, "").toLowerCase();
+      let cleanName = name
+        .replace(`${MprisConstants.MPRIS_PREFIX}.`, "")
+        .toLowerCase();
       cleanName = cleanName.replace(/\.instance_\d+_\d+$/, "");
 
       const appSystem = Shell.AppSystem.get_default();
@@ -83,7 +85,9 @@ export class MprisUtils {
         }
       }
 
-      let cleanName = name.replace(`${MprisConstants.MPRIS_PREFIX}.`, "").toLowerCase();
+      let cleanName = name
+        .replace(`${MprisConstants.MPRIS_PREFIX}.`, "")
+        .toLowerCase();
       cleanName = cleanName.replace(/\.instance_\d+_\d+$/, "");
 
       const appMappings = {

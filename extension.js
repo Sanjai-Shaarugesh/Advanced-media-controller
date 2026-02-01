@@ -11,7 +11,9 @@ export default class MediaExtension extends Extension {
     this._addToPanel();
 
     this._sessionModeChangedId = Main.sessionMode.connect("updated", () => {
-      console.debug(`MediaControls: Session mode changed to: ${Main.sessionMode.currentMode}`);
+      console.debug(
+        `MediaControls: Session mode changed to: ${Main.sessionMode.currentMode}`,
+      );
     });
   }
 
@@ -33,10 +35,13 @@ export default class MediaExtension extends Extension {
         break;
     }
 
-    const actualIndex = index === -1 ? 0 : Math.min(index, targetBox.get_n_children());
+    const actualIndex =
+      index === -1 ? 0 : Math.min(index, targetBox.get_n_children());
     targetBox.insert_child_at_index(this._indicator.container, actualIndex);
 
-    console.debug(`MediaControls: Added to panel at ${position}[${actualIndex}]`);
+    console.debug(
+      `MediaControls: Added to panel at ${position}[${actualIndex}]`,
+    );
   }
 
   disable() {

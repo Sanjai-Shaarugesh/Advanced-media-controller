@@ -45,8 +45,7 @@ export class MprisPlayer {
       const propSignalId = proxy.connect(
         "g-properties-changed",
         (p, changed) => {
-          if (this._manager._operationsPaused)
-            return;
+          if (this._manager._operationsPaused) return;
 
           const props = changed.deep_unpack();
           if (
@@ -78,8 +77,7 @@ export class MprisPlayer {
       const seekSignalId = proxy.connectSignal(
         "Seeked",
         (proxy, sender, [position]) => {
-          if (this._manager._operationsPaused)
-            return;
+          if (this._manager._operationsPaused) return;
 
           this._manager._playerPositions.set(name, position);
           if (!this._manager._operationsPaused) {
@@ -112,7 +110,7 @@ export class MprisPlayer {
     if (errorCount < 3) {
       console.error(
         `Player ${name} error in ${context} (${errorCount}/${this._manager._maxErrorsPerPlayer}):`,
-        error
+        error,
       );
     }
 
@@ -250,26 +248,34 @@ export class MprisPlayer {
       this._cleanupProcessTimeout = null;
     }
 
-    this._cleanupProcessTimeout = GLib.timeout_add(GLib.PRIORITY_LOW, 150, () => {
-      if (!this._manager._operationsPaused) {
-        this.removePlayerSafe(name);
-      }
+    this._cleanupProcessTimeout = GLib.timeout_add(
+      GLib.PRIORITY_LOW,
+      150,
+      () => {
+        if (!this._manager._operationsPaused) {
+          this.removePlayerSafe(name);
+        }
 
-      // Remove existing timeout before creating new one
-      if (this._nextCleanupTimeout) {
-        GLib.source_remove(this._nextCleanupTimeout);
-        this._nextCleanupTimeout = null;
-      }
+        // Remove existing timeout before creating new one
+        if (this._nextCleanupTimeout) {
+          GLib.source_remove(this._nextCleanupTimeout);
+          this._nextCleanupTimeout = null;
+        }
 
-      this._nextCleanupTimeout = GLib.timeout_add(GLib.PRIORITY_LOW, 100, () => {
-        this._processCleanupQueue();
-        this._nextCleanupTimeout = null;
+        this._nextCleanupTimeout = GLib.timeout_add(
+          GLib.PRIORITY_LOW,
+          100,
+          () => {
+            this._processCleanupQueue();
+            this._nextCleanupTimeout = null;
+            return GLib.SOURCE_REMOVE;
+          },
+        );
+
+        this._cleanupProcessTimeout = null;
         return GLib.SOURCE_REMOVE;
-      });
-
-      this._cleanupProcessTimeout = null;
-      return GLib.SOURCE_REMOVE;
-    });
+      },
+    );
   }
 
   removePlayerSafe(name) {
@@ -324,8 +330,7 @@ export class MprisPlayer {
   }
 
   getPlayerInfo(name) {
-    if (this._manager._operationsPaused)
-      return null;
+    if (this._manager._operationsPaused) return null;
 
     const proxy = this._manager._proxies.get(name);
     if (!proxy) return null;
@@ -409,8 +414,7 @@ export class MprisPlayer {
       1000,
       null,
       (conn, result) => {
-        if (this._manager._operationsPaused)
-          return;
+        if (this._manager._operationsPaused) return;
 
         try {
           const reply = conn.call_finish(result);

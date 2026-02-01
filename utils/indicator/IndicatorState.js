@@ -31,7 +31,10 @@ export class IndicatorState {
       return;
 
     const now = Date.now();
-    if (now - this._lastErrorTime < 1000 && this._errorCount >= this._maxErrors) {
+    if (
+      now - this._lastErrorTime < 1000 &&
+      this._errorCount >= this._maxErrors
+    ) {
       return;
     }
 
@@ -52,11 +55,15 @@ export class IndicatorState {
         this._errorRecoveryTimeout = null;
       }
 
-      this._errorRecoveryTimeout = GLib.timeout_add(GLib.PRIORITY_LOW, 5000, () => {
-        this._errorCount = Math.max(0, this._errorCount - 1);
-        this._errorRecoveryTimeout = null;
-        return GLib.SOURCE_REMOVE;
-      });
+      this._errorRecoveryTimeout = GLib.timeout_add(
+        GLib.PRIORITY_LOW,
+        5000,
+        () => {
+          this._errorCount = Math.max(0, this._errorCount - 1);
+          this._errorRecoveryTimeout = null;
+          return GLib.SOURCE_REMOVE;
+        },
+      );
     }
   }
 

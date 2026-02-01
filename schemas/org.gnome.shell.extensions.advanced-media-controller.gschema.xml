@@ -58,5 +58,18 @@
       <description>Text to separate track and artist (default: " • ")</description>
     </key>
     
+    <key name="enable-artist-scroll" type="b">
+      <default>true</default>
+      <summary>Enable artist scrolling</summary>
+      <description>Enable scrolling animation for long artist names in the popup</description>
+    </key>
+    
+    <key name="artist-scroll-speed" type="i">
+      <default>5</default>
+      <range min="1" max="10"/>
+      <summary>Artist scroll speed</summary>
+      <description>Speed of artist text scrolling (1=slowest, 10=fastest)</description>
+    </key>
+    
   </schema>
 </schemalist>

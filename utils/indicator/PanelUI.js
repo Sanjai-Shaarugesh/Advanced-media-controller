@@ -29,10 +29,14 @@ export class PanelUI {
     });
     this._box.add_child(this._panelControlsBox);
 
-    this._panelPrevBtn = this._createPanelButton("media-skip-backward-symbolic");
+    this._panelPrevBtn = this._createPanelButton(
+      "media-skip-backward-symbolic",
+    );
     this._panelControlsBox.add_child(this._panelPrevBtn);
 
-    this._panelPlayBtn = this._createPanelButton("media-playback-start-symbolic");
+    this._panelPlayBtn = this._createPanelButton(
+      "media-playback-start-symbolic",
+    );
     this._panelControlsBox.add_child(this._panelPlayBtn);
 
     this._panelNextBtn = this._createPanelButton("media-skip-forward-symbolic");
@@ -65,12 +69,24 @@ export class PanelUI {
     return button;
   }
 
-  get box() { return this._box; }
-  get icon() { return this._icon; }
-  get panelPrevBtn() { return this._panelPrevBtn; }
-  get panelPlayBtn() { return this._panelPlayBtn; }
-  get panelNextBtn() { return this._panelNextBtn; }
-  get label() { return this._label; }
+  get box() {
+    return this._box;
+  }
+  get icon() {
+    return this._icon;
+  }
+  get panelPrevBtn() {
+    return this._panelPrevBtn;
+  }
+  get panelPlayBtn() {
+    return this._panelPlayBtn;
+  }
+  get panelNextBtn() {
+    return this._panelNextBtn;
+  }
+  get label() {
+    return this._label;
+  }
 
   startScrolling(fullText, settings) {
     this.stopScrolling();
@@ -80,24 +96,29 @@ export class PanelUI {
     const paddedText = fullText + "   •   ";
     const interval = Math.max(50, 300 - scrollSpeed * 25);
 
-    this._indicator._state._scrollTimeout = GLib.timeout_add(GLib.PRIORITY_LOW, interval, () => {
-      if (this._indicator._state._sessionChanging) {
-        return GLib.SOURCE_REMOVE;
-      }
+    this._indicator._state._scrollTimeout = GLib.timeout_add(
+      GLib.PRIORITY_LOW,
+      interval,
+      () => {
+        if (this._indicator._state._sessionChanging) {
+          return GLib.SOURCE_REMOVE;
+        }
 
-      this._indicator._state._scrollPosition++;
+        this._indicator._state._scrollPosition++;
 
-      if (this._indicator._state._scrollPosition >= paddedText.length) {
-        this._indicator._state._scrollPosition = 0;
-      }
+        if (this._indicator._state._scrollPosition >= paddedText.length) {
+          this._indicator._state._scrollPosition = 0;
+        }
 
-      const displayText = paddedText.substring(this._indicator._state._scrollPosition) +
-                        paddedText.substring(0, this._indicator._state._scrollPosition);
+        const displayText =
+          paddedText.substring(this._indicator._state._scrollPosition) +
+          paddedText.substring(0, this._indicator._state._scrollPosition);
 
-      this._label.text = displayText.substring(0, maxLength);
+        this._label.text = displayText.substring(0, maxLength);
 
-      return GLib.SOURCE_CONTINUE;
-    });
+        return GLib.SOURCE_CONTINUE;
+      },
+    );
   }
 
   stopScrolling() {
@@ -109,8 +130,7 @@ export class PanelUI {
   }
 
   updateAppIcon(manager, currentPlayer) {
-    if (this._indicator._state._sessionChanging)
-      return;
+    if (this._indicator._state._sessionChanging) return;
 
     if (!currentPlayer) {
       this._icon.set_gicon(Gio.icon_new_for_string("audio-x-generic-symbolic"));

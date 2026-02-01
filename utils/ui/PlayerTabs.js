@@ -30,8 +30,8 @@ export const PlayerTabs = GObject.registerClass(
       const button = new St.Button({
         style_class: "media-tab-modern",
         style: isActive
-          ? `padding: 10px 14px; border-radius: 12px; background: rgba(255,255,255,0.2); box-shadow: 0 2px 8px rgba(0,0,0,0.2);`
-          : `padding: 10px 14px; border-radius: 12px; background: rgba(255,255,255,0.05); opacity: 0.6;`,
+          ? `padding: 10px 14px; border-radius: 12px ; box-shadow: 0 2px 8px rgba(0,0,0,0.2);`
+          : `padding: 10px 14px; border-radius: 12px; opacity: 0.6;`,
       });
 
       let icon;
@@ -55,13 +55,13 @@ export const PlayerTabs = GObject.registerClass(
 
       button.connect("enter-event", () => {
         if (!isActive) {
-          button.style = `padding: 10px 14px; border-radius: 12px; background: rgba(255,255,255,0.15); opacity: 1;`;
+          button.style = `padding: 10px 14px; border-radius: 12px;  opacity: 1;`;
         }
       });
 
       button.connect("leave-event", () => {
         if (!isActive) {
-          button.style = `padding: 10px 14px; border-radius: 12px; background: rgba(255,255,255,0.05); opacity: 0.6;`;
+          button.style = `padding: 10px 14px; border-radius: 12px;  opacity: 0.6;`;
         }
       });
 
