@@ -12,8 +12,16 @@ export class IndicatorState {
     this._updateThrottle = null;
     this._capturedEventId = null;
     this._windowFocusId = null;
+    this._windowCreatedId = null;
+    this._keyFocusId = null;
+    this._windowStateChangedId = null;
+    this._windowMinimizedId = null;
+    this._windowUnminimizedId = null;
+    this._windowMappedId = null;
     this._overviewShowingId = null;
     this._overviewHidingId = null;
+    this._workspaceSwitchedId = null;
+    this._modalId = null;
     this._lastUpdateTime = 0;
     this._pendingOperations = new Set();
     this._sessionChanging = false;

@@ -9,6 +9,7 @@ export class IndicatorEventHandlers {
     this._pauseOperationsTimeout = null;
     this._resumeOperationsTimeout = null;
     this._outsideClickId = null;
+    this._menuJustOpened = false;
   }
 
   connectControlSignals() {
@@ -182,10 +183,19 @@ export class IndicatorEventHandlers {
 
     this.removeWindowMonitoring();
 
+    // Set flag to prevent immediate closing when menu opens
+    this._menuJustOpened = true;
+    GLib.timeout_add(GLib.PRIORITY_DEFAULT, 100, () => {
+      this._menuJustOpened = false;
+      return GLib.SOURCE_REMOVE;
+    });
+
+    // Monitor clicks outside the popup - use capture phase for better detection
     this._outsideClickId = global.stage.connect(
-      "button-press-event",
+      "captured-event",
       (actor, event) => {
-        if (event.get_button() !== Clutter.BUTTON_PRIMARY) {
+        // Only handle button press events
+        if (event.type() !== Clutter.EventType.BUTTON_PRESS) {
           return Clutter.EVENT_PROPAGATE;
         }
 
@@ -193,73 +203,193 @@ export class IndicatorEventHandlers {
           return Clutter.EVENT_PROPAGATE;
         }
 
-        if (this._indicator._state._sessionChanging) {
-          this._indicator.menu.close(true);
+        if (this._indicator._state._sessionChanging || this._menuJustOpened) {
           return Clutter.EVENT_PROPAGATE;
         }
 
         const [stageX, stageY] = event.get_coords();
 
+        // Check if click is within the panel button
+        const panelButton = this._indicator.container;
+        if (panelButton && panelButton.get_stage() && panelButton.visible) {
+          try {
+            const [buttonX, buttonY] = panelButton.get_transformed_position();
+            const [buttonWidth, buttonHeight] = panelButton.get_size();
+
+            if (
+              stageX >= buttonX &&
+              stageX <= buttonX + buttonWidth &&
+              stageY >= buttonY &&
+              stageY <= buttonY + buttonHeight
+            ) {
+              // Click is on the panel button itself, let it handle toggle
+              return Clutter.EVENT_PROPAGATE;
+            }
+          } catch (e) {
+            // Position calculation failed, continue
+          }
+        }
+
         // Check if click is within the menu actor
         const menuActor = this._indicator.menu.actor;
         if (menuActor && menuActor.get_stage() && menuActor.visible) {
-          const [menuX, menuY] = menuActor.get_transformed_position();
-          const [menuWidth, menuHeight] = menuActor.get_size();
+          try {
+            const [menuX, menuY] = menuActor.get_transformed_position();
+            const [menuWidth, menuHeight] = menuActor.get_size();
 
-          if (
-            stageX >= menuX &&
-            stageX <= menuX + menuWidth &&
-            stageY >= menuY &&
-            stageY <= menuY + menuHeight
-          ) {
-            return Clutter.EVENT_PROPAGATE;
+            if (
+              stageX >= menuX &&
+              stageX <= menuX + menuWidth &&
+              stageY >= menuY &&
+              stageY <= menuY + menuHeight
+            ) {
+              // Click is inside the menu
+              return Clutter.EVENT_PROPAGATE;
+            }
+          } catch (e) {
+            // Position calculation failed, continue
           }
         }
 
-        // Check if click is within the indicator button
-        const indicatorActor = this._indicator.container || this._indicator;
-        if (
-          indicatorActor &&
-          indicatorActor.get_stage() &&
-          indicatorActor.visible
-        ) {
-          const [indX, indY] = indicatorActor.get_transformed_position();
-          const [indWidth, indHeight] = indicatorActor.get_size();
-
-          if (
-            stageX >= indX &&
-            stageX <= indX + indWidth &&
-            stageY >= indY &&
-            stageY <= indY + indHeight
-          ) {
-            return Clutter.EVENT_PROPAGATE;
+        // Click is outside both the button and menu - close the menu
+        GLib.timeout_add(GLib.PRIORITY_HIGH, 1, () => {
+          if (this._indicator.menu && this._indicator.menu.isOpen) {
+            this._indicator.menu.close(true);
           }
-        }
+          return GLib.SOURCE_REMOVE;
+        });
 
-        // Click is outside both menu and indicator - close the menu
-        this._indicator.menu.close(true);
         return Clutter.EVENT_PROPAGATE;
       },
     );
 
-    // monitor focus changes
+    // Monitor window focus changes
     this._indicator._state._windowFocusId = global.display.connect(
       "notify::focus-window",
       () => {
         if (
           !this._indicator.menu.isOpen ||
-          this._indicator._state._sessionChanging
+          this._indicator._state._sessionChanging ||
+          this._menuJustOpened
         )
           return;
 
         const focusedWindow = global.display.focus_window;
         if (focusedWindow) {
-          this._indicator.menu.close(true);
+          // Small delay to ensure smooth closing
+          GLib.timeout_add(GLib.PRIORITY_HIGH, 10, () => {
+            if (this._indicator.menu && this._indicator.menu.isOpen) {
+              this._indicator.menu.close(false);
+            }
+            return GLib.SOURCE_REMOVE;
+          });
         }
       },
     );
 
-    // Monitor overview
+    // Additional monitoring for key focus changes on stage
+    this._indicator._state._keyFocusId = global.stage.connect(
+      "notify::key-focus",
+      () => {
+        if (
+          !this._indicator.menu.isOpen ||
+          this._indicator._state._sessionChanging ||
+          this._menuJustOpened
+        )
+          return;
+
+        const keyFocus = global.stage.key_focus;
+        
+        // Check if the key focus is not part of our menu
+        if (keyFocus && !this._indicator.menu.actor.contains(keyFocus)) {
+          GLib.timeout_add(GLib.PRIORITY_HIGH, 10, () => {
+            if (this._indicator.menu && this._indicator.menu.isOpen) {
+              this._indicator.menu.close(false);
+            }
+            return GLib.SOURCE_REMOVE;
+          });
+        }
+      },
+    );
+
+    // Monitor when windows are opened, maximized, or shown
+    this._indicator._state._windowCreatedId = global.display.connect(
+      "window-created",
+      (display, window) => {
+        if (
+          !this._indicator.menu.isOpen ||
+          this._indicator._state._sessionChanging ||
+          this._menuJustOpened
+        )
+          return;
+
+        // Close immediately when new window is created
+        this._indicator.menu.close(false);
+      },
+    );
+
+    // Monitor window state changes (minimize, maximize, unminimize, etc.)
+    this._indicator._state._windowStateChangedId = global.window_manager.connect(
+      "size-change",
+      (wm, actor) => {
+        if (
+          !this._indicator.menu.isOpen ||
+          this._indicator._state._sessionChanging ||
+          this._menuJustOpened
+        )
+          return;
+
+        // Close popup when windows change size (maximize, unmaximize, etc.)
+        this._indicator.menu.close(false);
+      },
+    );
+
+    // Monitor window minimize
+    this._indicator._state._windowMinimizedId = global.window_manager.connect(
+      "minimize",
+      (wm, actor) => {
+        if (
+          !this._indicator.menu.isOpen ||
+          this._indicator._state._sessionChanging ||
+          this._menuJustOpened
+        )
+          return;
+
+        this._indicator.menu.close(false);
+      },
+    );
+
+    // Monitor window unminimize/restore
+    this._indicator._state._windowUnminimizedId = global.window_manager.connect(
+      "unminimize",
+      (wm, actor) => {
+        if (
+          !this._indicator.menu.isOpen ||
+          this._indicator._state._sessionChanging ||
+          this._menuJustOpened
+        )
+          return;
+
+        this._indicator.menu.close(false);
+      },
+    );
+
+    // Monitor window map (when windows are shown)
+    this._indicator._state._windowMappedId = global.window_manager.connect(
+      "map",
+      (wm, actor) => {
+        if (
+          !this._indicator.menu.isOpen ||
+          this._indicator._state._sessionChanging ||
+          this._menuJustOpened
+        )
+          return;
+
+        this._indicator.menu.close(false);
+      },
+    );
+
+    // Monitor overview showing
     this._indicator._state._overviewShowingId = Main.overview.connect(
       "showing",
       () => {
@@ -268,7 +398,7 @@ export class IndicatorEventHandlers {
           this._indicator._state._sessionChanging
         )
           return;
-        this._indicator.menu.close(true);
+        this._indicator.menu.close(false);
       },
     );
 
@@ -284,8 +414,24 @@ export class IndicatorEventHandlers {
           )
             return;
           if (layoutManager.modalCount > 0) {
-            this._indicator.menu.close(true);
+            this._indicator.menu.close(false);
           }
+        },
+      );
+    }
+
+    // Monitor workspace switches
+    const workspaceManager = global.workspace_manager;
+    if (workspaceManager) {
+      this._indicator._state._workspaceSwitchedId = workspaceManager.connect(
+        "workspace-switched",
+        () => {
+          if (
+            !this._indicator.menu.isOpen ||
+            this._indicator._state._sessionChanging
+          )
+            return;
+          this._indicator.menu.close(false);
         },
       );
     }
@@ -300,13 +446,24 @@ export class IndicatorEventHandlers {
 
     const signals = [
       { obj: global.display, id: "_windowFocusId" },
+      { obj: global.display, id: "_windowCreatedId" },
+      { obj: global.stage, id: "_keyFocusId" },
+      { obj: global.window_manager, id: "_windowStateChangedId" },
+      { obj: global.window_manager, id: "_windowMinimizedId" },
+      { obj: global.window_manager, id: "_windowUnminimizedId" },
+      { obj: global.window_manager, id: "_windowMappedId" },
       { obj: Main.overview, id: "_overviewShowingId" },
       { obj: Main.layoutManager, id: "_modalId" },
+      { obj: global.workspace_manager, id: "_workspaceSwitchedId" },
     ];
 
     for (const signal of signals) {
       if (this._indicator._state[signal.id]) {
-        signal.obj.disconnect(this._indicator._state[signal.id]);
+        try {
+          signal.obj.disconnect(this._indicator._state[signal.id]);
+        } catch (e) {
+          // Signal may already be disconnected
+        }
         this._indicator._state[signal.id] = null;
       }
     }

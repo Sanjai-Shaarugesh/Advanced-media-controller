@@ -335,3 +335,4 @@ If you find this extension useful, consider:
 Made with ❤️ by [Sanjai Shaarugesh](https://github.com/Sanjai-Shaarugesh)
 
 </div>
+

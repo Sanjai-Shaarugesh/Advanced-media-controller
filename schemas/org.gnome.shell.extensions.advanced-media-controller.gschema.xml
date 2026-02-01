@@ -71,5 +71,31 @@
       <description>Speed of artist text scrolling (1=slowest, 10=fastest)</description>
     </key>
     
+    <key name="enable-title-scroll" type="b">
+      <default>true</default>
+      <summary>Enable title scrolling</summary>
+      <description>Enable scrolling animation for long track titles in the popup</description>
+    </key>
+    
+    <key name="title-scroll-speed" type="i">
+      <default>5</default>
+      <range min="1" max="10"/>
+      <summary>Title scroll speed</summary>
+      <description>Speed of title text scrolling (1=slowest, 10=fastest)</description>
+    </key>
+    
+    <key name="enable-album-art-rotation" type="b">
+      <default>true</default>
+      <summary>Enable album art rotation</summary>
+      <description>Enable rotation animation for album art when music is playing</description>
+    </key>
+    
+    <key name="album-art-rotation-speed" type="i">
+      <default>20</default>
+      <range min="5" max="60"/>
+      <summary>Album art rotation speed</summary>
+      <description>Speed of album art rotation in seconds per full rotation (5=fastest, 60=slowest)</description>
+    </key>
+    
   </schema>
 </schemalist>
