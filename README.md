@@ -308,11 +308,10 @@ If you find this extension useful, consider:
 
 - **Issues**: [GitHub Issues](https://github.com/Sanjai-Shaarugesh/Advance-media-controller/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/Sanjai-Shaarugesh/Advance-media-controller/discussions)
-- **Email**: your.email@example.com
 
 ---
 
-## 🗺️ Roadmap
+
 
 ### Planned Features
 
