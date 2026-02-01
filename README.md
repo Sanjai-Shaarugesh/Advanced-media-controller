@@ -66,13 +66,12 @@ Works flawlessly with **multiple browser tabs** playing media simultaneously!
 </div>
 
 ### Rotating album art image cover 
-<img width="772" height="744" alt="image" src="https://github.com/user-attachments/assets/ca138070-44ed-4cfb-a468-4e07c8be5c08" />
+![art](https://github.com/user-attachments/assets/d2c25e5d-3dfb-4da8-93db-4a94fadaf1d0)
 
 
 ### Rotating album & artist name 
+![album](https://github.com/user-attachments/assets/69c9135f-e5c3-426b-a7a5-21e5a8e3cb05)
 
-
-https://github.com/user-attachments/assets/3eaafd95-1d8b-4a0f-b761-525e78cf8c20
 
 
 
