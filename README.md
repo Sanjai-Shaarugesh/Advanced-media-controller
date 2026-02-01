@@ -65,6 +65,10 @@ Works flawlessly with **multiple browser tabs** playing media simultaneously!
 <em>Switch between multiple media sources effortlessly</em>
 </div>
 
+### Rotating album art image cover 
+<img width="772" height="744" alt="image" src="https://github.com/user-attachments/assets/ca138070-44ed-4cfb-a468-4e07c8be5c08" />
+
+
 ### ⚙️ Highly Customizable
 
 #### Panel Position & Layout
