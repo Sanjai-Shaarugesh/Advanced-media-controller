@@ -64,14 +64,14 @@ How: Add a slider below the seek bar (like GNOME's volume control)
 1. **Fork** this repo on GitHub
 2. **Clone** your fork:
    ```bash
-   git clone https://github.com/Sanjai-Shaarugesh/Advance-media-controller.git
+   git clone https://github.com/Sanjai-Shaarugesh/Advanced-media-controller.git
    ```
 3. **Install** for testing:
    ```bash
    cd advanced-media-controller
-   ln -s $(pwd) ~/.local/share/gnome-shell/extensions/mediacontrols@cliffniff.github.com
+   ln -s $(pwd) ~/.local/share/gnome-shell/extensions/advanced-media-controller@sanjai.com
    glib-compile-schemas schemas/
-   gnome-extensions enable mediacontrols@cliffniff.github.com
+   gnome-extensions enable advanced-media-controller@sanjai.com
    ```
 4. **Restart GNOME** (Alt+F2, type `r`) / **Wayland** (logout and login again) / 
     - bash 
@@ -239,7 +239,7 @@ this.mySetting = this.settings.get_boolean("my-setting");
 **Use Looking Glass** (Alt+F2, type `lg`):
 ```javascript
 // Access extension
-let ext = imports.ui.main.extensionManager.lookup('mediacontrols@cliffniff.github.com');
+let ext = imports.ui.main.extensionManager.lookup('advanced-media-controller@sanjai.com');
 
 // Check current state
 ext.extension.playerProxies.size;
@@ -290,11 +290,43 @@ Help translate to your language:
 
 ---
 
-## ❓ Need Help?
+## 💖 Support
 
-- 💬 Ask in [GitHub Discussions](https://github.com/Sanjai-Shaarugesh/Advance-media-controller/discussions)
-- 🐛 Check existing [Issues](https://github.com/Sanjai-Shaarugesh/Advance-media-controller/issues)
-- 📧 Email: your.email@example.com
+If you find this extension useful, consider:
+
+- ⭐ **Starring** the repository
+- 🐛 **Reporting** bugs
+- 💡 **Suggesting** features
+- 🌍 **Translating** to your language
+- ☕ **Buying me a coffee**
+
+<div align="center">
+
+### ☕ Support Development
+
+<a href="https://buymeacoffee.com/sanjai">
+<img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" height="41" width="174">
+</a>
+
+<br><br>
+
+<a href="https://buymeacoffee.com/sanjai">
+<img src="icons/qr.png" alt="Buy Me A Coffee QR Code" height="300" style="border-radius: 12px;">
+</a>
+
+<br>
+
+*Your support helps maintain and improve this extension!* 💙
+
+</div>
+
+---
+
+## ❓ Need Help?
+<div align="center">
+💬 Ask in [GitHub Discussions](https://github.com/Sanjai-Shaarugesh/Advanced-media-controller/discussions)
+🐛 Check existing [Issues](https://github.com/Sanjai-Shaarugesh/Advanced-media-controller/issues)
+</div>
 
 ---
 
@@ -315,6 +347,19 @@ Simple rules:
 - ✨ Have fun!
 
 ---
+
+<div align="center">
+
+## ⭐ Star History
+
+**Star ⭐ this repository if you find it useful!**
+
+
+
+Made with ❤️ by [Sanjai Shaarugesh](https://github.com/Sanjai-Shaarugesh)
+
+</div>
+
 
 <div align="center">
 
