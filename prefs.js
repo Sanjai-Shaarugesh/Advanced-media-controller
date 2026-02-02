@@ -150,6 +150,47 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
 
     displayGroup.add(separatorRow);
 
+    // Popup Player Settings Group
+    const popupGroup = new Adw.PreferencesGroup({
+      title: "Popup Player Settings",
+      description: "Configure scrolling text in the popup media player",
+    });
+    generalPage.add(popupGroup);
+
+    const titleScrollRow = new Adw.SwitchRow({
+      title: "Enable Title Scrolling",
+      subtitle: "Scroll long song titles in the popup media player",
+    });
+
+    settings.bind(
+      "enable-title-scroll",
+      titleScrollRow,
+      "active",
+      Gio.SettingsBindFlags.DEFAULT,
+    );
+
+    popupGroup.add(titleScrollRow);
+
+    const titleScrollSpeedRow = new Adw.SpinRow({
+      title: "Title Scroll Speed",
+      subtitle: "1 = slowest, 10 = fastest",
+      adjustment: new Gtk.Adjustment({
+        lower: 1,
+        upper: 10,
+        step_increment: 1,
+        page_increment: 1,
+      }),
+    });
+
+    settings.bind(
+      "title-scroll-speed",
+      titleScrollSpeedRow,
+      "value",
+      Gio.SettingsBindFlags.DEFAULT,
+    );
+
+    popupGroup.add(titleScrollSpeedRow);
+
     const artistScrollRow = new Adw.SwitchRow({
       title: "Enable Artist Scrolling",
       subtitle: "Scroll long artist names in the popup media player",
@@ -162,7 +203,7 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
       Gio.SettingsBindFlags.DEFAULT,
     );
 
-    displayGroup.add(artistScrollRow);
+    popupGroup.add(artistScrollRow);
 
     const artistScrollSpeedRow = new Adw.SpinRow({
       title: "Artist Scroll Speed",
@@ -182,7 +223,7 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
       Gio.SettingsBindFlags.DEFAULT,
     );
 
-    displayGroup.add(artistScrollSpeedRow);
+    popupGroup.add(artistScrollSpeedRow);
 
     // Album Art Settings Group
     const albumArtGroup = new Adw.PreferencesGroup({
@@ -237,9 +278,11 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
       label: "The album art rotation creates a vinyl record effect:\n\n" +
              "• Album cover appears on a spinning vinyl disc\n" +
              "• Black vinyl record with grooves visible around edges\n" +
+             "• Animated tonearm moves with playback state\n" +
              "• Smooth rotation animation while music plays\n" +
              "• Automatically pauses when music is paused\n" +
-             "• Stops completely when music stops\n\n" +
+             "• Stops completely when music stops\n" +
+             "• Double-click album art to toggle effect on/off\n\n" +
              "Recommended speed: 20-30 seconds for a realistic vinyl feel",
       wrap: true,
       xalign: 0,
@@ -487,7 +530,7 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
 
     const featuresRow = new Adw.ActionRow({
       title: "Key Features",
-      subtitle: "• Multi-instance browser support\n• Rotating vinyl record album art\n• Smooth animations\n• Lock screen controls",
+      subtitle: "• Multi-instance browser support\n• Rotating vinyl record album art\n• Animated tonearm\n• Smooth animations\n• Double-click to toggle effects",
       activatable: false,
     });
     const featuresIcon = new Gtk.Image({
