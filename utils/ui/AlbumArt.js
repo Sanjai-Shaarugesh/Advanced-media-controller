@@ -42,7 +42,7 @@ export const AlbumArt = GObject.registerClass(
       // Container for normal mode (square album art)
       this._normalContainer = new St.BoxLayout({
         x_align: Clutter.ActorAlign.CENTER,
-        style: "margin-bottom: 0px;",
+        style: "margin-bottom: 24px;",
         reactive: true,
       });
 
@@ -555,7 +555,7 @@ export const AlbumArt = GObject.registerClass(
         height: 340px;
         border-radius: 16px;
         background-image: url('${imageUrl}');
-        background-size: cover;
+        background-size: contain;
         background-position: center;
         background-repeat: no-repeat;
       `;
@@ -628,11 +628,10 @@ export const AlbumArt = GObject.registerClass(
         width: 340px;
         height: 340px;
         border-radius: 16px;
-        background-size: 128px;
+        background-image: url('file://${cachePath}');
+        background-size: contain;
         background-position: center;
         background-repeat: no-repeat;
-        background-image: url('resource:///org/gnome/shell/theme/process-working.svg');
-        opacity: 0.3;
       `;
 
       const vinylDefault = `
