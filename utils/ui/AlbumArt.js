@@ -63,7 +63,7 @@ export const AlbumArt = GObject.registerClass(
         height: 340,
         style: `
           border-radius: 16px;
-          background-size: cover;
+            background-size: cover;
           background-position: center;
           background-repeat: no-repeat;
         `,
@@ -135,7 +135,7 @@ export const AlbumArt = GObject.registerClass(
         height: 340,
         style: `
           border-radius: 170px;
-          background-size: cover;
+            background-size: cover;
           background-position: center;
           background-repeat: no-repeat;
         `,
@@ -555,7 +555,7 @@ export const AlbumArt = GObject.registerClass(
         height: 340px;
         border-radius: 16px;
         background-image: url('${imageUrl}');
-        background-size: contain;
+          background-size: contain;
         background-position: center;
         background-repeat: no-repeat;
       `;
@@ -628,10 +628,11 @@ export const AlbumArt = GObject.registerClass(
         width: 340px;
         height: 340px;
         border-radius: 16px;
-        background-image: url('file://${cachePath}');
         background-size: contain;
         background-position: center;
         background-repeat: no-repeat;
+        background-image: url('resource:///org/gnome/shell/theme/process-working.svg');
+        opacity: 0.3;
       `;
 
       const vinylDefault = `
