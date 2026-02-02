@@ -5,63 +5,31 @@ import * as Main from "resource:///org/gnome/shell/ui/main.js";
 export class IndicatorEventHandlers {
   constructor(indicator) {
     this._indicator = indicator;
-    this._signalIds = new Map();
     this._pauseOperationsTimeout = null;
     this._resumeOperationsTimeout = null;
     this._outsideClickId = null;
     this._menuJustOpened = false;
+    this._menuOpenTimeout = null;
+    this._closeMenuTimeout = null;
+    this._delayedCloseTimeout1 = null;
+    this._delayedCloseTimeout2 = null;
   }
 
   connectControlSignals() {
-    const playPauseId = this._indicator._controls.connect("play-pause", () =>
-      this._indicator._state.safeExecute(() => this._onPlayPause()),
-    );
-    this._signalIds.set("controls-play-pause", {
-      obj: this._indicator._controls,
-      id: playPauseId,
-    });
-
-    const nextId = this._indicator._controls.connect("next", () =>
-      this._indicator._state.safeExecute(() => this._onNext()),
-    );
-    this._signalIds.set("controls-next", {
-      obj: this._indicator._controls,
-      id: nextId,
-    });
-
-    const previousId = this._indicator._controls.connect("previous", () =>
-      this._indicator._state.safeExecute(() => this._onPrevious()),
-    );
-    this._signalIds.set("controls-previous", {
-      obj: this._indicator._controls,
-      id: previousId,
-    });
-
-    const shuffleId = this._indicator._controls.connect("shuffle", () =>
-      this._indicator._state.safeExecute(() => this._onShuffle()),
-    );
-    this._signalIds.set("controls-shuffle", {
-      obj: this._indicator._controls,
-      id: shuffleId,
-    });
-
-    const repeatId = this._indicator._controls.connect("repeat", () =>
-      this._indicator._state.safeExecute(() => this._onRepeat()),
-    );
-    this._signalIds.set("controls-repeat", {
-      obj: this._indicator._controls,
-      id: repeatId,
-    });
-
-    const seekId = this._indicator._controls.connect("seek", (_, position) =>
-      this._indicator._state.safeExecute(() => this._onSeek(position)),
-    );
-    this._signalIds.set("controls-seek", {
-      obj: this._indicator._controls,
-      id: seekId,
-    });
-
-    const playerChangedId = this._indicator._controls.connect(
+    this._indicator._controls.connectObject(
+      "play-pause",
+      () => this._indicator._state.safeExecute(() => this._onPlayPause()),
+      "next",
+      () => this._indicator._state.safeExecute(() => this._onNext()),
+      "previous",
+      () => this._indicator._state.safeExecute(() => this._onPrevious()),
+      "shuffle",
+      () => this._indicator._state.safeExecute(() => this._onShuffle()),
+      "repeat",
+      () => this._indicator._state.safeExecute(() => this._onRepeat()),
+      "seek",
+      (_, position) =>
+        this._indicator._state.safeExecute(() => this._onSeek(position)),
       "player-changed",
       (_, name) => {
         this._indicator._state.safeExecute(() => {
@@ -70,13 +38,10 @@ export class IndicatorEventHandlers {
           this._indicator._uiUpdater.updateUI();
         });
       },
+      this,
     );
-    this._signalIds.set("controls-player-changed", {
-      obj: this._indicator._controls,
-      id: playerChangedId,
-    });
 
-    const panelPrevId = this._indicator._panelUI.panelPrevBtn.connect(
+    this._indicator._panelUI.panelPrevBtn.connectObject(
       "button-press-event",
       (actor, event) => {
         if (event.get_button() === 1) {
@@ -85,13 +50,10 @@ export class IndicatorEventHandlers {
         }
         return Clutter.EVENT_PROPAGATE;
       },
+      this,
     );
-    this._signalIds.set("panel-prev", {
-      obj: this._indicator._panelUI.panelPrevBtn,
-      id: panelPrevId,
-    });
 
-    const panelPlayId = this._indicator._panelUI.panelPlayBtn.connect(
+    this._indicator._panelUI.panelPlayBtn.connectObject(
       "button-press-event",
       (actor, event) => {
         if (event.get_button() === 1) {
@@ -100,13 +62,10 @@ export class IndicatorEventHandlers {
         }
         return Clutter.EVENT_PROPAGATE;
       },
+      this,
     );
-    this._signalIds.set("panel-play", {
-      obj: this._indicator._panelUI.panelPlayBtn,
-      id: panelPlayId,
-    });
 
-    const panelNextId = this._indicator._panelUI.panelNextBtn.connect(
+    this._indicator._panelUI.panelNextBtn.connectObject(
       "button-press-event",
       (actor, event) => {
         if (event.get_button() === 1) {
@@ -115,15 +74,12 @@ export class IndicatorEventHandlers {
         }
         return Clutter.EVENT_PROPAGATE;
       },
+      this,
     );
-    this._signalIds.set("panel-next", {
-      obj: this._indicator._panelUI.panelNextBtn,
-      id: panelNextId,
-    });
   }
 
   setupSessionMonitoring() {
-    this._indicator._state._sessionModeId = Main.sessionMode.connect(
+    Main.sessionMode.connectObject(
       "updated",
       () => {
         this._indicator._state._preventLogout = true;
@@ -175,6 +131,7 @@ export class IndicatorEventHandlers {
             this._resumeOperationsTimeout = null;
           }, 1000);
       },
+      this,
     );
   }
 
@@ -185,8 +142,16 @@ export class IndicatorEventHandlers {
 
     // Set flag to prevent immediate closing when menu opens
     this._menuJustOpened = true;
-    GLib.timeout_add(GLib.PRIORITY_DEFAULT, 100, () => {
+    
+    // Remove existing timeout before creating new one
+    if (this._menuOpenTimeout) {
+      GLib.source_remove(this._menuOpenTimeout);
+      this._menuOpenTimeout = null;
+    }
+    
+    this._menuOpenTimeout = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 100, () => {
       this._menuJustOpened = false;
+      this._menuOpenTimeout = null;
       return GLib.SOURCE_REMOVE;
     });
 
@@ -212,50 +177,49 @@ export class IndicatorEventHandlers {
         // Check if click is within the panel button
         const panelButton = this._indicator.container;
         if (panelButton && panelButton.get_stage() && panelButton.visible) {
-          try {
-            const [buttonX, buttonY] = panelButton.get_transformed_position();
-            const [buttonWidth, buttonHeight] = panelButton.get_size();
+          const [buttonX, buttonY] = panelButton.get_transformed_position();
+          const [buttonWidth, buttonHeight] = panelButton.get_size();
 
-            if (
-              stageX >= buttonX &&
-              stageX <= buttonX + buttonWidth &&
-              stageY >= buttonY &&
-              stageY <= buttonY + buttonHeight
-            ) {
-              // Click is on the panel button itself, let it handle toggle
-              return Clutter.EVENT_PROPAGATE;
-            }
-          } catch (e) {
-            // Position calculation failed, continue
+          if (
+            stageX >= buttonX &&
+            stageX <= buttonX + buttonWidth &&
+            stageY >= buttonY &&
+            stageY <= buttonY + buttonHeight
+          ) {
+            // Click is on the panel button itself, let it handle toggle
+            return Clutter.EVENT_PROPAGATE;
           }
         }
 
         // Check if click is within the menu actor
         const menuActor = this._indicator.menu.actor;
         if (menuActor && menuActor.get_stage() && menuActor.visible) {
-          try {
-            const [menuX, menuY] = menuActor.get_transformed_position();
-            const [menuWidth, menuHeight] = menuActor.get_size();
+          const [menuX, menuY] = menuActor.get_transformed_position();
+          const [menuWidth, menuHeight] = menuActor.get_size();
 
-            if (
-              stageX >= menuX &&
-              stageX <= menuX + menuWidth &&
-              stageY >= menuY &&
-              stageY <= menuY + menuHeight
-            ) {
-              // Click is inside the menu
-              return Clutter.EVENT_PROPAGATE;
-            }
-          } catch (e) {
-            // Position calculation failed, continue
+          if (
+            stageX >= menuX &&
+            stageX <= menuX + menuWidth &&
+            stageY >= menuY &&
+            stageY <= menuY + menuHeight
+          ) {
+            // Click is inside the menu
+            return Clutter.EVENT_PROPAGATE;
           }
         }
 
         // Click is outside both the button and menu - close the menu
-        GLib.timeout_add(GLib.PRIORITY_HIGH, 1, () => {
+        // Remove existing timeout before creating new one
+        if (this._closeMenuTimeout) {
+          GLib.source_remove(this._closeMenuTimeout);
+          this._closeMenuTimeout = null;
+        }
+        
+        this._closeMenuTimeout = GLib.timeout_add(GLib.PRIORITY_HIGH, 1, () => {
           if (this._indicator.menu && this._indicator.menu.isOpen) {
             this._indicator.menu.close(true);
           }
+          this._closeMenuTimeout = null;
           return GLib.SOURCE_REMOVE;
         });
 
@@ -264,7 +228,7 @@ export class IndicatorEventHandlers {
     );
 
     // Monitor window focus changes
-    this._indicator._state._windowFocusId = global.display.connect(
+    global.display.connectObject(
       "notify::focus-window",
       () => {
         if (
@@ -274,21 +238,61 @@ export class IndicatorEventHandlers {
         )
           return;
 
-        const focusedWindow = global.display.focus_window;
-        if (focusedWindow) {
-          // Small delay to ensure smooth closing
-          GLib.timeout_add(GLib.PRIORITY_HIGH, 10, () => {
-            if (this._indicator.menu && this._indicator.menu.isOpen) {
-              this._indicator.menu.close(false);
-            }
-            return GLib.SOURCE_REMOVE;
-          });
+        // Remove existing timeout before creating new one
+        if (this._delayedCloseTimeout1) {
+          GLib.source_remove(this._delayedCloseTimeout1);
+          this._delayedCloseTimeout1 = null;
         }
+        
+        this._delayedCloseTimeout1 = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 50, () => {
+          if (
+            this._indicator.menu &&
+            this._indicator.menu.isOpen &&
+            !this._indicator._state._sessionChanging
+          ) {
+            this._indicator.menu.close(false);
+          }
+          this._delayedCloseTimeout1 = null;
+          return GLib.SOURCE_REMOVE;
+        });
       },
+      this,
     );
 
-    // Additional monitoring for key focus changes on stage
-    this._indicator._state._keyFocusId = global.stage.connect(
+    // Monitor new windows being created
+    global.display.connectObject(
+      "window-created",
+      () => {
+        if (
+          !this._indicator.menu.isOpen ||
+          this._indicator._state._sessionChanging ||
+          this._menuJustOpened
+        )
+          return;
+
+        // Remove existing timeout before creating new one
+        if (this._delayedCloseTimeout2) {
+          GLib.source_remove(this._delayedCloseTimeout2);
+          this._delayedCloseTimeout2 = null;
+        }
+        
+        this._delayedCloseTimeout2 = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 100, () => {
+          if (
+            this._indicator.menu &&
+            this._indicator.menu.isOpen &&
+            !this._indicator._state._sessionChanging
+          ) {
+            this._indicator.menu.close(false);
+          }
+          this._delayedCloseTimeout2 = null;
+          return GLib.SOURCE_REMOVE;
+        });
+      },
+      this,
+    );
+
+    // Monitor stage key focus changes
+    global.stage.connectObject(
       "notify::key-focus",
       () => {
         if (
@@ -298,38 +302,13 @@ export class IndicatorEventHandlers {
         )
           return;
 
-        const keyFocus = global.stage.key_focus;
-        
-        // Check if the key focus is not part of our menu
-        if (keyFocus && !this._indicator.menu.actor.contains(keyFocus)) {
-          GLib.timeout_add(GLib.PRIORITY_HIGH, 10, () => {
-            if (this._indicator.menu && this._indicator.menu.isOpen) {
-              this._indicator.menu.close(false);
-            }
-            return GLib.SOURCE_REMOVE;
-          });
-        }
-      },
-    );
-
-    // Monitor when windows are opened, maximized, or shown
-    this._indicator._state._windowCreatedId = global.display.connect(
-      "window-created",
-      (display, window) => {
-        if (
-          !this._indicator.menu.isOpen ||
-          this._indicator._state._sessionChanging ||
-          this._menuJustOpened
-        )
-          return;
-
-        // Close immediately when new window is created
         this._indicator.menu.close(false);
       },
+      this,
     );
 
-    // Monitor window state changes (minimize, maximize, unminimize, etc.)
-    this._indicator._state._windowStateChangedId = global.window_manager.connect(
+    // Monitor window state changes
+    global.window_manager.connectObject(
       "size-change",
       (wm, actor) => {
         if (
@@ -342,10 +321,6 @@ export class IndicatorEventHandlers {
         // Close popup when windows change size (maximize, unmaximize, etc.)
         this._indicator.menu.close(false);
       },
-    );
-
-    // Monitor window minimize
-    this._indicator._state._windowMinimizedId = global.window_manager.connect(
       "minimize",
       (wm, actor) => {
         if (
@@ -357,10 +332,6 @@ export class IndicatorEventHandlers {
 
         this._indicator.menu.close(false);
       },
-    );
-
-    // Monitor window unminimize/restore
-    this._indicator._state._windowUnminimizedId = global.window_manager.connect(
       "unminimize",
       (wm, actor) => {
         if (
@@ -372,10 +343,6 @@ export class IndicatorEventHandlers {
 
         this._indicator.menu.close(false);
       },
-    );
-
-    // Monitor window map (when windows are shown)
-    this._indicator._state._windowMappedId = global.window_manager.connect(
       "map",
       (wm, actor) => {
         if (
@@ -387,10 +354,11 @@ export class IndicatorEventHandlers {
 
         this._indicator.menu.close(false);
       },
+      this,
     );
 
     // Monitor overview showing
-    this._indicator._state._overviewShowingId = Main.overview.connect(
+    Main.overview.connectObject(
       "showing",
       () => {
         if (
@@ -400,12 +368,13 @@ export class IndicatorEventHandlers {
           return;
         this._indicator.menu.close(false);
       },
+      this,
     );
 
     // Monitor modal dialogs
     const layoutManager = Main.layoutManager;
     if (layoutManager && layoutManager.modalCount !== undefined) {
-      this._indicator._state._modalId = layoutManager.connect(
+      layoutManager.connectObject(
         "modals-changed",
         () => {
           if (
@@ -417,13 +386,14 @@ export class IndicatorEventHandlers {
             this._indicator.menu.close(false);
           }
         },
+        this,
       );
     }
 
     // Monitor workspace switches
     const workspaceManager = global.workspace_manager;
     if (workspaceManager) {
-      this._indicator._state._workspaceSwitchedId = workspaceManager.connect(
+      workspaceManager.connectObject(
         "workspace-switched",
         () => {
           if (
@@ -433,6 +403,7 @@ export class IndicatorEventHandlers {
             return;
           this._indicator.menu.close(false);
         },
+        this,
       );
     }
   }
@@ -444,28 +415,41 @@ export class IndicatorEventHandlers {
       this._outsideClickId = null;
     }
 
-    const signals = [
-      { obj: global.display, id: "_windowFocusId" },
-      { obj: global.display, id: "_windowCreatedId" },
-      { obj: global.stage, id: "_keyFocusId" },
-      { obj: global.window_manager, id: "_windowStateChangedId" },
-      { obj: global.window_manager, id: "_windowMinimizedId" },
-      { obj: global.window_manager, id: "_windowUnminimizedId" },
-      { obj: global.window_manager, id: "_windowMappedId" },
-      { obj: Main.overview, id: "_overviewShowingId" },
-      { obj: Main.layoutManager, id: "_modalId" },
-      { obj: global.workspace_manager, id: "_workspaceSwitchedId" },
-    ];
+    // Remove timeout handlers
+    if (this._menuOpenTimeout) {
+      GLib.source_remove(this._menuOpenTimeout);
+      this._menuOpenTimeout = null;
+    }
 
-    for (const signal of signals) {
-      if (this._indicator._state[signal.id]) {
-        try {
-          signal.obj.disconnect(this._indicator._state[signal.id]);
-        } catch (e) {
-          // Signal may already be disconnected
-        }
-        this._indicator._state[signal.id] = null;
-      }
+    if (this._closeMenuTimeout) {
+      GLib.source_remove(this._closeMenuTimeout);
+      this._closeMenuTimeout = null;
+    }
+
+    if (this._delayedCloseTimeout1) {
+      GLib.source_remove(this._delayedCloseTimeout1);
+      this._delayedCloseTimeout1 = null;
+    }
+
+    if (this._delayedCloseTimeout2) {
+      GLib.source_remove(this._delayedCloseTimeout2);
+      this._delayedCloseTimeout2 = null;
+    }
+
+    // Disconnect all objects using disconnectObject
+    global.display.disconnectObject(this);
+    global.stage.disconnectObject(this);
+    global.window_manager.disconnectObject(this);
+    Main.overview.disconnectObject(this);
+    
+    const layoutManager = Main.layoutManager;
+    if (layoutManager) {
+      layoutManager.disconnectObject(this);
+    }
+
+    const workspaceManager = global.workspace_manager;
+    if (workspaceManager) {
+      workspaceManager.disconnectObject(this);
     }
   }
 
@@ -578,19 +562,14 @@ export class IndicatorEventHandlers {
   }
 
   destroy() {
-    for (const [key, signal] of this._signalIds) {
-      if (signal.obj && signal.id) {
-        signal.obj.disconnect(signal.id);
-      }
-    }
-    this._signalIds.clear();
+    // Disconnect all signal connections
+    this._indicator._controls?.disconnectObject(this);
+    this._indicator._panelUI?.panelPrevBtn?.disconnectObject(this);
+    this._indicator._panelUI?.panelPlayBtn?.disconnectObject(this);
+    this._indicator._panelUI?.panelNextBtn?.disconnectObject(this);
+    Main.sessionMode?.disconnectObject(this);
 
     this.removeWindowMonitoring();
-
-    if (this._indicator._state._sessionModeId) {
-      Main.sessionMode.disconnect(this._indicator._state._sessionModeId);
-      this._indicator._state._sessionModeId = 0;
-    }
 
     if (this._pauseOperationsTimeout) {
       GLib.source_remove(this._pauseOperationsTimeout);
