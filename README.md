@@ -28,7 +28,8 @@
 - **Dark mode friendly** — Looks gorgeous in both light and dark themes
 
 <div align="center">
-<img src="icons/img1.png" alt="Media Controller UI" width="600">
+<img width="580" height="703" alt="image" src="https://github.com/user-attachments/assets/bf9bd6a5-baf8-4430-8a86-e781d8bc890d" />
+
 <br>
 <em>Beautiful media controls integrated seamlessly into GNOME Shell</em>
 </div>
@@ -66,11 +67,12 @@ Works flawlessly with **multiple browser tabs** playing media simultaneously!
 </div>
 
 ### Rotating album art image cover 
-![art](https://github.com/user-attachments/assets/d2c25e5d-3dfb-4da8-93db-4a94fadaf1d0)
+![reddit](https://github.com/user-attachments/assets/2ce518d1-e1f5-435b-a07e-8c8d02e04402)
 
 
 ### Rotating album & artist name 
-![album](https://github.com/user-attachments/assets/69c9135f-e5c3-426b-a7a5-21e5a8e3cb05)
+![rotate](https://github.com/user-attachments/assets/87015682-1818-439e-a16a-9b46a83200e5)
+
 
 
 
