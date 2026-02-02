@@ -122,7 +122,7 @@ Works flawlessly with **multiple browser tabs** playing media simultaneously!
 
 ```bash
 # Clone the repository
-git clone https://github.com/Sanjai-Shaarugesh/Advance-media-controller.git
+git clone https://github.com/Sanjai-Shaarugesh/Advanced-media-controller.git
 cd Advanced-media-controller
 
 # Copy to extensions directory
@@ -133,7 +133,7 @@ cp -r . ~/.local/share/gnome-shell/extensions/Advanced-media-controller/
 # Wayland: Log out and log back in
 
 # Enable the extension
-gnome-extensions enable Advanced-media-controller.com
+gnome-extensions enable advanced-media-controller@sanjai.com
 ```
 
 ### Method 3: From Release Package
@@ -316,8 +316,8 @@ If you find this extension useful, consider:
 
 ## 📮 Contact
 
-- **Issues**: [GitHub Issues](https://github.com/Sanjai-Shaarugesh/Advance-media-controller/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/Sanjai-Shaarugesh/Advance-media-controller/discussions)
+- **Issues**: [GitHub Issues](https://github.com/Sanjai-Shaarugesh/Advanced-media-controller/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/Sanjai-Shaarugesh/Advanced-media-controller/discussions)
 
 ---
 
