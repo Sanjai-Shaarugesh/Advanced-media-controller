@@ -74,7 +74,8 @@ Works flawlessly with **multiple browser tabs** playing media simultaneously!
 ![rotate](https://github.com/user-attachments/assets/87015682-1818-439e-a16a-9b46a83200e5)
 
 
-
+### Double-click album art cover to enable(or)disable vinyl record effect
+![reddit (online-video-cutter com) (1)](https://github.com/user-attachments/assets/cdaab701-b012-466a-ae71-52133d4f785a)
 
 
 ### ⚙️ Highly Customizable
