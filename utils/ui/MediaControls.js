@@ -1,11 +1,16 @@
 import St from "gi://St";
 import GObject from "gi://GObject";
 import Clutter from "gi://Clutter";
-import GLib from "gi://GLib";
 import { ControlButtons } from "./ControlButtons.js";
 import { AlbumArt } from "./AlbumArt.js";
 import { ProgressSlider } from "./ProgressSlider.js";
 import { PlayerTabs } from "./PlayerTabs.js";
+import { ScrollingLabel } from "./ScrollingLabel.js";
+
+const TITLE_VIEWPORT_WIDTH = 300;
+const ARTIST_VIEWPORT_WIDTH = 280;
+const LOOP_PAUSE_MS = 1200;
+const BASE_PX_PER_SEC = 50;
 
 export const MediaControls = GObject.registerClass(
   {
@@ -31,20 +36,19 @@ export const MediaControls = GObject.registerClass(
       this._currentPlayerName = null;
       this._playerSliderPositions = new Map();
       this._playerArtCache = new Map();
-      this._artistScrollTimeout = null;
-      this._artistScrollPosition = 0;
-      this._titleScrollTimeout = null;
-      this._titleScrollPosition = 0;
+
+      this._titleScrollLabel = null;
+      this._artistScrollLabel = null;
 
       this._buildUI();
     }
 
     _buildUI() {
+      // Player tabs
       const headerBox = new St.BoxLayout({
         style: "margin-bottom: 20px; spacing: 8px;",
         x_align: Clutter.ActorAlign.CENTER,
       });
-
       this._playerTabs = new PlayerTabs();
       this._playerTabs.connect("player-changed", (_, name) =>
         this.emit("player-changed", name),
@@ -52,36 +56,36 @@ export const MediaControls = GObject.registerClass(
       headerBox.add_child(this._playerTabs);
       this.add_child(headerBox);
 
+      // Album art
       this._albumArt = new AlbumArt(this._settings);
       this.add_child(this._albumArt);
 
-      const infoBox = new St.BoxLayout({
+      // Info box
+      this._infoBox = new St.BoxLayout({
         vertical: true,
         style: "spacing: 6px; margin-bottom: 24px;",
         x_align: Clutter.ActorAlign.CENTER,
       });
 
-      this._titleLabel = new St.Label({
-        text: globalThis._?.("No media playing") || "No media playing",
-        style:
-          "font-weight: 700; font-size: 16px; text-align: center; max-width: 300px;",
+      // Title slot
+      this._titleSlot = new St.BoxLayout({
         x_align: Clutter.ActorAlign.CENTER,
+        y_align: Clutter.ActorAlign.CENTER,
+        style: "min-height: 28px; width: " + TITLE_VIEWPORT_WIDTH + "px;",
       });
-      this._titleLabel.clutter_text.ellipsize = 3;
-      this._titleLabel.clutter_text.line_alignment = 2;
-      infoBox.add_child(this._titleLabel);
+      this._infoBox.add_child(this._titleSlot);
 
-      this._artistLabel = new St.Label({
-        text: "",
-        style:
-          "font-size: 13px; font-weight: 500; text-align: center; max-width: 280px;",
+      // Artist slot
+      this._artistSlot = new St.BoxLayout({
         x_align: Clutter.ActorAlign.CENTER,
+        y_align: Clutter.ActorAlign.CENTER,
+        style: "min-height: 22px; width: " + ARTIST_VIEWPORT_WIDTH + "px;",
       });
-      this._artistLabel.clutter_text.ellipsize = 0;
-      this._artistLabel.clutter_text.line_alignment = 2;
-      infoBox.add_child(this._artistLabel);
-      this.add_child(infoBox);
+      this._infoBox.add_child(this._artistSlot);
 
+      this.add_child(this._infoBox);
+
+      // Progress slider
       this._progressSlider = new ProgressSlider();
       this._progressSlider.connect("seek", (_, position) =>
         this.emit("seek", position),
@@ -100,6 +104,7 @@ export const MediaControls = GObject.registerClass(
       });
       this.add_child(this._progressSlider);
 
+      // Control buttons
       this._controlButtons = new ControlButtons();
       this._controlButtons.connect("play-pause", () => this.emit("play-pause"));
       this._controlButtons.connect("next", () => this.emit("next"));
@@ -109,111 +114,111 @@ export const MediaControls = GObject.registerClass(
       this.add_child(this._controlButtons);
     }
 
-    _startArtistScrolling(fullText) {
-      this._stopArtistScrolling();
+    _calcSpeed(speedPref, status) {
+      const eff =
+        status === "Paused"
+          ? Math.max(1, Math.floor(speedPref / 3))
+          : speedPref;
+      return Math.round(BASE_PX_PER_SEC * (eff / 5));
+    }
 
-      const MAX_CHARS = 35;
+    _updateSlotLabel(
+      slot,
+      existing,
+      fullText,
+      enabled,
+      viewW,
+      speedPref,
+      status,
+      textStyle,
+    ) {
+      if (!enabled) {
+        if (existing) {
+          existing.destroy();
+        }
+        slot.destroy_all_children();
 
-      // Check if scrolling is enabled in settings
-      const scrollEnabled = this._settings.get_boolean("enable-artist-scroll");
-
-      if (fullText.length <= MAX_CHARS || !scrollEnabled) {
-        // If text is short enough or scrolling disabled, just display it
-        this._artistLabel.text =
-          fullText.length > MAX_CHARS
-            ? fullText.substring(0, MAX_CHARS - 3) + "..."
-            : fullText;
-        return;
+        const lbl = new St.Label({
+          text: fullText,
+          y_align: Clutter.ActorAlign.CENTER,
+          style: textStyle + " max-width: " + viewW + "px;",
+        });
+        lbl.clutter_text.ellipsize = 3; // Pango.EllipsizeMode.END
+        lbl.clutter_text.single_line_mode = true;
+        slot.add_child(lbl);
+        return null;
       }
 
-      const paddedText = fullText + "   •   ";
+      const speed = this._calcSpeed(speedPref, status);
 
-      // Get scroll speed from settings (1-10)
-      const scrollSpeed = this._settings.get_int("artist-scroll-speed");
-      // Convert speed to interval (lower interval = faster scroll)
-      // Speed 1 = 250ms, Speed 10 = 25ms
-      const interval = Math.max(25, 275 - scrollSpeed * 25);
+      if (existing) {
+        existing.setScrollSpeed(speed);
+        existing.setText(fullText);
+        return existing;
+      }
 
-      this._artistScrollTimeout = GLib.timeout_add(
-        GLib.PRIORITY_LOW,
-        interval,
-        () => {
-          this._artistScrollPosition++;
+      slot.destroy_all_children();
+      const widget = new ScrollingLabel({
+        text: fullText,
+        viewportWidth: viewW,
+        isScrolling: true,
+        initPaused: false,
+        scrollSpeed: speed,
+        scrollPauseTime: LOOP_PAUSE_MS,
+        textStyle,
+      });
+      slot.add_child(widget);
+      return widget;
+    }
 
-          if (this._artistScrollPosition >= paddedText.length) {
-            this._artistScrollPosition = 0;
-          }
+    _updateTitleLabel(fullText, status) {
+      const enabled = this._settings.get_boolean("enable-title-scroll");
+      const speed = this._settings.get_int("title-scroll-speed");
+      const style = "font-weight: 700; font-size: 16px;";
 
-          const displayText =
-            paddedText.substring(this._artistScrollPosition) +
-            paddedText.substring(0, this._artistScrollPosition);
-
-          this._artistLabel.text = displayText.substring(0, MAX_CHARS);
-
-          return GLib.SOURCE_CONTINUE;
-        },
+      this._titleScrollLabel = this._updateSlotLabel(
+        this._titleSlot,
+        this._titleScrollLabel,
+        fullText,
+        enabled,
+        TITLE_VIEWPORT_WIDTH,
+        speed,
+        status,
+        style,
       );
     }
 
-    _stopArtistScrolling() {
-      if (this._artistScrollTimeout) {
-        GLib.source_remove(this._artistScrollTimeout);
-        this._artistScrollTimeout = null;
-      }
-      this._artistScrollPosition = 0;
-    }
+    _updateArtistLabel(fullText, status) {
+      const enabled = this._settings.get_boolean("enable-artist-scroll");
+      const speed = this._settings.get_int("artist-scroll-speed");
+      const style = "font-size: 13px; font-weight: 500;";
 
-    _startTitleScrolling(fullText) {
-      this._stopTitleScrolling();
-
-      const MAX_CHARS = 35;
-
-      // Check if scrolling is enabled in settings
-      const scrollEnabled = this._settings.get_boolean("enable-title-scroll");
-
-      if (fullText.length <= MAX_CHARS || !scrollEnabled) {
-        // If text is short enough or scrolling disabled, just display it
-        this._titleLabel.text =
-          fullText.length > MAX_CHARS
-            ? fullText.substring(0, MAX_CHARS - 3) + "..."
-            : fullText;
-        return;
-      }
-
-      const paddedText = fullText + "   •   ";
-
-      // Get scroll speed from settings (1-10)
-      const scrollSpeed = this._settings.get_int("title-scroll-speed");
-      // Convert speed to interval (lower interval = faster scroll)
-      const interval = Math.max(25, 275 - scrollSpeed * 25);
-
-      this._titleScrollTimeout = GLib.timeout_add(
-        GLib.PRIORITY_LOW,
-        interval,
-        () => {
-          this._titleScrollPosition++;
-
-          if (this._titleScrollPosition >= paddedText.length) {
-            this._titleScrollPosition = 0;
-          }
-
-          const displayText =
-            paddedText.substring(this._titleScrollPosition) +
-            paddedText.substring(0, this._titleScrollPosition);
-
-          this._titleLabel.text = displayText.substring(0, MAX_CHARS);
-
-          return GLib.SOURCE_CONTINUE;
-        },
+      this._artistScrollLabel = this._updateSlotLabel(
+        this._artistSlot,
+        this._artistScrollLabel,
+        fullText,
+        enabled,
+        ARTIST_VIEWPORT_WIDTH,
+        speed,
+        status,
+        style,
       );
     }
 
-    _stopTitleScrolling() {
-      if (this._titleScrollTimeout) {
-        GLib.source_remove(this._titleScrollTimeout);
-        this._titleScrollTimeout = null;
+    _stopTitleLabel() {
+      if (this._titleScrollLabel) {
+        this._titleScrollLabel.destroy();
+        this._titleScrollLabel = null;
       }
-      this._titleScrollPosition = 0;
+      this._titleSlot.destroy_all_children();
+    }
+
+    _stopArtistLabel() {
+      if (this._artistScrollLabel) {
+        this._artistScrollLabel.destroy();
+        this._artistScrollLabel = null;
+      }
+      this._artistSlot.destroy_all_children();
     }
 
     update(info, playerName, manager) {
@@ -224,50 +229,38 @@ export const MediaControls = GObject.registerClass(
 
       this._progressSlider.setPlayerName(playerName);
 
-      const metadata = this._getMetadata(playerName, manager);
-
+      // Album art
       if (playerChanged) {
-        const savedArt = this._playerArtCache.get(playerName);
-        if (savedArt && savedArt === info.artUrl) {
-          this._albumArt.loadCover(info.artUrl, true);
-        } else if (info.artUrl) {
-          this._albumArt.loadCover(info.artUrl, true);
-        } else {
-          this._albumArt.setDefaultCover();
-        }
-      } else {
-        if (
-          info.artUrl &&
-          this._playerArtCache.get(playerName) !== info.artUrl
-        ) {
-          this._albumArt.loadCover(info.artUrl);
-        }
+        if (info.artUrl) this._albumArt.loadCover(info.artUrl, true);
+        else this._albumArt.setDefaultCover();
+      } else if (
+        info.artUrl &&
+        this._playerArtCache.get(playerName) !== info.artUrl
+      ) {
+        this._albumArt.loadCover(info.artUrl);
       }
-
       this._playerArtCache.set(playerName, info.artUrl);
 
-      // Use title scrolling instead of just setting text
-      const titleText = info.title || globalThis._?.("Unknown") || "Unknown";
-      this._startTitleScrolling(titleText);
+      // Labels
+      this._updateTitleLabel(info.title || "Unknown", info.status);
 
       if (info.artists && info.artists.length > 0) {
-        const artistText = info.artists.join(", ");
-        this._startArtistScrolling(artistText);
-        this._artistLabel.show();
+        this._updateArtistLabel(info.artists.join(", "), info.status);
+        this._artistSlot.show();
       } else {
-        this._stopArtistScrolling();
-        this._artistLabel.hide();
+        this._stopArtistLabel();
+        this._artistSlot.hide();
       }
 
       this._controlButtons.updateButtons(info);
 
+      const metadata = this._getMetadata(playerName, manager);
       this._progressSlider.updatePlaybackState(
         info.status === "Playing",
         metadata,
         info.status,
       );
 
-      // Control album art rotation based on playback status
       if (info.status === "Playing") {
         this._albumArt.startRotation(true);
       } else if (info.status === "Paused") {
@@ -279,26 +272,20 @@ export const MediaControls = GObject.registerClass(
 
     _getMetadata(playerName, manager) {
       if (!playerName || !manager) return null;
-
       const proxy = manager._proxies.get(playerName);
       if (!proxy) return null;
-
       const metaV = proxy.get_cached_property("Metadata");
       if (!metaV) return null;
 
       const meta = {};
       const len = metaV.n_children();
-
       for (let i = 0; i < len; i++) {
         const item = metaV.get_child_value(i);
         const key = item.get_child_value(0).get_string()[0];
         const valueVariant = item.get_child_value(1).get_variant();
-
-        if (key) {
+        if (key)
           meta[key] = valueVariant ? valueVariant.recursiveUnpack() : null;
-        }
       }
-
       return meta;
     }
 
@@ -308,22 +295,20 @@ export const MediaControls = GObject.registerClass(
 
     startPositionUpdate() {
       this._progressSlider.startPositionUpdate();
+      // Resume scroll labels that were paused when the popup closed.
+      this._titleScrollLabel?.resumeScrolling();
+      this._artistScrollLabel?.resumeScrolling();
     }
 
     stopPositionUpdate() {
       this._progressSlider.stopPositionUpdate();
-      this._stopArtistScrolling();
-      this._stopTitleScrolling();
-      
-      // Stop album art rotation when menu closes
-      if (this._albumArt) {
-        this._albumArt.pauseRotation();
-      }
+      this._titleScrollLabel?.pauseScrolling();
+      this._artistScrollLabel?.pauseScrolling();
+      if (this._albumArt) this._albumArt.pauseRotation();
     }
 
     onSeeked(position) {
       this._progressSlider.onSeeked(position);
-
       if (this._currentPlayerName) {
         this._playerSliderPositions.set(this._currentPlayerName, {
           position: this._progressSlider.currentPosition,
@@ -336,17 +321,12 @@ export const MediaControls = GObject.registerClass(
     }
 
     destroy() {
-      this.stopPositionUpdate();
-      this._stopArtistScrolling();
-      this._stopTitleScrolling();
-
+      this._stopTitleLabel();
+      this._stopArtistLabel();
+      this._progressSlider.stopPositionUpdate();
       this._playerSliderPositions.clear();
       this._playerArtCache.clear();
-
-      if (this._albumArt) {
-        this._albumArt.destroy();
-      }
-
+      if (this._albumArt) this._albumArt.destroy();
       super.destroy();
     }
   },

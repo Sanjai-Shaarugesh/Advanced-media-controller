@@ -100,43 +100,42 @@ export const ControlButtons = GObject.registerClass(
     }
 
     _createPlayButton(iconName, size) {
-        const button = new St.Button({
-          style_class: "media-play-button-modern",
-          style: `
+      const button = new St.Button({
+        style_class: "media-play-button-modern",
+        style: `
             padding: 16px;
             border-radius: 50%;
             background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.1) 100%);
             box-shadow: 0 4px 16px rgba(0,0,0,0.3);
           `,
-          child: new St.Icon({
-            icon_name: iconName,
-            icon_size: size,
-            style: "color: #ffffff;",
-          }),
-        });
-  
-        button.connect("enter-event", () => {
-          button.style = `
+        child: new St.Icon({
+          icon_name: iconName,
+          icon_size: size,
+          style: "color: #ffffff;",
+        }),
+      });
+
+      button.connect("enter-event", () => {
+        button.style = `
             padding: 16px;
             border-radius: 50%;
             background: linear-gradient(135deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.15) 100%);
             box-shadow: 0 6px 20px rgba(0,0,0,0.4);
             transform: scale(1.08);
           `;
-        });
-  
-        button.connect("leave-event", () => {
-          button.style = `
+      });
+
+      button.connect("leave-event", () => {
+        button.style = `
             padding: 16px;
             border-radius: 50%;
             background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.1) 100%);
             box-shadow: 0 4px 16px rgba(0,0,0,0.3);
           `;
-        });
-  
-        return button;
-      }
+      });
 
+      return button;
+    }
 
     updateButtons(info) {
       const playIcon =

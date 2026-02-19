@@ -1,55 +1,48 @@
 import { Extension } from "resource:///org/gnome/shell/extensions/extension.js";
 import * as Main from "resource:///org/gnome/shell/ui/main.js";
+import GLib from "gi://GLib";
 import { MediaIndicator } from "./utils/indicator.js";
 
 export default class MediaExtension extends Extension {
   enable() {
-    console.debug("Media Controls Extension Enabled");
-
     this._settings = this.getSettings();
-    this._indicator = new MediaIndicator(this._settings);
+    this._repositionDebounceId = null;
+    this._settingsChangedId = 0;
+
+    this._indicator = new MediaIndicator(this._settings, this);
     this._addToPanel();
 
-    this._sessionModeChangedId = Main.sessionMode.connect("updated", () => {
-      console.debug(
-        `MediaControls: Session mode changed to: ${Main.sessionMode.currentMode}`,
+    // Reposition the indicator when the user changes its panel position/index.
+    // Debounced so rapid back-to-back setting changes only trigger one move.
+    this._settingsChangedId = this._settings.connect("changed", (_, key) => {
+      if (key !== "panel-position" && key !== "panel-index") return;
+
+      if (this._repositionDebounceId) {
+        GLib.source_remove(this._repositionDebounceId);
+        this._repositionDebounceId = null;
+      }
+
+      this._repositionDebounceId = GLib.timeout_add(
+        GLib.PRIORITY_DEFAULT_IDLE,
+        150,
+        () => {
+          this._repositionDebounceId = null;
+          this._repositionIndicator();
+          return GLib.SOURCE_REMOVE;
+        },
       );
     });
   }
 
-  _addToPanel() {
-    const position = this._settings.get_string("panel-position");
-    const index = this._settings.get_int("panel-index");
-
-    let targetBox;
-    switch (position) {
-      case "left":
-        targetBox = Main.panel._leftBox;
-        break;
-      case "center":
-        targetBox = Main.panel._centerBox;
-        break;
-      case "right":
-      default:
-        targetBox = Main.panel._rightBox;
-        break;
+  disable() {
+    if (this._repositionDebounceId) {
+      GLib.source_remove(this._repositionDebounceId);
+      this._repositionDebounceId = null;
     }
 
-    const actualIndex =
-      index === -1 ? 0 : Math.min(index, targetBox.get_n_children());
-    targetBox.insert_child_at_index(this._indicator.container, actualIndex);
-
-    console.debug(
-      `MediaControls: Added to panel at ${position}[${actualIndex}]`,
-    );
-  }
-
-  disable() {
-    console.debug("Media Controls Extension Disabled");
-
-    if (this._sessionModeChangedId) {
-      Main.sessionMode.disconnect(this._sessionModeChangedId);
-      this._sessionModeChangedId = 0;
+    if (this._settingsChangedId) {
+      this._settings.disconnect(this._settingsChangedId);
+      this._settingsChangedId = 0;
     }
 
     if (this._indicator) {
@@ -58,5 +51,62 @@ export default class MediaExtension extends Extension {
     }
 
     this._settings = null;
+  }
+
+  get _statusAreaKey() {
+    return `media-controls-${this.uuid}`;
+  }
+
+  _addToPanel() {
+    const { position, index } = this._getPanelPlacement();
+    Main.panel.addToStatusArea(
+      this._statusAreaKey,
+      this._indicator,
+      index,
+      position,
+    );
+  }
+
+  _repositionIndicator() {
+    if (!this._indicator) return;
+
+    try {
+      const container = this._indicator.container;
+      const parent = container.get_parent?.();
+      if (parent) parent.remove_child(container);
+
+      if (Main.panel.statusArea[this._statusAreaKey])
+        delete Main.panel.statusArea[this._statusAreaKey];
+
+      const { position, index } = this._getPanelPlacement();
+      Main.panel.addToStatusArea(
+        this._statusAreaKey,
+        this._indicator,
+        index,
+        position,
+      );
+    } catch (e) {
+      console.error("MediaControls: failed to reposition indicator:", e);
+    }
+  }
+
+  /**
+
+   * @returns {{ position: string, index: number }}
+   */
+  _getPanelPlacement() {
+    const position = this._settings.get_string("panel-position"); // "left"|"center"|"right"
+    const rawIndex = this._settings.get_int("panel-index"); // -1 = automatic → 0
+
+    const boxMap = {
+      left: "_leftBox",
+      center: "_centerBox",
+      right: "_rightBox",
+    };
+    const targetBox = Main.panel[boxMap[position] ?? "_rightBox"];
+    const index =
+      rawIndex === -1 ? 0 : Math.min(rawIndex, targetBox.get_n_children());
+
+    return { position, index };
   }
 }

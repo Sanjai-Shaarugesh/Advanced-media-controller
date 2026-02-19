@@ -18,33 +18,58 @@ export class IndicatorUIUpdater {
       const isLocked = Main.sessionMode.isLocked || false;
       const isUnlockDialog = Main.sessionMode.currentMode === "unlock-dialog";
 
-      const hasPlayers =
-        this._indicator._manager &&
-        this._indicator._manager.getPlayers().length > 0;
-
-      if (!hasPlayers) {
+      if (isLocked || isUnlockDialog) {
         this._indicator.hide();
         return;
       }
 
+      const manager = this._indicator._manager;
+      if (!manager) {
+        this._indicator.hide();
+        return;
+      }
+
+      const players = manager.getPlayers();
+      if (players.length === 0) {
+        this._indicator.hide();
+        return;
+      }
+
+      // Check whether the current player has active media.
       const info = this._indicator._state._currentPlayer
-        ? this._indicator._manager.getPlayerInfo(
-            this._indicator._state._currentPlayer,
-          )
+        ? manager.getPlayerInfo(this._indicator._state._currentPlayer)
         : null;
-      const hasMedia =
+      const currentHasMedia =
         info && (info.status === "Playing" || info.status === "Paused");
 
-      if (isLocked || isUnlockDialog) {
-        this._indicator.hide();
-      } else {
-        if (hasMedia) {
+      if (currentHasMedia) {
+        this._indicator.show();
+        return;
+      }
+
+      // Current player has no active media — scan remaining players so the
+      // indicator stays visible as long as ANY player is playing/paused.
+      for (const name of players) {
+        const pInfo = manager.getPlayerInfo(name);
+        if (
+          pInfo &&
+          (pInfo.status === "Playing" || pInfo.status === "Paused")
+        ) {
+          // Switch current player to this active one automatically.
+          if (!this._indicator._state._manuallySelected) {
+            this._indicator._state._currentPlayer = name;
+            this.updateUI();
+          }
           this._indicator.show();
-        } else {
-          this._indicator.hide();
+          return;
         }
       }
-    } catch (e) {}
+
+      // No player with active media found — hide the indicator.
+      this._indicator.hide();
+    } catch (e) {
+      console.error("Error in updateVisibility:", e);
+    }
   }
 
   updateUI() {
@@ -91,7 +116,7 @@ export class IndicatorUIUpdater {
       this.updateLabel();
       this.updateTabs();
     } catch (e) {
-      logError(e, "Error in updateUI");
+      console.error("Error in updateUI:", e);
     }
   }
 
@@ -115,6 +140,7 @@ export class IndicatorUIUpdater {
       const info = this._indicator._manager.getPlayerInfo(
         this._indicator._state._currentPlayer,
       );
+
       if (
         !showTrackName ||
         !info ||
@@ -129,27 +155,19 @@ export class IndicatorUIUpdater {
       const separator = this._indicator._settings.get_string("separator-text");
 
       let text = info.title || "Unknown";
-
       if (showArtist && info.artists && info.artists.length > 0) {
         text += separator + info.artists.join(", ");
       }
 
-      const maxLength = this._indicator._settings.get_int("max-title-length");
-
-      if (text.length > maxLength) {
-        this._indicator._state._fullText = text;
-        this._indicator._panelUI.startScrolling(
-          text,
-          this._indicator._settings,
-        );
-      } else {
-        this._indicator._panelUI.stopScrolling();
-        this._indicator._panelUI.label.text = text;
-      }
+      this._indicator._panelUI.startScrolling(
+        text,
+        this._indicator._settings,
+        info.status,
+      );
 
       this._indicator._panelUI.label.show();
     } catch (e) {
-      logError(e, "Error in updateLabel");
+      console.error("Error in updateLabel:", e);
     }
   }
 
@@ -169,7 +187,7 @@ export class IndicatorUIUpdater {
         this._indicator._manager,
       );
     } catch (e) {
-      logError(e, "Error in updateTabs");
+      console.error("Error in updateTabs:", e);
     }
   }
 }

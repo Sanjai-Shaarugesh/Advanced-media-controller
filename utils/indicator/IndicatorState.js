@@ -57,7 +57,6 @@ export class IndicatorState {
         console.error("Safe execute error:", e);
       }
 
-      // Remove timeout before creating new one
       if (this._errorRecoveryTimeout) {
         GLib.source_remove(this._errorRecoveryTimeout);
         this._errorRecoveryTimeout = null;
@@ -89,31 +88,26 @@ export class IndicatorState {
   }
 
   destroy() {
-    // Remove error recovery timeout
     if (this._errorRecoveryTimeout) {
       GLib.source_remove(this._errorRecoveryTimeout);
       this._errorRecoveryTimeout = null;
     }
 
-    // Remove all pending operations
     for (const id of this._pendingOperations) {
       GLib.source_remove(id);
     }
     this._pendingOperations.clear();
 
-    // Remove scroll timeout
     if (this._scrollTimeout) {
       GLib.source_remove(this._scrollTimeout);
       this._scrollTimeout = null;
     }
 
-    // Remove update throttle
     if (this._updateThrottle) {
       GLib.source_remove(this._updateThrottle);
       this._updateThrottle = null;
     }
 
-    // Remove init timeout
     if (this._initTimeout) {
       GLib.source_remove(this._initTimeout);
       this._initTimeout = null;

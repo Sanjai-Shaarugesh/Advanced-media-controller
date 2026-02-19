@@ -7,8 +7,14 @@
   "gettext-domain": "advanced-media-controller",
   "name": "Advanced Media Controller",
   "settings-schema": "org.gnome.shell.extensions.advanced-media-controller",
-  "shell-version": ["45", "46", "47", "48", "49"],
+  "shell-version": [
+    "45",
+    "46",
+    "47",
+    "48",
+    "49"
+  ],
   "url": "https://github.com/Sanjai-Shaarugesh/Advanced-media-controller",
   "uuid": "advanced-media-controller@sanjai.com",
-  "version": 8
+  "version": 14
 }

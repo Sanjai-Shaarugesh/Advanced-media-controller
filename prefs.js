@@ -10,7 +10,7 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     const settings = this.getSettings();
 
     window.set_title("Advanced Media Controller");
-    window.set_default_size(700, 650);
+    window.set_default_size(700, 700);
     window.set_resizable(true);
 
     const generalPage = new Adw.PreferencesPage({
@@ -20,156 +20,146 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     window.add(generalPage);
 
     const panelGroup = new Adw.PreferencesGroup({
-      title: "Panel Settings",
-      description: "Configure the position and appearance in the top panel",
+      title: "Panel Placement",
+      description: "Where the indicator sits in the top bar",
     });
     generalPage.add(panelGroup);
 
-    const positionRow = new Adw.ComboRow({
-      title: "Panel Position",
-    });
-
+    const positionRow = new Adw.ComboRow({ title: "Panel Position" });
     const positionModel = new Gtk.StringList();
-    positionModel.append("Left");
-    positionModel.append("Center");
-    positionModel.append("Right");
+    ["Left", "Center", "Right"].forEach((l) => positionModel.append(l));
     positionRow.model = positionModel;
-
     const positions = ["left", "center", "right"];
-    const currentPos = settings.get_string("panel-position");
-    positionRow.selected = positions.indexOf(currentPos);
-
-    positionRow.connect("notify::selected", (widget) => {
-      settings.set_string("panel-position", positions[widget.selected]);
+    const savedPos = settings.get_string("panel-position");
+    positionRow.selected = Math.max(0, positions.indexOf(savedPos));
+    positionRow.connect("notify::selected", (w) => {
+      settings.set_string("panel-position", positions[w.selected]);
     });
-
     panelGroup.add(positionRow);
 
     const indexRow = new Adw.SpinRow({
       title: "Panel Index",
-      subtitle: "Position within the panel area (-1 for automatic)",
+      subtitle: "Position within the panel area (-1 = automatic)",
       adjustment: new Gtk.Adjustment({
         lower: -1,
         upper: 20,
         step_increment: 1,
-        page_increment: 1,
+        page_increment: 5,
+        value: settings.get_int("panel-index"),
       }),
     });
-
     settings.bind(
       "panel-index",
       indexRow,
       "value",
       Gio.SettingsBindFlags.DEFAULT,
     );
-
     panelGroup.add(indexRow);
 
-    const displayGroup = new Adw.PreferencesGroup({
-      title: "Display Settings",
-      description: "Configure what appears in the panel",
+    const labelGroup = new Adw.PreferencesGroup({
+      title: "Panel Label",
+      description: "Track name shown in the top bar",
     });
-    generalPage.add(displayGroup);
+    generalPage.add(labelGroup);
 
     const showTrackRow = new Adw.SwitchRow({
       title: "Show Track Name",
-      subtitle: "Display track information in the panel",
+      subtitle: "Display the current track title in the panel",
     });
-
     settings.bind(
       "show-track-name",
       showTrackRow,
       "active",
       Gio.SettingsBindFlags.DEFAULT,
     );
-
-    displayGroup.add(showTrackRow);
+    labelGroup.add(showTrackRow);
 
     const showArtistRow = new Adw.SwitchRow({
       title: "Show Artist Name",
-      subtitle: "Include artist name with track title",
+      subtitle: "Append the artist name to the track title",
     });
-
     settings.bind(
       "show-artist",
       showArtistRow,
       "active",
       Gio.SettingsBindFlags.DEFAULT,
     );
+    labelGroup.add(showArtistRow);
 
-    displayGroup.add(showArtistRow);
-
-    const maxLengthRow = new Adw.SpinRow({
-      title: "Maximum Title Length",
-      subtitle: "Characters to display before scrolling starts",
-      adjustment: new Gtk.Adjustment({
-        lower: 10,
-        upper: 100,
-        step_increment: 5,
-        page_increment: 10,
-      }),
+    const separatorRow = new Adw.EntryRow({
+      title: "Title / Artist Separator",
+      text: settings.get_string("separator-text"),
+      show_apply_button: true,
     });
+    separatorRow.connect("apply", () => {
+      settings.set_string("separator-text", separatorRow.text);
+    });
+    labelGroup.add(separatorRow);
 
+    const panelScrollGroup = new Adw.PreferencesGroup({
+      title: "Panel Scrolling",
+      description: "Marquee scroll of the track label in the top bar",
+    });
+    generalPage.add(panelScrollGroup);
+
+    const enablePanelScrollRow = new Adw.SwitchRow({
+      title: "Enable Panel Label Scrolling",
+      subtitle:
+        "Scroll the track/artist text one full loop then pause before repeating. " +
+        "When off, the text is truncated with an ellipsis.",
+    });
     settings.bind(
-      "max-title-length",
-      maxLengthRow,
-      "value",
+      "enable-panel-scroll",
+      enablePanelScrollRow,
+      "active",
       Gio.SettingsBindFlags.DEFAULT,
     );
+    panelScrollGroup.add(enablePanelScrollRow);
 
-    displayGroup.add(maxLengthRow);
-
-    const scrollSpeedRow = new Adw.SpinRow({
-      title: "Scroll Speed",
+    const panelScrollSpeedRow = new Adw.SpinRow({
+      title: "Panel Scroll Speed",
       subtitle: "1 = slowest, 10 = fastest",
       adjustment: new Gtk.Adjustment({
         lower: 1,
         upper: 10,
         step_increment: 1,
-        page_increment: 1,
+        page_increment: 2,
+        value: settings.get_int("scroll-speed"),
       }),
     });
-
     settings.bind(
       "scroll-speed",
-      scrollSpeedRow,
+      panelScrollSpeedRow,
       "value",
       Gio.SettingsBindFlags.DEFAULT,
     );
+    panelScrollGroup.add(panelScrollSpeedRow);
 
-    displayGroup.add(scrollSpeedRow);
-
-    const separatorRow = new Adw.EntryRow({
-      title: "Separator Text",
-      text: settings.get_string("separator-text"),
+    const popupPage = new Adw.PreferencesPage({
+      title: "Popup Player",
+      icon_name: "media-playback-start-symbolic",
     });
+    window.add(popupPage);
 
-    separatorRow.connect("apply", () => {
-      settings.set_string("separator-text", separatorRow.text);
+    const titleScrollGroup = new Adw.PreferencesGroup({
+      title: "Title Scrolling",
+      description: "Marquee behaviour for the track title inside the popup",
     });
+    popupPage.add(titleScrollGroup);
 
-    displayGroup.add(separatorRow);
-
-    // Popup Player Settings Group
-    const popupGroup = new Adw.PreferencesGroup({
-      title: "Popup Player Settings",
-      description: "Configure scrolling text in the popup media player",
-    });
-    generalPage.add(popupGroup);
-
-    const titleScrollRow = new Adw.SwitchRow({
+    const enableTitleScrollRow = new Adw.SwitchRow({
       title: "Enable Title Scrolling",
-      subtitle: "Scroll long song titles in the popup media player",
+      subtitle:
+        "Scroll long track titles from start to end, pause, then repeat. " +
+        "When off, the text is truncated with an ellipsis.",
     });
-
     settings.bind(
       "enable-title-scroll",
-      titleScrollRow,
+      enableTitleScrollRow,
       "active",
       Gio.SettingsBindFlags.DEFAULT,
     );
-
-    popupGroup.add(titleScrollRow);
+    titleScrollGroup.add(enableTitleScrollRow);
 
     const titleScrollSpeedRow = new Adw.SpinRow({
       title: "Title Scroll Speed",
@@ -178,32 +168,37 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
         lower: 1,
         upper: 10,
         step_increment: 1,
-        page_increment: 1,
+        page_increment: 2,
+        value: settings.get_int("title-scroll-speed"),
       }),
     });
-
     settings.bind(
       "title-scroll-speed",
       titleScrollSpeedRow,
       "value",
       Gio.SettingsBindFlags.DEFAULT,
     );
+    titleScrollGroup.add(titleScrollSpeedRow);
 
-    popupGroup.add(titleScrollSpeedRow);
-
-    const artistScrollRow = new Adw.SwitchRow({
-      title: "Enable Artist Scrolling",
-      subtitle: "Scroll long artist names in the popup media player",
+    const artistScrollGroup = new Adw.PreferencesGroup({
+      title: "Artist Scrolling",
+      description: "Marquee behaviour for the artist name inside the popup",
     });
+    popupPage.add(artistScrollGroup);
 
+    const enableArtistScrollRow = new Adw.SwitchRow({
+      title: "Enable Artist Scrolling",
+      subtitle:
+        "Scroll long artist names from start to end, pause, then repeat. " +
+        "When off, the text is truncated with an ellipsis.",
+    });
     settings.bind(
       "enable-artist-scroll",
-      artistScrollRow,
+      enableArtistScrollRow,
       "active",
       Gio.SettingsBindFlags.DEFAULT,
     );
-
-    popupGroup.add(artistScrollRow);
+    artistScrollGroup.add(enableArtistScrollRow);
 
     const artistScrollSpeedRow = new Adw.SpinRow({
       title: "Artist Scroll Speed",
@@ -212,78 +207,74 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
         lower: 1,
         upper: 10,
         step_increment: 1,
-        page_increment: 1,
+        page_increment: 2,
+        value: settings.get_int("artist-scroll-speed"),
       }),
     });
-
     settings.bind(
       "artist-scroll-speed",
       artistScrollSpeedRow,
       "value",
       Gio.SettingsBindFlags.DEFAULT,
     );
+    artistScrollGroup.add(artistScrollSpeedRow);
 
-    popupGroup.add(artistScrollSpeedRow);
-
-    // Album Art Settings Group
     const albumArtGroup = new Adw.PreferencesGroup({
-      title: "Album Art Settings",
-      description: "Configure album art appearance and animations",
+      title: "Album Art",
+      description: "Vinyl-record rotation animation",
     });
-    generalPage.add(albumArtGroup);
+    popupPage.add(albumArtGroup);
 
     const enableRotationRow = new Adw.SwitchRow({
-      title: "Enable Album Art Rotation",
-      subtitle: "Rotate album art like a vinyl record when music is playing",
+      title: "Enable Vinyl Record Rotation",
+      subtitle:
+        "Spin the album art while playing. " +
+        "Freezes while paused (disc angle preserved) and resets on stop. " +
+        "Double-click the album art to toggle instantly.",
       icon_name: "media-optical-cd-audio-symbolic",
     });
-
     settings.bind(
       "enable-album-art-rotation",
       enableRotationRow,
       "active",
       Gio.SettingsBindFlags.DEFAULT,
     );
-
     albumArtGroup.add(enableRotationRow);
 
     const rotationSpeedRow = new Adw.SpinRow({
-      title: "Rotation Speed",
-      subtitle: "Seconds per full rotation (5 = fastest, 60 = slowest)",
+      title: "Rotation Speed (seconds per revolution)",
+      subtitle: "5 = fastest, 60 = slowest. Recommended: 20-30",
       adjustment: new Gtk.Adjustment({
         lower: 5,
         upper: 60,
         step_increment: 1,
         page_increment: 5,
+        value: settings.get_int("album-art-rotation-speed"),
       }),
     });
-
     settings.bind(
       "album-art-rotation-speed",
       rotationSpeedRow,
       "value",
       Gio.SettingsBindFlags.DEFAULT,
     );
-
     albumArtGroup.add(rotationSpeedRow);
 
-    // Add expander with rotation preview info
     const rotationInfoRow = new Adw.ExpanderRow({
-      title: "Rotation Effect Information",
-      subtitle: "Learn about the vinyl record effect",
+      title: "Vinyl Effect Details",
+      subtitle: "How the animated vinyl record works",
       icon_name: "dialog-information-symbolic",
     });
-
     const infoLabel = new Gtk.Label({
-      label: "The album art rotation creates a vinyl record effect:\n\n" +
-             "• Album cover appears on a spinning vinyl disc\n" +
-             "• Black vinyl record with grooves visible around edges\n" +
-             "• Animated tonearm moves with playback state\n" +
-             "• Smooth rotation animation while music plays\n" +
-             "• Automatically pauses when music is paused\n" +
-             "• Stops completely when music stops\n" +
-             "• Double-click album art to toggle effect on/off\n\n" +
-             "Recommended speed: 20-30 seconds for a realistic vinyl feel",
+      label:
+        "- Album cover appears on a spinning vinyl disc\n" +
+        "- Black vinyl grooves are visible around the edges\n" +
+        "- Animated tonearm moves in and out with playback state\n" +
+        "- Rotation pauses smoothly when music pauses\n" +
+        "  (disc angle is preserved and resumes from the same position)\n" +
+        "- Disc resets to 0 degrees only on a genuine Stop\n" +
+        "- Recommended speed: 20-30 s for a realistic feel\n" +
+        "- Double-click album art to toggle the effect instantly",
       wrap: true,
       xalign: 0,
       margin_top: 12,
@@ -292,18 +283,16 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
       margin_end: 12,
       css_classes: ["dim-label"],
     });
-
-    const infoBox = new Gtk.Box({
-      orientation: Gtk.Orientation.VERTICAL,
-    });
+    const infoBox = new Gtk.Box({ orientation: Gtk.Orientation.VERTICAL });
     infoBox.append(infoLabel);
-
     rotationInfoRow.add_row(infoBox);
     albumArtGroup.add(rotationInfoRow);
 
-    const aboutPage = this._createAboutPage(settings);
+    const aboutPage = this._createAboutPage(window);
     window.add(aboutPage);
   }
+
+  // about page
 
   _createAboutPage() {
     const page = new Adw.PreferencesPage({
@@ -313,7 +302,8 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
 
     const infoGroup = new Adw.PreferencesGroup({
       title: "Advanced Media Controller",
-      description: "Beautiful and modern media controls with multi-instance support",
+      description:
+        "Beautiful and modern media controls with multi-instance support",
     });
 
     const headerBox = new Gtk.Box({
@@ -519,7 +509,8 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
 
     const creditsRow = new Adw.ActionRow({
       title: "Media Data Sources",
-      subtitle: "MPRIS D-Bus interface - Standard media player remote interfacing",
+      subtitle:
+        "MPRIS D-Bus interface - Standard media player remote interfacing",
       activatable: false,
     });
     const apiIcon = new Gtk.Image({
@@ -530,7 +521,8 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
 
     const featuresRow = new Adw.ActionRow({
       title: "Key Features",
-      subtitle: "• Multi-instance browser support\n• Rotating vinyl record album art\n• Animated tonearm\n• Smooth animations\n• Double-click to toggle effects",
+      subtitle:
+        "• Multi-instance browser support\n• Rotating vinyl record album art\n• Animated tonearm\n• Smooth animations\n• Double-click to toggle effects",
       activatable: false,
     });
     const featuresIcon = new Gtk.Image({
@@ -558,92 +550,90 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
   }
 
   _createGitHubIcon() {
-    try {
-      const githubIconPath = `${this.dir.get_path()}/icons/github.svg`;
-      const file = Gio.File.new_for_path(githubIconPath);
+    const svgPath = `${this.dir.get_path()}/icons/github.svg`;
+    if (Gio.File.new_for_path(svgPath).query_exists(null))
+      return new Gtk.Image({ file: svgPath, pixel_size: 20 });
 
-      if (file.query_exists(null)) {
-        return new Gtk.Image({
-          file: githubIconPath,
-          pixel_size: 20,
-        });
-      }
-    } catch (error) {
-      console.log("GitHub icon file not found, creating from SVG data");
-    }
-
-    try {
-      const githubSvg = `<?xml version="1.0" encoding="UTF-8"?>
-<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-</svg>`;
-
-      const tempDir = GLib.get_tmp_dir();
-      const tempPath = `${tempDir}/github-icon-${Date.now()}.svg`;
-      const tempFile = Gio.File.new_for_path(tempPath);
-
-      tempFile.replace_contents(
-        githubSvg,
-        null,
-        false,
-        Gio.FileCreateFlags.NONE,
-        null,
-      );
-
-      const githubIcon = new Gtk.Image({
-        file: tempPath,
-        pixel_size: 20,
-      });
-
-      GLib.timeout_add(GLib.PRIORITY_DEFAULT, 1000, () => {
-        try {
-          tempFile.delete(null);
-        } catch (e) {}
-        return GLib.SOURCE_REMOVE;
-      });
-
-      return githubIcon;
-    } catch (error) {
-      console.error("Failed to create GitHub icon:", error);
-      return new Gtk.Image({
-        icon_name: "software-properties-symbolic",
-        pixel_size: 20,
-      });
-    }
-  }
-
-  _copyToClipboard(text, label = null) {
-    try {
-      const display = Gdk.Display.get_default();
-      if (!display) {
-        throw new Error("No display available");
-      }
-
-      const clipboard = display.get_clipboard();
-      if (!clipboard) {
-        throw new Error("No clipboard available");
-      }
-
-      clipboard.set(text);
-      console.log(
-        "✅ %s copied to clipboard!".replace("%s", label || "Text"),
-      );
-    } catch (error) {
-      console.error("Clipboard error:", error);
-      this._showCopyDialog(text, label);
-    }
-  }
-
-  _showCopyDialog(text, label = null) {
-    const dialog = new Adw.AlertDialog({
-      heading: "Copy to Clipboard",
-      body: "Unable to automatically copy to clipboard. Please manually copy the %s below:".replace("%s", label || "text"),
+    const img = new Gtk.Image({
+      icon_name: "software-properties-symbolic",
+      pixel_size: 20,
     });
 
+    const svg =
+      '<?xml version="1.0" encoding="UTF-8"?>' +
+      '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"' +
+      ' xmlns="http://www.w3.org/2000/svg"><path d="M12 0c-6.626 0-12 5.373' +
+      "-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.23" +
+      "4c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.7" +
+      "56-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07" +
+      " 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5" +
+      ".467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1." +
+      "524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404" +
+      " 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1." +
+      "653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5." +
+      "624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.57" +
+      '6 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>';
+
+    const tmpPath = `${GLib.get_tmp_dir()}/amc-github-icon.svg`;
+    const tmpFile = Gio.File.new_for_path(tmpPath);
+    const bytes = GLib.Bytes.new(new TextEncoder().encode(svg));
+
+    tmpFile.replace_contents_bytes_async(
+      bytes,
+      null,
+      false,
+      Gio.FileCreateFlags.REPLACE_DESTINATION,
+      null,
+      (_file, result) => {
+        try {
+          tmpFile.replace_contents_finish(result);
+          img.set_from_file(tmpPath);
+        } catch (e) {
+          console.warn(
+            "MediaControls prefs: could not write GitHub icon SVG:",
+            e.message,
+          );
+        }
+      },
+    );
+
+    return img;
+  }
+
+  /**
+
+
+   * @param {string} text
+   * @param {Gtk.Window} parentWin
+   */
+  _copyToClipboard(text, parentWin) {
+    const display = Gdk.Display.get_default();
+    if (display) {
+      const clipboard = display.get_clipboard();
+      if (clipboard) {
+        clipboard.set(text);
+        return;
+      }
+    }
+    // Clipboard unavailable — offer a manual-copy dialog
+    this._showCopyDialog(text, parentWin);
+  }
+
+  /**
+
+
+   * @param {string} text
+   * @param {Gtk.Window} parentWin
+   */
+  _showCopyDialog(text, parentWin) {
+    const dialog = new Adw.AlertDialog({
+      heading: "Copy to Clipboard",
+      body: "Unable to copy automatically. Select the address below and press Ctrl+C:",
+    });
     dialog.add_response("close", "Close");
     dialog.set_default_response("close");
 
-    const contentBox = new Gtk.Box({
+    const box = new Gtk.Box({
       orientation: Gtk.Orientation.VERTICAL,
       spacing: 12,
       margin_top: 12,
@@ -651,25 +641,17 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
       margin_start: 12,
       margin_end: 12,
     });
+    box.append(
+      new Gtk.Entry({
+        text,
+        editable: false,
+        can_focus: true,
+        width_chars: 40,
+      }),
+    );
 
-    const entry = new Gtk.Entry({
-      text: text,
-      editable: false,
-      can_focus: true,
-      width_chars: 40,
-    });
+    dialog.set_extra_child(box);
 
-    contentBox.append(entry);
-
-    const instructionLabel = new Gtk.Label({
-      label: "💡 Select the text above and press Ctrl+C to copy",
-      css_classes: ["caption", "dim-label"],
-      halign: Gtk.Align.CENTER,
-      margin_top: 8,
-    });
-    contentBox.append(instructionLabel);
-
-    dialog.set_extra_child(contentBox);
-    dialog.present();
+    dialog.present(parentWin);
   }
 }

@@ -1,11 +1,22 @@
 import St from "gi://St";
-import GLib from "gi://GLib";
 import Gio from "gi://Gio";
 import Clutter from "gi://Clutter";
+import { ScrollingLabel } from "../ui/ScrollingLabel.js";
+
+// Visible pixel width of the panel label
+const PANEL_LABEL_WIDTH = 160;
+// Base px/sec; scaled by speed setting (1-10)
+const BASE_SCROLL_PX_PER_SEC = 50;
+// Pause between scroll loops (ms)
+const LOOP_PAUSE_MS = 1200;
 
 export class PanelUI {
   constructor(indicator) {
     this._indicator = indicator;
+    this._scrollLabel = null;
+    this._settings = null;
+    this._status = "Stopped";
+
     this._buildUI();
   }
 
@@ -16,11 +27,12 @@ export class PanelUI {
     });
     this._indicator.add_child(this._box);
 
+    // app icon
     this._icon = new St.Icon({
+      gicon: Gio.icon_new_for_string("audio-x-generic-symbolic"),
       icon_size: 18,
       y_align: Clutter.ActorAlign.CENTER,
     });
-    this._icon.set_fallback_gicon(null);
     this._box.add_child(this._icon);
 
     this._panelControlsBox = new St.BoxLayout({
@@ -29,44 +41,33 @@ export class PanelUI {
     });
     this._box.add_child(this._panelControlsBox);
 
-    this._panelPrevBtn = this._createPanelButton(
-      "media-skip-backward-symbolic",
-    );
+    this._panelPrevBtn = this._makeButton("media-skip-backward-symbolic");
     this._panelControlsBox.add_child(this._panelPrevBtn);
 
-    this._panelPlayBtn = this._createPanelButton(
-      "media-playback-start-symbolic",
-    );
+    this._panelPlayBtn = this._makeButton("media-playback-start-symbolic");
     this._panelControlsBox.add_child(this._panelPlayBtn);
 
-    this._panelNextBtn = this._createPanelButton("media-skip-forward-symbolic");
+    this._panelNextBtn = this._makeButton("media-skip-forward-symbolic");
     this._panelControlsBox.add_child(this._panelNextBtn);
 
-    this._label = new St.Label({
-      text: "",
+    // label container
+    this._labelContainer = new St.BoxLayout({
       y_align: Clutter.ActorAlign.CENTER,
-      style: "margin-left: 4px;",
+      style: "margin-left: 6px;",
     });
-    this._label.clutter_text.ellipsize = 0;
-    this._box.add_child(this._label);
-    this._label.hide();
+    this._labelContainer.hide();
+    this._box.add_child(this._labelContainer);
   }
 
-  _createPanelButton(iconName) {
-    const button = new St.Button({
+  _makeButton(iconName) {
+    const btn = new St.Button({
       style_class: "panel-media-button",
       can_focus: true,
       track_hover: true,
       reactive: true,
     });
-
-    const icon = new St.Icon({
-      icon_name: iconName,
-      icon_size: 14,
-    });
-
-    button.set_child(icon);
-    return button;
+    btn.set_child(new St.Icon({ icon_name: iconName, icon_size: 14 }));
+    return btn;
   }
 
   get box() {
@@ -84,65 +85,112 @@ export class PanelUI {
   get panelNextBtn() {
     return this._panelNextBtn;
   }
+
   get label() {
-    return this._label;
-  }
-
-  startScrolling(fullText, settings) {
-    this.stopScrolling();
-
-    const maxLength = settings.get_int("max-title-length");
-    const scrollSpeed = settings.get_int("scroll-speed");
-    const paddedText = fullText + "   •   ";
-    const interval = Math.max(50, 300 - scrollSpeed * 25);
-
-    this._indicator._state._scrollTimeout = GLib.timeout_add(
-      GLib.PRIORITY_LOW,
-      interval,
-      () => {
-        if (this._indicator._state._sessionChanging) {
-          return GLib.SOURCE_REMOVE;
-        }
-
-        this._indicator._state._scrollPosition++;
-
-        if (this._indicator._state._scrollPosition >= paddedText.length) {
-          this._indicator._state._scrollPosition = 0;
-        }
-
-        const displayText =
-          paddedText.substring(this._indicator._state._scrollPosition) +
-          paddedText.substring(0, this._indicator._state._scrollPosition);
-
-        this._label.text = displayText.substring(0, maxLength);
-
-        return GLib.SOURCE_CONTINUE;
-      },
-    );
-  }
-
-  stopScrolling() {
-    if (this._indicator._state._scrollTimeout) {
-      GLib.source_remove(this._indicator._state._scrollTimeout);
-      this._indicator._state._scrollTimeout = null;
+    if (!this._labelShim) {
+      this._labelShim = {
+        show: () => {
+          this._labelContainer.show();
+        },
+        hide: () => {
+          this._labelContainer.hide();
+          this.stopScrolling();
+        },
+      };
     }
-    this._indicator._state._scrollPosition = 0;
+    return this._labelShim;
   }
 
-  updateAppIcon(manager, currentPlayer) {
-    if (this._indicator._state._sessionChanging) return;
+  // scrolling
 
-    if (!currentPlayer) {
-      this._icon.set_gicon(Gio.icon_new_for_string("audio-x-generic-symbolic"));
+  /**
+
+   *
+   * @param {string} fullText   "Title • Artist" combined string
+   * @param {object} settings   GSettings instance
+   * @param {string} status     "Playing" | "Paused" | "Stopped"
+   */
+  startScrolling(fullText, settings, status = "Playing") {
+    if (!fullText) {
+      this.stopScrolling();
       return;
     }
 
-    const appInfo = manager.getAppInfo(currentPlayer);
-    if (appInfo && appInfo.get_icon()) {
-      this._icon.set_gicon(appInfo.get_icon());
-    } else {
-      this._icon.set_gicon(Gio.icon_new_for_string("audio-x-generic-symbolic"));
+    this._settings = settings;
+    this._status = status;
+
+    const isPlaying = status === "Playing";
+    const enabled = settings.get_boolean("enable-panel-scroll");
+
+    if (!isPlaying || !enabled) {
+      if (this._scrollLabel) {
+        this._scrollLabel.destroy();
+        this._scrollLabel = null;
+      }
+      this._labelContainer.destroy_all_children();
+
+      const lbl = new St.Label({
+        text: fullText,
+        y_align: Clutter.ActorAlign.CENTER,
+        style: "font-size: 13px; max-width: " + PANEL_LABEL_WIDTH + "px;",
+      });
+      lbl.clutter_text.ellipsize = 3;
+      lbl.clutter_text.single_line_mode = true;
+      this._labelContainer.add_child(lbl);
+      this._labelContainer.show();
+      return;
     }
+
+    const speed = this._calcSpeed(settings, status);
+
+    if (this._scrollLabel) {
+      // Reuse the existing widget — update text and speed in-place.
+      this._scrollLabel.setScrollSpeed(speed);
+      this._scrollLabel.setText(fullText);
+      this._labelContainer.show();
+      return;
+    }
+
+    this._labelContainer.destroy_all_children();
+    this._scrollLabel = new ScrollingLabel({
+      text: fullText,
+      viewportWidth: PANEL_LABEL_WIDTH,
+      isScrolling: true,
+      initPaused: false,
+      scrollSpeed: speed,
+      scrollPauseTime: LOOP_PAUSE_MS,
+      textStyle: "font-size: 13px;",
+    });
+    this._labelContainer.add_child(this._scrollLabel);
+    this._labelContainer.show();
+  }
+
+  _calcSpeed(settings, status) {
+    const pref = settings.get_int("scroll-speed");
+    return Math.round(BASE_SCROLL_PX_PER_SEC * (pref / 5));
+  }
+
+  stopScrolling() {
+    if (this._scrollLabel) {
+      this._scrollLabel.destroy();
+      this._scrollLabel = null;
+    }
+    this._labelContainer.destroy_all_children();
+    this._settings = null;
+  }
+
+  //app icon
+  updateAppIcon(manager, currentPlayer) {
+    if (this._indicator._state._sessionChanging) return;
+    if (!currentPlayer) {
+      this._icon.gicon = Gio.icon_new_for_string("audio-x-generic-symbolic");
+      return;
+    }
+    const appInfo = manager.getAppInfo(currentPlayer);
+    this._icon.gicon =
+      appInfo && appInfo.get_icon()
+        ? appInfo.get_icon()
+        : Gio.icon_new_for_string("audio-x-generic-symbolic");
   }
 
   destroy() {
