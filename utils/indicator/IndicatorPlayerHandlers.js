@@ -58,7 +58,6 @@ export class IndicatorPlayerHandlers {
     const now = GLib.get_monotonic_time();
 
     if (now - this._indicator._state._lastUpdateTime < 50000) {
-      // Remove existing timeout before creating new one
       if (this._updateThrottle) {
         GLib.source_remove(this._updateThrottle);
         this._updateThrottle = null;
@@ -121,6 +120,9 @@ export class IndicatorPlayerHandlers {
 
     const players = this._indicator._manager.getPlayers();
 
+    // Prefer a Playing player first, then a Paused one, then any player.
+    let paused = null;
+
     for (const name of players) {
       const info = this._indicator._manager.getPlayerInfo(name);
       if (info && info.status === "Playing") {
@@ -130,14 +132,25 @@ export class IndicatorPlayerHandlers {
         this._indicator._uiUpdater.updateVisibility();
         return;
       }
+      if (info && info.status === "Paused" && !paused) {
+        paused = name;
+      }
+    }
+
+    if (paused) {
+      this._indicator._state._currentPlayer = paused;
+      this._indicator._uiUpdater.updateUI();
+      this._indicator._uiUpdater.updateTabs();
+      this._indicator._uiUpdater.updateVisibility();
+      return;
     }
 
     if (players.length > 0) {
       this._indicator._state._currentPlayer = players[0];
-      this._indicator._uiUpdater.updateUI();
       this._indicator._uiUpdater.updateTabs();
       this._indicator._uiUpdater.updateVisibility();
     } else {
+      // Truly no players left.
       this._indicator._state._currentPlayer = null;
       this._indicator._panelUI.stopScrolling();
       this._indicator._panelUI.label.hide();

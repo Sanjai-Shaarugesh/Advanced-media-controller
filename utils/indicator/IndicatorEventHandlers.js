@@ -140,26 +140,22 @@ export class IndicatorEventHandlers {
 
     this.removeWindowMonitoring();
 
-    // Set flag to prevent immediate closing when menu opens
     this._menuJustOpened = true;
-    
-    // Remove existing timeout before creating new one
+
     if (this._menuOpenTimeout) {
       GLib.source_remove(this._menuOpenTimeout);
       this._menuOpenTimeout = null;
     }
-    
+
     this._menuOpenTimeout = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 100, () => {
       this._menuJustOpened = false;
       this._menuOpenTimeout = null;
       return GLib.SOURCE_REMOVE;
     });
 
-    // Monitor clicks outside the popup - use capture phase for better detection
     this._outsideClickId = global.stage.connect(
       "captured-event",
       (actor, event) => {
-        // Only handle button press events
         if (event.type() !== Clutter.EventType.BUTTON_PRESS) {
           return Clutter.EVENT_PROPAGATE;
         }
@@ -174,7 +170,6 @@ export class IndicatorEventHandlers {
 
         const [stageX, stageY] = event.get_coords();
 
-        // Check if click is within the panel button
         const panelButton = this._indicator.container;
         if (panelButton && panelButton.get_stage() && panelButton.visible) {
           const [buttonX, buttonY] = panelButton.get_transformed_position();
@@ -186,12 +181,10 @@ export class IndicatorEventHandlers {
             stageY >= buttonY &&
             stageY <= buttonY + buttonHeight
           ) {
-            // Click is on the panel button itself, let it handle toggle
             return Clutter.EVENT_PROPAGATE;
           }
         }
 
-        // Check if click is within the menu actor
         const menuActor = this._indicator.menu.actor;
         if (menuActor && menuActor.get_stage() && menuActor.visible) {
           const [menuX, menuY] = menuActor.get_transformed_position();
@@ -203,18 +196,15 @@ export class IndicatorEventHandlers {
             stageY >= menuY &&
             stageY <= menuY + menuHeight
           ) {
-            // Click is inside the menu
             return Clutter.EVENT_PROPAGATE;
           }
         }
 
-        // Click is outside both the button and menu - close the menu
-        // Remove existing timeout before creating new one
         if (this._closeMenuTimeout) {
           GLib.source_remove(this._closeMenuTimeout);
           this._closeMenuTimeout = null;
         }
-        
+
         this._closeMenuTimeout = GLib.timeout_add(GLib.PRIORITY_HIGH, 1, () => {
           if (this._indicator.menu && this._indicator.menu.isOpen) {
             this._indicator.menu.close(true);
@@ -227,7 +217,6 @@ export class IndicatorEventHandlers {
       },
     );
 
-    // Monitor window focus changes
     global.display.connectObject(
       "notify::focus-window",
       () => {
@@ -238,28 +227,30 @@ export class IndicatorEventHandlers {
         )
           return;
 
-        // Remove existing timeout before creating new one
         if (this._delayedCloseTimeout1) {
           GLib.source_remove(this._delayedCloseTimeout1);
           this._delayedCloseTimeout1 = null;
         }
-        
-        this._delayedCloseTimeout1 = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 50, () => {
-          if (
-            this._indicator.menu &&
-            this._indicator.menu.isOpen &&
-            !this._indicator._state._sessionChanging
-          ) {
-            this._indicator.menu.close(false);
-          }
-          this._delayedCloseTimeout1 = null;
-          return GLib.SOURCE_REMOVE;
-        });
+
+        this._delayedCloseTimeout1 = GLib.timeout_add(
+          GLib.PRIORITY_DEFAULT,
+          50,
+          () => {
+            if (
+              this._indicator.menu &&
+              this._indicator.menu.isOpen &&
+              !this._indicator._state._sessionChanging
+            ) {
+              this._indicator.menu.close(false);
+            }
+            this._delayedCloseTimeout1 = null;
+            return GLib.SOURCE_REMOVE;
+          },
+        );
       },
       this,
     );
 
-    // Monitor new windows being created
     global.display.connectObject(
       "window-created",
       () => {
@@ -270,28 +261,30 @@ export class IndicatorEventHandlers {
         )
           return;
 
-        // Remove existing timeout before creating new one
         if (this._delayedCloseTimeout2) {
           GLib.source_remove(this._delayedCloseTimeout2);
           this._delayedCloseTimeout2 = null;
         }
-        
-        this._delayedCloseTimeout2 = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 100, () => {
-          if (
-            this._indicator.menu &&
-            this._indicator.menu.isOpen &&
-            !this._indicator._state._sessionChanging
-          ) {
-            this._indicator.menu.close(false);
-          }
-          this._delayedCloseTimeout2 = null;
-          return GLib.SOURCE_REMOVE;
-        });
+
+        this._delayedCloseTimeout2 = GLib.timeout_add(
+          GLib.PRIORITY_DEFAULT,
+          100,
+          () => {
+            if (
+              this._indicator.menu &&
+              this._indicator.menu.isOpen &&
+              !this._indicator._state._sessionChanging
+            ) {
+              this._indicator.menu.close(false);
+            }
+            this._delayedCloseTimeout2 = null;
+            return GLib.SOURCE_REMOVE;
+          },
+        );
       },
       this,
     );
 
-    // Monitor stage key focus changes
     global.stage.connectObject(
       "notify::key-focus",
       () => {
@@ -307,7 +300,6 @@ export class IndicatorEventHandlers {
       this,
     );
 
-    // Monitor window state changes
     global.window_manager.connectObject(
       "size-change",
       (wm, actor) => {
@@ -318,7 +310,6 @@ export class IndicatorEventHandlers {
         )
           return;
 
-        // Close popup when windows change size (maximize, unmaximize, etc.)
         this._indicator.menu.close(false);
       },
       "minimize",
@@ -357,7 +348,6 @@ export class IndicatorEventHandlers {
       this,
     );
 
-    // Monitor overview showing
     Main.overview.connectObject(
       "showing",
       () => {
@@ -371,7 +361,6 @@ export class IndicatorEventHandlers {
       this,
     );
 
-    // Monitor modal dialogs
     const layoutManager = Main.layoutManager;
     if (layoutManager && layoutManager.modalCount !== undefined) {
       layoutManager.connectObject(
@@ -409,13 +398,11 @@ export class IndicatorEventHandlers {
   }
 
   removeWindowMonitoring() {
-    // Remove the outside click handler
     if (this._outsideClickId) {
       global.stage.disconnect(this._outsideClickId);
       this._outsideClickId = null;
     }
 
-    // Remove timeout handlers
     if (this._menuOpenTimeout) {
       GLib.source_remove(this._menuOpenTimeout);
       this._menuOpenTimeout = null;
@@ -436,12 +423,11 @@ export class IndicatorEventHandlers {
       this._delayedCloseTimeout2 = null;
     }
 
-    // Disconnect all objects using disconnectObject
     global.display.disconnectObject(this);
     global.stage.disconnectObject(this);
     global.window_manager.disconnectObject(this);
     Main.overview.disconnectObject(this);
-    
+
     const layoutManager = Main.layoutManager;
     if (layoutManager) {
       layoutManager.disconnectObject(this);
@@ -562,7 +548,6 @@ export class IndicatorEventHandlers {
   }
 
   destroy() {
-    // Disconnect all signal connections
     this._indicator._controls?.disconnectObject(this);
     this._indicator._panelUI?.panelPrevBtn?.disconnectObject(this);
     this._indicator._panelUI?.panelPlayBtn?.disconnectObject(this);

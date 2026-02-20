@@ -25,17 +25,20 @@ export const AlbumArt = GObject.registerClass(
       this._tonearmAngle = 25; // Start position (away from record)
       this._tonearmTargetAngle = 25;
       this._tonearmAnimationId = null;
-      
+
       // Double-click detection
       this._lastClickTime = 0;
       this._clickTimeout = null;
-      
+
       this._buildUI();
-      
+
       // Listen for settings changes
-      this._settingsChangedId = this._settings.connect("changed::enable-album-art-rotation", () => {
-        this._onRotationSettingChanged();
-      });
+      this._settingsChangedId = this._settings.connect(
+        "changed::enable-album-art-rotation",
+        () => {
+          this._onRotationSettingChanged();
+        },
+      );
     }
 
     _buildUI() {
@@ -112,9 +115,13 @@ export const AlbumArt = GObject.registerClass(
         style: "border-radius: 170px;",
       });
 
-      this._vinylLayer.connectObject("repaint", (area) => {
-        this._drawVinylLayer(area);
-      }, this);
+      this._vinylLayer.connectObject(
+        "repaint",
+        (area) => {
+          this._drawVinylLayer(area);
+        },
+        this,
+      );
 
       // Album art for vinyl mode (circular)
       this._vinylCoverArt = new St.Bin({
@@ -164,9 +171,13 @@ export const AlbumArt = GObject.registerClass(
         y: 0,
       });
 
-      this._tonearm.connectObject("repaint", (area) => {
-        this._drawTonearm(area);
-      }, this);
+      this._tonearm.connectObject(
+        "repaint",
+        (area) => {
+          this._drawTonearm(area);
+        },
+        this,
+      );
 
       this._tonearmContainer.add_child(this._tonearm);
 
@@ -192,7 +203,6 @@ export const AlbumArt = GObject.registerClass(
 
       // Double-click detected (within 400ms)
       if (timeSinceLastClick < 400) {
-        // Remove pending single-click timeout
         if (this._clickTimeout) {
           GLib.source_remove(this._clickTimeout);
           this._clickTimeout = null;
@@ -224,30 +234,30 @@ export const AlbumArt = GObject.registerClass(
     }
 
     _onRotationSettingChanged() {
-      const newVinylMode = this._settings.get_boolean("enable-album-art-rotation");
-      
+      const newVinylMode = this._settings.get_boolean(
+        "enable-album-art-rotation",
+      );
+
       if (newVinylMode !== this._vinylMode) {
         const wasPlaying = this._isPlaying;
-        
+
         this._vinylMode = newVinylMode;
-        
+
         // Stop any ongoing rotation
         this.stopRotation();
-        
+
         // Update visibility
         this._updateMode();
-        
+
         // Reload current cover in new mode
         if (this._currentArtUrl) {
           this.loadCover(this._currentArtUrl, true);
         }
-        
+
         // Restore playback state
         if (this._vinylMode && wasPlaying) {
-          // Restart rotation if we were playing
           this.startRotation(true);
         } else if (this._vinylMode && !wasPlaying) {
-          // Just position the tonearm correctly
           this._moveTonearm(25);
         }
       }
@@ -279,7 +289,7 @@ export const AlbumArt = GObject.registerClass(
         0,
         centerX,
         centerY,
-        radius
+        radius,
       );
       gradient.addColorStopRGBA(0, 0.12, 0.12, 0.12, 1);
       gradient.addColorStopRGBA(0.8, 0.08, 0.08, 0.08, 1);
@@ -292,10 +302,10 @@ export const AlbumArt = GObject.registerClass(
       // Vinyl grooves - more realistic
       cr.setLineWidth(0.5);
       for (let i = 0; i < 20; i++) {
-        const grooveRadius = radius - 10 - (i * 1.5);
+        const grooveRadius = radius - 10 - i * 1.5;
         if (grooveRadius > 0) {
           cr.arc(centerX, centerY, grooveRadius, 0, 2 * Math.PI);
-          const alpha = (i % 3 === 0) ? 0.15 : 0.08;
+          const alpha = i % 3 === 0 ? 0.15 : 0.08;
           cr.setSourceRGBA(0, 0, 0, alpha);
           cr.stroke();
         }
@@ -309,16 +319,15 @@ export const AlbumArt = GObject.registerClass(
         0,
         centerX,
         centerY,
-        labelRadius
+        labelRadius,
       );
       labelGradient.addColorStopRGBA(0, 0.2, 0.2, 0.2, 1);
       labelGradient.addColorStopRGBA(1, 0.15, 0.15, 0.15, 1);
-      
+
       cr.arc(centerX, centerY, labelRadius, 0, 2 * Math.PI);
       cr.setSource(labelGradient);
       cr.fill();
 
-      // Center hole
       cr.arc(centerX, centerY, 8, 0, 2 * Math.PI);
       cr.setSourceRGBA(0.05, 0.05, 0.05, 1);
       cr.fill();
@@ -336,8 +345,8 @@ export const AlbumArt = GObject.registerClass(
       // Tonearm pivot point (top-right area)
       const pivotX = centerX + radius * 0.75;
       const pivotY = centerY - radius * 0.75;
-      
-      // Convert angle to radians (0-10 = on record, 25+ = away from record)
+
+      // Convert angle to radians
       const angleRad = (this._tonearmAngle * Math.PI) / 180;
       const armLength = 95;
 
@@ -345,7 +354,6 @@ export const AlbumArt = GObject.registerClass(
       const armEndX = pivotX - armLength * Math.cos(angleRad);
       const armEndY = pivotY + armLength * Math.sin(angleRad);
 
-      // Draw pivot base (larger, more detailed)
       // Outer ring (shadow)
       cr.arc(pivotX, pivotY, 11, 0, 2 * Math.PI);
       cr.setSourceRGBA(0.2, 0.2, 0.2, 0.4);
@@ -422,19 +430,31 @@ export const AlbumArt = GObject.registerClass(
 
       // Cartridge body (more realistic shape)
       const cartridgeRadius = 4.5;
-      
+
       // Cartridge shadow
-      cr.arc(headshellEndX + 0.5, headshellEndY + 0.5, cartridgeRadius + 1, 0, 2 * Math.PI);
+      cr.arc(
+        headshellEndX + 0.5,
+        headshellEndY + 0.5,
+        cartridgeRadius + 1,
+        0,
+        2 * Math.PI,
+      );
       cr.setSourceRGBA(0, 0, 0, 0.3);
       cr.fill();
-      
+
       // Cartridge body
       cr.arc(headshellEndX, headshellEndY, cartridgeRadius, 0, 2 * Math.PI);
       cr.setSourceRGBA(0.3, 0.3, 0.32, 1);
       cr.fill();
 
       // Cartridge top highlight
-      cr.arc(headshellEndX - 1, headshellEndY - 1, cartridgeRadius * 0.6, 0, 2 * Math.PI);
+      cr.arc(
+        headshellEndX - 1,
+        headshellEndY - 1,
+        cartridgeRadius * 0.6,
+        0,
+        2 * Math.PI,
+      );
       cr.setSourceRGBA(0.5, 0.5, 0.52, 0.6);
       cr.fill();
 
@@ -464,11 +484,11 @@ export const AlbumArt = GObject.registerClass(
       // Counterweight (on the opposite end of tonearm)
       const counterweightX = pivotX + 25 * Math.cos(angleRad);
       const counterweightY = pivotY - 25 * Math.sin(angleRad);
-      
+
       cr.arc(counterweightX, counterweightY, 6, 0, 2 * Math.PI);
       cr.setSourceRGBA(0.4, 0.4, 0.42, 0.95);
       cr.fill();
-      
+
       cr.arc(counterweightX, counterweightY, 4, 0, 2 * Math.PI);
       cr.setSourceRGBA(0.6, 0.6, 0.62, 0.8);
       cr.fill();
@@ -478,7 +498,7 @@ export const AlbumArt = GObject.registerClass(
 
     _moveTonearm(targetAngle) {
       this._tonearmTargetAngle = targetAngle;
-      
+
       // Stop any existing animation
       if (this._tonearmAnimationId) {
         GLib.source_remove(this._tonearmAnimationId);
@@ -493,30 +513,35 @@ export const AlbumArt = GObject.registerClass(
       const steps = (duration / 1000) * fps;
       let currentStep = 0;
 
-      this._tonearmAnimationId = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 1000 / fps, () => {
-        currentStep++;
-        const progress = currentStep / steps;
-        
-        // Easing function (ease-in-out)
-        const easeProgress = progress < 0.5
-          ? 2 * progress * progress
-          : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+      this._tonearmAnimationId = GLib.timeout_add(
+        GLib.PRIORITY_DEFAULT,
+        1000 / fps,
+        () => {
+          currentStep++;
+          const progress = currentStep / steps;
 
-        this._tonearmAngle = startAngle + (angleDiff * easeProgress);
-        
-        // Redraw tonearm
-        if (this._tonearm) {
-          this._tonearm.queue_repaint();
-        }
+          // Easing function (ease-in-out)
+          const easeProgress =
+            progress < 0.5
+              ? 2 * progress * progress
+              : 1 - Math.pow(-2 * progress + 2, 2) / 2;
 
-        if (currentStep >= steps) {
-          this._tonearmAngle = this._tonearmTargetAngle;
-          this._tonearmAnimationId = null;
-          return GLib.SOURCE_REMOVE;
-        }
+          this._tonearmAngle = startAngle + angleDiff * easeProgress;
 
-        return GLib.SOURCE_CONTINUE;
-      });
+          // Redraw tonearm
+          if (this._tonearm) {
+            this._tonearm.queue_repaint();
+          }
+
+          if (currentStep >= steps) {
+            this._tonearmAngle = this._tonearmTargetAngle;
+            this._tonearmAnimationId = null;
+            return GLib.SOURCE_REMOVE;
+          }
+
+          return GLib.SOURCE_CONTINUE;
+        },
+      );
     }
 
     loadCover(url, forceRefresh = false) {
@@ -574,7 +599,10 @@ export const AlbumArt = GObject.registerClass(
       this._normalCoverImage.style = normalStyle;
       this._vinylCoverImage.style = vinylStyle;
 
-      this._coverCache.set(imageUrl, { normal: normalStyle, vinyl: vinylStyle });
+      this._coverCache.set(imageUrl, {
+        normal: normalStyle,
+        vinyl: vinylStyle,
+      });
     }
 
     _applyCoverStyle(styles) {
@@ -623,7 +651,7 @@ export const AlbumArt = GObject.registerClass(
 
     setDefaultCover() {
       this._currentArtUrl = null;
-      
+
       const normalDefault = `
         width: 340px;
         height: 340px;
@@ -653,108 +681,106 @@ export const AlbumArt = GObject.registerClass(
     startRotation(isPlaying = true) {
       this._isPlaying = isPlaying;
 
-      // Only rotate in vinyl mode
+      // Not in vinyl mode — clear any lingering timer but do nothing else
       if (!this._vinylMode) {
-        this.stopRotation();
+        if (this._rotationInterval) {
+          GLib.source_remove(this._rotationInterval);
+          this._rotationInterval = null;
+        }
+        this._isRotating = false;
         return;
       }
 
       if (!this._settings.get_boolean("enable-album-art-rotation")) {
-        this.stopRotation();
+        this.pauseRotation();
         return;
       }
 
       if (!isPlaying) {
-        this.stopRotation();
+        this.pauseRotation();
         return;
       }
 
-      // Move tonearm onto record when playing
+      // Move tonearm onto record
       this._moveTonearm(8);
 
-      if (this._isRotating) {
-        return;
-      }
+      // Already rotating — just keep going from current angle
+      if (this._isRotating) return;
 
       this._isRotating = true;
       const rotationSpeed = this._settings.get_int("album-art-rotation-speed");
-      
       const interval = 50;
       const degreesPerInterval = (360 / (rotationSpeed * 1000)) * interval;
 
-      this._rotationInterval = GLib.timeout_add(GLib.PRIORITY_LOW, interval, () => {
-        if (!this._isRotating) {
-          return GLib.SOURCE_REMOVE;
-        }
+      this._rotationInterval = GLib.timeout_add(
+        GLib.PRIORITY_LOW,
+        interval,
+        () => {
+          if (!this._isRotating) return GLib.SOURCE_REMOVE;
 
-        this._rotationAngle = (this._rotationAngle + degreesPerInterval) % 360;
-        this._rotatingContainer.rotation_angle_z = this._rotationAngle;
+          // Resume from wherever _rotationAngle was left (pause preserves it)
+          this._rotationAngle =
+            (this._rotationAngle + degreesPerInterval) % 360;
+          if (this._rotatingContainer)
+            this._rotatingContainer.rotation_angle_z = this._rotationAngle;
 
-        return GLib.SOURCE_CONTINUE;
-      });
+          return GLib.SOURCE_CONTINUE;
+        },
+      );
     }
 
     stopRotation() {
       this._isPlaying = false;
       this._isRotating = false;
 
-      // Move tonearm away from record when stopped
-      if (this._vinylMode) {
-        this._moveTonearm(25);
-      }
-
       if (this._rotationInterval) {
         GLib.source_remove(this._rotationInterval);
         this._rotationInterval = null;
       }
 
+      if (this._vinylMode) this._moveTonearm(25);
+
+      // Reset disc angle on a real stop
       this._rotationAngle = 0;
-      if (this._rotatingContainer) {
-        this._rotatingContainer.rotation_angle_z = 0;
-      }
+      if (this._rotatingContainer) this._rotatingContainer.rotation_angle_z = 0;
     }
 
     pauseRotation() {
       this._isPlaying = false;
       this._isRotating = false;
-      
-      // Move tonearm away from record when paused
-      if (this._vinylMode) {
-        this._moveTonearm(25);
-      }
-      
+
       if (this._rotationInterval) {
         GLib.source_remove(this._rotationInterval);
         this._rotationInterval = null;
       }
+
+      if (this._vinylMode) this._moveTonearm(25);
     }
 
     destroy() {
       this.stopRotation();
-      
+
       // Remove tonearm animation
       if (this._tonearmAnimationId) {
         GLib.source_remove(this._tonearmAnimationId);
         this._tonearmAnimationId = null;
       }
 
-      // Remove click timeout
       if (this._clickTimeout) {
         GLib.source_remove(this._clickTimeout);
         this._clickTimeout = null;
       }
-      
+
       if (this._settingsChangedId) {
         this._settings.disconnect(this._settingsChangedId);
         this._settingsChangedId = 0;
       }
 
-      // Disconnect objects
       this._normalContainer?.disconnectObject(this);
       this._vinylContainer?.disconnectObject(this);
       this._vinylLayer?.disconnectObject(this);
       this._tonearm?.disconnectObject(this);
-      
+
       this._coverCache.clear();
       this._currentArtUrl = null;
       super.destroy();

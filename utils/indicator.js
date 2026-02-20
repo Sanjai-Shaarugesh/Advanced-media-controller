@@ -1,7 +1,6 @@
 import GObject from "gi://GObject";
 import * as PanelMenu from "resource:///org/gnome/shell/ui/panelMenu.js";
 import * as PopupMenu from "resource:///org/gnome/shell/ui/popupMenu.js";
-import * as Main from "resource:///org/gnome/shell/ui/main.js";
 import { MprisManager } from "./mpris/MprisManager.js";
 import { MediaControls } from "./ui/MediaControls.js";
 import { PanelUI } from "./indicator/PanelUI.js";
@@ -12,11 +11,11 @@ import { IndicatorUIUpdater } from "./indicator/IndicatorUIUpdater.js";
 
 export const MediaIndicator = GObject.registerClass(
   class MediaIndicator extends PanelMenu.Button {
-    _init(settings) {
-      // 0.5 = center alignment for menu
+    _init(settings, extension) {
       super._init(0.5, "Media Controls", false);
 
       this._settings = settings;
+      this._extension = extension;
       this._state = new IndicatorState();
 
       this._panelUI = new PanelUI(this);
@@ -51,9 +50,8 @@ export const MediaIndicator = GObject.registerClass(
         "changed",
         (_, key) => {
           this._state.safeExecute(() => {
-            if (key === "panel-position" || key === "panel-index") {
-              this._state.scheduleOperation(() => this._repositionIndicator());
-            } else {
+            // panel-position / panel-index handled in extension.js
+            if (key !== "panel-position" && key !== "panel-index") {
               this._uiUpdater.updateLabel();
               this._uiUpdater.updateVisibility();
             }
@@ -66,46 +64,6 @@ export const MediaIndicator = GObject.registerClass(
       this.hide();
 
       this._state.scheduleOperation(() => this._initManager(), 200);
-    }
-
-    _repositionIndicator() {
-      if (this._state._sessionChanging) return;
-
-      const position = this._settings.get_string("panel-position");
-      const index = this._settings.get_int("panel-index");
-
-      const wasVisible = this.visible;
-      const manager = this._manager;
-      const player = this._state._currentPlayer;
-
-      if (this.container && this.container.get_parent()) {
-        this.container.get_parent().remove_child(this.container);
-      }
-
-      let targetBox;
-      switch (position) {
-        case "left":
-          targetBox = Main.panel._leftBox;
-          break;
-        case "center":
-          targetBox = Main.panel._centerBox;
-          break;
-        case "right":
-        default:
-          targetBox = Main.panel._rightBox;
-          break;
-      }
-
-      const actualIndex =
-        index === -1 ? 0 : Math.min(index, targetBox.get_n_children());
-      targetBox.insert_child_at_index(this.container, actualIndex);
-
-      this._manager = manager;
-      this._state._currentPlayer = player;
-
-      if (wasVisible && !this._state._sessionChanging) {
-        this.show();
-      }
     }
 
     async _initManager() {
