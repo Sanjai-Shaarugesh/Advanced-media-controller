@@ -159,6 +159,19 @@ export const ProgressSlider = GObject.registerClass(
         this._saveCacheForCurrentPlayer();
       }
     }
+    
+    _hardReset() {
+      this.stopPositionUpdate();
+      this._currentPosition = 0;
+      this._sliderDragging  = false;
+
+      this._positionSlider.block_signal_handler(this._sliderChangedId);
+      this._positionSlider.value = 0;
+      this._positionSlider.unblock_signal_handler(this._sliderChangedId);
+
+      this._currentTimeLabel.text = "0:00";
+      this._totalTimeLabel.text   = "0:00";
+    }
 
     get currentPosition() { return this._currentPosition; }
     get trackLength()     { return this._trackLength; }
@@ -189,11 +202,8 @@ export const ProgressSlider = GObject.registerClass(
         this._currentTimeLabel.text = c.currentTimeText;
         this._totalTimeLabel.text   = c.totalTimeText;
       } else {
-        this._currentPosition = 0;
-        this._positionSlider.block_signal_handler(this._sliderChangedId);
-        this._positionSlider.value = 0;
-        this._positionSlider.unblock_signal_handler(this._sliderChangedId);
-        this._currentTimeLabel.text = "0:00";
+        // No cache — show zero until updatePlaybackState() sets real values.
+        this._hardReset();
       }
     }
 
