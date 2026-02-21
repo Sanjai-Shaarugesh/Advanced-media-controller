@@ -205,7 +205,8 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
         "  (disc angle is preserved and resumes from the same position)\n" +
         "- Disc resets to 0° only on a genuine Stop\n" +
         "- Double-click album art to toggle vinyl for THAT player's app only\n" +
-        "- Per-app settings override the global default above",
+        "- Per-app settings override the global default above\n" +
+        "- All seen apps are stored; re-enable any time from Vinyl Apps page",
       wrap: true, xalign: 0,
       margin_top: 12, margin_bottom: 12,
       margin_start: 12, margin_end: 12,
@@ -232,50 +233,103 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
   // ── Vinyl Apps page builder ───────────────────────────────────────────────
 
   _buildVinylAppsPage(page, settings) {
-    // ── Enabled apps group ──────────────────────────────────────────────────
-    const enabledGroup = new Adw.PreferencesGroup({
-      title: "Apps with Vinyl Effect Enabled",
-      description:
-        "Only these apps will show the rotating vinyl record. " +
-        "Double-clicking the album art in the popup also adds/removes the " +
-        "current player here automatically.",
-    });
-    page.add(enabledGroup);
 
-    // Container for the dynamic list of enabled-app rows
-    this._enabledAppsGroup = enabledGroup;
-    this._enabledAppRows   = new Map(); // appId → ActionRow
+    // ── How-to instructions banner ──────────────────────────────────────────
+    const howtoGroup = new Adw.PreferencesGroup({
+      title: "How to Enable Vinyl Style for an App",
+    });
+    page.add(howtoGroup);
+
+    // Step-by-step instruction rows with icons
+    const steps = [
+      {
+        icon: "media-playback-start-symbolic",
+        title: "Start playing music",
+        subtitle: "Open any media player or browser web app (YouTube, Spotify Web, SoundCloud, etc.) and play a track so it appears as a media source.",
+      },
+      {
+        icon: "input-mouse-symbolic",
+        title: "Open the extension popup",
+        subtitle: "Click the media controller in the top panel to open the popup player.",
+      },
+      {
+        icon: "go-jump-symbolic",
+        title: "Double-click the album art",
+        subtitle: "Double-click the album art image in the popup to toggle the vinyl record style for that specific app instance. The instance is saved here automatically.",
+      },
+      {
+        icon: "media-optical-cd-audio-symbolic",
+        title: "Manage saved instances below",
+        subtitle: "All stored instances appear in the section below with their app icon and name. Toggle them on/off or remove them at any time.",
+      },
+    ];
+
+    steps.forEach(({ icon, title, subtitle }) => {
+      const row = new Adw.ActionRow({ title, subtitle, activatable: false });
+      row.add_prefix(new Gtk.Image({
+        icon_name: icon,
+        pixel_size: 22,
+        valign: Gtk.Align.CENTER,
+        css_classes: ["accent"],
+      }));
+      howtoGroup.add(row);
+    });
+
+    // ── Stored instances group ──────────────────────────────────────────────
+    const instancesGroup = new Adw.PreferencesGroup({
+      title: "Saved App Instances",
+      description:
+        "Instances stored by double-clicking the album art in the popup. " +
+        "Icons are loaded from the system .desktop database. " +
+        "Toggle the vinyl effect on/off or remove any entry.",
+    });
+    page.add(instancesGroup);
+
+    this._instancesGroup   = instancesGroup;
+    this._instanceRows     = new Map();
     this._vinylSettings    = settings;
 
-    this._refreshEnabledAppsList(settings);
+    this._refreshInstancesList(settings);
 
-    // ── App search group ────────────────────────────────────────────────────
+    // ── Add app manually — browser / web app search ─────────────────────────
     const searchGroup = new Adw.PreferencesGroup({
-      title: "Add an App",
-      description: "Search installed apps and toggle the vinyl effect for each one.",
+      title: "Add an App Manually",
+      description:
+        "Search installed apps — including browsers — to manually add a vinyl entry. " +
+        "Useful for browser web apps whose instance hasn't been captured yet via double-click.",
     });
     page.add(searchGroup);
 
-    // Search entry
-    const searchRow = new Adw.ActionRow({
-      title: "Search apps",
+    // Tip row for web apps
+    const webTipRow = new Adw.ActionRow({
+      title: "Browser web apps (YouTube, Spotify Web, etc.)",
+      subtitle:
+        "For web apps, add the browser itself (e.g. Google Chrome, Firefox). " +
+        "Then double-click the album art when that browser is playing music — " +
+        "the extension will capture the exact instance automatically.",
       activatable: false,
     });
+    webTipRow.add_prefix(new Gtk.Image({
+      icon_name: "web-browser-symbolic",
+      pixel_size: 20,
+      valign: Gtk.Align.CENTER,
+    }));
+    searchGroup.add(webTipRow);
 
+    const searchRow = new Adw.ActionRow({ title: "Search apps", activatable: false });
     const searchEntry = new Gtk.SearchEntry({
-      placeholder_text: "Type an app name…",
+      placeholder_text: "Type an app or browser name…",
       hexpand: true,
       valign: Gtk.Align.CENTER,
     });
     searchRow.add_suffix(searchEntry);
     searchGroup.add(searchRow);
 
-    // Results list box inside a scrolled window
     const scrolled = new Gtk.ScrolledWindow({
       hscrollbar_policy: Gtk.PolicyType.NEVER,
       vscrollbar_policy: Gtk.PolicyType.AUTOMATIC,
-      min_content_height: 200,
-      max_content_height: 380,
+      min_content_height: 180,
+      max_content_height: 360,
     });
 
     this._appListBox = new Gtk.ListBox({
@@ -289,13 +343,14 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     scrollRow.set_child(scrolled);
     searchGroup.add(scrollRow);
 
-    // Populate all media-capable apps
-    this._allApps = this._loadMediaApps();
+    // Load only browsers + media apps (not all system apps)
+    this._allApps = this._loadMediaAndBrowserApps();
+    this._currentSearchQuery = "";
     this._renderAppList(this._allApps, settings);
 
-    // Live filter on search
-    searchEntry.connect("search-changed", () => {
-      const query = searchEntry.text.toLowerCase().trim();
+    const doFilter = () => {
+      const query    = searchEntry.text.toLowerCase().trim();
+      this._currentSearchQuery = query;
       const filtered = query.length === 0
         ? this._allApps
         : this._allApps.filter(
@@ -304,45 +359,304 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
               (app.get_id() || "").toLowerCase().includes(query),
           );
       this._renderAppList(filtered, settings);
-    });
+    };
 
-    // Keep the results in sync when vinyl-app-ids changes elsewhere.
+    searchEntry.connect("search-changed", doFilter);
+
+    // React to vinyl-app-ids OR vinyl-app-instances changes
     this._vinylAppsChangedId = settings.connect("changed::vinyl-app-ids", () => {
-      this._refreshEnabledAppsList(settings);
-      const query = searchEntry.text.toLowerCase().trim();
-      const filtered = query.length === 0
-        ? this._allApps
-        : this._allApps.filter(
-            (app) =>
-              app.get_name().toLowerCase().includes(query) ||
-              (app.get_id() || "").toLowerCase().includes(query),
-          );
-      this._renderAppList(filtered, settings);
+      this._refreshInstancesList(settings);
+      this._renderAppList(this._allApps, settings);
+    });
+    this._vinylInstancesChangedId = settings.connect("changed::vinyl-app-instances", () => {
+      this._refreshInstancesList(settings);
+      this._renderAppList(this._allApps, settings);
+    });
+    this._vinylDisabledChangedId = settings.connect("changed::vinyl-app-disabled-ids", () => {
+      this._refreshInstancesList(settings);
+      this._renderAppList(this._allApps, settings);
     });
   }
 
-  /** Load all installed apps that might be media players. */
-  _loadMediaApps() {
+  // ── Instance list (stored via double-click) ───────────────────────────────
+
+  /**
+   * Rebuild the "Saved App Instances" group.
+   * Reads vinyl-app-instances (JSON records with optional enabled field).
+   * Shows ALL stored instances — enabled ones have the switch ON, disabled OFF.
+   * Resolves each entry's icon from the system .desktop database, same as PlayerTabs.
+   */
+  _refreshInstancesList(settings) {
+    // Remove old rows
+    for (const row of this._instanceRows.values()) {
+      try { this._instancesGroup.remove(row); } catch (_e) {}
+    }
+    this._instanceRows.clear();
+
+    const rawInstances = (() => {
+      try { return settings.get_strv("vinyl-app-instances") ?? []; }
+      catch (_e) { return []; }
+    })();
+
+    const enabledIds = settings.get_strv("vinyl-app-ids");
+
+    if (rawInstances.length === 0) {
+      const ph = new Adw.ActionRow({
+        title: "No instances saved yet",
+        subtitle: "Double-click the album art in the popup while music is playing to save an instance here.",
+        activatable: false,
+      });
+      ph.add_prefix(new Gtk.Image({
+        icon_name: "media-optical-cd-audio-symbolic",
+        pixel_size: 28,
+        valign: Gtk.Align.CENTER,
+        opacity: 0.4,
+      }));
+      this._instanceRows.set("__placeholder__", ph);
+      this._instancesGroup.add(ph);
+      return;
+    }
+
+    // Parse JSON records, deduplicate by id
+    const seen = new Set();
+    for (const raw of rawInstances) {
+      let obj;
+      try { obj = JSON.parse(raw); } catch (_) { continue; }
+
+      const id = obj.id ?? "";
+      if (!id || seen.has(id.toLowerCase())) continue;
+      seen.add(id.toLowerCase());
+
+      const normId = id.toLowerCase();
+      // The switch reflects whether the app is in vinyl-app-ids (actually playing vinyl)
+      const isEnabled = this._isAppEnabled(normId, enabledIds);
+
+      // Resolve display name + icon from system .desktop database (like PlayerTabs)
+      let appName = obj.name || obj.desktopId || id;
+      let appIcon = null;
+
+      const desktopId = obj.desktopId || id;
+      for (const candidate of [
+        `${desktopId}.desktop`,
+        desktopId,
+        `${id}.desktop`,
+        id,
+        `${id.split(".").pop()}.desktop`,
+      ]) {
+        try {
+          const info = Gio.DesktopAppInfo.new(candidate);
+          if (info) {
+            appName = info.get_name() || appName;
+            appIcon = info.get_icon();
+            break;
+          }
+        } catch (_) {}
+      }
+
+      const row = new Adw.ActionRow({
+        title:       appName,
+        subtitle:    id,
+        activatable: false,
+      });
+
+      // App icon from .desktop database (like PlayerTabs), fallback to vinyl disc
+      row.add_prefix(appIcon
+        ? new Gtk.Image({ gicon: appIcon, pixel_size: 28, valign: Gtk.Align.CENTER })
+        : new Gtk.Image({
+            icon_name: "media-optical-cd-audio-symbolic",
+            pixel_size: 28,
+            valign: Gtk.Align.CENTER,
+          }),
+      );
+
+      // Toggle switch — controls vinyl-app-ids membership
+      const sw = new Gtk.Switch({ active: isEnabled, valign: Gtk.Align.CENTER });
+      sw.connect("state-set", (_widget, state) => {
+        this._setAppVinylState(settings, id, normId, state);
+        // Update enabled field in vinyl-app-instances record too
+        this._updateInstanceEnabledField(settings, normId, state);
+        return false;
+      });
+      row.add_suffix(sw);
+
+      // Remove button — deletes the stored instance record entirely
+      const removeBtn = new Gtk.Button({
+        icon_name:    "list-remove-symbolic",
+        valign:       Gtk.Align.CENTER,
+        css_classes:  ["destructive-action", "flat"],
+        tooltip_text: `Remove ${appName} from saved instances`,
+      });
+      removeBtn.connect("clicked", () => {
+        this._deleteInstance(settings, id, normId);
+      });
+      row.add_suffix(removeBtn);
+
+      this._instancesGroup.add(row);
+      this._instanceRows.set(id, row);
+    }
+  }
+
+  /**
+   * Update the enabled field in a vinyl-app-instances JSON record.
+   * This is a prefs-side mirror of AlbumArt._markInstanceEnabled.
+   */
+  _updateInstanceEnabledField(settings, normId, enabledValue) {
+    try {
+      const existing = settings.get_strv("vinyl-app-instances") ?? [];
+      const updated  = existing.map((raw) => {
+        try {
+          const obj   = JSON.parse(raw);
+          const lower = (obj.id ?? "").toLowerCase();
+          if (lower === normId || lower.split(".").pop() === normId) {
+            return JSON.stringify({ ...obj, enabled: enabledValue });
+          }
+        } catch (_) {}
+        return raw;
+      });
+      settings.set_strv("vinyl-app-instances", updated);
+    } catch (_e) {}
+  }
+
+  /**
+   * Completely delete an instance record from vinyl-app-instances,
+   * and also disable it in vinyl-app-ids.
+   * This is only triggered by the explicit trash/remove button in the prefs UI.
+   */
+  _deleteInstance(settings, id, normId) {
+    try {
+      const existing = settings.get_strv("vinyl-app-instances") ?? [];
+      const filtered = existing.filter((raw) => {
+        try {
+          const obj   = JSON.parse(raw);
+          const lower = (obj.id ?? "").toLowerCase();
+          return lower !== normId && lower.split(".").pop() !== normId;
+        } catch (_) { return true; }
+      });
+      settings.set_strv("vinyl-app-instances", filtered);
+    } catch (_e) {}
+    // Also remove from vinyl-app-ids
+    this._setAppVinylState(settings, id, normId, false);
+  }
+
+  /**
+   * @deprecated — kept for API compat; use _deleteInstance for explicit removal.
+   */
+  _removeInstance(settings, id, normId) {
+    this._deleteInstance(settings, id, normId);
+  }
+
+  // ── App loading (browsers + media players only) ────────────────────────────
+
+  /**
+   * Return installed apps that are either known browsers or media players.
+   * This is the list shown in the "Add manually" search section.
+   * We deliberately exclude generic system apps — the user should add apps
+   * here by double-clicking the album art, not by guessing system app IDs.
+   */
+  _loadMediaAndBrowserApps() {
     const allApps = Gio.AppInfo.get_all();
 
-    // Prefer apps with audio/media categories; also include those with
-    // StartupWMClass or that expose MPRIS-like names.
-    const mediaCategories = [
-      "audio", "music", "video", "player", "multimedia", "media",
-    ];
+    const browserIds = new Set([
+      "google-chrome", "google-chrome-stable", "google-chrome-beta",
+      "chromium", "chromium-browser",
+      "brave-browser", "com.brave.Browser", "brave-browser-stable",
+      "firefox", "org.mozilla.firefox", "firefox-esr",
+      "microsoft-edge", "microsoft-edge-stable", "microsoft-edge-beta",
+      "com.microsoft.Edge",
+      "vivaldi-stable", "vivaldi",
+      "opera", "opera-stable", "com.opera.Opera",
+      "epiphany", "org.gnome.Epiphany",
+      "midori", "falkon",
+    ]);
 
-    return allApps
-      .filter((app) => {
-        if (!app.should_show()) return false;
-        const cats = (app.get_categories() || "").toLowerCase();
-        return mediaCategories.some((c) => cats.includes(c));
-      })
-      .sort((a, b) => a.get_name().localeCompare(b.get_name()));
+    const mediaCategories = ["audio", "music", "video", "player", "multimedia", "media"];
+
+    const seen = new Set();
+
+    const apps = allApps.filter((app) => {
+      if (!app.should_show()) return false;
+
+      const rawId  = app.get_id() || "";
+      const normId = this._normalizeAppId(rawId).toLowerCase();
+
+      if (seen.has(normId)) return false;
+
+      const cats      = (app.get_categories() || "").toLowerCase();
+      const isMedia   = mediaCategories.some((c) => cats.includes(c));
+      const isBrowser = browserIds.has(normId) ||
+                        browserIds.has(rawId.replace(".desktop", ""));
+
+      if (isMedia || isBrowser) {
+        seen.add(normId);
+        return true;
+      }
+      return false;
+    });
+
+    return apps.sort((a, b) => a.get_name().localeCompare(b.get_name()));
   }
 
-  /** Render (or re-render) the search results list. */
-  _renderAppList(apps, settings) {
-    // Remove all existing rows
+  // ── Canonical ID helpers (mirror AlbumArt.js logic) ──────────────────────
+
+  _buildMatchSet(appId) {
+    const ids   = new Set();
+    const lower = appId.toLowerCase();
+    ids.add(lower);
+
+    const parts = lower.split(".");
+    if (parts.length > 1) ids.add(parts[parts.length - 1]);
+
+    return ids;
+  }
+
+  _isAppEnabled(normId, vinylIds) {
+    for (const stored of vinylIds) {
+      const matchSet = this._buildMatchSet(stored);
+      if (matchSet.has(normId)) return true;
+      if (matchSet.has(normId.split(".").pop())) return true;
+    }
+    return false;
+  }
+
+  /**
+   * Enable or disable vinyl for an app, persisting BOTH states.
+   * Enabled  → in vinyl-app-ids, removed from vinyl-app-disabled-ids
+   * Disabled → in vinyl-app-disabled-ids, removed from vinyl-app-ids
+   */
+  _setAppVinylState(settings, appId, normId, enable) {
+    const enabledIds  = settings.get_strv("vinyl-app-ids");
+    const disabledIds = settings.get_strv("vinyl-app-disabled-ids");
+
+    if (enable) {
+      if (!this._isAppEnabled(normId, enabledIds))
+        enabledIds.push(appId);
+      const newDisabled = disabledIds.filter(
+        (id) => !this._buildMatchSet(id).has(normId) &&
+                !this._buildMatchSet(id).has(normId.split(".").pop()),
+      );
+      settings.set_strv("vinyl-app-ids", enabledIds);
+      settings.set_strv("vinyl-app-disabled-ids", newDisabled);
+    } else {
+      const newEnabled = enabledIds.filter(
+        (id) => !this._buildMatchSet(id).has(normId) &&
+                !this._buildMatchSet(id).has(normId.split(".").pop()),
+      );
+      if (!this._isAppEnabled(normId, disabledIds))
+        disabledIds.push(appId);
+      settings.set_strv("vinyl-app-ids", newEnabled);
+      settings.set_strv("vinyl-app-disabled-ids", disabledIds);
+    }
+  }
+
+  // ── Render search results ─────────────────────────────────────────────────
+  //
+  // Results are split into two sections:
+  //   1. Stored instances (from vinyl-app-instances) — always shown at top,
+  //      filtered by query, icons resolved from .desktop database (like PlayerTabs)
+  //   2. System media/browser apps — from Gio.AppInfo, shown below
+
+  _renderAppList(filteredSystemApps, settings) {
+    // Clear list
     let child = this._appListBox.get_first_child();
     while (child) {
       const next = child.get_next_sibling();
@@ -350,148 +664,178 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
       child = next;
     }
 
-    if (apps.length === 0) {
-      const empty = new Gtk.Label({
-        label: "No matching apps found",
-        css_classes: ["dim-label"],
-        margin_top: 16,
-        margin_bottom: 16,
-      });
-      this._appListBox.append(empty);
-      return;
-    }
+    const enabledIds = settings.get_strv("vinyl-app-ids");
+    const query      = this._currentSearchQuery ?? "";
 
-    const vinylIds = settings.get_strv("vinyl-app-ids");
+    // ── Section A: Stored instances ──────────────────────────────────────────
+    const rawInstances = (() => {
+      try { return settings.get_strv("vinyl-app-instances") ?? []; }
+      catch (_e) { return []; }
+    })();
 
-    apps.forEach((app) => {
-      const appId = this._normalizeAppId(app.get_id());
-      if (!appId) return;
+    const shownInstanceIds = new Set();
+    const instanceRows     = [];
 
-      const isEnabled = vinylIds.some(
-        (id) => id.toLowerCase() === appId.toLowerCase(),
-      );
+    for (const raw of rawInstances) {
+      let obj;
+      try { obj = JSON.parse(raw); } catch (_) { continue; }
 
-      const row = new Adw.ActionRow({
-        title: app.get_name(),
-        subtitle: appId,
-        activatable: false,
-      });
+      const id = obj.id ?? "";
+      if (!id) continue;
+      const normId = id.toLowerCase();
+      if (shownInstanceIds.has(normId)) continue;
 
-      // App icon
-      const icon = app.get_icon();
-      if (icon) {
-        row.add_prefix(
-          new Gtk.Image({ gicon: icon, pixel_size: 24, valign: Gtk.Align.CENTER }),
-        );
-      }
+      const appName   = obj.name || obj.desktopId || id;
+      const desktopId = obj.desktopId || id;
 
-      // Toggle switch
-      const sw = new Gtk.Switch({
-        active: isEnabled,
-        valign: Gtk.Align.CENTER,
-      });
-      sw.connect("state-set", (_widget, state) => {
-        const current = settings.get_strv("vinyl-app-ids");
-        const idx = current.findIndex(
-          (id) => id.toLowerCase() === appId.toLowerCase(),
-        );
+      // Filter by query
+      if (query && !appName.toLowerCase().includes(query) && !normId.includes(query))
+        continue;
 
-        if (state && idx < 0)
-          current.push(appId);
-        else if (!state && idx >= 0)
-          current.splice(idx, 1);
-
-        settings.set_strv("vinyl-app-ids", current);
-        return false; // let the switch update its own visual state
-      });
-      row.add_suffix(sw);
-
-      this._appListBox.append(row);
-    });
-  }
-
-  /** Rebuild the "currently enabled" rows at the top of the Vinyl Apps page. */
-  _refreshEnabledAppsList(settings) {
-    // Clear old rows
-    for (const row of this._enabledAppRows.values()) {
-      try { this._enabledAppsGroup.remove(row); } catch (_e) {}
-    }
-    this._enabledAppRows.clear();
-
-    const vinylIds = settings.get_strv("vinyl-app-ids");
-
-    if (vinylIds.length === 0) {
-      const placeholder = new Adw.ActionRow({
-        title: "No apps selected yet",
-        subtitle: "Use the search below or double-click the album art in the popup",
-        activatable: false,
-        css_classes: ["dim-label"],
-      });
-      this._enabledAppRows.set("__placeholder__", placeholder);
-      this._enabledAppsGroup.add(placeholder);
-      return;
-    }
-
-    for (const appId of vinylIds) {
-      // Try to resolve a friendly name + icon via GAppInfo.
-      let appName = appId;
+      // Resolve icon from .desktop database (exactly like PlayerTabs / PanelUI)
       let appIcon = null;
-
-      try {
-        const info = Gio.DesktopAppInfo.new(`${appId}.desktop`)
-          ?? Gio.DesktopAppInfo.new(appId);
-        if (info) {
-          appName = info.get_name() ?? appId;
-          appIcon = info.get_icon();
-        }
-      } catch (_e) {}
-
-      const row = new Adw.ActionRow({
-        title: appName,
-        subtitle: appId,
-        activatable: false,
-      });
-
-      if (appIcon) {
-        row.add_prefix(
-          new Gtk.Image({ gicon: appIcon, pixel_size: 24, valign: Gtk.Align.CENTER }),
-        );
-      } else {
-        row.add_prefix(
-          new Gtk.Image({
-            icon_name: "media-optical-cd-audio-symbolic",
-            pixel_size: 24,
-            valign: Gtk.Align.CENTER,
-          }),
-        );
+      for (const candidate of [
+        `${desktopId}.desktop`,
+        desktopId,
+        `${id}.desktop`,
+        id,
+        `${id.split(".").pop()}.desktop`,
+      ]) {
+        try {
+          const info = Gio.DesktopAppInfo.new(candidate);
+          if (info) {
+            appIcon = info.get_icon();
+            break;
+          }
+        } catch (_) {}
       }
 
-      // Remove button
-      const removeBtn = new Gtk.Button({
-        icon_name: "list-remove-symbolic",
-        valign: Gtk.Align.CENTER,
-        css_classes: ["destructive-action", "flat"],
-        tooltip_text: `Remove vinyl effect from ${appName}`,
-      });
-      removeBtn.connect("clicked", () => {
-        const current = settings.get_strv("vinyl-app-ids");
-        const idx = current.findIndex(
-          (id) => id.toLowerCase() === appId.toLowerCase(),
-        );
-        if (idx >= 0) current.splice(idx, 1);
-        settings.set_strv("vinyl-app-ids", current);
-      });
-      row.add_suffix(removeBtn);
+      shownInstanceIds.add(normId);
+      instanceRows.push({ id, normId, appName, appIcon });
+    }
 
-      this._enabledAppsGroup.add(row);
-      this._enabledAppRows.set(appId, row);
+    if (instanceRows.length > 0) {
+      // Header label
+      this._appListBox.append(new Gtk.Label({
+        label:         "Saved Instances",
+        xalign:        0,
+        css_classes:   ["caption", "dim-label"],
+        margin_top:    8,
+        margin_bottom: 2,
+        margin_start:  8,
+      }));
+
+      for (const { id, normId, appName, appIcon } of instanceRows) {
+        const isEnabled = this._isAppEnabled(normId, enabledIds);
+
+        const row = new Adw.ActionRow({
+          title:       appName,
+          subtitle:    id,
+          activatable: false,
+        });
+
+        row.add_prefix(appIcon
+          ? new Gtk.Image({ gicon: appIcon, pixel_size: 24, valign: Gtk.Align.CENTER })
+          : new Gtk.Image({
+              icon_name: "media-optical-cd-audio-symbolic",
+              pixel_size: 24,
+              valign: Gtk.Align.CENTER,
+            }),
+        );
+
+        const sw = new Gtk.Switch({ active: isEnabled, valign: Gtk.Align.CENTER });
+        sw.connect("state-set", (_w, state) => {
+          this._setAppVinylState(settings, id, normId, state);
+          this._updateInstanceEnabledField(settings, normId, state);
+          return false;
+        });
+        row.add_suffix(sw);
+        this._appListBox.append(row);
+      }
+    }
+
+    // ── Section B: System media/browser apps ─────────────────────────────────
+    // Filter out apps already shown as instances
+    const sysApps = filteredSystemApps.filter((app) => {
+      const rawId  = app.get_id() || "";
+      const normId = this._normalizeAppId(rawId)?.toLowerCase() ?? "";
+      return !shownInstanceIds.has(normId);
+    });
+
+    if (sysApps.length > 0) {
+      if (instanceRows.length > 0) {
+        this._appListBox.append(new Gtk.Label({
+          label:         "Other Apps",
+          xalign:        0,
+          css_classes:   ["caption", "dim-label"],
+          margin_top:    10,
+          margin_bottom: 2,
+          margin_start:  8,
+        }));
+      }
+
+      sysApps.forEach((app) => {
+        const rawId = app.get_id();
+        const appId = this._normalizeAppId(rawId);
+        if (!appId) return;
+
+        const normId    = appId.toLowerCase();
+        const isEnabled = this._isAppEnabled(normId, enabledIds);
+
+        const row = new Adw.ActionRow({
+          title:       app.get_name(),
+          subtitle:    appId,
+          activatable: false,
+        });
+
+        const icon = app.get_icon();
+        if (icon)
+          row.add_prefix(new Gtk.Image({ gicon: icon, pixel_size: 24, valign: Gtk.Align.CENTER }));
+
+        const sw = new Gtk.Switch({ active: isEnabled, valign: Gtk.Align.CENTER });
+        sw.connect("state-set", (_w, state) => {
+          // When adding from search, also write a stub instance record
+          if (state) {
+            const record = JSON.stringify({
+              id:        appId,
+              name:      app.get_name(),
+              desktopId: appId,
+              busName:   "",
+              enabled:   true,
+            });
+            try {
+              const existing = settings.get_strv("vinyl-app-instances") ?? [];
+              const deduped  = existing.filter((raw) => {
+                try { return JSON.parse(raw).id?.toLowerCase() !== normId; }
+                catch (_) { return true; }
+              });
+              deduped.push(record);
+              settings.set_strv("vinyl-app-instances", deduped);
+            } catch (_e) {}
+          } else {
+            this._updateInstanceEnabledField(settings, normId, false);
+          }
+          this._setAppVinylState(settings, appId, normId, state);
+          return false;
+        });
+        row.add_suffix(sw);
+        this._appListBox.append(row);
+      });
+    }
+
+    if (instanceRows.length === 0 && sysApps.length === 0) {
+      this._appListBox.append(new Gtk.Label({
+        label:         "No matching apps found",
+        css_classes:   ["dim-label"],
+        margin_top:    16,
+        margin_bottom: 16,
+      }));
     }
   }
 
-  /** Strip .desktop suffix so IDs are consistent with MPRIS desktop entries. */
   _normalizeAppId(id) {
     if (!id) return null;
-    return id.endsWith(".desktop") ? id.slice(0, -".desktop".length) : id;
+    return id.endsWith(".desktop") ? id.slice(0, -8) : id;
   }
 
   // ── About page ────────────────────────────────────────────────────────────
@@ -613,7 +957,8 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
       title: "Key Features",
       subtitle:
         "• Multi-instance browser support\n• Per-app rotating vinyl record album art\n" +
-        "• Animated tonearm\n• Smooth animations\n• Double-click to toggle vinyl per app",
+        "• Animated tonearm\n• Smooth animations\n• Double-click to toggle vinyl per app\n" +
+        "• All seen apps remembered — re-enable any time",
       activatable: false,
     });
     featuresRow.add_prefix(new Gtk.Image({ icon_name: "starred-symbolic", pixel_size: 16 }));
