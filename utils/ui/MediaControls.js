@@ -7,21 +7,21 @@ import { ProgressSlider } from "./ProgressSlider.js";
 import { PlayerTabs } from "./PlayerTabs.js";
 import { ScrollingLabel } from "./ScrollingLabel.js";
 
-const TITLE_VIEWPORT_WIDTH = 300;
+const TITLE_VIEWPORT_WIDTH  = 300;
 const ARTIST_VIEWPORT_WIDTH = 280;
-const LOOP_PAUSE_MS = 1200;
-const BASE_PX_PER_SEC = 50;
+const LOOP_PAUSE_MS         = 1200;
+const BASE_PX_PER_SEC       = 50;
 
 export const MediaControls = GObject.registerClass(
   {
     Signals: {
-      "play-pause": {},
-      next: {},
-      previous: {},
-      shuffle: {},
-      repeat: {},
-      seek: { param_types: [GObject.TYPE_DOUBLE] },
-      "player-changed": { param_types: [GObject.TYPE_STRING] },
+      "play-pause":      {},
+      next:              {},
+      previous:          {},
+      shuffle:           {},
+      repeat:            {},
+      seek:              { param_types: [GObject.TYPE_DOUBLE] },
+      "player-changed":  { param_types: [GObject.TYPE_STRING] },
     },
   },
   class MediaControls extends St.BoxLayout {
@@ -32,12 +32,13 @@ export const MediaControls = GObject.registerClass(
         style: "min-width: 340px; max-width: 340px;",
       });
 
-      this._settings = settings;
+      this._settings          = settings;
       this._currentPlayerName = null;
+      this._currentManager    = null;
       this._playerSliderPositions = new Map();
-      this._playerArtCache = new Map();
+      this._playerArtCache        = new Map();
 
-      this._titleScrollLabel = null;
+      this._titleScrollLabel  = null;
       this._artistScrollLabel = null;
 
       this._buildUI();
@@ -56,8 +57,8 @@ export const MediaControls = GObject.registerClass(
       headerBox.add_child(this._playerTabs);
       this.add_child(headerBox);
 
-      // Album art
-      this._albumArt = new AlbumArt(this._settings);
+      // Album art — manager + playerName will be supplied on first update().
+      this._albumArt = new AlbumArt(this._settings, null, null);
       this.add_child(this._albumArt);
 
       // Info box
@@ -67,19 +68,17 @@ export const MediaControls = GObject.registerClass(
         x_align: Clutter.ActorAlign.CENTER,
       });
 
-      // Title slot
       this._titleSlot = new St.BoxLayout({
         x_align: Clutter.ActorAlign.CENTER,
         y_align: Clutter.ActorAlign.CENTER,
-        style: "min-height: 28px; width: " + TITLE_VIEWPORT_WIDTH + "px;",
+        style: `min-height: 28px; width: ${TITLE_VIEWPORT_WIDTH}px;`,
       });
       this._infoBox.add_child(this._titleSlot);
 
-      // Artist slot
       this._artistSlot = new St.BoxLayout({
         x_align: Clutter.ActorAlign.CENTER,
         y_align: Clutter.ActorAlign.CENTER,
-        style: "min-height: 22px; width: " + ARTIST_VIEWPORT_WIDTH + "px;",
+        style: `min-height: 22px; width: ${ARTIST_VIEWPORT_WIDTH}px;`,
       });
       this._infoBox.add_child(this._artistSlot);
 
@@ -97,8 +96,8 @@ export const MediaControls = GObject.registerClass(
         if (this._currentPlayerName) {
           this._playerSliderPositions.set(this._currentPlayerName, {
             position: this._progressSlider.currentPosition,
-            length: this._progressSlider.trackLength,
-            value: this._progressSlider.sliderValue,
+            length:   this._progressSlider.trackLength,
+            value:    this._progressSlider.sliderValue,
           });
         }
       });
@@ -107,50 +106,38 @@ export const MediaControls = GObject.registerClass(
       // Control buttons
       this._controlButtons = new ControlButtons();
       this._controlButtons.connect("play-pause", () => this.emit("play-pause"));
-      this._controlButtons.connect("next", () => this.emit("next"));
-      this._controlButtons.connect("previous", () => this.emit("previous"));
-      this._controlButtons.connect("shuffle", () => this.emit("shuffle"));
-      this._controlButtons.connect("repeat", () => this.emit("repeat"));
+      this._controlButtons.connect("next",       () => this.emit("next"));
+      this._controlButtons.connect("previous",   () => this.emit("previous"));
+      this._controlButtons.connect("shuffle",    () => this.emit("shuffle"));
+      this._controlButtons.connect("repeat",     () => this.emit("repeat"));
       this.add_child(this._controlButtons);
     }
 
+    // ── Scroll-label helpers ──────────────────────────────────────────────────
+
     _calcSpeed(speedPref, status) {
-      const eff =
-        status === "Paused"
-          ? Math.max(1, Math.floor(speedPref / 3))
-          : speedPref;
+      const eff = status === "Paused"
+        ? Math.max(1, Math.floor(speedPref / 3))
+        : speedPref;
       return Math.round(BASE_PX_PER_SEC * (eff / 5));
     }
 
-    _updateSlotLabel(
-      slot,
-      existing,
-      fullText,
-      enabled,
-      viewW,
-      speedPref,
-      status,
-      textStyle,
-    ) {
+    _updateSlotLabel(slot, existing, fullText, enabled, viewW, speedPref, status, textStyle) {
       if (!enabled) {
-        if (existing) {
-          existing.destroy();
-        }
+        existing?.destroy();
         slot.destroy_all_children();
-
         const lbl = new St.Label({
           text: fullText,
           y_align: Clutter.ActorAlign.CENTER,
-          style: textStyle + " max-width: " + viewW + "px;",
+          style: `${textStyle} max-width: ${viewW}px;`,
         });
-        lbl.clutter_text.ellipsize = 3; // Pango.EllipsizeMode.END
+        lbl.clutter_text.ellipsize = 3;
         lbl.clutter_text.single_line_mode = true;
         slot.add_child(lbl);
         return null;
       }
 
       const speed = this._calcSpeed(speedPref, status);
-
       if (existing) {
         existing.setScrollSpeed(speed);
         existing.setText(fullText);
@@ -173,70 +160,58 @@ export const MediaControls = GObject.registerClass(
 
     _updateTitleLabel(fullText, status) {
       const enabled = this._settings.get_boolean("enable-title-scroll");
-      const speed = this._settings.get_int("title-scroll-speed");
-      const style = "font-weight: 700; font-size: 16px;";
-
+      const speed   = this._settings.get_int("title-scroll-speed");
       this._titleScrollLabel = this._updateSlotLabel(
-        this._titleSlot,
-        this._titleScrollLabel,
-        fullText,
-        enabled,
-        TITLE_VIEWPORT_WIDTH,
-        speed,
-        status,
-        style,
+        this._titleSlot, this._titleScrollLabel, fullText, enabled,
+        TITLE_VIEWPORT_WIDTH, speed, status,
+        "font-weight: 700; font-size: 16px;",
       );
     }
 
     _updateArtistLabel(fullText, status) {
       const enabled = this._settings.get_boolean("enable-artist-scroll");
-      const speed = this._settings.get_int("artist-scroll-speed");
-      const style = "font-size: 13px; font-weight: 500;";
-
+      const speed   = this._settings.get_int("artist-scroll-speed");
       this._artistScrollLabel = this._updateSlotLabel(
-        this._artistSlot,
-        this._artistScrollLabel,
-        fullText,
-        enabled,
-        ARTIST_VIEWPORT_WIDTH,
-        speed,
-        status,
-        style,
+        this._artistSlot, this._artistScrollLabel, fullText, enabled,
+        ARTIST_VIEWPORT_WIDTH, speed, status,
+        "font-size: 13px; font-weight: 500;",
       );
     }
 
     _stopTitleLabel() {
-      if (this._titleScrollLabel) {
-        this._titleScrollLabel.destroy();
-        this._titleScrollLabel = null;
-      }
+      this._titleScrollLabel?.destroy();
+      this._titleScrollLabel = null;
       this._titleSlot.destroy_all_children();
     }
 
     _stopArtistLabel() {
-      if (this._artistScrollLabel) {
-        this._artistScrollLabel.destroy();
-        this._artistScrollLabel = null;
-      }
+      this._artistScrollLabel?.destroy();
+      this._artistScrollLabel = null;
       this._artistSlot.destroy_all_children();
     }
+
+    // ── Main update ───────────────────────────────────────────────────────────
 
     update(info, playerName, manager) {
       if (!info) return;
 
-      const playerChanged = this._currentPlayerName !== playerName;
-      this._currentPlayerName = playerName;
+      const playerChanged         = this._currentPlayerName !== playerName;
+      this._currentPlayerName     = playerName;
+      this._currentManager        = manager;
 
+      // Notify ProgressSlider first so cached position is restored instantly.
       this._progressSlider.setPlayerName(playerName);
 
-      // Album art
+      // Tell AlbumArt which player/manager is active so it can compute the
+      // correct per-app vinyl state.
+      if (playerChanged)
+        this._albumArt.setPlayer(manager, playerName);
+
+      // Album art image
       if (playerChanged) {
         if (info.artUrl) this._albumArt.loadCover(info.artUrl, true);
-        else this._albumArt.setDefaultCover();
-      } else if (
-        info.artUrl &&
-        this._playerArtCache.get(playerName) !== info.artUrl
-      ) {
+        else             this._albumArt.setDefaultCover();
+      } else if (info.artUrl && this._playerArtCache.get(playerName) !== info.artUrl) {
         this._albumArt.loadCover(info.artUrl);
       }
       this._playerArtCache.set(playerName, info.artUrl);
@@ -244,7 +219,7 @@ export const MediaControls = GObject.registerClass(
       // Labels
       this._updateTitleLabel(info.title || "Unknown", info.status);
 
-      if (info.artists && info.artists.length > 0) {
+      if (info.artists?.length > 0) {
         this._updateArtistLabel(info.artists.join(", "), info.status);
         this._artistSlot.show();
       } else {
@@ -261,13 +236,12 @@ export const MediaControls = GObject.registerClass(
         info.status,
       );
 
-      if (info.status === "Playing") {
+      if (info.status === "Playing")
         this._albumArt.startRotation(true);
-      } else if (info.status === "Paused") {
+      else if (info.status === "Paused")
         this._albumArt.pauseRotation();
-      } else {
+      else
         this._albumArt.stopRotation();
-      }
     }
 
     _getMetadata(playerName, manager) {
@@ -278,13 +252,12 @@ export const MediaControls = GObject.registerClass(
       if (!metaV) return null;
 
       const meta = {};
-      const len = metaV.n_children();
+      const len  = metaV.n_children();
       for (let i = 0; i < len; i++) {
         const item = metaV.get_child_value(i);
-        const key = item.get_child_value(0).get_string()[0];
-        const valueVariant = item.get_child_value(1).get_variant();
-        if (key)
-          meta[key] = valueVariant ? valueVariant.recursiveUnpack() : null;
+        const key  = item.get_child_value(0).get_string()[0];
+        const val  = item.get_child_value(1).get_variant();
+        if (key) meta[key] = val ? val.recursiveUnpack() : null;
       }
       return meta;
     }
@@ -295,7 +268,6 @@ export const MediaControls = GObject.registerClass(
 
     startPositionUpdate() {
       this._progressSlider.startPositionUpdate();
-      // Resume scroll labels that were paused when the popup closed.
       this._titleScrollLabel?.resumeScrolling();
       this._artistScrollLabel?.resumeScrolling();
     }
@@ -304,7 +276,7 @@ export const MediaControls = GObject.registerClass(
       this._progressSlider.stopPositionUpdate();
       this._titleScrollLabel?.pauseScrolling();
       this._artistScrollLabel?.pauseScrolling();
-      if (this._albumArt) this._albumArt.pauseRotation();
+      this._albumArt?.pauseRotation();
     }
 
     onSeeked(position) {
@@ -312,13 +284,13 @@ export const MediaControls = GObject.registerClass(
       if (this._currentPlayerName) {
         this._playerSliderPositions.set(this._currentPlayerName, {
           position: this._progressSlider.currentPosition,
-          length: this._progressSlider.trackLength,
-          value:
-            this._progressSlider.currentPosition /
-            this._progressSlider.trackLength,
+          length:   this._progressSlider.trackLength,
+          value:    this._progressSlider.currentPosition / this._progressSlider.trackLength,
         });
       }
     }
+
+    // ── Lifecycle ─────────────────────────────────────────────────────────────
 
     destroy() {
       this._stopTitleLabel();
@@ -326,7 +298,7 @@ export const MediaControls = GObject.registerClass(
       this._progressSlider.stopPositionUpdate();
       this._playerSliderPositions.clear();
       this._playerArtCache.clear();
-      if (this._albumArt) this._albumArt.destroy();
+      this._albumArt?.destroy();
       super.destroy();
     }
   },

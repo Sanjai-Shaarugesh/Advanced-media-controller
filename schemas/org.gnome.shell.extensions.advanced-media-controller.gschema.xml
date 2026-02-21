@@ -90,6 +90,13 @@
       <description>Speed of artist scrolling in the popup: 1 = slowest, 10 = fastest</description>
     </key>
 
+    <!-- Per-app vinyl effect -->
+    <key name="vinyl-app-ids" type="as">
+      <default>[]</default>
+      <summary>Apps with vinyl effect enabled</summary>
+      <description>List of desktop-entry IDs (e.g. "spotify", "rhythmbox") for which the rotating vinyl record effect is active. Managed via the Vinyl Apps preferences page or by double-clicking the album art in the popup.</description>
+    </key>
+
     <!-- Album art -->
     <key name="enable-album-art-rotation" type="b">
       <default>true</default>
