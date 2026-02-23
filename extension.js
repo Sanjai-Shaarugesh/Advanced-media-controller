@@ -12,8 +12,6 @@ export default class MediaExtension extends Extension {
     this._indicator = new MediaIndicator(this._settings, this);
     this._addToPanel();
 
-    // Reposition the indicator when the user changes its panel position/index.
-    // Debounced so rapid back-to-back setting changes only trigger one move.
     this._settingsChangedId = this._settings.connect("changed", (_, key) => {
       if (key !== "panel-position" && key !== "panel-index") return;
 

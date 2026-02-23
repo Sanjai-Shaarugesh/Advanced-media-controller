@@ -159,7 +159,6 @@ export class IndicatorPlayerHandlers {
   }
 
   destroy() {
-    // Remove update throttle timeout
     if (this._updateThrottle) {
       GLib.source_remove(this._updateThrottle);
       this._updateThrottle = null;

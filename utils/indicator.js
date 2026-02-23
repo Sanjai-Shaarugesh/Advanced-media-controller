@@ -50,7 +50,6 @@ export const MediaIndicator = GObject.registerClass(
         "changed",
         (_, key) => {
           this._state.safeExecute(() => {
-            // panel-position / panel-index handled in extension.js
             if (key !== "panel-position" && key !== "panel-index") {
               this._uiUpdater.updateLabel();
               this._uiUpdater.updateVisibility();

@@ -57,7 +57,7 @@ export const MediaControls = GObject.registerClass(
       headerBox.add_child(this._playerTabs);
       this.add_child(headerBox);
 
-      // Album art — manager + playerName will be supplied on first update().
+      // Album art — manager + playerName will be supplied on first update
       this._albumArt = new AlbumArt(this._settings, null, null);
       this.add_child(this._albumArt);
 
@@ -113,7 +113,7 @@ export const MediaControls = GObject.registerClass(
       this.add_child(this._controlButtons);
     }
 
-    // ── Scroll-label helpers ──────────────────────────────────────────────────
+    // scroll label helpers
 
     _calcSpeed(speedPref, status) {
       const eff = status === "Paused"
@@ -290,7 +290,7 @@ export const MediaControls = GObject.registerClass(
       }
     }
 
-    // ── Lifecycle ─────────────────────────────────────────────────────────────
+    
 
     destroy() {
       this._stopTitleLabel();
