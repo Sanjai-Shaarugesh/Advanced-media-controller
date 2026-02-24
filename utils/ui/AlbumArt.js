@@ -66,25 +66,18 @@ export const AlbumArt = GObject.registerClass(
       return isVinylEnabledForIds(ids, getVinylApps(this._settings));
     }
 
-    /**
-     * Resolve the best canonical ID for this player.
-     * Priority: real .desktop app-id from Gio.AppInfo > desktopEntries map > bus-name strip.
-     */
     _resolvePreferredId() {
-      // 1. Try to find the real AppInfo via the system app database — same as BlacklistedPlayers
       const appInfo = this._resolveAppInfo();
       if (appInfo) {
-        const id = appInfo.get_id(); // e.g. "chromium-browser.desktop"
+        const id = appInfo.get_id();
         if (id) return id.endsWith(".desktop") ? id.slice(0, -8) : id;
       }
 
-      // 2. Fall back to the desktopEntries map stored by MprisPlayer
       if (this._manager) {
         const de = this._manager._desktopEntries?.get(this._playerName);
         if (de) return de.endsWith(".desktop") ? de.slice(0, -8) : de;
       }
 
-      // 3. Last resort: strip the MPRIS prefix / instance suffix from the bus name
       const raw = this._playerName?.replace(/^org\.mpris\.MediaPlayer2\./, "");
       return (
         raw?.replace(/\.instance_\d+_\d+$/i, "").replace(/\.\d+$/, "") ?? null
@@ -92,9 +85,7 @@ export const AlbumArt = GObject.registerClass(
     }
 
     /**
-     * Find the Gio.AppInfo for this player using the same approach as BlacklistedPlayers:
-     * iterate Gio.AppInfo.get_all() and match by .get_id().
-     *
+
      * @returns {Gio.AppInfo|null}
      */
     _resolveAppInfo() {
@@ -119,7 +110,7 @@ export const AlbumArt = GObject.registerClass(
             .replace(/\.\d+$/, "");
           candidates.add(raw.toLowerCase());
           candidates.add(`${raw}.desktop`.toLowerCase());
-          // Also try just the last segment (e.g. "chromium" from "org.chromium.Chromium")
+          // Also try just the last segment
           const parts = raw.split(".");
           if (parts.length > 1) {
             candidates.add(parts[parts.length - 1].toLowerCase());
@@ -127,7 +118,6 @@ export const AlbumArt = GObject.registerClass(
           }
         }
 
-        // Walk every installed app exactly like BlacklistedPlayers does
         const allApps = Gio.AppInfo.get_all();
         for (const app of allApps) {
           const appId = (app.get_id() ?? "").toLowerCase();
@@ -170,27 +160,11 @@ export const AlbumArt = GObject.registerClass(
       }
     }
 
-    /**
-     * Persist a rich JSON record into vinyl-app-instances so the prefs
-     * page can show it with the correct icon and display name.
-     *
-     * KEY FIX: We always use the canonical Gio desktop ID (e.g.
-     * "com.spotify.Client") as `id`, not the short/preferred name.
-     * Deduplication is done by comparing both the stored `id` AND
-     * `desktopId` fields against the new canonical ID so that stale
-     * records saved under short names ("spotify") are replaced.
-     *
-     * Uses Gio.AppInfo.get_all() to find the real desktop ID and display
-     * name — the same technique used by BlacklistedPlayers / AppChooser.
-     */
     _saveInstance(preferredId) {
       if (!preferredId) return;
 
-      // Resolve via the system app database (most reliable)
       const appInfo = this._resolveAppInfo();
 
-      // Real .desktop app-id from Gio (e.g. "com.spotify.Client")
-      // This becomes the canonical key stored as `id`.
       let canonicalId = preferredId;
       let desktopId = preferredId;
       let displayName = preferredId;
@@ -200,7 +174,8 @@ export const AlbumArt = GObject.registerClass(
         const clean = rawId.endsWith(".desktop") ? rawId.slice(0, -8) : rawId;
         canonicalId = clean;
         desktopId = clean;
-        displayName = appInfo.get_display_name() || appInfo.get_name() || displayName;
+        displayName =
+          appInfo.get_display_name() || appInfo.get_name() || displayName;
       } else {
         // Fallback: use what MprisManager cached
         if (this._manager) {
@@ -217,21 +192,20 @@ export const AlbumArt = GObject.registerClass(
       }
 
       const canonicalLower = canonicalId.toLowerCase();
-      // Short tail (e.g. "spotify" from "com.spotify.Client")
+
       const canonicalTail = canonicalLower.split(".").pop();
 
       const record = JSON.stringify({
-        id: canonicalId,          // always the canonical desktop ID
+        id: canonicalId, // always the canonical desktop ID
         name: displayName,
-        desktopId,                // same as id — matches Gio.AppInfo.get_id() minus .desktop
+        desktopId,
         busName: this._playerName || "",
         enabled: true,
       });
 
       try {
         const existing = this._settings.get_strv("vinyl-app-instances") ?? [];
-        // Remove any existing record that refers to the same canonical app,
-        // regardless of whether it was stored as "spotify", "com.spotify.Client", etc.
+
         const deduped = existing.filter((raw) => {
           try {
             const obj = JSON.parse(raw);
@@ -254,7 +228,6 @@ export const AlbumArt = GObject.registerClass(
       } catch (_e) {}
     }
 
-    // Update the `enabled` field on a stored instance without removing it
     _markInstanceEnabled(canonicalIds, enabledValue) {
       try {
         const existing = this._settings.get_strv("vinyl-app-instances") ?? [];

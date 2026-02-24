@@ -2,7 +2,7 @@ import St from "gi://St";
 import GLib from "gi://GLib";
 import GObject from "gi://GObject";
 
-// Tonearm resting position (
+// Tonearm resting position
 export const TONEARM_PARKED_ANGLE = 25;
 
 // Tonearm playing position

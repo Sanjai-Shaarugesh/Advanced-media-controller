@@ -193,9 +193,7 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
 
     const artistScrollGroup = new Adw.PreferencesGroup({
       title: _("Artist Scrolling"),
-      description: _(
-        "Marquee behaviour for the artist name inside the popup",
-      ),
+      description: _("Marquee behaviour for the artist name inside the popup"),
     });
     popupPage.add(artistScrollGroup);
 
@@ -531,23 +529,14 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
       return;
     }
 
-    // ── Deduplication by real Gio app identity ───────────────────────────────
-    // For every stored record we call _findAppInfo() which iterates
-    // Gio.AppInfo.get_all() — the same approach as BlacklistedPlayers.
-    // If two records produce the *same* real .desktop id (e.g. both
-    // "spotify" and "com.spotify.Client" resolve to "com.spotify.Client"),
-    // they are the same app and we show ONE row.
-    //
-    // We prefer the record whose `enabled` field is true; when both are
-    // false we keep the more-canonical one (with appInfo) to get the icon.
-    // The enabled toggle checks ALL id forms stored in the group.
-    // ─────────────────────────────────────────────────────────────────────────
-
-    // Step 1 – parse + annotate
     const parsed = [];
     for (const raw of rawInstances) {
       let obj;
-      try { obj = JSON.parse(raw); } catch (_) { continue; }
+      try {
+        obj = JSON.parse(raw);
+      } catch (_) {
+        continue;
+      }
       const id = obj.id ?? "";
       if (!id) continue;
 
@@ -565,8 +554,6 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
       parsed.push({ obj, appInfoR, canonicalKey });
     }
 
-    // Step 2 – group by canonical key; prefer enabled record per group
-    // groupMap: canonicalKey → { best: entry, allIds: Set<string> }
     const groupMap = new Map();
     for (const entry of parsed) {
       const { canonicalKey } = entry;
@@ -574,8 +561,7 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
         const group = groupMap.get(canonicalKey);
         group.allIds.add(entry.obj.id.toLowerCase());
         // Upgrade to the enabled record when the current best isn't enabled
-        if (!group.best.obj.enabled && entry.obj.enabled)
-          group.best = entry;
+        if (!group.best.obj.enabled && entry.obj.enabled) group.best = entry;
       } else {
         groupMap.set(canonicalKey, {
           best: entry,
@@ -601,7 +587,9 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
       const displayName = obj.customName?.trim() || resolvedName;
 
       // Check enabled state across ALL id forms in this group
-      const isEnabled = [...allIds].some((aid) => this._isAppEnabled(aid, enabledIds));
+      const isEnabled = [...allIds].some((aid) =>
+        this._isAppEnabled(aid, enabledIds),
+      );
 
       const row = new Adw.ActionRow({
         title: displayName,
@@ -659,8 +647,7 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
         tooltip_text: _("Remove %s from saved instances").format(appName),
       });
       removeBtn.connect("clicked", () => {
-        for (const aid of allIds)
-          this._deleteInstance(settings, aid, aid);
+        for (const aid of allIds) this._deleteInstance(settings, aid, aid);
       });
       row.add_suffix(removeBtn);
 
@@ -675,7 +662,9 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
   _showRenameDialog(settings, id, normId, currentDisplay, resolvedName) {
     const dialog = new Adw.AlertDialog({
       heading: _("Rename Instance"),
-      body: _("Enter a custom display name for \u201c%s\u201d.\nLeave blank to reset to the default name.").format(resolvedName),
+      body: _(
+        "Enter a custom display name for \u201c%s\u201d.\nLeave blank to reset to the default name.",
+      ).format(resolvedName),
       default_response: "rename",
       close_response: "cancel",
     });
@@ -961,11 +950,11 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
       let resolvedName = obj.name || desktopId || id;
 
       let appIcon = null;
-      // Use Gio.AppInfo.get_all() + get_id() matching — same pattern as
-      // BlacklistedPlayers — so icons are found correctly for all apps.
+
       const appInfoR = this._findAppInfo(desktopId, id);
       if (appInfoR) {
-        resolvedName = appInfoR.get_display_name() || appInfoR.get_name() || resolvedName;
+        resolvedName =
+          appInfoR.get_display_name() || appInfoR.get_name() || resolvedName;
         appIcon = appInfoR.get_icon();
       }
 
@@ -1018,7 +1007,7 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
         const row = new Adw.ActionRow({
           // Show custom name if set, otherwise the resolved .desktop name
           title: displayName,
-          // Show id + a "renamed from" hint in subtitle when a custom name is active
+          // Show id & a "renamed from" hint in subtitle when a custom name is active
           subtitle: customName
             ? `${id}  \u00b7  ${_("renamed from")} "${resolvedName}"`
             : id,
@@ -1147,35 +1136,13 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
   }
 
   /**
-   * Find the Gio.AppInfo for a stored instance using Gio.AppInfo.get_all()
-   * and get_id() matching — the same pattern used by BlacklistedPlayers /
-   * AppChooser.  This is far more reliable than Gio.DesktopAppInfo.new()
-   * because it works even when the desktop file ID does not match the
-   * plain app name (e.g. "chromium-browser.desktop" vs "chromium").
-   *
-   * KEY FIX: instance suffixes like ".instance45529" are stripped before
-   * building the candidate set, so "brave.instance45529" correctly resolves
-   * to "com.brave.Browser.desktop".
-   *
-   * @param {string} desktopId  – from the stored instance record (without .desktop)
+
+   * @param {string} desktopId  – from the stored instance record
    * @param {string} fallbackId – the raw `id` field of the record
    * @returns {Gio.AppInfo|null}
    */
   /**
-   * Find Gio.AppInfo for a stored instance id.
-   *
-   * Uses the same Gio.AppInfo.get_all() + get_id() pattern as
-   * BlacklistedPlayers / AppChooser so icons are always correct.
-   *
-   * Matching strategy (in order):
-   *  1. Exact desktop-id match  (e.g. "com.spotify.Client.desktop")
-   *  2. Any dot-segment of the app id matches any dot-segment of the
-   *     candidate  (e.g. "spotify" segment of "org.mpris…spotify" matches
-   *     "spotify" segment of "com.spotify.Client")
-   *  3. App display-name lowercased equals any candidate
-   *
-   * Instance / numeric suffixes are stripped before matching.
-   *
+
    * @param {string} desktopId   stored desktopId field
    * @param {string} fallbackId  stored id field
    * @returns {Gio.AppInfo|null}
@@ -1190,10 +1157,10 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
         .replace(/\.\d+$/, "");
       for (const variant of [base, stripped]) {
         const lower = variant.toLowerCase();
-        // Full form + .desktop variant
+
         tokens.add(lower);
         tokens.add(`${lower}.desktop`);
-        // Every dot-segment (e.g. "com", "spotify", "client" from "com.spotify.Client")
+
         for (const seg of lower.split(".")) {
           if (seg.length > 2) tokens.add(seg); // skip trivial segments like "org","com","net"
         }
@@ -1201,39 +1168,57 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     }
 
     // Remove overly generic segments that would cause false positives
-    for (const generic of ["org", "com", "net", "io", "app", "application",
-                           "browser", "client", "player", "media", "desktop",
-                           "instance", "snap", "flatpak"]) {
+    for (const generic of [
+      "org",
+      "com",
+      "net",
+      "io",
+      "app",
+      "application",
+      "browser",
+      "client",
+      "player",
+      "media",
+      "desktop",
+      "instance",
+      "snap",
+      "flatpak",
+    ]) {
       tokens.delete(generic);
     }
 
     try {
       const allApps = Gio.AppInfo.get_all();
 
-      // Pass 1 – exact full-id match (most reliable, no false positives)
       for (const app of allApps) {
         const appId = (app.get_id() ?? "").toLowerCase();
         if (tokens.has(appId)) return app;
-        const appIdClean = appId.endsWith(".desktop") ? appId.slice(0, -8) : appId;
+        const appIdClean = appId.endsWith(".desktop")
+          ? appId.slice(0, -8)
+          : appId;
         if (tokens.has(appIdClean)) return app;
       }
 
-      // Pass 2 – any dot-segment of the app's id matches any of our tokens
-      // e.g. "com.spotify.Client" has segment "spotify" which matches token "spotify"
       for (const app of allApps) {
         const appId = (app.get_id() ?? "").toLowerCase();
-        const appIdClean = appId.endsWith(".desktop") ? appId.slice(0, -8) : appId;
+        const appIdClean = appId.endsWith(".desktop")
+          ? appId.slice(0, -8)
+          : appId;
         for (const seg of appIdClean.split(".")) {
           if (seg.length > 2 && tokens.has(seg)) return app;
         }
       }
 
-      // Pass 3 – app display name matches any token
+      // app display name matches any token
       for (const app of allApps) {
-        const name = (app.get_display_name() ?? "").toLowerCase().replace(/\s+/g, "");
+        const name = (app.get_display_name() ?? "")
+          .toLowerCase()
+          .replace(/\s+/g, "");
         if (tokens.has(name)) return app;
         // Also try just the first word
-        const firstWord = (app.get_display_name() ?? "").toLowerCase().split(/\s+/)[0];
+        const firstWord = (app.get_display_name() ?? "")
+          .toLowerCase()
+          .split(/\s+/)[0];
         if (firstWord.length > 2 && tokens.has(firstWord)) return app;
       }
     } catch (_e) {}
@@ -1343,7 +1328,9 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     });
 
     const qrGroup = new Adw.PreferencesGroup({
-      title: _("\u2615 Support by buying me a coffee \u2013 just scan the QR code!"),
+      title: _(
+        "\u2615 Support by buying me a coffee \u2013 just scan the QR code!",
+      ),
       description: _("Preferred Method - Scan QR code to support development"),
     });
     const qrContainer = new Gtk.Box({

@@ -1,18 +1,7 @@
 import Gio from "gi://Gio";
 
 /**
- * Resolve a Set of lowercase canonical IDs for a player.
- *
- * Priority:
- *  1. Real .desktop app-id via Gio.AppInfo.get_all() — the most reliable source,
- *     and the same approach used by BlacklistedPlayers / AppChooser.
- *  2. The desktopEntries map cached by MprisPlayer._fetchDesktopEntry().
- *  3. Stripped MPRIS bus name (last-resort fallback).
- *
- * All entries are lowercased.  Both the full reverse-DNS form
- * (e.g. "com.spotify.client") and the short tail ("spotify") are included
- * so that matching works regardless of how the ID was stored.
- *
+
  * @param {string|null} playerName  – MPRIS bus name
  * @param {object|null} manager     – MprisManager exposing _desktopEntries / _identities
  * @returns {Set<string>}
@@ -21,8 +10,6 @@ export function resolveCanonicalIds(playerName, manager) {
   const ids = new Set();
   if (!playerName) return ids;
 
-  // 1. Ask the system app database — same as BlacklistedPlayers does with
-  //    Gio.AppInfo.get_all() + app.get_id().
   try {
     const candidates = _buildCandidateSet(playerName, manager);
     const allApps = Gio.AppInfo.get_all();
@@ -32,18 +19,15 @@ export function resolveCanonicalIds(playerName, manager) {
         ? appId.slice(0, -8)
         : appId;
       if (candidates.has(appId) || candidates.has(appIdNoSuffix)) {
-        // Add the real desktop ID (without .desktop) so _saveInstance and
-        // _refreshInstancesList always agree on the key.
         ids.add(appIdNoSuffix);
-        // Also add the tail segment for short-form matching
+
         const parts = appIdNoSuffix.split(".");
         if (parts.length > 1) ids.add(parts[parts.length - 1]);
-        break; // first match wins
+        break;
       }
     }
   } catch (_e) {}
 
-  // 2. desktopEntries map (may refine further or serve as sole source)
   if (manager) {
     const de = manager._desktopEntries?.get(playerName);
     if (de) {
@@ -54,7 +38,6 @@ export function resolveCanonicalIds(playerName, manager) {
     }
   }
 
-  // 3. Bus-name stripping (always added as a last-resort fallback)
   const raw = playerName.replace(/^org\.mpris\.MediaPlayer2\./, "");
   const clean = raw.replace(/\.instance_\d+_\d+$/i, "").replace(/\.\d+$/, "");
   ids.add(clean.toLowerCase());
@@ -69,9 +52,7 @@ export function resolveCanonicalIds(playerName, manager) {
 }
 
 /**
- * Build the set of candidate strings used to find the app in Gio.AppInfo.get_all().
- * Internal helper — not exported.
- *
+
  * @param {string}      playerName
  * @param {object|null} manager
  * @returns {Set<string>}
@@ -106,7 +87,7 @@ function _buildCandidateSet(playerName, manager) {
 }
 
 /**
- * Returns true if any entry in vinylApps matches any id in canonicalIds.
+
  *
  * @param {Set<string>} canonicalIds
  * @param {string[]}    vinylApps
@@ -124,7 +105,7 @@ export function isVinylEnabledForIds(canonicalIds, vinylApps) {
 }
 
 /**
- * Read vinyl-app-ids from settings, returning [] on any error.
+ * Read vinyl-app-ids from settings
  *
  * @param {Gio.Settings} settings
  * @returns {string[]}
