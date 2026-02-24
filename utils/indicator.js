@@ -12,7 +12,9 @@ import { IndicatorUIUpdater } from "./indicator/IndicatorUIUpdater.js";
 export const MediaIndicator = GObject.registerClass(
   class MediaIndicator extends PanelMenu.Button {
     _init(settings, extension) {
-      super._init(0.5, "Media Controls", false);
+      const _ = extension.gettext.bind(extension);
+
+      super._init(0.5, _("Media Controls"), false);
 
       this._settings = settings;
       this._extension = extension;

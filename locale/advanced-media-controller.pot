@@ -1,15 +1,11 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the advanced-media-controller package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# Copyright (C) 2026 Sanjai Shaarugesh
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: advanced-media-controller 1.0\n"
-"Report-Msgid-Bugs-To: https://github.com/Sanjai-Shaarugesh/Advance-media-"
-"controller/issues\n"
-"POT-Creation-Date: 2026-01-26 12:08+0530\n"
+"Report-Msgid-Bugs-To: https://github.com/Sanjai-Shaarugesh/Advance-media-controller/issues\n"
+"POT-Creation-Date: 2026-02-23 12:00+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,205 +14,344 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: prefs.js:16 prefs.js:168 prefs.js:201
 msgid "Advanced Media Controller"
 msgstr ""
 
-#: prefs.js:21
 msgid "General"
 msgstr ""
 
-#: prefs.js:27
-msgid "Panel Settings"
+msgid "Panel Placement"
 msgstr ""
 
-#: prefs.js:28
-msgid "Configure the position and appearance in the top panel"
+msgid "Where the indicator sits in the top bar"
 msgstr ""
 
-#: prefs.js:33
 msgid "Panel Position"
 msgstr ""
 
-#: prefs.js:37
 msgid "Left"
 msgstr ""
 
-#: prefs.js:38
 msgid "Center"
 msgstr ""
 
-#: prefs.js:39
 msgid "Right"
 msgstr ""
 
-#: prefs.js:53
 msgid "Panel Index"
 msgstr ""
 
-#: prefs.js:54
-msgid "Position within the panel area (-1 for automatic)"
+msgid "Position within the panel area (-1 = automatic)"
 msgstr ""
 
-#: prefs.js:73
-msgid "Display Settings"
+msgid "Panel Label"
 msgstr ""
 
-#: prefs.js:74
-msgid "Configure what appears in the panel"
+msgid "Track name shown in the top bar"
 msgstr ""
 
-#: prefs.js:79
 msgid "Show Track Name"
 msgstr ""
 
-#: prefs.js:80
-msgid "Display track information in the panel"
+msgid "Display the current track title in the panel"
 msgstr ""
 
-#: prefs.js:93
 msgid "Show Artist Name"
 msgstr ""
 
-#: prefs.js:94
-msgid "Include artist name with track title"
+msgid "Append the artist name to the track title"
 msgstr ""
 
-#: prefs.js:107
-msgid "Maximum Title Length"
+msgid "Title / Artist Separator"
 msgstr ""
 
-#: prefs.js:108
-msgid "Characters to display before scrolling starts"
+msgid "Panel Scrolling"
 msgstr ""
 
-#: prefs.js:127
-msgid "Scroll Speed"
+msgid "Marquee scroll of the track label in the top bar"
 msgstr ""
 
-#: prefs.js:128
+msgid "Enable Panel Label Scrolling"
+msgstr ""
+
+msgid "Scroll the track/artist text one full loop then pause before repeating. When off, the text is truncated with an ellipsis."
+msgstr ""
+
+msgid "Panel Scroll Speed"
+msgstr ""
+
 msgid "1 = slowest, 10 = fastest"
 msgstr ""
 
-#: prefs.js:147
-msgid "Separator Text"
+msgid "Popup Player"
 msgstr ""
 
-#: prefs.js:163
+msgid "Title Scrolling"
+msgstr ""
+
+msgid "Marquee behaviour for the track title inside the popup"
+msgstr ""
+
+msgid "Enable Title Scrolling"
+msgstr ""
+
+msgid "Scroll long track titles from start to end, pause, then repeat. When off, the text is truncated with an ellipsis."
+msgstr ""
+
+msgid "Title Scroll Speed"
+msgstr ""
+
+msgid "Artist Scrolling"
+msgstr ""
+
+msgid "Marquee behaviour for the artist name inside the popup"
+msgstr ""
+
+msgid "Enable Artist Scrolling"
+msgstr ""
+
+msgid "Scroll long artist names from start to end, pause, then repeat. When off, the text is truncated with an ellipsis."
+msgstr ""
+
+msgid "Artist Scroll Speed"
+msgstr ""
+
+msgid "Album Art"
+msgstr ""
+
+msgid "Vinyl-record rotation animation"
+msgstr ""
+
+msgid "Enable Vinyl Record Rotation (Global Default)"
+msgstr ""
+
+msgid "Global default when no per-app setting exists. Per-app overrides in the ‘Vinyl Apps’ section take priority."
+msgstr ""
+
+msgid "Rotation Speed (seconds per revolution)"
+msgstr ""
+
+msgid "5 = fastest, 60 = slowest. Recommended: 20–30"
+msgstr ""
+
+msgid "Vinyl Effect Details"
+msgstr ""
+
+msgid "How the animated vinyl record works"
+msgstr ""
+
+msgid "- Album cover appears on a spinning vinyl disc\n"
+"- Black vinyl grooves are visible around the edges\n"
+"- Animated tonearm moves in and out with playback state\n"
+"- Rotation pauses smoothly when music pauses\n"
+"  (disc angle is preserved and resumes from the same position)\n"
+"- Disc resets to 0° only on a genuine Stop\n"
+"- Double-click album art to toggle vinyl for THAT player’s app only\n"
+"- Per-app settings override the global default above\n"
+"- All seen apps are stored; re-enable any time from Vinyl Apps page"
+msgstr ""
+
+msgid "Vinyl Apps"
+msgstr ""
+
+msgid "How to Enable Vinyl Style for an App"
+msgstr ""
+
+msgid "Start playing music"
+msgstr ""
+
+msgid "Open any media player or browser web app (YouTube, Spotify Web, SoundCloud, etc.) and play a track so it appears as a media source."
+msgstr ""
+
+msgid "Open the extension popup"
+msgstr ""
+
+msgid "Click the media controller in the top panel to open the popup player."
+msgstr ""
+
+msgid "Double-click the album art"
+msgstr ""
+
+msgid "Double-click the album art image in the popup to toggle the vinyl record style for that specific app instance. The instance is saved here automatically."
+msgstr ""
+
+msgid "Manage saved instances below"
+msgstr ""
+
+msgid "All stored instances appear in the section below with their app icon and name. Toggle them on/off or remove them at any time."
+msgstr ""
+
+msgid "Saved App Instances"
+msgstr ""
+
+msgid "Instances stored by double-clicking the album art in the popup. Icons are loaded from the system .desktop database. Toggle the vinyl effect on/off or remove any entry."
+msgstr ""
+
+msgid "No instances saved yet"
+msgstr ""
+
+msgid "Double-click the album art in the popup while music is playing to save an instance here."
+msgstr ""
+
+msgid "Add an App Manually"
+msgstr ""
+
+msgid "Search installed apps — including browsers — to manually add a vinyl entry. Useful for browser web apps whose instance hasn’t been captured yet via double-click."
+msgstr ""
+
+msgid "Browser web apps (YouTube, Spotify Web, etc.)"
+msgstr ""
+
+msgid "For web apps, add the browser itself (e.g. Google Chrome, Firefox). Then double-click the album art when that browser is playing music — the extension will capture the exact instance automatically."
+msgstr ""
+
+msgid "Search apps"
+msgstr ""
+
+msgid "Type an app or browser name…"
+msgstr ""
+
+msgid "Saved Instances"
+msgstr ""
+
+msgid "Other Apps"
+msgstr ""
+
+msgid "No matching apps found"
+msgstr ""
+
+msgid "renamed from"
+msgstr ""
+
+msgid "Rename “%s”"
+msgstr ""
+
+msgid "Remove %s from saved instances"
+msgstr ""
+
+msgid "Rename Instance"
+msgstr ""
+
+msgid "Enter a custom display name for “%s”.\n"
+"Leave blank to reset to the default name."
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Rename"
+msgstr ""
+
+msgid "Display name"
+msgstr ""
+
 msgid "About"
 msgstr ""
 
-#: prefs.js:170
 msgid "Beautiful and modern media controls with multi-instance support"
 msgstr ""
 
-#: prefs.js:207
 msgid "Version 1.0"
 msgstr ""
 
-#: prefs.js:213
 msgid "Modern media controls with native GNOME design"
 msgstr ""
 
-#: prefs.js:230
 msgid "Extension Links"
 msgstr ""
 
-#: prefs.js:231 prefs.js:236
 msgid "Source code, issues, and contributions"
 msgstr ""
 
-#: prefs.js:235
 msgid "View on GitHub"
 msgstr ""
 
-#: prefs.js:260
 msgid "☕ Support by buying me a coffee – just scan the QR code!"
 msgstr ""
 
-#: prefs.js:261
 msgid "Preferred Method - Scan QR code to support development"
 msgstr ""
 
-#: prefs.js:305
 msgid "Donation Address"
 msgstr ""
 
-#: prefs.js:330
 msgid "Donation address"
 msgstr ""
 
-#: prefs.js:334
 msgid "☕ Buy Me a Coffee"
 msgstr ""
 
-#: prefs.js:335
 msgid "Support development with a small donation"
 msgstr ""
 
-#: prefs.js:360
 msgid "License & Credits"
 msgstr ""
 
-#: prefs.js:361
 msgid "Open source software information"
 msgstr ""
 
-#: prefs.js:365
 msgid "Open Source License"
 msgstr ""
 
-#: prefs.js:366
 msgid "GPL-3.0 License - Free and open source software"
 msgstr ""
 
-#: prefs.js:376
 msgid "Media Data Sources"
 msgstr ""
 
-#: prefs.js:378
 msgid "MPRIS D-Bus interface - Standard media player remote interfacing"
 msgstr ""
 
-#: prefs.js:389
 msgid "Key Features"
 msgstr ""
 
-#: prefs.js:391
-msgid ""
-"• Multi-instance browser support\n"
-"• Album art display\n"
+msgid "• Multi-instance browser support\n"
+"• Per-app rotating vinyl record album art\n"
+"• Animated tonearm\n"
 "• Smooth animations\n"
-"• Lock screen controls"
+"• Double-click to toggle vinyl per app\n"
+"• All seen apps remembered — re-enable any time"
 msgstr ""
 
-#: prefs.js:487
-#, javascript-format
-msgid "✅ %s copied to clipboard!"
-msgstr ""
-
-#: prefs.js:487
-msgid "Text"
-msgstr ""
-
-#: prefs.js:496
 msgid "Copy to Clipboard"
 msgstr ""
 
-#: prefs.js:497
-#, javascript-format
-msgid ""
-"Unable to automatically copy to clipboard. Please manually copy the %s below:"
+msgid "Unable to copy automatically. Select the address below and press Ctrl+C:"
 msgstr ""
 
-#: prefs.js:497
-msgid "text"
-msgstr ""
-
-#: prefs.js:500
 msgid "Close"
 msgstr ""
 
-#: prefs.js:522
-msgid "💡 Select the text above and press Ctrl+C to copy"
+msgid "Media Controls"
 msgstr ""
+
+msgid "Panel Settings"
+msgstr ""
+
+msgid "Configure the position and appearance in the top panel"
+msgstr ""
+
+msgid "Display Settings"
+msgstr ""
+
+msgid "Configure what appears in the panel"
+msgstr ""
+
+msgid "Display track information in the panel"
+msgstr ""
+
+msgid "Include artist name with track title"
+msgstr ""
+
+msgid "Maximum Title Length"
+msgstr ""
+
+msgid "Characters to display before scrolling starts"
+msgstr ""
+
+msgid "Scroll Speed"
+msgstr ""
+
+msgid "Separator Text"
+msgstr ""
+

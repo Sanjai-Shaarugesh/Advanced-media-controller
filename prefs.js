@@ -3,32 +3,37 @@ import Gtk from "gi://Gtk";
 import Gio from "gi://Gio";
 import GLib from "gi://GLib";
 import Gdk from "gi://Gdk";
-import { ExtensionPreferences } from "resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js";
+import {
+  ExtensionPreferences,
+  gettext as _,
+} from "resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js";
 
 export default class MediaControlsPreferences extends ExtensionPreferences {
   fillPreferencesWindow(window) {
     const settings = this.getSettings();
 
-    window.set_title("Advanced Media Controller");
+    window.set_title(_("Advanced Media Controller"));
     window.set_default_size(700, 760);
     window.set_resizable(true);
 
     // General page
     const generalPage = new Adw.PreferencesPage({
-      title: "General",
+      title: _("General"),
       icon_name: "preferences-system-symbolic",
     });
     window.add(generalPage);
 
     const panelGroup = new Adw.PreferencesGroup({
-      title: "Panel Placement",
-      description: "Where the indicator sits in the top bar",
+      title: _("Panel Placement"),
+      description: _("Where the indicator sits in the top bar"),
     });
     generalPage.add(panelGroup);
 
-    const positionRow = new Adw.ComboRow({ title: "Panel Position" });
+    const positionRow = new Adw.ComboRow({ title: _("Panel Position") });
     const positionModel = new Gtk.StringList();
-    ["Left", "Center", "Right"].forEach((l) => positionModel.append(l));
+    [_("Left"), _("Center"), _("Right")].forEach((l) =>
+      positionModel.append(l),
+    );
     positionRow.model = positionModel;
     const positions = ["left", "center", "right"];
     positionRow.selected = Math.max(
@@ -41,8 +46,8 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     panelGroup.add(positionRow);
 
     const indexRow = new Adw.SpinRow({
-      title: "Panel Index",
-      subtitle: "Position within the panel area (-1 = automatic)",
+      title: _("Panel Index"),
+      subtitle: _("Position within the panel area (-1 = automatic)"),
       adjustment: new Gtk.Adjustment({
         lower: -1,
         upper: 20,
@@ -60,14 +65,14 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     panelGroup.add(indexRow);
 
     const labelGroup = new Adw.PreferencesGroup({
-      title: "Panel Label",
-      description: "Track name shown in the top bar",
+      title: _("Panel Label"),
+      description: _("Track name shown in the top bar"),
     });
     generalPage.add(labelGroup);
 
     const showTrackRow = new Adw.SwitchRow({
-      title: "Show Track Name",
-      subtitle: "Display the current track title in the panel",
+      title: _("Show Track Name"),
+      subtitle: _("Display the current track title in the panel"),
     });
     settings.bind(
       "show-track-name",
@@ -78,8 +83,8 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     labelGroup.add(showTrackRow);
 
     const showArtistRow = new Adw.SwitchRow({
-      title: "Show Artist Name",
-      subtitle: "Append the artist name to the track title",
+      title: _("Show Artist Name"),
+      subtitle: _("Append the artist name to the track title"),
     });
     settings.bind(
       "show-artist",
@@ -90,7 +95,7 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     labelGroup.add(showArtistRow);
 
     const separatorRow = new Adw.EntryRow({
-      title: "Title / Artist Separator",
+      title: _("Title / Artist Separator"),
       text: settings.get_string("separator-text"),
       show_apply_button: true,
     });
@@ -100,16 +105,17 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     labelGroup.add(separatorRow);
 
     const panelScrollGroup = new Adw.PreferencesGroup({
-      title: "Panel Scrolling",
-      description: "Marquee scroll of the track label in the top bar",
+      title: _("Panel Scrolling"),
+      description: _("Marquee scroll of the track label in the top bar"),
     });
     generalPage.add(panelScrollGroup);
 
     const enablePanelScrollRow = new Adw.SwitchRow({
-      title: "Enable Panel Label Scrolling",
-      subtitle:
+      title: _("Enable Panel Label Scrolling"),
+      subtitle: _(
         "Scroll the track/artist text one full loop then pause before repeating. " +
-        "When off, the text is truncated with an ellipsis.",
+          "When off, the text is truncated with an ellipsis.",
+      ),
     });
     settings.bind(
       "enable-panel-scroll",
@@ -120,8 +126,8 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     panelScrollGroup.add(enablePanelScrollRow);
 
     const panelScrollSpeedRow = new Adw.SpinRow({
-      title: "Panel Scroll Speed",
-      subtitle: "1 = slowest, 10 = fastest",
+      title: _("Panel Scroll Speed"),
+      subtitle: _("1 = slowest, 10 = fastest"),
       adjustment: new Gtk.Adjustment({
         lower: 1,
         upper: 10,
@@ -140,22 +146,23 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
 
     // Popup Player page
     const popupPage = new Adw.PreferencesPage({
-      title: "Popup Player",
+      title: _("Popup Player"),
       icon_name: "media-playback-start-symbolic",
     });
     window.add(popupPage);
 
     const titleScrollGroup = new Adw.PreferencesGroup({
-      title: "Title Scrolling",
-      description: "Marquee behaviour for the track title inside the popup",
+      title: _("Title Scrolling"),
+      description: _("Marquee behaviour for the track title inside the popup"),
     });
     popupPage.add(titleScrollGroup);
 
     const enableTitleScrollRow = new Adw.SwitchRow({
-      title: "Enable Title Scrolling",
-      subtitle:
+      title: _("Enable Title Scrolling"),
+      subtitle: _(
         "Scroll long track titles from start to end, pause, then repeat. " +
-        "When off, the text is truncated with an ellipsis.",
+          "When off, the text is truncated with an ellipsis.",
+      ),
     });
     settings.bind(
       "enable-title-scroll",
@@ -166,8 +173,8 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     titleScrollGroup.add(enableTitleScrollRow);
 
     const titleScrollSpeedRow = new Adw.SpinRow({
-      title: "Title Scroll Speed",
-      subtitle: "1 = slowest, 10 = fastest",
+      title: _("Title Scroll Speed"),
+      subtitle: _("1 = slowest, 10 = fastest"),
       adjustment: new Gtk.Adjustment({
         lower: 1,
         upper: 10,
@@ -185,16 +192,19 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     titleScrollGroup.add(titleScrollSpeedRow);
 
     const artistScrollGroup = new Adw.PreferencesGroup({
-      title: "Artist Scrolling",
-      description: "Marquee behaviour for the artist name inside the popup",
+      title: _("Artist Scrolling"),
+      description: _(
+        "Marquee behaviour for the artist name inside the popup",
+      ),
     });
     popupPage.add(artistScrollGroup);
 
     const enableArtistScrollRow = new Adw.SwitchRow({
-      title: "Enable Artist Scrolling",
-      subtitle:
+      title: _("Enable Artist Scrolling"),
+      subtitle: _(
         "Scroll long artist names from start to end, pause, then repeat. " +
-        "When off, the text is truncated with an ellipsis.",
+          "When off, the text is truncated with an ellipsis.",
+      ),
     });
     settings.bind(
       "enable-artist-scroll",
@@ -205,8 +215,8 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     artistScrollGroup.add(enableArtistScrollRow);
 
     const artistScrollSpeedRow = new Adw.SpinRow({
-      title: "Artist Scroll Speed",
-      subtitle: "1 = slowest, 10 = fastest",
+      title: _("Artist Scroll Speed"),
+      subtitle: _("1 = slowest, 10 = fastest"),
       adjustment: new Gtk.Adjustment({
         lower: 1,
         upper: 10,
@@ -225,16 +235,17 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
 
     // Album Art & Vinyl group
     const albumArtGroup = new Adw.PreferencesGroup({
-      title: "Album Art",
-      description: "Vinyl-record rotation animation",
+      title: _("Album Art"),
+      description: _("Vinyl-record rotation animation"),
     });
     popupPage.add(albumArtGroup);
 
     const enableRotationRow = new Adw.SwitchRow({
-      title: "Enable Vinyl Record Rotation (Global Default)",
-      subtitle:
+      title: _("Enable Vinyl Record Rotation (Global Default)"),
+      subtitle: _(
         "Global default when no per-app setting exists. " +
-        "Per-app overrides in the 'Vinyl Apps' section take priority.",
+          "Per-app overrides in the \u2018Vinyl Apps\u2019 section take priority.",
+      ),
       icon_name: "media-optical-cd-audio-symbolic",
     });
     settings.bind(
@@ -246,8 +257,8 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     albumArtGroup.add(enableRotationRow);
 
     const rotationSpeedRow = new Adw.SpinRow({
-      title: "Rotation Speed (seconds per revolution)",
-      subtitle: "5 = fastest, 60 = slowest. Recommended: 20–30",
+      title: _("Rotation Speed (seconds per revolution)"),
+      subtitle: _("5 = fastest, 60 = slowest. Recommended: 20\u201330"),
       adjustment: new Gtk.Adjustment({
         lower: 5,
         upper: 60,
@@ -265,21 +276,22 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     albumArtGroup.add(rotationSpeedRow);
 
     const rotationInfoRow = new Adw.ExpanderRow({
-      title: "Vinyl Effect Details",
-      subtitle: "How the animated vinyl record works",
+      title: _("Vinyl Effect Details"),
+      subtitle: _("How the animated vinyl record works"),
       icon_name: "dialog-information-symbolic",
     });
     const infoLabel = new Gtk.Label({
-      label:
+      label: _(
         "- Album cover appears on a spinning vinyl disc\n" +
-        "- Black vinyl grooves are visible around the edges\n" +
-        "- Animated tonearm moves in and out with playback state\n" +
-        "- Rotation pauses smoothly when music pauses\n" +
-        "  (disc angle is preserved and resumes from the same position)\n" +
-        "- Disc resets to 0° only on a genuine Stop\n" +
-        "- Double-click album art to toggle vinyl for THAT player's app only\n" +
-        "- Per-app settings override the global default above\n" +
-        "- All seen apps are stored; re-enable any time from Vinyl Apps page",
+          "- Black vinyl grooves are visible around the edges\n" +
+          "- Animated tonearm moves in and out with playback state\n" +
+          "- Rotation pauses smoothly when music pauses\n" +
+          "  (disc angle is preserved and resumes from the same position)\n" +
+          "- Disc resets to 0\u00b0 only on a genuine Stop\n" +
+          "- Double-click album art to toggle vinyl for THAT player\u2019s app only\n" +
+          "- Per-app settings override the global default above\n" +
+          "- All seen apps are stored; re-enable any time from Vinyl Apps page",
+      ),
       wrap: true,
       xalign: 0,
       margin_top: 12,
@@ -295,7 +307,7 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
 
     // Vinyl Apps page
     const vinylPage = new Adw.PreferencesPage({
-      title: "Vinyl Apps",
+      title: _("Vinyl Apps"),
       icon_name: "media-optical-cd-audio-symbolic",
     });
     window.add(vinylPage);
@@ -309,7 +321,7 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
   _buildVinylAppsPage(page, settings) {
     // instructions banner
     const howtoGroup = new Adw.PreferencesGroup({
-      title: "How to Enable Vinyl Style for an App",
+      title: _("How to Enable Vinyl Style for an App"),
     });
     page.add(howtoGroup);
 
@@ -317,27 +329,31 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     const steps = [
       {
         icon: "media-playback-start-symbolic",
-        title: "Start playing music",
-        subtitle:
+        title: _("Start playing music"),
+        subtitle: _(
           "Open any media player or browser web app (YouTube, Spotify Web, SoundCloud, etc.) and play a track so it appears as a media source.",
+        ),
       },
       {
         icon: "input-mouse-symbolic",
-        title: "Open the extension popup",
-        subtitle:
+        title: _("Open the extension popup"),
+        subtitle: _(
           "Click the media controller in the top panel to open the popup player.",
+        ),
       },
       {
         icon: "go-jump-symbolic",
-        title: "Double-click the album art",
-        subtitle:
+        title: _("Double-click the album art"),
+        subtitle: _(
           "Double-click the album art image in the popup to toggle the vinyl record style for that specific app instance. The instance is saved here automatically.",
+        ),
       },
       {
         icon: "media-optical-cd-audio-symbolic",
-        title: "Manage saved instances below",
-        subtitle:
+        title: _("Manage saved instances below"),
+        subtitle: _(
           "All stored instances appear in the section below with their app icon and name. Toggle them on/off or remove them at any time.",
+        ),
       },
     ];
 
@@ -356,11 +372,12 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
 
     // Stored instances group
     const instancesGroup = new Adw.PreferencesGroup({
-      title: "Saved App Instances",
-      description:
+      title: _("Saved App Instances"),
+      description: _(
         "Instances stored by double-clicking the album art in the popup. " +
-        "Icons are loaded from the system .desktop database. " +
-        "Toggle the vinyl effect on/off or remove any entry.",
+          "Icons are loaded from the system .desktop database. " +
+          "Toggle the vinyl effect on/off or remove any entry.",
+      ),
     });
     page.add(instancesGroup);
 
@@ -372,20 +389,22 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
 
     // Add app manually & web app search
     const searchGroup = new Adw.PreferencesGroup({
-      title: "Add an App Manually",
-      description:
-        "Search installed apps — including browsers — to manually add a vinyl entry. " +
-        "Useful for browser web apps whose instance hasn't been captured yet via double-click.",
+      title: _("Add an App Manually"),
+      description: _(
+        "Search installed apps \u2014 including browsers \u2014 to manually add a vinyl entry. " +
+          "Useful for browser web apps whose instance hasn\u2019t been captured yet via double-click.",
+      ),
     });
     page.add(searchGroup);
 
     // Tip row for web apps
     const webTipRow = new Adw.ActionRow({
-      title: "Browser web apps (YouTube, Spotify Web, etc.)",
-      subtitle:
+      title: _("Browser web apps (YouTube, Spotify Web, etc.)"),
+      subtitle: _(
         "For web apps, add the browser itself (e.g. Google Chrome, Firefox). " +
-        "Then double-click the album art when that browser is playing music — " +
-        "the extension will capture the exact instance automatically.",
+          "Then double-click the album art when that browser is playing music \u2014 " +
+          "the extension will capture the exact instance automatically.",
+      ),
       activatable: false,
     });
     webTipRow.add_prefix(
@@ -398,11 +417,11 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     searchGroup.add(webTipRow);
 
     const searchRow = new Adw.ActionRow({
-      title: "Search apps",
+      title: _("Search apps"),
       activatable: false,
     });
     const searchEntry = new Gtk.SearchEntry({
-      placeholder_text: "Type an app or browser name…",
+      placeholder_text: _("Type an app or browser name\u2026"),
       hexpand: true,
       valign: Gtk.Align.CENTER,
     });
@@ -493,9 +512,10 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
 
     if (rawInstances.length === 0) {
       const ph = new Adw.ActionRow({
-        title: "No instances saved yet",
-        subtitle:
+        title: _("No instances saved yet"),
+        subtitle: _(
           "Double-click the album art in the popup while music is playing to save an instance here.",
+        ),
         activatable: false,
       });
       ph.add_prefix(
@@ -511,52 +531,82 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
       return;
     }
 
-    const seen = new Set();
+    // ── Deduplication by real Gio app identity ───────────────────────────────
+    // For every stored record we call _findAppInfo() which iterates
+    // Gio.AppInfo.get_all() — the same approach as BlacklistedPlayers.
+    // If two records produce the *same* real .desktop id (e.g. both
+    // "spotify" and "com.spotify.Client" resolve to "com.spotify.Client"),
+    // they are the same app and we show ONE row.
+    //
+    // We prefer the record whose `enabled` field is true; when both are
+    // false we keep the more-canonical one (with appInfo) to get the icon.
+    // The enabled toggle checks ALL id forms stored in the group.
+    // ─────────────────────────────────────────────────────────────────────────
+
+    // Step 1 – parse + annotate
+    const parsed = [];
     for (const raw of rawInstances) {
       let obj;
-      try {
-        obj = JSON.parse(raw);
-      } catch (_) {
-        continue;
-      }
-
+      try { obj = JSON.parse(raw); } catch (_) { continue; }
       const id = obj.id ?? "";
-      if (!id || seen.has(id.toLowerCase())) continue;
-      seen.add(id.toLowerCase());
+      if (!id) continue;
 
+      const appInfoR = this._findAppInfo(obj.desktopId || id, id);
+      let canonicalKey;
+      if (appInfoR) {
+        const realId = (appInfoR.get_id() ?? "").replace(/\.desktop$/i, "");
+        canonicalKey = realId.toLowerCase() || id.toLowerCase();
+      } else {
+        canonicalKey = id
+          .replace(/\.instance[_\d]+$/i, "")
+          .replace(/\.\d+$/, "")
+          .toLowerCase();
+      }
+      parsed.push({ obj, appInfoR, canonicalKey });
+    }
+
+    // Step 2 – group by canonical key; prefer enabled record per group
+    // groupMap: canonicalKey → { best: entry, allIds: Set<string> }
+    const groupMap = new Map();
+    for (const entry of parsed) {
+      const { canonicalKey } = entry;
+      if (groupMap.has(canonicalKey)) {
+        const group = groupMap.get(canonicalKey);
+        group.allIds.add(entry.obj.id.toLowerCase());
+        // Upgrade to the enabled record when the current best isn't enabled
+        if (!group.best.obj.enabled && entry.obj.enabled)
+          group.best = entry;
+      } else {
+        groupMap.set(canonicalKey, {
+          best: entry,
+          allIds: new Set([entry.obj.id.toLowerCase()]),
+        });
+      }
+    }
+
+    // Step 3 – render one row per group
+    for (const [, { best, allIds }] of groupMap) {
+      const { obj, appInfoR } = best;
+      const id = obj.id ?? "";
       const normId = id.toLowerCase();
-
-      const isEnabled = this._isAppEnabled(normId, enabledIds);
 
       let appName = obj.name || obj.desktopId || id;
       let appIcon = null;
-
-      const desktopId = obj.desktopId || id;
-      for (const candidate of [
-        `${desktopId}.desktop`,
-        desktopId,
-        `${id}.desktop`,
-        id,
-        `${id.split(".").pop()}.desktop`,
-      ]) {
-        try {
-          const info = Gio.DesktopAppInfo.new(candidate);
-          if (info) {
-            appName = info.get_name() || appName;
-            appIcon = info.get_icon();
-            break;
-          }
-        } catch (_) {}
+      if (appInfoR) {
+        appName = appInfoR.get_display_name() || appInfoR.get_name() || appName;
+        appIcon = appInfoR.get_icon();
       }
 
       const resolvedName = appName;
       const displayName = obj.customName?.trim() || resolvedName;
 
+      // Check enabled state across ALL id forms in this group
+      const isEnabled = [...allIds].some((aid) => this._isAppEnabled(aid, enabledIds));
+
       const row = new Adw.ActionRow({
         title: displayName,
-
         subtitle: obj.customName?.trim()
-          ? `${id}  ·  renamed from "${resolvedName}"`
+          ? `${id}  \u00b7  ${_("renamed from")} "${resolvedName}"`
           : id,
         activatable: false,
       });
@@ -580,7 +630,7 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
         icon_name: "document-edit-symbolic",
         valign: Gtk.Align.CENTER,
         css_classes: ["flat"],
-        tooltip_text: `Rename "${displayName}"`,
+        tooltip_text: _("Rename \u201c%s\u201d").format(displayName),
       });
       renameBtn.connect("clicked", () => {
         this._showRenameDialog(settings, id, normId, displayName, resolvedName);
@@ -592,22 +642,25 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
         valign: Gtk.Align.CENTER,
       });
       sw.connect("state-set", (_widget, state) => {
-        this._setAppVinylState(settings, id, normId, state);
-
-        this._updateInstanceEnabledField(settings, normId, state);
+        // Update ALL id forms stored in this group so every alias is in sync
+        for (const aid of allIds) {
+          this._setAppVinylState(settings, aid, aid, state);
+          this._updateInstanceEnabledField(settings, aid, state);
+        }
         return false;
       });
       row.add_suffix(sw);
 
-      // Remove button — deletes the stored instance record entirely
+      // Remove button — deletes ALL records in this group
       const removeBtn = new Gtk.Button({
         icon_name: "list-remove-symbolic",
         valign: Gtk.Align.CENTER,
         css_classes: ["destructive-action", "flat"],
-        tooltip_text: `Remove ${appName} from saved instances`,
+        tooltip_text: _("Remove %s from saved instances").format(appName),
       });
       removeBtn.connect("clicked", () => {
-        this._deleteInstance(settings, id, normId);
+        for (const aid of allIds)
+          this._deleteInstance(settings, aid, aid);
       });
       row.add_suffix(removeBtn);
 
@@ -620,16 +673,15 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
    * Show a rename dialog for a stored instance.
    */
   _showRenameDialog(settings, id, normId, currentDisplay, resolvedName) {
-    // Dialog shell
     const dialog = new Adw.AlertDialog({
-      heading: "Rename Instance",
-      body: `Enter a custom display name for "${resolvedName}".\nLeave blank to reset to the default name.`,
+      heading: _("Rename Instance"),
+      body: _("Enter a custom display name for \u201c%s\u201d.\nLeave blank to reset to the default name.").format(resolvedName),
       default_response: "rename",
       close_response: "cancel",
     });
 
-    dialog.add_response("cancel", "Cancel");
-    dialog.add_response("rename", "Rename");
+    dialog.add_response("cancel", _("Cancel"));
+    dialog.add_response("rename", _("Rename"));
     dialog.set_response_appearance("rename", Adw.ResponseAppearance.SUGGESTED);
 
     const clamp = new Adw.Clamp({
@@ -647,7 +699,7 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     });
 
     const entryRow = new Adw.EntryRow({
-      title: "Display name",
+      title: _("Display name"),
       text: currentDisplay !== resolvedName ? currentDisplay : "",
       show_apply_button: false,
     });
@@ -751,7 +803,7 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     this._deleteInstance(settings, id, normId);
   }
 
-  //App loading
+  // App loading
 
   _loadMediaAndBrowserApps() {
     const allApps = Gio.AppInfo.get_all();
@@ -865,7 +917,7 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     }
   }
 
-  //Render search results
+  // Render search results
 
   _renderAppList(filteredSystemApps, settings) {
     // Clear list
@@ -879,7 +931,7 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     const enabledIds = settings.get_strv("vinyl-app-ids");
     const query = this._currentSearchQuery ?? "";
 
-    //Stored instances
+    // Stored instances
     const rawInstances = (() => {
       try {
         return settings.get_strv("vinyl-app-instances") ?? [];
@@ -909,21 +961,12 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
       let resolvedName = obj.name || desktopId || id;
 
       let appIcon = null;
-      for (const candidate of [
-        `${desktopId}.desktop`,
-        desktopId,
-        `${id}.desktop`,
-        id,
-        `${id.split(".").pop()}.desktop`,
-      ]) {
-        try {
-          const info = Gio.DesktopAppInfo.new(candidate);
-          if (info) {
-            resolvedName = info.get_name() || resolvedName;
-            appIcon = info.get_icon();
-            break;
-          }
-        } catch (_) {}
+      // Use Gio.AppInfo.get_all() + get_id() matching — same pattern as
+      // BlacklistedPlayers — so icons are found correctly for all apps.
+      const appInfoR = this._findAppInfo(desktopId, id);
+      if (appInfoR) {
+        resolvedName = appInfoR.get_display_name() || appInfoR.get_name() || resolvedName;
+        appIcon = appInfoR.get_icon();
       }
 
       // customName always wins over the resolved .desktop name
@@ -953,7 +996,7 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     if (instanceRows.length > 0) {
       this._appListBox.append(
         new Gtk.Label({
-          label: "Saved Instances",
+          label: _("Saved Instances"),
           xalign: 0,
           css_classes: ["caption", "dim-label"],
           margin_top: 8,
@@ -977,7 +1020,7 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
           title: displayName,
           // Show id + a "renamed from" hint in subtitle when a custom name is active
           subtitle: customName
-            ? `${id}  ·  renamed from "${resolvedName}"`
+            ? `${id}  \u00b7  ${_("renamed from")} "${resolvedName}"`
             : id,
           activatable: false,
         });
@@ -1021,7 +1064,7 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
       if (instanceRows.length > 0) {
         this._appListBox.append(
           new Gtk.Label({
-            label: "Other Apps",
+            label: _("Other Apps"),
             xalign: 0,
             css_classes: ["caption", "dim-label"],
             margin_top: 10,
@@ -1094,13 +1137,107 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     if (instanceRows.length === 0 && sysApps.length === 0) {
       this._appListBox.append(
         new Gtk.Label({
-          label: "No matching apps found",
+          label: _("No matching apps found"),
           css_classes: ["dim-label"],
           margin_top: 16,
           margin_bottom: 16,
         }),
       );
     }
+  }
+
+  /**
+   * Find the Gio.AppInfo for a stored instance using Gio.AppInfo.get_all()
+   * and get_id() matching — the same pattern used by BlacklistedPlayers /
+   * AppChooser.  This is far more reliable than Gio.DesktopAppInfo.new()
+   * because it works even when the desktop file ID does not match the
+   * plain app name (e.g. "chromium-browser.desktop" vs "chromium").
+   *
+   * KEY FIX: instance suffixes like ".instance45529" are stripped before
+   * building the candidate set, so "brave.instance45529" correctly resolves
+   * to "com.brave.Browser.desktop".
+   *
+   * @param {string} desktopId  – from the stored instance record (without .desktop)
+   * @param {string} fallbackId – the raw `id` field of the record
+   * @returns {Gio.AppInfo|null}
+   */
+  /**
+   * Find Gio.AppInfo for a stored instance id.
+   *
+   * Uses the same Gio.AppInfo.get_all() + get_id() pattern as
+   * BlacklistedPlayers / AppChooser so icons are always correct.
+   *
+   * Matching strategy (in order):
+   *  1. Exact desktop-id match  (e.g. "com.spotify.Client.desktop")
+   *  2. Any dot-segment of the app id matches any dot-segment of the
+   *     candidate  (e.g. "spotify" segment of "org.mpris…spotify" matches
+   *     "spotify" segment of "com.spotify.Client")
+   *  3. App display-name lowercased equals any candidate
+   *
+   * Instance / numeric suffixes are stripped before matching.
+   *
+   * @param {string} desktopId   stored desktopId field
+   * @param {string} fallbackId  stored id field
+   * @returns {Gio.AppInfo|null}
+   */
+  _findAppInfo(desktopId, fallbackId) {
+    // Build the set of meaningful word-tokens from the stored ids
+    const tokens = new Set();
+    for (const base of [desktopId, fallbackId]) {
+      if (!base) continue;
+      const stripped = base
+        .replace(/\.instance[_\d]+$/i, "")
+        .replace(/\.\d+$/, "");
+      for (const variant of [base, stripped]) {
+        const lower = variant.toLowerCase();
+        // Full form + .desktop variant
+        tokens.add(lower);
+        tokens.add(`${lower}.desktop`);
+        // Every dot-segment (e.g. "com", "spotify", "client" from "com.spotify.Client")
+        for (const seg of lower.split(".")) {
+          if (seg.length > 2) tokens.add(seg); // skip trivial segments like "org","com","net"
+        }
+      }
+    }
+
+    // Remove overly generic segments that would cause false positives
+    for (const generic of ["org", "com", "net", "io", "app", "application",
+                           "browser", "client", "player", "media", "desktop",
+                           "instance", "snap", "flatpak"]) {
+      tokens.delete(generic);
+    }
+
+    try {
+      const allApps = Gio.AppInfo.get_all();
+
+      // Pass 1 – exact full-id match (most reliable, no false positives)
+      for (const app of allApps) {
+        const appId = (app.get_id() ?? "").toLowerCase();
+        if (tokens.has(appId)) return app;
+        const appIdClean = appId.endsWith(".desktop") ? appId.slice(0, -8) : appId;
+        if (tokens.has(appIdClean)) return app;
+      }
+
+      // Pass 2 – any dot-segment of the app's id matches any of our tokens
+      // e.g. "com.spotify.Client" has segment "spotify" which matches token "spotify"
+      for (const app of allApps) {
+        const appId = (app.get_id() ?? "").toLowerCase();
+        const appIdClean = appId.endsWith(".desktop") ? appId.slice(0, -8) : appId;
+        for (const seg of appIdClean.split(".")) {
+          if (seg.length > 2 && tokens.has(seg)) return app;
+        }
+      }
+
+      // Pass 3 – app display name matches any token
+      for (const app of allApps) {
+        const name = (app.get_display_name() ?? "").toLowerCase().replace(/\s+/g, "");
+        if (tokens.has(name)) return app;
+        // Also try just the first word
+        const firstWord = (app.get_display_name() ?? "").toLowerCase().split(/\s+/)[0];
+        if (firstWord.length > 2 && tokens.has(firstWord)) return app;
+      }
+    } catch (_e) {}
+    return null;
   }
 
   _normalizeAppId(id) {
@@ -1112,14 +1249,15 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
 
   _createAboutPage() {
     const page = new Adw.PreferencesPage({
-      title: "About",
+      title: _("About"),
       icon_name: "help-about-symbolic",
     });
 
     const infoGroup = new Adw.PreferencesGroup({
-      title: "Advanced Media Controller",
-      description:
+      title: _("Advanced Media Controller"),
+      description: _(
         "Beautiful and modern media controls with multi-instance support",
+      ),
     });
 
     const headerBox = new Gtk.Box({
@@ -1149,21 +1287,21 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     });
     infoBox.append(
       new Gtk.Label({
-        label: "Advanced Media Controller",
+        label: _("Advanced Media Controller"),
         halign: Gtk.Align.START,
         css_classes: ["title-2"],
       }),
     );
     infoBox.append(
       new Gtk.Label({
-        label: "Version 1.0",
+        label: _("Version 1.0"),
         halign: Gtk.Align.START,
         css_classes: ["caption"],
       }),
     );
     infoBox.append(
       new Gtk.Label({
-        label: "Modern media controls with native GNOME design",
+        label: _("Modern media controls with native GNOME design"),
         halign: Gtk.Align.START,
         wrap: true,
         max_width_chars: 40,
@@ -1177,13 +1315,13 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     headerRow.add_suffix(headerBox);
 
     const linksGroup = new Adw.PreferencesGroup({
-      title: "Extension Links",
-      description: "Source code, issues, and contributions",
+      title: _("Extension Links"),
+      description: _("Source code, issues, and contributions"),
     });
 
     const githubRow = new Adw.ActionRow({
-      title: "View on GitHub",
-      subtitle: "Source code, issues, and contributions",
+      title: _("View on GitHub"),
+      subtitle: _("Source code, issues, and contributions"),
       activatable: true,
     });
     githubRow.add_prefix(this._createGitHubIcon());
@@ -1205,8 +1343,8 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     });
 
     const qrGroup = new Adw.PreferencesGroup({
-      title: "☕ Support by buying me a coffee – just scan the QR code!",
-      description: "Preferred Method - Scan QR code to support development",
+      title: _("\u2615 Support by buying me a coffee \u2013 just scan the QR code!"),
+      description: _("Preferred Method - Scan QR code to support development"),
     });
     const qrContainer = new Gtk.Box({
       orientation: Gtk.Orientation.VERTICAL,
@@ -1233,7 +1371,7 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     qrRow.set_child(qrContainer);
 
     const addressGroup = new Adw.PreferencesGroup({
-      title: "Donation Address",
+      title: _("Donation Address"),
     });
     const addressRow = new Adw.ActionRow({
       title: "https://buymeacoffee.com/sanjai",
@@ -1248,13 +1386,13 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     addressRow.connect("activated", () =>
       this._copyToClipboard(
         "https://buymeacoffee.com/sanjai",
-        "Donation address",
+        _("Donation address"),
       ),
     );
 
     const sponsorRow = new Adw.ActionRow({
-      title: "☕ Buy Me a Coffee",
-      subtitle: "Support development with a small donation",
+      title: _("\u2615 Buy Me a Coffee"),
+      subtitle: _("Support development with a small donation"),
       activatable: true,
     });
     sponsorRow.add_prefix(
@@ -1278,32 +1416,34 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     });
 
     const licenseGroup = new Adw.PreferencesGroup({
-      title: "License & Credits",
-      description: "Open source software information",
+      title: _("License & Credits"),
+      description: _("Open source software information"),
     });
     const licenseRow = new Adw.ActionRow({
-      title: "Open Source License",
-      subtitle: "GPL-3.0 License - Free and open source software",
+      title: _("Open Source License"),
+      subtitle: _("GPL-3.0 License - Free and open source software"),
       activatable: false,
     });
     licenseRow.add_prefix(
       new Gtk.Image({ icon_name: "security-high-symbolic", pixel_size: 16 }),
     );
     const creditsRow = new Adw.ActionRow({
-      title: "Media Data Sources",
-      subtitle:
+      title: _("Media Data Sources"),
+      subtitle: _(
         "MPRIS D-Bus interface - Standard media player remote interfacing",
+      ),
       activatable: false,
     });
     creditsRow.add_prefix(
       new Gtk.Image({ icon_name: "network-server-symbolic", pixel_size: 16 }),
     );
     const featuresRow = new Adw.ActionRow({
-      title: "Key Features",
-      subtitle:
-        "• Multi-instance browser support\n• Per-app rotating vinyl record album art\n" +
-        "• Animated tonearm\n• Smooth animations\n• Double-click to toggle vinyl per app\n" +
-        "• All seen apps remembered — re-enable any time",
+      title: _("Key Features"),
+      subtitle: _(
+        "\u2022 Multi-instance browser support\n\u2022 Per-app rotating vinyl record album art\n" +
+          "\u2022 Animated tonearm\n\u2022 Smooth animations\n\u2022 Double-click to toggle vinyl per app\n" +
+          "\u2022 All seen apps remembered \u2014 re-enable any time",
+      ),
       activatable: false,
     });
     featuresRow.add_prefix(
@@ -1358,10 +1498,12 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
 
   _showCopyDialog(text) {
     const dialog = new Adw.AlertDialog({
-      heading: "Copy to Clipboard",
-      body: "Unable to copy automatically. Select the address below and press Ctrl+C:",
+      heading: _("Copy to Clipboard"),
+      body: _(
+        "Unable to copy automatically. Select the address below and press Ctrl+C:",
+      ),
     });
-    dialog.add_response("close", "Close");
+    dialog.add_response("close", _("Close"));
     dialog.set_default_response("close");
 
     const box = new Gtk.Box({

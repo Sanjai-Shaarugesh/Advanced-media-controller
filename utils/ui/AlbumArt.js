@@ -66,15 +66,80 @@ export const AlbumArt = GObject.registerClass(
       return isVinylEnabledForIds(ids, getVinylApps(this._settings));
     }
 
+    /**
+     * Resolve the best canonical ID for this player.
+     * Priority: real .desktop app-id from Gio.AppInfo > desktopEntries map > bus-name strip.
+     */
     _resolvePreferredId() {
+      // 1. Try to find the real AppInfo via the system app database — same as BlacklistedPlayers
+      const appInfo = this._resolveAppInfo();
+      if (appInfo) {
+        const id = appInfo.get_id(); // e.g. "chromium-browser.desktop"
+        if (id) return id.endsWith(".desktop") ? id.slice(0, -8) : id;
+      }
+
+      // 2. Fall back to the desktopEntries map stored by MprisPlayer
       if (this._manager) {
         const de = this._manager._desktopEntries?.get(this._playerName);
         if (de) return de.endsWith(".desktop") ? de.slice(0, -8) : de;
       }
+
+      // 3. Last resort: strip the MPRIS prefix / instance suffix from the bus name
       const raw = this._playerName?.replace(/^org\.mpris\.MediaPlayer2\./, "");
       return (
         raw?.replace(/\.instance_\d+_\d+$/i, "").replace(/\.\d+$/, "") ?? null
       );
+    }
+
+    /**
+     * Find the Gio.AppInfo for this player using the same approach as BlacklistedPlayers:
+     * iterate Gio.AppInfo.get_all() and match by .get_id().
+     *
+     * @returns {Gio.AppInfo|null}
+     */
+    _resolveAppInfo() {
+      try {
+        // Collect the candidate IDs we might match against
+        const candidates = new Set();
+
+        if (this._manager) {
+          const de = this._manager._desktopEntries?.get(this._playerName);
+          if (de) {
+            candidates.add(de.toLowerCase());
+            candidates.add(
+              (de.endsWith(".desktop") ? de : `${de}.desktop`).toLowerCase(),
+            );
+          }
+        }
+
+        if (this._playerName) {
+          const raw = this._playerName
+            .replace(/^org\.mpris\.MediaPlayer2\./, "")
+            .replace(/\.instance_\d+_\d+$/i, "")
+            .replace(/\.\d+$/, "");
+          candidates.add(raw.toLowerCase());
+          candidates.add(`${raw}.desktop`.toLowerCase());
+          // Also try just the last segment (e.g. "chromium" from "org.chromium.Chromium")
+          const parts = raw.split(".");
+          if (parts.length > 1) {
+            candidates.add(parts[parts.length - 1].toLowerCase());
+            candidates.add(`${parts[parts.length - 1]}.desktop`.toLowerCase());
+          }
+        }
+
+        // Walk every installed app exactly like BlacklistedPlayers does
+        const allApps = Gio.AppInfo.get_all();
+        for (const app of allApps) {
+          const appId = (app.get_id() ?? "").toLowerCase();
+          if (candidates.has(appId)) return app;
+          // Also match without the .desktop suffix
+          const appIdNoSuffix = appId.endsWith(".desktop")
+            ? appId.slice(0, -8)
+            : appId;
+          if (candidates.has(appIdNoSuffix)) return app;
+        }
+      } catch (_e) {}
+      return null;
     }
 
     _toggleVinylForCurrentPlayer() {
@@ -108,35 +173,77 @@ export const AlbumArt = GObject.registerClass(
     /**
      * Persist a rich JSON record into vinyl-app-instances so the prefs
      * page can show it with the correct icon and display name.
+     *
+     * KEY FIX: We always use the canonical Gio desktop ID (e.g.
+     * "com.spotify.Client") as `id`, not the short/preferred name.
+     * Deduplication is done by comparing both the stored `id` AND
+     * `desktopId` fields against the new canonical ID so that stale
+     * records saved under short names ("spotify") are replaced.
+     *
+     * Uses Gio.AppInfo.get_all() to find the real desktop ID and display
+     * name — the same technique used by BlacklistedPlayers / AppChooser.
      */
     _saveInstance(preferredId) {
       if (!preferredId) return;
 
-      let displayName = preferredId;
+      // Resolve via the system app database (most reliable)
+      const appInfo = this._resolveAppInfo();
+
+      // Real .desktop app-id from Gio (e.g. "com.spotify.Client")
+      // This becomes the canonical key stored as `id`.
+      let canonicalId = preferredId;
       let desktopId = preferredId;
+      let displayName = preferredId;
 
-      if (this._manager) {
-        const identity = this._manager._identities?.get(this._playerName);
-        if (identity) displayName = identity;
+      if (appInfo) {
+        const rawId = appInfo.get_id() ?? "";
+        const clean = rawId.endsWith(".desktop") ? rawId.slice(0, -8) : rawId;
+        canonicalId = clean;
+        desktopId = clean;
+        displayName = appInfo.get_display_name() || appInfo.get_name() || displayName;
+      } else {
+        // Fallback: use what MprisManager cached
+        if (this._manager) {
+          const identity = this._manager._identities?.get(this._playerName);
+          if (identity) displayName = identity;
 
-        const de = this._manager._desktopEntries?.get(this._playerName);
-        if (de) desktopId = de.endsWith(".desktop") ? de.slice(0, -8) : de;
+          const de = this._manager._desktopEntries?.get(this._playerName);
+          if (de) {
+            const clean = de.endsWith(".desktop") ? de.slice(0, -8) : de;
+            canonicalId = clean;
+            desktopId = clean;
+          }
+        }
       }
 
+      const canonicalLower = canonicalId.toLowerCase();
+      // Short tail (e.g. "spotify" from "com.spotify.Client")
+      const canonicalTail = canonicalLower.split(".").pop();
+
       const record = JSON.stringify({
-        id: preferredId,
+        id: canonicalId,          // always the canonical desktop ID
         name: displayName,
-        desktopId,
+        desktopId,                // same as id — matches Gio.AppInfo.get_id() minus .desktop
         busName: this._playerName || "",
         enabled: true,
       });
 
       try {
         const existing = this._settings.get_strv("vinyl-app-instances") ?? [];
+        // Remove any existing record that refers to the same canonical app,
+        // regardless of whether it was stored as "spotify", "com.spotify.Client", etc.
         const deduped = existing.filter((raw) => {
           try {
+            const obj = JSON.parse(raw);
+            const storedId = (obj.id ?? "").toLowerCase();
+            const storedDesktop = (obj.desktopId ?? "").toLowerCase();
+            const storedTail = storedId.split(".").pop();
+            // Match if any of the stored forms equal the new canonical key
             return (
-              JSON.parse(raw).id?.toLowerCase() !== preferredId.toLowerCase()
+              storedId !== canonicalLower &&
+              storedDesktop !== canonicalLower &&
+              storedTail !== canonicalTail &&
+              storedId !== canonicalTail
             );
           } catch (_) {
             return true;
@@ -281,26 +388,14 @@ export const AlbumArt = GObject.registerClass(
                   background-repeat: no-repeat;
                 `,
       });
-      this._vinylCoverArt.set_child(this._vinylCoverImage);
 
+      this._vinylCoverArt.set_child(this._vinylCoverImage);
       this._rotatingContainer.add_child(this._vinylLayer);
       this._rotatingContainer.add_child(this._vinylCoverArt);
 
-      // Tonearm
-      this._tonearmContainer = new St.Widget({
-        width: 340,
-        height: 340,
-        x: 0,
-        y: 0,
-        layout_manager: new Clutter.FixedLayout(),
-      });
-
-      // Tonearm widget
       this._tonearm = new Tonearm();
-      this._tonearmContainer.add_child(this._tonearm);
-
       this._vinylContainer.add_child(this._rotatingContainer);
-      this._vinylContainer.add_child(this._tonearmContainer);
+      this._vinylContainer.add_child(this._tonearm);
 
       this.add_child(this._normalContainer);
       this.add_child(this._vinylContainer);
@@ -308,20 +403,19 @@ export const AlbumArt = GObject.registerClass(
       this._updateMode();
     }
 
-    //Click & double-click
     _onAlbumArtClicked(event) {
-      if (event.get_button() !== 1) return Clutter.EVENT_PROPAGATE;
+      const now = GLib.get_monotonic_time();
+      const DOUBLE_CLICK_MS = 400;
 
-      const now = GLib.get_monotonic_time() / 1000;
-      const elapsed = now - this._lastClickTime;
-
-      if (this._lastClickTime > 0 && elapsed < 400) {
-        // Double-click confirmed
+      if (
+        this._lastClickTime > 0 &&
+        (now - this._lastClickTime) / 1000 < DOUBLE_CLICK_MS
+      ) {
+        this._lastClickTime = 0;
         if (this._clickTimeout) {
           GLib.source_remove(this._clickTimeout);
           this._clickTimeout = null;
         }
-        this._lastClickTime = 0;
         this._toggleVinylForCurrentPlayer();
         return Clutter.EVENT_STOP;
       }
@@ -333,15 +427,18 @@ export const AlbumArt = GObject.registerClass(
         this._clickTimeout = null;
       }
 
-      this._clickTimeout = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 400, () => {
-        this._clickTimeout = null;
-        return GLib.SOURCE_REMOVE;
-      });
+      this._clickTimeout = GLib.timeout_add(
+        GLib.PRIORITY_DEFAULT,
+        DOUBLE_CLICK_MS,
+        () => {
+          this._lastClickTime = 0;
+          this._clickTimeout = null;
+          return GLib.SOURCE_REMOVE;
+        },
+      );
 
-      return Clutter.EVENT_STOP;
+      return Clutter.EVENT_PROPAGATE;
     }
-
-    // mode display
 
     _updateMode() {
       if (this._vinylMode) {

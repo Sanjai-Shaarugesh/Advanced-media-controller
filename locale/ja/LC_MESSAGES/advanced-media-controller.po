@@ -1,223 +1,373 @@
+# Japanese translation for advanced-media-controller.
+# Copyright (C) 2026 Sanjai Shaarugesh
+# GPL-2.0-or-later
+#
 msgid ""
 msgstr ""
-"Report-Msgid-Bugs-To: https://github.com/Sanjai-Shaarugesh/Advance-media-"
-"controller/issues\n"
-"POT-Creation-Date: 2026-01-26 12:08+0530\n"
+"Project-Id-Version: advanced-media-controller 1.0\n"
+"Report-Msgid-Bugs-To: https://github.com/Sanjai-Shaarugesh/Advance-media-controller/issues\n"
+"POT-Creation-Date: 2026-02-23 12:00+0000\n"
+"PO-Revision-Date: 2026-02-23 12:00+0000\n"
+"Last-Translator: auto-generated\n"
+"Language-Team: Japanese\n"
 "Language: ja\n"
+"MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
-#: prefs.js:16 prefs.js:168 prefs.js:201
 msgid "Advanced Media Controller"
 msgstr "高度なメディアコントローラー"
 
-#: prefs.js:21
 msgid "General"
 msgstr "一般"
 
-#: prefs.js:27
-msgid "Panel Settings"
-msgstr "パネル設定"
+msgid "Panel Placement"
+msgstr "パネルの配置"
 
-#: prefs.js:28
-msgid "Configure the position and appearance in the top panel"
-msgstr "トップパネルの位置と外観を設定"
+msgid "Where the indicator sits in the top bar"
+msgstr "インジケーターがトップバーのどこに表示されるか"
 
-#: prefs.js:33
 msgid "Panel Position"
 msgstr "パネルの位置"
 
-#: prefs.js:37
 msgid "Left"
 msgstr "左"
 
-#: prefs.js:38
 msgid "Center"
 msgstr "中央"
 
-#: prefs.js:39
 msgid "Right"
 msgstr "右"
 
-#: prefs.js:53
 msgid "Panel Index"
 msgstr "パネルインデックス"
 
-#: prefs.js:54
-msgid "Position within the panel area (-1 for automatic)"
-msgstr "パネル領域内の位置（-1で自動）"
+msgid "Position within the panel area (-1 = automatic)"
+msgstr "パネルエリア内の位置（-1 = 自動）"
 
-#: prefs.js:73
-msgid "Display Settings"
-msgstr "表示設定"
+msgid "Panel Label"
+msgstr "パネルラベル"
 
-#: prefs.js:74
-msgid "Configure what appears in the panel"
-msgstr "パネルに表示する内容を設定"
+msgid "Track name shown in the top bar"
+msgstr "トップバーに表示するトラック名"
 
-#: prefs.js:79
 msgid "Show Track Name"
 msgstr "トラック名を表示"
 
-#: prefs.js:80
-msgid "Display track information in the panel"
-msgstr "パネルにトラック情報を表示"
+msgid "Display the current track title in the panel"
+msgstr "現在のトラックタイトルをパネルに表示"
 
-#: prefs.js:93
 msgid "Show Artist Name"
 msgstr "アーティスト名を表示"
 
-#: prefs.js:94
-msgid "Include artist name with track title"
-msgstr "トラックタイトルにアーティスト名を含める"
+msgid "Append the artist name to the track title"
+msgstr "トラックタイトルにアーティスト名を追加"
 
-#: prefs.js:107
-msgid "Maximum Title Length"
-msgstr "最大タイトル長"
+msgid "Title / Artist Separator"
+msgstr "タイトル / アーティスト区切り"
 
-#: prefs.js:108
-msgid "Characters to display before scrolling starts"
-msgstr "スクロール開始前に表示する文字数"
+msgid "Panel Scrolling"
+msgstr "パネルのスクロール"
 
-#: prefs.js:127
-msgid "Scroll Speed"
-msgstr "スクロール速度"
+msgid "Marquee scroll of the track label in the top bar"
+msgstr "トップバーのトラックラベルをマーキースクロール"
 
-#: prefs.js:128
+msgid "Enable Panel Label Scrolling"
+msgstr "パネルラベルのスクロールを有効にする"
+
+msgid "Scroll the track/artist text one full loop then pause before repeating. When off, the text is truncated with an ellipsis."
+msgstr "トラック/アーティストのテキストを一周スクロールして一時停止した後繰り返します。オフの場合、テキストは「…」で切り詰められます。"
+
+msgid "Panel Scroll Speed"
+msgstr "パネルスクロール速度"
+
 msgid "1 = slowest, 10 = fastest"
-msgstr "1 = 最も遅い、10 = 最も速い"
+msgstr "1 = 最も遅い、1 0 = 最も速い"
 
-#: prefs.js:147
-msgid "Separator Text"
-msgstr "区切りテキスト"
+msgid "Popup Player"
+msgstr "ポップアッププレーヤー"
 
-#: prefs.js:163
+msgid "Title Scrolling"
+msgstr "タイトルのスクロール"
+
+msgid "Marquee behaviour for the track title inside the popup"
+msgstr "ポップアップ内のトラックタイトルのマーキー動作"
+
+msgid "Enable Title Scrolling"
+msgstr "タイトルのスクロールを有効にする"
+
+msgid "Scroll long track titles from start to end, pause, then repeat. When off, the text is truncated with an ellipsis."
+msgstr "長いトラックタイトルを最初から最後までスクロールして一時停止し、繰り返します。"
+
+msgid "Title Scroll Speed"
+msgstr "タイトルスクロール速度"
+
+msgid "Artist Scrolling"
+msgstr "アーティストのスクロール"
+
+msgid "Marquee behaviour for the artist name inside the popup"
+msgstr "ポップアップ内のアーティスト名のマーキー動作"
+
+msgid "Enable Artist Scrolling"
+msgstr "アーティストのスクロールを有効にする"
+
+msgid "Scroll long artist names from start to end, pause, then repeat. When off, the text is truncated with an ellipsis."
+msgstr "長いアーティスト名を最初から最後までスクロールして一時停止し、繰り返します。"
+
+msgid "Artist Scroll Speed"
+msgstr "アーティストスクロール速度"
+
+msgid "Album Art"
+msgstr "アルバムアート"
+
+msgid "Vinyl-record rotation animation"
+msgstr "レコードの回転アニメーション"
+
+msgid "Enable Vinyl Record Rotation (Global Default)"
+msgstr "レコード回転を有効にする（グローバルデフォルト）"
+
+msgid "Global default when no per-app setting exists. Per-app overrides in the ‘Vinyl Apps’ section take priority."
+msgstr "アプリ別設定がない場合のグローバルデフォルト。「ビニールアプリ」セクションのアプリ別上書きが優先されます。"
+
+msgid "Rotation Speed (seconds per revolution)"
+msgstr "回転速度（1回転あたりの秒数）"
+
+msgid "5 = fastest, 60 = slowest. Recommended: 20–30"
+msgstr "5 = 最速、60 = 最遥。推奨: 20–30"
+
+msgid "Vinyl Effect Details"
+msgstr "ビニールエフェクトの詳細"
+
+msgid "How the animated vinyl record works"
+msgstr "アニメーションレコードの仕組み"
+
+msgid "- Album cover appears on a spinning vinyl disc\n"
+"- Black vinyl grooves are visible around the edges\n"
+"- Animated tonearm moves in and out with playback state\n"
+"- Rotation pauses smoothly when music pauses\n"
+"  (disc angle is preserved and resumes from the same position)\n"
+"- Disc resets to 0° only on a genuine Stop\n"
+"- Double-click album art to toggle vinyl for THAT player’s app only\n"
+"- Per-app settings override the global default above\n"
+"- All seen apps are stored; re-enable any time from Vinyl Apps page"
+msgstr "- アルバムカバーが回転するレコードに表示されます\n"
+"- レコードの黒い溝がエッジに見えます\n"
+"- アニメーションのトーンアームが再生状態に応じて動きます\n"
+"- 音楽の一時停止に合わせて回転がスムーズに停止します\n"
+"  (ディスクの角度は保持され、同じ位置から再開します)\n"
+"- ディスクは完全停止時のみ0°にリセットされます\n"
+"- アルバムアートをダブルクリックしてそのプレーヤーアプリのみビニールを切り替えます\n"
+"- アプリ別設定がグローバルデフォルトより優先されます\n"
+"- 見たすべてのアプリが保存されます；ビニールアプリページからいつでも再有効化できます"
+
+msgid "Vinyl Apps"
+msgstr "ビニールアプリ"
+
+msgid "How to Enable Vinyl Style for an App"
+msgstr "アプリのビニールスタイルを有効にする方法"
+
+msgid "Start playing music"
+msgstr "音楽を再生し始める"
+
+msgid "Open any media player or browser web app (YouTube, Spotify Web, SoundCloud, etc.) and play a track so it appears as a media source."
+msgstr "任意のメディアプレーヤーまたはブラウザーウェブアプリ（YouTube、Spotify Web、SoundCloudなど）を開いてトラックを再生し、メディアソースとして表示させます。"
+
+msgid "Open the extension popup"
+msgstr "拡張機能ポップアップを開く"
+
+msgid "Click the media controller in the top panel to open the popup player."
+msgstr "トップパネルのメディアコントローラーをクリックしてポップアッププレーヤーを開きます。"
+
+msgid "Double-click the album art"
+msgstr "アルバムアートをダブルクリック"
+
+msgid "Double-click the album art image in the popup to toggle the vinyl record style for that specific app instance. The instance is saved here automatically."
+msgstr "ポップアップのアルバムアート画像をダブルクリックして、その特定のアプリインスタンスのビニールスタイルを切り替えます。インスタンスは自動的に保存されます。"
+
+msgid "Manage saved instances below"
+msgstr "保存されたインスタンスを以下で管理"
+
+msgid "All stored instances appear in the section below with their app icon and name. Toggle them on/off or remove them at any time."
+msgstr "保存されたすべてのインスタンスがアプリアイコンと名前付きで下のセクションに表示されます。いつでも有効/無効を切り替えたり削除したりできます。"
+
+msgid "Saved App Instances"
+msgstr "保存されたアプリインスタンス"
+
+msgid "Instances stored by double-clicking the album art in the popup. Icons are loaded from the system .desktop database. Toggle the vinyl effect on/off or remove any entry."
+msgstr "ポップアップでアルバムアートをダブルクリックして保存されたインスタンス。アイコンはシステムの.desktopデータベースから読み込まれます。"
+
+msgid "No instances saved yet"
+msgstr "まだインスタンスが保存されていません"
+
+msgid "Double-click the album art in the popup while music is playing to save an instance here."
+msgstr "音楽再生中にポップアップのアルバムアートをダブルクリックしてインスタンスをここに保存します。"
+
+msgid "Add an App Manually"
+msgstr "アプリを手動で追加"
+
+msgid "Search installed apps — including browsers — to manually add a vinyl entry. Useful for browser web apps whose instance hasn’t been captured yet via double-click."
+msgstr "インストールされているアプリ（ブラウザーを含む）を検索して、ビニールエントリを手動で追加します。"
+
+msgid "Browser web apps (YouTube, Spotify Web, etc.)"
+msgstr "ブラウザーウェブアプリ（YouTube、Spotify Webなど）"
+
+msgid "For web apps, add the browser itself (e.g. Google Chrome, Firefox). Then double-click the album art when that browser is playing music — the extension will capture the exact instance automatically."
+msgstr "ウェブアプリの場合、ブラウザー自体（例: Google Chrome、Firefox）を追加してください。そのブラウザーが音楽を再生しているときにアルバムアートをダブルクリックすると、拡張機能が正確なインスタンスを自動的にキャプチャします。"
+
+msgid "Search apps"
+msgstr "アプリを検索"
+
+msgid "Type an app or browser name…"
+msgstr "アプリまたはブラウザー名を入力…"
+
+msgid "Saved Instances"
+msgstr "保存されたインスタンス"
+
+msgid "Other Apps"
+msgstr "その他のアプリ"
+
+msgid "No matching apps found"
+msgstr "一致するアプリが見つかりません"
+
+msgid "renamed from"
+msgstr "変更前の名前"
+
+msgid "Rename “%s”"
+msgstr "「%s」の名前を変更"
+
+msgid "Remove %s from saved instances"
+msgstr "保存されたインスタンスから%sを削除"
+
+msgid "Rename Instance"
+msgstr "インスタンスの名前を変更"
+
+msgid "Enter a custom display name for “%s”.\n"
+"Leave blank to reset to the default name."
+msgstr "「%s」のカスタム表示名を入力します。\n"
+"デフォルト名にリセットするには空白のままにしてください。"
+
+msgid "Cancel"
+msgstr "キャンセル"
+
+msgid "Rename"
+msgstr "名前を変更"
+
+msgid "Display name"
+msgstr "表示名"
+
 msgid "About"
 msgstr "について"
 
-#: prefs.js:170
 msgid "Beautiful and modern media controls with multi-instance support"
-msgstr "マルチインスタンス対応の美しく現代的なメディアコントロール"
+msgstr "マルチインスタンスサポートを備えた美しくモダンなメディアコントロール"
 
-#: prefs.js:207
 msgid "Version 1.0"
 msgstr "バージョン 1.0"
 
-#: prefs.js:213
 msgid "Modern media controls with native GNOME design"
-msgstr "ネイティブGNOMEデザインの現代的なメディアコントロール"
+msgstr "ネイティブGNOMEデザインのモダンなメディアコントロール"
 
-#: prefs.js:230
 msgid "Extension Links"
 msgstr "拡張機能リンク"
 
-#: prefs.js:231 prefs.js:236
 msgid "Source code, issues, and contributions"
 msgstr "ソースコード、問題、貢献"
 
-#: prefs.js:235
 msgid "View on GitHub"
 msgstr "GitHubで表示"
 
-#: prefs.js:260
 msgid "☕ Support by buying me a coffee – just scan the QR code!"
-msgstr "☕ コーヒーをおごって応援 - QRコードをスキャン！"
+msgstr "☕ コーヒーを買ってサポートしてください – QRコードをスキャンするだけ！"
 
-#: prefs.js:261
 msgid "Preferred Method - Scan QR code to support development"
-msgstr "推奨方法 - QRコードをスキャンして開発を支援"
+msgstr "推奨方法 – QRコードをスキャンして開発をサポート"
 
-#: prefs.js:305
 msgid "Donation Address"
 msgstr "寄付アドレス"
 
-#: prefs.js:330
 msgid "Donation address"
 msgstr "寄付アドレス"
 
-#: prefs.js:334
 msgid "☕ Buy Me a Coffee"
-msgstr "☕ コーヒーをおごる"
+msgstr "☕ コーヒーをおごってください"
 
-#: prefs.js:335
 msgid "Support development with a small donation"
 msgstr "少額の寄付で開発をサポート"
 
-#: prefs.js:360
 msgid "License & Credits"
 msgstr "ライセンスとクレジット"
 
-#: prefs.js:361
 msgid "Open source software information"
 msgstr "オープンソースソフトウェア情報"
 
-#: prefs.js:365
 msgid "Open Source License"
 msgstr "オープンソースライセンス"
 
-#: prefs.js:366
 msgid "GPL-3.0 License - Free and open source software"
-msgstr "GPL-3.0ライセンス - フリーでオープンソースのソフトウェア"
+msgstr "GPL-3.0ライセンス – フリーでオープンソースなソフトウェア"
 
-#: prefs.js:376
 msgid "Media Data Sources"
 msgstr "メディアデータソース"
 
-#: prefs.js:378
 msgid "MPRIS D-Bus interface - Standard media player remote interfacing"
-msgstr ""
-"MPRIS D-Busインターフェース - 標準メディアプレーヤーリモートインターフェース"
+msgstr "MPRIS D-Busインターフェース – 標準メディアプレーヤーリモートインターフェース"
 
-#: prefs.js:389
 msgid "Key Features"
 msgstr "主な機能"
 
-#: prefs.js:391
-msgid ""
-"• Multi-instance browser support\n"
-"• Album art display\n"
+msgid "• Multi-instance browser support\n"
+"• Per-app rotating vinyl record album art\n"
+"• Animated tonearm\n"
 "• Smooth animations\n"
-"• Lock screen controls"
-msgstr ""
-"• マルチインスタンスブラウザ対応\n"
-"• アルバムアート表示\n"
+"• Double-click to toggle vinyl per app\n"
+"• All seen apps remembered — re-enable any time"
+msgstr "• マルチインスタンスブラウザーサポート\n"
+"• アプリ別レコード回転アルバムアート\n"
+"• アニメーションのトーンアーム\n"
 "• スムーズなアニメーション\n"
-"• ロック画面コントロール"
+"• ダブルクリックでアプリ別にビニールを切り替え\n"
+"• 見たすべてのアプリが記憶されます — いつでも再有効化"
 
-#: prefs.js:487
-#, javascript-format
-msgid "✅ %s copied to clipboard!"
-msgstr "✅ %sをクリップボードにコピーしました！"
-
-#: prefs.js:487
-msgid "Text"
-msgstr "テキスト"
-
-#: prefs.js:496
 msgid "Copy to Clipboard"
 msgstr "クリップボードにコピー"
 
-#: prefs.js:497
-#, javascript-format
-msgid ""
-"Unable to automatically copy to clipboard. Please manually copy the %s below:"
-msgstr ""
-"自動的にクリップボードにコピーできません。以下の%sを手動でコピーしてくださ"
-"い："
+msgid "Unable to copy automatically. Select the address below and press Ctrl+C:"
+msgstr "自動的にコピーできません。以下のアドレスを選択してCtrl+Cを押してください："
 
-#: prefs.js:497
-msgid "text"
-msgstr "テキスト"
-
-#: prefs.js:500
 msgid "Close"
 msgstr "閉じる"
 
-#: prefs.js:522
-msgid "💡 Select the text above and press Ctrl+C to copy"
-msgstr "💡 上のテキストを選択してCtrl+Cを押してコピー"
+msgid "Media Controls"
+msgstr "メディアコントロール"
 
-#~ msgid "Select Text"
-#~ msgstr "テキストを選択"
+msgid "Panel Settings"
+msgstr "パネル設定"
 
-#~ msgid "💡 Text selected! Press Ctrl+C to copy"
-#~ msgstr "💡 テキストが選択されました！Ctrl+Cを押してコピー"
+msgid "Configure the position and appearance in the top panel"
+msgstr "トップパネルの位置と外観を設定"
+
+msgid "Display Settings"
+msgstr "表示設定"
+
+msgid "Configure what appears in the panel"
+msgstr "パネルに表示する内容を設定"
+
+msgid "Display track information in the panel"
+msgstr "パネルにトラック情報を表示"
+
+msgid "Include artist name with track title"
+msgstr "トラックタイトルにアーティスト名を含める"
+
+msgid "Maximum Title Length"
+msgstr "最大タイトル長"
+
+msgid "Characters to display before scrolling starts"
+msgstr "スクロール開始前に表示する文字数"
+
+msgid "Scroll Speed"
+msgstr "スクロール速度"
+
+msgid "Separator Text"
+msgstr "区切りテキスト"
+

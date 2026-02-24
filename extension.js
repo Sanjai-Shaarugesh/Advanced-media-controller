@@ -1,4 +1,4 @@
-import { Extension } from "resource:///org/gnome/shell/extensions/extension.js";
+import { Extension, gettext as _ } from "resource:///org/gnome/shell/extensions/extension.js";
 import * as Main from "resource:///org/gnome/shell/ui/main.js";
 import GLib from "gi://GLib";
 import { MediaIndicator } from "./utils/indicator.js";
@@ -89,7 +89,6 @@ export default class MediaExtension extends Extension {
   }
 
   /**
-
    * @returns {{ position: string, index: number }}
    */
   _getPanelPlacement() {

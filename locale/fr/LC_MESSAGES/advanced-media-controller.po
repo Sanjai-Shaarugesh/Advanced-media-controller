@@ -1,15 +1,14 @@
-# French translation for Advanced Media Controller
-# Copyright (C) 2025
-# This file is distributed under the same license as the Advanced Media Controller package.
+# French translation for advanced-media-controller.
+# Copyright (C) 2026 Sanjai Shaarugesh
+# GPL-2.0-or-later
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Advanced Media Controller 1.0\n"
-"Report-Msgid-Bugs-To: https://github.com/Sanjai-Shaarugesh/Advance-media-"
-"controller/issues\n"
-"POT-Creation-Date: 2026-01-26 12:08+0530\n"
-"PO-Revision-Date: 2025-01-26 12:00+0000\n"
-"Last-Translator: \n"
+"Project-Id-Version: advanced-media-controller 1.0\n"
+"Report-Msgid-Bugs-To: https://github.com/Sanjai-Shaarugesh/Advance-media-controller/issues\n"
+"POT-Creation-Date: 2026-02-23 12:00+0000\n"
+"PO-Revision-Date: 2026-02-23 12:00+0000\n"
+"Last-Translator: auto-generated\n"
 "Language-Team: French\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -17,266 +16,358 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: prefs.js:16 prefs.js:168 prefs.js:201
 msgid "Advanced Media Controller"
 msgstr "Contrôleur Multimédia Avancé"
 
-#: prefs.js:21
 msgid "General"
 msgstr "Général"
 
-#: prefs.js:27
-msgid "Panel Settings"
-msgstr "Paramètres du Panneau"
+msgid "Panel Placement"
+msgstr "Emplacement du panneau"
 
-#: prefs.js:28
-msgid "Configure the position and appearance in the top panel"
-msgstr "Configurez la position et l'apparence dans le panneau supérieur"
+msgid "Where the indicator sits in the top bar"
+msgstr "Où l’indicateur se trouve dans la barre supérieure"
 
-#: prefs.js:33
 msgid "Panel Position"
-msgstr "Position du Panneau"
+msgstr "Position du panneau"
 
-#: prefs.js:37
 msgid "Left"
 msgstr "Gauche"
 
-#: prefs.js:38
 msgid "Center"
 msgstr "Centre"
 
-#: prefs.js:39
 msgid "Right"
 msgstr "Droite"
 
-#: prefs.js:53
 msgid "Panel Index"
-msgstr "Index du Panneau"
+msgstr "Index du panneau"
 
-#: prefs.js:54
-msgid "Position within the panel area (-1 for automatic)"
-msgstr "Position dans la zone du panneau (-1 pour automatique)"
+msgid "Position within the panel area (-1 = automatic)"
+msgstr "Position dans la zone du panneau (-1 = automatique)"
 
-#: prefs.js:73
-msgid "Display Settings"
-msgstr "Paramètres d'Affichage"
+msgid "Panel Label"
+msgstr "Étiquette du panneau"
 
-#: prefs.js:74
-msgid "Configure what appears in the panel"
-msgstr "Configurez ce qui apparaît dans le panneau"
+msgid "Track name shown in the top bar"
+msgstr "Nom de la piste affiché dans la barre supérieure"
 
-#: prefs.js:79
 msgid "Show Track Name"
-msgstr "Afficher le Nom du Morceau"
+msgstr "Afficher le nom de la piste"
 
-#: prefs.js:80
-msgid "Display track information in the panel"
-msgstr "Afficher les informations du morceau dans le panneau"
+msgid "Display the current track title in the panel"
+msgstr "Afficher le titre de la piste actuelle dans le panneau"
 
-#: prefs.js:93
 msgid "Show Artist Name"
-msgstr "Afficher le Nom de l'Artiste"
+msgstr "Afficher le nom de l’artiste"
 
-#: prefs.js:94
-msgid "Include artist name with track title"
-msgstr "Inclure le nom de l'artiste avec le titre du morceau"
+msgid "Append the artist name to the track title"
+msgstr "Ajouter le nom de l’artiste au titre de la piste"
 
-#: prefs.js:107
-msgid "Maximum Title Length"
-msgstr "Longueur Maximale du Titre"
+msgid "Title / Artist Separator"
+msgstr "Séparateur titre / artiste"
 
-#: prefs.js:108
-msgid "Characters to display before scrolling starts"
-msgstr "Caractères à afficher avant le début du défilement"
+msgid "Panel Scrolling"
+msgstr "Défilement du panneau"
 
-#: prefs.js:127
-msgid "Scroll Speed"
-msgstr "Vitesse de Défilement"
+msgid "Marquee scroll of the track label in the top bar"
+msgstr "Défilement en marquée dans la barre supérieure"
 
-#: prefs.js:128
+msgid "Enable Panel Label Scrolling"
+msgstr "Activer le défilement de l’étiquette du panneau"
+
+msgid "Scroll the track/artist text one full loop then pause before repeating. When off, the text is truncated with an ellipsis."
+msgstr "Fait défiler le texte sur une boucle complète puis pause avant de recommencer."
+
+msgid "Panel Scroll Speed"
+msgstr "Vitesse de défilement du panneau"
+
 msgid "1 = slowest, 10 = fastest"
-msgstr "1 = le plus lent, 10 = le plus rapide"
+msgstr "1 = plus lent, 10 = plus rapide"
 
-#: prefs.js:147
-msgid "Separator Text"
-msgstr "Texte Séparateur"
+msgid "Popup Player"
+msgstr "Lecteur contextuel"
 
-#: prefs.js:163
+msgid "Title Scrolling"
+msgstr "Défilement du titre"
+
+msgid "Marquee behaviour for the track title inside the popup"
+msgstr "Défilement du titre dans la fenêtre contextuelle"
+
+msgid "Enable Title Scrolling"
+msgstr "Activer le défilement du titre"
+
+msgid "Scroll long track titles from start to end, pause, then repeat. When off, the text is truncated with an ellipsis."
+msgstr "Défilement du début à la fin, pause, puis répétition."
+
+msgid "Title Scroll Speed"
+msgstr "Vitesse de défilement du titre"
+
+msgid "Artist Scrolling"
+msgstr "Défilement de l’artiste"
+
+msgid "Marquee behaviour for the artist name inside the popup"
+msgstr "Défilement du nom de l’artiste dans la fenêtre contextuelle"
+
+msgid "Enable Artist Scrolling"
+msgstr "Activer le défilement de l’artiste"
+
+msgid "Scroll long artist names from start to end, pause, then repeat. When off, the text is truncated with an ellipsis."
+msgstr "Défilement du nom de l’artiste du début à la fin, puis répétition."
+
+msgid "Artist Scroll Speed"
+msgstr "Vitesse de défilement de l’artiste"
+
+msgid "Album Art"
+msgstr "Pochette d’album"
+
+msgid "Vinyl-record rotation animation"
+msgstr "Animation de rotation du disque vinyle"
+
+msgid "Enable Vinyl Record Rotation (Global Default)"
+msgstr "Activer la rotation du disque vinyle (par défaut global)"
+
+msgid "Global default when no per-app setting exists. Per-app overrides in the ‘Vinyl Apps’ section take priority."
+msgstr "Valeur par défaut globale. Les réglages par application dans « Applications vinyle » sont prioritaires."
+
+msgid "Rotation Speed (seconds per revolution)"
+msgstr "Vitesse de rotation (secondes par tour)"
+
+msgid "5 = fastest, 60 = slowest. Recommended: 20–30"
+msgstr "5 = plus rapide, 60 = plus lent. Recommandé : 20–30"
+
+msgid "Vinyl Effect Details"
+msgstr "Détails de l’effet vinyle"
+
+msgid "How the animated vinyl record works"
+msgstr "Fonctionnement du disque vinyle animé"
+
+msgid "- Album cover appears on a spinning vinyl disc\n"
+"- Black vinyl grooves are visible around the edges\n"
+"- Animated tonearm moves in and out with playback state\n"
+"- Rotation pauses smoothly when music pauses\n"
+"  (disc angle is preserved and resumes from the same position)\n"
+"- Disc resets to 0° only on a genuine Stop\n"
+"- Double-click album art to toggle vinyl for THAT player’s app only\n"
+"- Per-app settings override the global default above\n"
+"- All seen apps are stored; re-enable any time from Vinyl Apps page"
+msgstr "- La pochette apparaît sur un disque vinyle en rotation\n"
+"- Les sillons sont visibles sur les bords\n"
+"- Le bras de lecture animé se déplace selon l’état de lecture\n"
+"- La rotation s’arrête doucement lors d’une pause\n"
+"  (l’angle est conservé et reprend à la même position)\n"
+"- Le disque revient à 0° uniquement lors d’un véritable arrêt\n"
+"- Double-cliquez sur la pochette pour basculer le vinyle pour cette app\n"
+"- Les réglages par app remplacent le paramètre global\n"
+"- Toutes les apps vues sont stockées ; réactivez-les depuis la page Applications vinyle"
+
+msgid "Vinyl Apps"
+msgstr "Applications vinyle"
+
+msgid "How to Enable Vinyl Style for an App"
+msgstr "Comment activer le style vinyle pour une application"
+
+msgid "Start playing music"
+msgstr "Lancer la lecture de musique"
+
+msgid "Open any media player or browser web app (YouTube, Spotify Web, SoundCloud, etc.) and play a track so it appears as a media source."
+msgstr "Ouvrez un lecteur ou une application web et lisez une piste pour qu’elle apparaîsse comme source multimédia."
+
+msgid "Open the extension popup"
+msgstr "Ouvrir la fenêtre contextuelle de l’extension"
+
+msgid "Click the media controller in the top panel to open the popup player."
+msgstr "Cliquez sur le contrôleur dans le panneau supérieur pour ouvrir le lecteur contextuel."
+
+msgid "Double-click the album art"
+msgstr "Double-cliquer sur la pochette"
+
+msgid "Double-click the album art image in the popup to toggle the vinyl record style for that specific app instance. The instance is saved here automatically."
+msgstr "Double-cliquez sur la pochette dans la fenêtre contextuelle pour activer/désactiver le style vinyle. L’instance est enregistrée automatiquement."
+
+msgid "Manage saved instances below"
+msgstr "Gérer les instances enregistrées ci-dessous"
+
+msgid "All stored instances appear in the section below with their app icon and name. Toggle them on/off or remove them at any time."
+msgstr "Toutes les instances stockées apparaissent ci-dessous. Activez-les, désactivez-les ou supprimez-les à tout moment."
+
+msgid "Saved App Instances"
+msgstr "Instances d’application enregistrées"
+
+msgid "Instances stored by double-clicking the album art in the popup. Icons are loaded from the system .desktop database. Toggle the vinyl effect on/off or remove any entry."
+msgstr "Instances stockées par double-clic sur la pochette. Les icônes sont chargées depuis la base de données .desktop du système."
+
+msgid "No instances saved yet"
+msgstr "Aucune instance enregistrée pour l’instant"
+
+msgid "Double-click the album art in the popup while music is playing to save an instance here."
+msgstr "Double-cliquez sur la pochette pendant la lecture pour enregistrer une instance ici."
+
+msgid "Add an App Manually"
+msgstr "Ajouter une application manuellement"
+
+msgid "Search installed apps — including browsers — to manually add a vinyl entry. Useful for browser web apps whose instance hasn’t been captured yet via double-click."
+msgstr "Recherchez des applications installées pour ajouter manuellement une entrée vinyle."
+
+msgid "Browser web apps (YouTube, Spotify Web, etc.)"
+msgstr "Applications web de navigateur (YouTube, Spotify Web, etc.)"
+
+msgid "For web apps, add the browser itself (e.g. Google Chrome, Firefox). Then double-click the album art when that browser is playing music — the extension will capture the exact instance automatically."
+msgstr "Pour les apps web, ajoutez le navigateur lui-même. Puis double-cliquez sur la pochette lorsqu’il lit de la musique."
+
+msgid "Search apps"
+msgstr "Rechercher des applications"
+
+msgid "Type an app or browser name…"
+msgstr "Tapez un nom d’application ou de navigateur…"
+
+msgid "Saved Instances"
+msgstr "Instances enregistrées"
+
+msgid "Other Apps"
+msgstr "Autres applications"
+
+msgid "No matching apps found"
+msgstr "Aucune application correspondante trouvée"
+
+msgid "renamed from"
+msgstr "renommé depuis"
+
+msgid "Rename “%s”"
+msgstr "Renommer « %s »"
+
+msgid "Remove %s from saved instances"
+msgstr "Supprimer %s des instances enregistrées"
+
+msgid "Rename Instance"
+msgstr "Renommer l’instance"
+
+msgid "Enter a custom display name for “%s”.\n"
+"Leave blank to reset to the default name."
+msgstr "Saisissez un nom d’affichage pour « %s ».\n"
+"Laissez vide pour rétablir le nom par défaut."
+
+msgid "Cancel"
+msgstr "Annuler"
+
+msgid "Rename"
+msgstr "Renommer"
+
+msgid "Display name"
+msgstr "Nom d’affichage"
+
 msgid "About"
 msgstr "À propos"
 
-#: prefs.js:170
 msgid "Beautiful and modern media controls with multi-instance support"
-msgstr "Contrôles multimédias beaux et modernes avec support multi-instances"
+msgstr "Contrôles multimédias beaux et modernes avec prise en charge multi-instance"
 
-#: prefs.js:207
 msgid "Version 1.0"
 msgstr "Version 1.0"
 
-#: prefs.js:213
 msgid "Modern media controls with native GNOME design"
-msgstr "Contrôles multimédias modernes avec design natif GNOME"
+msgstr "Contrôles multimédias modernes avec design GNOME natif"
 
-#: prefs.js:230
 msgid "Extension Links"
-msgstr "Liens de l'Extension"
+msgstr "Liens de l’extension"
 
-#: prefs.js:231 prefs.js:236
 msgid "Source code, issues, and contributions"
 msgstr "Code source, problèmes et contributions"
 
-#: prefs.js:235
 msgid "View on GitHub"
 msgstr "Voir sur GitHub"
 
-#: prefs.js:260
 msgid "☕ Support by buying me a coffee – just scan the QR code!"
-msgstr "☕ Soutenez-moi en m'offrant un café – scannez simplement le code QR !"
+msgstr "☕ Soutenez-moi en m’offrant un café – scannez le QR code !"
 
-#: prefs.js:261
 msgid "Preferred Method - Scan QR code to support development"
-msgstr "Méthode Préférée - Scannez le code QR pour soutenir le développement"
+msgstr "Méthode préférée – Scannez le QR code pour soutenir le développement"
 
-#: prefs.js:305
 msgid "Donation Address"
-msgstr "Adresse de Donation"
+msgstr "Adresse de don"
 
-#: prefs.js:330
 msgid "Donation address"
-msgstr "Adresse de donation"
+msgstr "Adresse de don"
 
-#: prefs.js:334
 msgid "☕ Buy Me a Coffee"
-msgstr "☕ Offrez-moi un Café"
+msgstr "☕ Offrez-moi un café"
 
-#: prefs.js:335
 msgid "Support development with a small donation"
-msgstr "Soutenez le développement avec un petit don"
+msgstr "Soutenez le développement par un petit don"
 
-#: prefs.js:360
 msgid "License & Credits"
-msgstr "Licence et Crédits"
+msgstr "Licence et crédits"
 
-#: prefs.js:361
 msgid "Open source software information"
-msgstr "Informations sur le logiciel open source"
+msgstr "Informations sur le logiciel libre"
 
-#: prefs.js:365
 msgid "Open Source License"
-msgstr "Licence Open Source"
+msgstr "Licence open source"
 
-#: prefs.js:366
 msgid "GPL-3.0 License - Free and open source software"
-msgstr "Licence GPL-3.0 - Logiciel libre et open source"
+msgstr "Licence GPL-3.0 – Logiciel libre et open source"
 
-#: prefs.js:376
 msgid "Media Data Sources"
-msgstr "Sources de Données Multimédias"
+msgstr "Sources de données multimédia"
 
-#: prefs.js:378
 msgid "MPRIS D-Bus interface - Standard media player remote interfacing"
-msgstr ""
-"Interface MPRIS D-Bus - Interface distante standard pour lecteur multimédia"
+msgstr "Interface MPRIS D-Bus – Interface distante standard"
 
-#: prefs.js:389
 msgid "Key Features"
-msgstr "Fonctionnalités Principales"
+msgstr "Fonctionnalités clés"
 
-#: prefs.js:391
-msgid ""
-"• Multi-instance browser support\n"
-"• Album art display\n"
+msgid "• Multi-instance browser support\n"
+"• Per-app rotating vinyl record album art\n"
+"• Animated tonearm\n"
 "• Smooth animations\n"
-"• Lock screen controls"
-msgstr ""
-"• Support multi-instances de navigateur\n"
-"• Affichage de la pochette d'album\n"
+"• Double-click to toggle vinyl per app\n"
+"• All seen apps remembered — re-enable any time"
+msgstr "• Prise en charge multi-instance des navigateurs\n"
+"• Pochette vinyle rotative par application\n"
+"• Bras de lecture animé\n"
 "• Animations fluides\n"
-"• Contrôles sur écran de verrouillage"
+"• Double-clic pour basculer le vinyle par application\n"
+"• Toutes les apps vues mémorisées — réactivables à tout moment"
 
-#: prefs.js:487
-#, javascript-format
-msgid "✅ %s copied to clipboard!"
-msgstr "✅ %s copié dans le presse-papiers !"
-
-#: prefs.js:487
-msgid "Text"
-msgstr "Texte"
-
-#: prefs.js:496
 msgid "Copy to Clipboard"
-msgstr "Copier dans le Presse-papiers"
+msgstr "Copier dans le presse-papiers"
 
-#: prefs.js:497
-#, javascript-format
-msgid ""
-"Unable to automatically copy to clipboard. Please manually copy the %s below:"
-msgstr ""
-"Impossible de copier automatiquement dans le presse-papiers. Veuillez copier "
-"manuellement le %s ci-dessous :"
+msgid "Unable to copy automatically. Select the address below and press Ctrl+C:"
+msgstr "Impossible de copier automatiquement. Sélectionnez l’adresse ci-dessous et appuyez sur Ctrl+C :"
 
-#: prefs.js:497
-msgid "text"
-msgstr ""
-
-#: prefs.js:500
 msgid "Close"
 msgstr "Fermer"
 
-#: prefs.js:522
-msgid "💡 Select the text above and press Ctrl+C to copy"
-msgstr "💡 Sélectionnez le texte ci-dessus et appuyez sur Ctrl+C pour copier"
+msgid "Media Controls"
+msgstr "Contrôles multimédias"
 
-#~ msgid "No media playing"
-#~ msgstr "Aucun média en lecture"
+msgid "Panel Settings"
+msgstr "Paramètres du panneau"
 
-#~ msgid "Unknown"
-#~ msgstr "Inconnu"
+msgid "Configure the position and appearance in the top panel"
+msgstr "Configurer la position et l’apparence dans le panneau supérieur"
 
-#~ msgid "Media Controls"
-#~ msgstr "Contrôles Multimédias"
+msgid "Display Settings"
+msgstr "Paramètres d’affichage"
 
-#~ msgid "💡 Text selected! Press Ctrl+C to copy"
-#~ msgstr "💡 Texte sélectionné ! Appuyez sur Ctrl+C pour copier"
+msgid "Configure what appears in the panel"
+msgstr "Configurer ce qui apparaît dans le panneau"
 
-#~ msgid "Select Text"
-#~ msgstr "Sélectionner le Texte"
+msgid "Display track information in the panel"
+msgstr "Afficher les informations de la piste dans le panneau"
 
-#~ msgid "Position"
-#~ msgstr "Position"
+msgid "Include artist name with track title"
+msgstr "Inclure le nom de l’artiste avec le titre de la piste"
 
-#~ msgid "Failed to toggle play/pause"
-#~ msgstr "Échec de la bascule lecture/pause"
+msgid "Maximum Title Length"
+msgstr "Longueur maximale du titre"
 
-#~ msgid "Failed to skip next"
-#~ msgstr "Échec du passage au suivant"
+msgid "Characters to display before scrolling starts"
+msgstr "Caractères à afficher avant le début du défilement"
 
-#~ msgid "Failed to skip previous"
-#~ msgstr "Échec du passage au précédent"
+msgid "Scroll Speed"
+msgstr "Vitesse de défilement"
 
-#~ msgid "Failed to toggle shuffle"
-#~ msgstr "Échec de la bascule aléatoire"
+msgid "Separator Text"
+msgstr "Texte séparateur"
 
-#~ msgid "Failed to cycle repeat"
-#~ msgstr "Échec du changement de répétition"
-
-#~ msgid "Failed to seek"
-#~ msgstr "Échec de la recherche"
-
-#~ msgid "No player info available"
-#~ msgstr "Informations du lecteur non disponibles"
-
-#~ msgid "Manager not available"
-#~ msgstr "Gestionnaire non disponible"
-
-#~ msgid "No proxy for %s"
-#~ msgstr "Pas de proxy pour %s"
-
-#~ msgid "Call failed or manager unavailable"
-#~ msgstr "Appel échoué ou gestionnaire non disponible"
-
-#~ msgid "Manager unavailable"
-#~ msgstr "Gestionnaire non disponible"
-
-#~ msgid "Manager destroyed or paused"
-#~ msgstr "Gestionnaire détruit ou en pause"
