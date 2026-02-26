@@ -20,6 +20,11 @@ import {
 // albumart
 
 export const AlbumArt = GObject.registerClass(
+  {
+    Signals: {
+      "triple-click": {},
+    },
+  },
   class AlbumArt extends St.BoxLayout {
     _init(settings, manager = null, playerName = null) {
       super._init({
@@ -41,7 +46,8 @@ export const AlbumArt = GObject.registerClass(
 
       this._vinylMode = this._isVinylEnabledForCurrentPlayer();
 
-      // Double-click detection
+      // Multi-click detection (double = vinyl, triple = lyrics)
+      this._clickCount = 0;
       this._lastClickTime = 0;
       this._clickTimeout = null;
 
@@ -343,24 +349,29 @@ export const AlbumArt = GObject.registerClass(
     }
 
     _buildUI() {
-      // normal mode
+      // ── Normal (flat cover art) mode ────────────────────────────────────────
       this._normalContainer = new St.BoxLayout({
         x_align: Clutter.ActorAlign.CENTER,
         style: "margin-bottom: 24px;",
         reactive: true,
       });
 
-      this._normalCoverArt = new St.Bin({
+      // Wrap in a St.Button so every pixel is reliably hittable
+      this._normalButton = new St.Button({
         style_class: "media-album-art",
         style: `
-                  width: 340px;
-                  height: 340px;
-                  border-radius: 16px;
-                  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-                  background: linear-gradient(135deg,
-                    rgba(255,255,255,0.05) 0%,
-                    rgba(255,255,255,0.02) 100%);
-                `,
+          width: 340px;
+          height: 340px;
+          border-radius: 16px;
+          box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+          background: linear-gradient(135deg,
+            rgba(255,255,255,0.05) 0%,
+            rgba(255,255,255,0.02) 100%);
+          padding: 0;
+          border: none;
+        `,
+        can_focus: false,
+        track_hover: false,
       });
 
       this._normalCoverImage = new St.Widget({
@@ -368,34 +379,33 @@ export const AlbumArt = GObject.registerClass(
         width: 340,
         height: 340,
         style: `
-                  border-radius: 16px;
-                  background-size: cover;
-                  background-position: center;
-                  background-repeat: no-repeat;
-                `,
+          border-radius: 16px;
+          background-size: cover;
+          background-position: center;
+          background-repeat: no-repeat;
+        `,
+        // NOT reactive — let clicks fall through to the Button
+        reactive: false,
       });
 
-      this._normalCoverArt.set_child(this._normalCoverImage);
-      this._normalContainer.add_child(this._normalCoverArt);
+      this._normalButton.set_child(this._normalCoverImage);
+      this._normalContainer.add_child(this._normalButton);
 
-      this._normalContainer.connectObject(
-        "button-press-event",
-        (_actor, event) => this._onAlbumArtClicked(event),
+      // Use button's 'clicked' signal — fires exactly once per press/release
+      // pair on primary button, avoiding the double-fire that raw
+      // button-press-event can cause inside popup menus.
+      this._normalButton.connectObject(
+        "clicked",
+        () => this._onAlbumArtClicked(),
         this,
       );
 
-      // Vinyl mode
+      // ── Vinyl (rotating disc) mode ──────────────────────────────────────────
       this._vinylContainer = new St.Widget({
         style: "width: 340px; height: 340px;",
         layout_manager: new Clutter.FixedLayout(),
         reactive: true,
       });
-
-      this._vinylContainer.connectObject(
-        "button-press-event",
-        (_actor, event) => this._onAlbumArtClicked(event),
-        this,
-      );
 
       // Rotating disc & cover image
       this._rotatingContainer = new St.Widget({
@@ -405,6 +415,8 @@ export const AlbumArt = GObject.registerClass(
         y: 0,
         pivot_point: new Graphene.Point({ x: 0.5, y: 0.5 }),
         layout_manager: new Clutter.FixedLayout(),
+        // NOT reactive — clicks must reach _vinylButton
+        reactive: false,
       });
 
       this._vinylLayer = new St.DrawingArea({
@@ -413,6 +425,7 @@ export const AlbumArt = GObject.registerClass(
         x: 0,
         y: 0,
         style: "border-radius: 170px;",
+        reactive: false,
       });
       this._vinylLayer.connectObject(
         "repaint",
@@ -425,30 +438,50 @@ export const AlbumArt = GObject.registerClass(
         x: 0,
         y: 0,
         style: `
-                  width: 340px;
-                  height: 340px;
-                  border-radius: 170px;
-                  box-shadow: 0 8px 24px rgba(0,0,0,0.6);
-                `,
+          width: 340px;
+          height: 340px;
+          border-radius: 170px;
+          box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+        `,
+        reactive: false,
       });
       this._vinylCoverImage = new St.Widget({
         style_class: "cover-art-image",
         width: 340,
         height: 340,
         style: `
-                  border-radius: 170px;
-                  background-size: cover;
-                  background-position: center;
-                  background-repeat: no-repeat;
-                `,
+          border-radius: 170px;
+          background-size: cover;
+          background-position: center;
+          background-repeat: no-repeat;
+        `,
+        reactive: false,
       });
 
       this._vinylCoverArt.set_child(this._vinylCoverImage);
       this._rotatingContainer.add_child(this._vinylLayer);
       this._rotatingContainer.add_child(this._vinylCoverArt);
 
+      // Transparent full-area button on top — always catches clicks
+      this._vinylButton = new St.Button({
+        width: 340,
+        height: 340,
+        x: 0,
+        y: 0,
+        style: "background: transparent; border: none; padding: 0;",
+        can_focus: false,
+        track_hover: false,
+        reactive: true,
+      });
+      this._vinylButton.connectObject(
+        "clicked",
+        () => this._onAlbumArtClicked(),
+        this,
+      );
+
       this._tonearm = new Tonearm();
       this._vinylContainer.add_child(this._rotatingContainer);
+      this._vinylContainer.add_child(this._vinylButton);
       this._vinylContainer.add_child(this._tonearm);
 
       this.add_child(this._normalContainer);
@@ -457,41 +490,49 @@ export const AlbumArt = GObject.registerClass(
       this._updateMode();
     }
 
-    _onAlbumArtClicked(event) {
+    _onAlbumArtClicked() {
+      // MULTI_CLICK_MS is the window within which successive clicks are
+      // grouped.  GLib.get_monotonic_time() returns microseconds; divide by
+      // 1000 to compare against milliseconds.
+      const MULTI_CLICK_MS = 400;
       const now = GLib.get_monotonic_time();
-      const DOUBLE_CLICK_MS = 400;
+      const elapsedMs = (now - this._lastClickTime) / 1000;
 
-      if (
-        this._lastClickTime > 0 &&
-        (now - this._lastClickTime) / 1000 < DOUBLE_CLICK_MS
-      ) {
-        this._lastClickTime = 0;
-        if (this._clickTimeout) {
-          GLib.source_remove(this._clickTimeout);
-          this._clickTimeout = null;
-        }
-        this._toggleVinylForCurrentPlayer();
-        return Clutter.EVENT_STOP;
+      if (this._lastClickTime > 0 && elapsedMs < MULTI_CLICK_MS) {
+        this._clickCount++;
+      } else {
+        // First click of a new sequence
+        this._clickCount = 1;
       }
-
       this._lastClickTime = now;
 
+      // Always cancel the previous pending dispatch so we keep accumulating
       if (this._clickTimeout) {
         GLib.source_remove(this._clickTimeout);
         this._clickTimeout = null;
       }
 
+      // Snapshot count NOW — the closure must not read this._clickCount later
+      // because a third click will already have incremented it by then.
+      const count = this._clickCount;
+
       this._clickTimeout = GLib.timeout_add(
         GLib.PRIORITY_DEFAULT,
-        DOUBLE_CLICK_MS,
+        MULTI_CLICK_MS,
         () => {
-          this._lastClickTime = 0;
           this._clickTimeout = null;
+          this._clickCount = 0;
+          this._lastClickTime = 0;
+
+          if (count === 2) {
+            this._toggleVinylForCurrentPlayer();
+          } else if (count >= 3) {
+            this.emit("triple-click");
+          }
+          // Single click (count === 1) intentionally does nothing.
           return GLib.SOURCE_REMOVE;
         },
       );
-
-      return Clutter.EVENT_PROPAGATE;
     }
 
     _updateMode() {
@@ -753,12 +794,16 @@ export const AlbumArt = GObject.registerClass(
         GLib.source_remove(this._clickTimeout);
         this._clickTimeout = null;
       }
+      this._clickCount = 0;
+      this._lastClickTime = 0;
 
       if (this._settingsChangedId) {
         this._settings.disconnect(this._settingsChangedId);
         this._settingsChangedId = 0;
       }
 
+      this._normalButton?.disconnectObject(this);
+      this._vinylButton?.disconnectObject(this);
       this._normalContainer?.disconnectObject(this);
       this._vinylContainer?.disconnectObject(this);
       this._vinylLayer?.disconnectObject(this);

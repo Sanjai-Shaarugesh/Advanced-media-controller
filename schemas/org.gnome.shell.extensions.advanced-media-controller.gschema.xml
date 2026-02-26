@@ -124,5 +124,12 @@
       <description>Seconds per full rotation: 5 = fastest, 60 = slowest</description>
     </key>
 
+    <!-- Synced Lyrics -->
+    <key name="enable-lyrics" type="b">
+      <default>true</default>
+      <summary>Enable synced lyrics</summary>
+      <description>Fetch and display time-synced lyrics from lrclib.net. Triple-click the album art in the popup to show/hide lyrics while a track is playing.</description>
+    </key>
+
   </schema>
 </schemalist>

@@ -43,6 +43,10 @@ export const MediaIndicator = GObject.registerClass(
             this._eventHandlers.setupWindowMonitoring();
           } else {
             this._controls.stopPositionUpdate();
+            // Notify controls the menu is closing so the lyrics sync timer
+            // is stopped cleanly (stopPositionUpdate alone no longer does
+            // this, to avoid killing the timer on every pause event).
+            this._controls.onMenuClosed();
             this._eventHandlers.removeWindowMonitoring();
           }
         });

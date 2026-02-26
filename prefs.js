@@ -92,7 +92,7 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     window.set_default_size(700, 760);
     window.set_resizable(true);
 
-    // General page
+    // ── General page ────────────────────────────────────────────────────────
     const generalPage = new Adw.PreferencesPage({
       title: _("General"),
       icon_name: "preferences-system-symbolic",
@@ -220,7 +220,7 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     );
     panelScrollGroup.add(panelScrollSpeedRow);
 
-    // Popup Player page
+    // ── Popup Player page ────────────────────────────────────────────────────
     const popupPage = new Adw.PreferencesPage({
       title: _("Popup Player"),
       icon_name: "media-playback-start-symbolic",
@@ -307,7 +307,7 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     );
     artistScrollGroup.add(artistScrollSpeedRow);
 
-    // Album Art & Vinyl group
+    // ── Album Art & Vinyl group (Popup Player page) ──────────────────────────
     const albumArtGroup = new Adw.PreferencesGroup({
       title: _("Album Art"),
       description: _("Vinyl-record rotation animation"),
@@ -379,27 +379,277 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     rotationInfoRow.add_row(infoBox);
     albumArtGroup.add(rotationInfoRow);
 
-    // Vinyl Apps page
+    // ── Vinyl Apps page ──────────────────────────────────────────────────────
     const vinylPage = new Adw.PreferencesPage({
       title: _("Vinyl Apps"),
       icon_name: "media-optical-cd-audio-symbolic",
     });
     window.add(vinylPage);
-
     this._buildVinylAppsPage(vinylPage, settings);
 
-    // About page
+    // ── Lyrics page ──────────────────────────────────────────────────────────
+    const lyricsPage = new Adw.PreferencesPage({
+      title: _("Lyrics"),
+      // "audio-x-generic-symbolic" is widely available and renders correctly
+      icon_name: "audio-x-generic-symbolic",
+    });
+    window.add(lyricsPage);
+    this._buildLyricsPage(lyricsPage, settings);
+
+    // ── About page ───────────────────────────────────────────────────────────
     window.add(this._createAboutPage(window));
   }
 
+  // ── Lyrics page builder ───────────────────────────────────────────────────
+
+  _buildLyricsPage(page, settings) {
+    // ── Enable / Disable toggle ──────────────────────────────────────────────
+    const enableGroup = new Adw.PreferencesGroup({
+      title: _("Synced Lyrics"),
+      description: _(
+        "Time-synced lyrics fetched from lrclib.net — free, no account needed",
+      ),
+    });
+    page.add(enableGroup);
+
+    const enableLyricsRow = new Adw.SwitchRow({
+      title: _("Enable Synced Lyrics"),
+      subtitle: _(
+        "Fetch and display scrolling lyrics that follow the current playback position",
+      ),
+      // "audio-x-generic-symbolic" is a standard GNOME icon that exists on all
+      // supported shell versions (45-49) and renders without the blank-square
+      // artefact that format-text-symbolic shows in some themes.
+      icon_name: "audio-x-generic-symbolic",
+    });
+    settings.bind(
+      "enable-lyrics",
+      enableLyricsRow,
+      "active",
+      Gio.SettingsBindFlags.DEFAULT,
+    );
+    enableGroup.add(enableLyricsRow);
+
+    // ── How it works — step-by-step ──────────────────────────────────────────
+    const howtoGroup = new Adw.PreferencesGroup({
+      title: _("How to Use Lyrics"),
+      description: _(
+        "Lyrics are tied to each player tab independently — Spotify and Firefox each remember their own setting",
+      ),
+    });
+    page.add(howtoGroup);
+
+    const steps = [
+      {
+        icon: "media-playback-start-symbolic",
+        title: _("Start playing a song"),
+        subtitle: _(
+          "Open any media player or browser tab (Spotify, YouTube Music, VLC, Rhythmbox\u2026) and play a track so it appears in the panel.",
+        ),
+      },
+      {
+        icon: "input-mouse-symbolic",
+        title: _("Open the popup player"),
+        subtitle: _(
+          "Click the media controller icon in the top panel to open the popup. You\u2019ll see the album art, track title, and playback controls.",
+        ),
+      },
+      {
+        icon: "go-jump-symbolic",
+        title: _("Triple-click the album art to show lyrics"),
+        subtitle: _(
+          "Click the album art three times in quick succession. The cover image will be replaced by the lyrics panel, which scrolls automatically in time with the music.",
+        ),
+      },
+      {
+        icon: "go-first-symbolic",
+        title: _("Single-click the lyrics panel to go back"),
+        subtitle: _(
+          "Tap anywhere on the lyrics panel once to dismiss it and return to the album art — vinyl or normal cover, whichever that app uses.",
+        ),
+      },
+      {
+        icon: "media-optical-cd-audio-symbolic",
+        title: _("Triple-click again to re-open"),
+        subtitle: _(
+          "You can toggle the lyrics panel as many times as you like. Each player tab remembers independently whether lyrics are open.",
+        ),
+      },
+    ];
+
+    steps.forEach(({ icon, title, subtitle }) => {
+      const row = new Adw.ActionRow({ title, subtitle, activatable: false });
+      row.add_prefix(
+        new Gtk.Image({
+          icon_name: icon,
+          pixel_size: 22,
+          valign: Gtk.Align.CENTER,
+          css_classes: ["accent"],
+        }),
+      );
+      howtoGroup.add(row);
+    });
+
+    // ── Behaviour details ────────────────────────────────────────────────────
+    const detailsGroup = new Adw.PreferencesGroup({
+      title: _("Lyrics Behaviour"),
+      description: _("What happens behind the scenes"),
+    });
+    page.add(detailsGroup);
+
+    const detailsRow = new Adw.ExpanderRow({
+      title: _("Lyrics details & edge cases"),
+      subtitle: _("What to expect when the lyrics panel is open"),
+      icon_name: "dialog-information-symbolic",
+    });
+
+    const detailsLabel = new Gtk.Label({
+      label: _(
+        "Source\n" +
+          "  \u2022 Lyrics are fetched from lrclib.net — a free, open public database\n" +
+          "  \u2022 No account or API key is required; the request is made silently in the background\n" +
+          "\n" +
+          "Display\n" +
+          "  \u2022 The active lyric line is shown larger and centred in the panel\n" +
+          "  \u2022 The line above and below are shown at medium size; all others fade out\n" +
+          "  \u2022 The panel scrolls smoothly so the active line is always in view\n" +
+          "\n" +
+          "Track changes\n" +
+          "  \u2022 When a new song starts while the lyrics panel is open, the view clears\n" +
+          "    and new lyrics are fetched automatically\n" +
+          "  \u2022 If no lyrics are found, a \u201cNo lyrics found\u201d message is shown\n" +
+          "\n" +
+          "Multiple players\n" +
+          "  \u2022 Each player tab (Spotify, YouTube, VLC\u2026) has its own independent\n" +
+          "    lyrics toggle — opening lyrics for one player does not affect any other\n" +
+          "  \u2022 Switching tabs restores the correct view (lyrics or album art) for\n" +
+          "    the player you switch to\n" +
+          "\n" +
+          "Seeking\n" +
+          "  \u2022 When you seek forward or backward, the highlighted line jumps\n" +
+          "    instantly to the correct position",
+      ),
+      wrap: true,
+      xalign: 0,
+      margin_top: 12,
+      margin_bottom: 12,
+      margin_start: 12,
+      margin_end: 12,
+      css_classes: ["dim-label"],
+    });
+
+    const detailsBox = new Gtk.Box({ orientation: Gtk.Orientation.VERTICAL });
+    detailsBox.append(detailsLabel);
+    detailsRow.add_row(detailsBox);
+    detailsGroup.add(detailsRow);
+
+    // ── Keyboard / click cheat-sheet ─────────────────────────────────────────
+    const cheatGroup = new Adw.PreferencesGroup({
+      title: _("Album Art Click Actions"),
+      description: _(
+        "Summary of what each click pattern does on the album art cover",
+      ),
+    });
+    page.add(cheatGroup);
+
+    const clickActions = [
+      {
+        icon: "input-mouse-symbolic",
+        title: _("Single click"),
+        subtitle: _(
+          "When lyrics are showing: closes the lyrics panel and returns to the album art",
+        ),
+      },
+      {
+        icon: "input-mouse-symbolic",
+        title: _("Double click"),
+        subtitle: _(
+          "Toggles the spinning vinyl record effect for that specific app (remembered independently per app)",
+        ),
+      },
+      {
+        icon: "input-mouse-symbolic",
+        title: _("Triple click"),
+        subtitle: _(
+          "Toggles the synced lyrics panel for the current player tab (remembered independently per player)",
+        ),
+      },
+    ];
+
+    clickActions.forEach(({ icon, title, subtitle }) => {
+      const row = new Adw.ActionRow({ title, subtitle, activatable: false });
+      row.add_prefix(
+        new Gtk.Image({
+          icon_name: icon,
+          pixel_size: 22,
+          valign: Gtk.Align.CENTER,
+        }),
+      );
+      cheatGroup.add(row);
+    });
+
+    // ── Data source ───────────────────────────────────────────────────────────
+    const sourceGroup = new Adw.PreferencesGroup({
+      title: _("Data Source"),
+      description: _("Where lyrics come from"),
+    });
+    page.add(sourceGroup);
+
+    const lrclibRow = new Adw.ActionRow({
+      title: _("lrclib.net"),
+      subtitle: _(
+        "Free, open-source time-synced lyrics database — no sign-up, no tracking, no ads",
+      ),
+      activatable: true,
+    });
+    lrclibRow.add_prefix(
+      new Gtk.Image({
+        icon_name: "network-wireless-symbolic",
+        pixel_size: 20,
+        valign: Gtk.Align.CENTER,
+      }),
+    );
+    lrclibRow.add_suffix(
+      new Gtk.Image({
+        icon_name: "adw-external-link-symbolic",
+        pixel_size: 16,
+        valign: Gtk.Align.CENTER,
+      }),
+    );
+    lrclibRow.connect("activated", () => {
+      try {
+        Gio.AppInfo.launch_default_for_uri("https://lrclib.net", null);
+      } catch (e) {
+        console.error("Could not open lrclib.net:", e);
+      }
+    });
+    sourceGroup.add(lrclibRow);
+
+    const privacyRow = new Adw.ActionRow({
+      title: _("Privacy note"),
+      subtitle: _(
+        "A request containing the track title, artist, album and duration is sent to lrclib.net when you open the lyrics panel. No personal data or user identifiers are included.",
+      ),
+      activatable: false,
+    });
+    privacyRow.add_prefix(
+      new Gtk.Image({
+        icon_name: "security-high-symbolic",
+        pixel_size: 20,
+        valign: Gtk.Align.CENTER,
+      }),
+    );
+    sourceGroup.add(privacyRow);
+  }
+
+  // ── Vinyl Apps page ───────────────────────────────────────────────────────
+
   _buildVinylAppsPage(page, settings) {
-    // instructions banner
     const howtoGroup = new Adw.PreferencesGroup({
       title: _("How to Enable Vinyl Style for an App"),
     });
     page.add(howtoGroup);
 
-    // Step-by-step instruction rows with icons
     const steps = [
       {
         icon: "media-playback-start-symbolic",
@@ -428,7 +678,7 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
         title: _("Manage saved instances below"),
         subtitle: _(
           "All stored instances appear in the section below. " +
-            "Browser web-app sources appear as e.g. “YouTube Music (Chrome)” and are tracked independently. " +
+            "Browser web-app sources appear as e.g. \u201cYouTube Music (Chrome)\u201d and are tracked independently. " +
             "Toggle them on/off or remove them at any time.",
         ),
       },
@@ -447,7 +697,6 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
       howtoGroup.add(row);
     });
 
-    // Stored instances group
     const instancesGroup = new Adw.PreferencesGroup({
       title: _("Saved App Instances"),
       description: _(
@@ -464,7 +713,6 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
 
     this._refreshInstancesList(settings);
 
-    // Add app manually & web app search
     const searchGroup = new Adw.PreferencesGroup({
       title: _("Add an App Manually"),
       description: _(
@@ -474,7 +722,6 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     });
     page.add(searchGroup);
 
-    // Tip row for web apps
     const webTipRow = new Adw.ActionRow({
       title: _(
         "Browser sources tracked separately (YouTube, YouTube Music, Spotify Web)",
@@ -525,7 +772,6 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     scrollRow.set_child(scrolled);
     searchGroup.add(scrollRow);
 
-    // Load only browsers & media apps
     this._allApps = this._loadMediaAndBrowserApps();
     this._currentSearchQuery = "";
     this._renderAppList(this._allApps, settings);
@@ -546,7 +792,6 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
 
     searchEntry.connect("search-changed", doFilter);
 
-    // React to vinyl-app-ids OR vinyl-app-instances changes
     this._vinylAppsChangedId = settings.connect(
       "changed::vinyl-app-ids",
       () => {
@@ -571,7 +816,6 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
   }
 
   _refreshInstancesList(settings) {
-    // Remove old rows
     for (const row of this._instanceRows.values()) {
       try {
         this._instancesGroup.remove(row);
@@ -650,7 +894,6 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
       if (groupMap.has(canonicalKey)) {
         const group = groupMap.get(canonicalKey);
         group.allIds.add(entry.obj.id.toLowerCase());
-
         if (!group.best.obj.enabled && entry.obj.enabled) group.best = entry;
       } else {
         groupMap.set(canonicalKey, {
@@ -672,8 +915,6 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
       let appIcon = null;
 
       if (isBrowserInstance) {
-        // For browser instances: label is "YouTube Music (Chrome)".
-        // Icon comes from the browser's .desktop entry (stored in obj.desktopId).
         appName = _labelForId(normId);
         const browserDesktopId = obj.desktopId || parsedComposite.browser;
         const browserAppInfo = this._findAppInfo(
@@ -689,12 +930,9 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
       const resolvedName = appName;
       const displayName = obj.customName?.trim() || resolvedName;
 
-      // Check enabled state across ALL id forms in this group
       const isEnabled = [...allIds].some((aid) =>
         this._isAppEnabled(aid, enabledIds),
       );
-
-      // For browser composite IDs, show a cleaner subtitle like
 
       const rawSubtitle =
         isBrowserInstance && parsedComposite
@@ -703,6 +941,7 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
               parsedComposite.browser,
             )
           : id;
+
       const row = new Adw.ActionRow({
         title: displayName,
         subtitle: obj.customName?.trim()
@@ -725,7 +964,6 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
             }),
       );
 
-      // Rename button
       const renameBtn = new Gtk.Button({
         icon_name: "document-edit-symbolic",
         valign: Gtk.Align.CENTER,
@@ -742,7 +980,6 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
         valign: Gtk.Align.CENTER,
       });
       sw.connect("state-set", (_widget, state) => {
-        // Update ALL id forms stored in this group so every alias is in sync
         for (const aid of allIds) {
           this._setAppVinylState(settings, aid, aid, state);
           this._updateInstanceEnabledField(settings, aid, state);
@@ -751,7 +988,6 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
       });
       row.add_suffix(sw);
 
-      // Remove button — deletes ALL records in this group
       const removeBtn = new Gtk.Button({
         icon_name: "list-remove-symbolic",
         valign: Gtk.Align.CENTER,
@@ -775,8 +1011,8 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     const dialog = new Adw.AlertDialog({
       heading: _("Rename Instance"),
       body: _(
-              "Enter a custom display name for \"%s\".\nLeave blank to reset to the default."
-            ).format(displayedSource),
+        "Enter a custom display name for \"%s\".\nLeave blank to reset to the default.",
+      ).format(displayedSource),
       default_response: "rename",
       close_response: "cancel",
     });
@@ -801,7 +1037,6 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
 
     const entryRow = new Adw.EntryRow({
       title: _("Display name"),
-      // Pre-fill with the current custom name if one has been set
       text:
         currentDisplay !== resolvedName && currentDisplay !== displayedSource
           ? currentDisplay
@@ -815,7 +1050,6 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     entryRow.connect("entry-activated", () => {
       dialog.response("rename");
     });
-
     entryRow.connect("apply", () => {
       dialog.response("rename");
     });
@@ -836,9 +1070,6 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     });
   }
 
-  /**
-   * Persist a custom name into the matching vinyl-app-instances JSON record.
-   */
   _renameInstance(settings, normId, newName, resolvedName) {
     try {
       const existing = settings.get_strv("vinyl-app-instances") ?? [];
@@ -847,8 +1078,6 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
         try {
           const obj = JSON.parse(raw);
           const lower = (obj.id ?? "").toLowerCase();
-          // Composite ids: exact match only (no tail splitting — avoids collisions)
-          // Plain ids: also match by tail segment
           const isMatch = isComposite
             ? lower === normId
             : lower === normId || lower.split(".").pop() === normId;
@@ -869,9 +1098,6 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     }
   }
 
-  /**
-   * Update the enabled field in a vinyl-app-instances JSON record.
-   */
   _updateInstanceEnabledField(settings, normId, enabledValue) {
     try {
       const existing = settings.get_strv("vinyl-app-instances") ?? [];
@@ -893,10 +1119,6 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     } catch (_e) {}
   }
 
-  /**
-   * Completely delete an instance record from vinyl-app-instances,
-   * and also disable it in vinyl-app-ids.
-   */
   _deleteInstance(settings, id, normId) {
     try {
       const existing = settings.get_strv("vinyl-app-instances") ?? [];
@@ -905,7 +1127,6 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
         try {
           const obj = JSON.parse(raw);
           const lower = (obj.id ?? "").toLowerCase();
-          // Composite ids: exact match only
           if (isComposite) return lower !== normId;
           return lower !== normId && lower.split(".").pop() !== normId;
         } catch (_) {
@@ -914,18 +1135,15 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
       });
       settings.set_strv("vinyl-app-instances", filtered);
     } catch (_e) {}
-    // Also remove from vinyl-app-ids
     this._setAppVinylState(settings, id, normId, false);
   }
 
-  /**
-   * @deprecated
-   */
+  /** @deprecated */
   _removeInstance(settings, id, normId) {
     this._deleteInstance(settings, id, normId);
   }
 
-  // App loading
+  // ── App loading ───────────────────────────────────────────────────────────
 
   _loadMediaAndBrowserApps() {
     const allApps = Gio.AppInfo.get_all();
@@ -1012,10 +1230,8 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
       if (matchSet.has(normId)) return true;
 
       if (!isComposite) {
-        // Plain id: also match by short tail
         if (matchSet.has(normId.split(".").pop())) return true;
       } else {
-        // Composite id: exact match or fuzzy browser+source match
         if (storedLower === normId) return true;
         if (storedLower.includes("--")) {
           const parsed1 = _parseBrowserSourceId(normId);
@@ -1074,10 +1290,9 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     }
   }
 
-  // Render search results
+  // ── Render search results ─────────────────────────────────────────────────
 
   _renderAppList(filteredSystemApps, settings) {
-    // Clear list
     let child = this._appListBox.get_first_child();
     while (child) {
       const next = child.get_next_sibling();
@@ -1088,7 +1303,6 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     const enabledIds = settings.get_strv("vinyl-app-ids");
     const query = this._currentSearchQuery ?? "";
 
-    // Stored instances
     const rawInstances = (() => {
       try {
         return settings.get_strv("vinyl-app-instances") ?? [];
@@ -1115,7 +1329,6 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
 
       const desktopId = obj.desktopId || id;
 
-      // Detect browser composite IDs (e.g. "google-chrome--youtube-music")
       const parsedComp = _parseBrowserSourceId(normId);
       const isCompBrowser = parsedComp !== null;
 
@@ -1139,7 +1352,6 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
         }
       }
 
-      // customName always wins over the resolved .desktop name
       const customName = obj.customName?.trim() || "";
       const displayName = customName || resolvedName;
 
@@ -1197,7 +1409,6 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
           : id;
         const row = new Adw.ActionRow({
           title: displayName,
-          // Show id + a "renamed from" hint in subtitle when a custom name is active
           subtitle: customName
             ? `${_subtitleBase}  ·  ${_("renamed from")} "${resolvedName}"`
             : _subtitleBase,
@@ -1232,7 +1443,6 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
       }
     }
 
-    // System media/browser apps
     const sysApps = filteredSystemApps.filter((app) => {
       const rawId = app.get_id() || "";
       const normId = this._normalizeAppId(rawId)?.toLowerCase() ?? "";
@@ -1326,15 +1536,7 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
   }
 
   /**
-
-   * @param {string} desktopId  – from the stored instance record (without .desktop)
-   * @param {string} fallbackId – the raw `id` field of the record
-   * @returns {Gio.AppInfo|null}
-   */
-  /**
    * Find Gio.AppInfo for a stored instance id.
-   *
-
    * Instance / numeric suffixes are stripped before matching.
    *
    * @param {string} desktopId   stored desktopId field
@@ -1342,7 +1544,6 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
    * @returns {Gio.AppInfo|null}
    */
   _findAppInfo(desktopId, fallbackId) {
-    // Build the set of meaningful word-tokens from the stored ids
     const tokens = new Set();
     for (const base of [desktopId, fallbackId]) {
       if (!base) continue;
@@ -1351,17 +1552,15 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
         .replace(/\.\d+$/, "");
       for (const variant of [base, stripped]) {
         const lower = variant.toLowerCase();
-        // Full form + .desktop variant
         tokens.add(lower);
         tokens.add(`${lower}.desktop`);
 
         for (const seg of lower.split(".")) {
-          if (seg.length > 2) tokens.add(seg); // skip trivial segments like "org","com","net"
+          if (seg.length > 2) tokens.add(seg);
         }
       }
     }
 
-    // Remove overly generic segments that would cause false positives
     for (const generic of [
       "org",
       "com",
@@ -1408,7 +1607,6 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
           .toLowerCase()
           .replace(/\s+/g, "");
         if (tokens.has(name)) return app;
-        // Also try just the first word
         const firstWord = (app.get_display_name() ?? "")
           .toLowerCase()
           .split(/\s+/)[0];
@@ -1423,7 +1621,7 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     return id.endsWith(".desktop") ? id.slice(0, -8) : id;
   }
 
-  // About page
+  // ── About page ────────────────────────────────────────────────────────────
 
   _createAboutPage() {
     const page = new Adw.PreferencesPage({
@@ -1622,6 +1820,10 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
       subtitle: _(
         "\u2022 Multi-instance browser support\n\u2022 Per-app rotating vinyl record album art\n" +
           "\u2022 Animated tonearm\n\u2022 Smooth animations\n\u2022 Double-click to toggle vinyl per app\n" +
+          "\u2022 Triple-click album art to show synced lyrics\n" +
+          "\u2022 Single-click lyrics panel to return to album art\n" +
+          "\u2022 Lyrics synced to playback via lrclib.net\n" +
+          "\u2022 Per-player lyrics toggle (each tab independent)\n" +
           "\u2022 All seen apps remembered \u2014 re-enable any time",
       ),
       activatable: false,
@@ -1634,6 +1836,7 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     linksGroup.add(githubRow);
     qrGroup.add(qrRow);
     addressGroup.add(addressRow);
+    addressGroup.add(sponsorRow);
     licenseGroup.add(licenseRow);
     licenseGroup.add(creditsRow);
     licenseGroup.add(featuresRow);
@@ -1657,7 +1860,6 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
       });
     }
 
-    // Fallback to a generic link icon if the SVG is not found
     return new Gtk.Image({
       icon_name: "adw-external-link-symbolic",
       pixel_size: 20,
@@ -1706,4 +1908,3 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     dialog.present(null);
   }
 }
-
