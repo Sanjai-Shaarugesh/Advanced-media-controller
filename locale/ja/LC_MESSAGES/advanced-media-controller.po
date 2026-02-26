@@ -375,3 +375,164 @@ msgstr "区切りテキスト"
 
 msgid "Browser sources tracked separately (YouTube, YouTube Music, Spotify Web)"
 msgstr "ブラウザソースは個別に追跡されます（YouTube、YouTube Music、Spotify Web)"
+
+
+msgid "Lyrics"
+msgstr "歌詞"
+
+msgid "Synced Lyrics"
+msgstr "同期歌詞"
+
+msgid "Time-synced lyrics fetched from lrclib.net — free, no account needed"
+msgstr "lrclib.net から取得する時間同期歌詞 — 無料、アカウント不要"
+
+msgid "Enable Synced Lyrics"
+msgstr "同期歌詞を有効にする"
+
+msgid "Fetch and display scrolling lyrics that follow the current playback position"
+msgstr "現在の再生位置に追従するスクロール歌詞を取得して表示します"
+
+msgid "How to Use Lyrics"
+msgstr "歌詞の使い方"
+
+msgid "Lyrics are tied to each player tab independently — Spotify and Firefox each remember their own setting"
+msgstr "歌詞はプレーヤータブごとに独立して保持されます — Spotify と Firefox はそれぞれ独自の設定を記憶します"
+
+msgid "Start playing a song"
+msgstr "曲を再生する"
+
+msgid "Open the popup player"
+msgstr "ポップアッププレーヤーを開く"
+
+msgid "Triple-click the album art to show lyrics"
+msgstr "アルバムアートをトリプルクリックして歌詞を表示"
+
+msgid "Single-click the lyrics panel to go back"
+msgstr "歌詞パネルをシングルクリックして戻る"
+
+msgid "Triple-click again to re-open"
+msgstr "再度トリプルクリックして歌詞を再表示"
+
+msgid "Open any media player or browser tab (Spotify, YouTube Music, VLC, Rhythmbox…) and play a track so it appears in the panel."
+msgstr "任意のメディアプレーヤーまたはブラウザータブ（Spotify、YouTube Music、VLC、Rhythmbox…）を開いてトラックを再生すると、パネルに表示されます。"
+
+msgid "Click the media controller icon in the top panel to open the popup. You'll see the album art, track title, and playback controls."
+msgstr "上部パネルのメディアコントローラーアイコンをクリックしてポップアップを開きます。アルバムアート、トラックタイトル、再生コントロールが表示されます。"
+
+msgid "Click the album art three times in quick succession. The cover image will be replaced by the lyrics panel, which scrolls automatically in time with the music."
+msgstr "アルバムアートを素早く 3 回クリックします。カバー画像が歌詞パネルに切り替わり、音楽に合わせて自動的にスクロールします。"
+
+msgid "Tap anywhere on the lyrics panel once to dismiss it and return to the album art — vinyl or normal cover, whichever that app uses."
+msgstr "歌詞パネルの任意の場所を 1 回タップすると閉じて、アルバムアート（そのアプリで使用しているビニールまたは通常のカバー）に戻ります。"
+
+msgid "You can toggle the lyrics panel as many times as you like. Each player tab remembers independently whether lyrics are open."
+msgstr "歌詞パネルは何度でも切り替えられます。各プレーヤータブは歌詞が開いているかどうかを独立して記憶します。"
+
+msgid "Lyrics Behaviour"
+msgstr "歌詞の動作"
+
+msgid "What happens behind the scenes"
+msgstr "バックグラウンドで起こること"
+
+msgid "Lyrics details & edge cases"
+msgstr "歌詞の詳細とエッジケース"
+
+msgid "What to expect when the lyrics panel is open"
+msgstr "歌詞パネルが開いているときに何が起こるか"
+
+msgid ""
+"Source\n"
+"  • Lyrics are fetched from lrclib.net — a free, open public database\n"
+"  • No account or API key is required; the request is made silently in the background\n"
+"\n"
+"Display\n"
+"  • The active lyric line is shown larger and centred in the panel\n"
+"  • The line above and below are shown at medium size; all others fade out\n"
+"  • The panel scrolls smoothly so the active line is always in view\n"
+"\n"
+"Track changes\n"
+"  • When a new song starts while the lyrics panel is open, the view clears\n"
+"    and new lyrics are fetched automatically\n"
+"  • If no lyrics are found, a “No lyrics found” message is shown\n"
+"\n"
+"Multiple players\n"
+"  • Each player tab (Spotify, YouTube, VLC…) has its own independent\n"
+"    lyrics toggle — opening lyrics for one player does not affect any other\n"
+"  • Switching tabs restores the correct view (lyrics or album art) for\n"
+"    the player you switch to\n"
+"\n"
+"Seeking\n"
+"  • When you seek forward or backward, the highlighted line jumps\n"
+"    instantly to the correct position"
+msgstr ""
+"ソース\n"
+"  • 歌詞は lrclib.net（無料のオープンな公開データベース）から取得します\n"
+"  • アカウントや API キーは不要です。リクエストはバックグラウンドで無音で行われます\n"
+"\n"
+"表示\n"
+"  • アクティブな歌詞行はパネルで大きく中央に表示されます\n"
+"  • 前後の行は中サイズで表示され、それ以外はフェードアウトします\n"
+"  • パネルはスムーズにスクロールし、アクティブな行が常に表示されます\n"
+"\n"
+"トラック変更\n"
+"  • 歌詞パネルが開いている状態で新しい曲が始まると、ビューがクリアされ\n"
+"    新しい歌詞が自動的に取得されます\n"
+"  • 歌詞が見つからない場合は「歌詞が見つかりません」というメッセージが表示されます\n"
+"\n"
+"複数のプレーヤー\n"
+"  • 各プレーヤータブ（Spotify、YouTube、VLC…）は独立した歌詞切替スイッチを持ちます\n"
+"    — 1 つのプレーヤーで歌詞を開いても他のプレーヤーには影響しません\n"
+"  • タブを切り替えると、切り替え先のプレーヤーの正しいビュー（歌詞またはアルバムアート）が\n"
+"    復元されます\n"
+"\n"
+"シーク\n"
+"  • 前後にシークすると、ハイライトされた行が\n"
+"    即座に正しい位置にジャンプします"
+
+msgid "Album Art Click Actions"
+msgstr "アルバムアートのクリック操作"
+
+msgid "Summary of what each click pattern does on the album art cover"
+msgstr "アルバムアートカバーでの各クリックパターンの動作一覧"
+
+msgid "Single click"
+msgstr "シングルクリック"
+
+msgid "When lyrics are showing: closes the lyrics panel and returns to the album art"
+msgstr "歌詞表示中：歌詞パネルを閉じてアルバムアートに戻ります"
+
+msgid "Double click"
+msgstr "ダブルクリック"
+
+msgid "Toggles the spinning vinyl record effect for that specific app (remembered independently per app)"
+msgstr "その特定のアプリのビニールレコード回転エフェクトを切り替えます（アプリごとに独立して記憶）"
+
+msgid "Triple click"
+msgstr "トリプルクリック"
+
+msgid "Toggles the synced lyrics panel for the current player tab (remembered independently per player)"
+msgstr "現在のプレーヤータブの同期歌詞パネルを切り替えます（プレーヤーごとに独立して記憶）"
+
+msgid "Data Source"
+msgstr "データソース"
+
+msgid "Where lyrics come from"
+msgstr "歌詞の提供元"
+
+msgid "lrclib.net"
+msgstr "lrclib.net"
+
+msgid "Free, open-source time-synced lyrics database — no sign-up, no tracking, no ads"
+msgstr "無料のオープンソース時間同期歌詞データベース — 登録不要、追跡なし、広告なし"
+
+msgid "Privacy note"
+msgstr "プライバシーに関する注記"
+
+msgid "A request containing the track title, artist, album and duration is sent to lrclib.net when you open the lyrics panel. No personal data or user identifiers are included."
+msgstr "歌詞パネルを開くと、トラックタイトル、アーティスト、アルバム、再生時間を含むリクエストが lrclib.net に送信されます。個人データやユーザー識別子は含まれません。"
+
+msgid "Fetching lyrics…"
+msgstr "歌詞を取得中…"
+
+msgid "No lyrics found"
+msgstr "歌詞が見つかりません"

@@ -360,3 +360,149 @@ msgstr ""
 
 msgid "Browser sources tracked separately (YouTube, YouTube Music, Spotify Web)"
 msgstr ""
+
+# ── Lyrics preferences page ───────────────────────────────────────────────
+
+msgid "Lyrics"
+msgstr ""
+
+msgid "Synced Lyrics"
+msgstr ""
+
+msgid "Time-synced lyrics fetched from lrclib.net — free, no account needed"
+msgstr ""
+
+msgid "Enable Synced Lyrics"
+msgstr ""
+
+msgid "Fetch and display scrolling lyrics that follow the current playback position"
+msgstr ""
+
+msgid "How to Use Lyrics"
+msgstr ""
+
+msgid "Lyrics are tied to each player tab independently — Spotify and Firefox each remember their own setting"
+msgstr ""
+
+# How-to steps – titles
+msgid "Start playing a song"
+msgstr ""
+
+msgid "Open the popup player"
+msgstr ""
+
+msgid "Triple-click the album art to show lyrics"
+msgstr ""
+
+msgid "Single-click the lyrics panel to go back"
+msgstr ""
+
+msgid "Triple-click again to re-open"
+msgstr ""
+
+# How-to steps – subtitles
+msgid "Open any media player or browser tab (Spotify, YouTube Music, VLC, Rhythmbox…) and play a track so it appears in the panel."
+msgstr ""
+
+msgid "Click the media controller icon in the top panel to open the popup. You'll see the album art, track title, and playback controls."
+msgstr ""
+
+msgid "Click the album art three times in quick succession. The cover image will be replaced by the lyrics panel, which scrolls automatically in time with the music."
+msgstr ""
+
+msgid "Tap anywhere on the lyrics panel once to dismiss it and return to the album art — vinyl or normal cover, whichever that app uses."
+msgstr ""
+
+msgid "You can toggle the lyrics panel as many times as you like. Each player tab remembers independently whether lyrics are open."
+msgstr ""
+
+# Behaviour group
+msgid "Lyrics Behaviour"
+msgstr ""
+
+msgid "What happens behind the scenes"
+msgstr ""
+
+msgid "Lyrics details & edge cases"
+msgstr ""
+
+msgid "What to expect when the lyrics panel is open"
+msgstr ""
+
+msgid ""
+"Source\n"
+"  • Lyrics are fetched from lrclib.net — a free, open public database\n"
+"  • No account or API key is required; the request is made silently in the background\n"
+"\n"
+"Display\n"
+"  • The active lyric line is shown larger and centred in the panel\n"
+"  • The line above and below are shown at medium size; all others fade out\n"
+"  • The panel scrolls smoothly so the active line is always in view\n"
+"\n"
+"Track changes\n"
+"  • When a new song starts while the lyrics panel is open, the view clears\n"
+"    and new lyrics are fetched automatically\n"
+"  • If no lyrics are found, a “No lyrics found” message is shown\n"
+"\n"
+"Multiple players\n"
+"  • Each player tab (Spotify, YouTube, VLC…) has its own independent\n"
+"    lyrics toggle — opening lyrics for one player does not affect any other\n"
+"  • Switching tabs restores the correct view (lyrics or album art) for\n"
+"    the player you switch to\n"
+"\n"
+"Seeking\n"
+"  • When you seek forward or backward, the highlighted line jumps\n"
+"    instantly to the correct position"
+msgstr ""
+
+# Click-actions cheat sheet
+msgid "Album Art Click Actions"
+msgstr ""
+
+msgid "Summary of what each click pattern does on the album art cover"
+msgstr ""
+
+msgid "Single click"
+msgstr ""
+
+msgid "When lyrics are showing: closes the lyrics panel and returns to the album art"
+msgstr ""
+
+msgid "Double click"
+msgstr ""
+
+msgid "Toggles the spinning vinyl record effect for that specific app (remembered independently per app)"
+msgstr ""
+
+msgid "Triple click"
+msgstr ""
+
+msgid "Toggles the synced lyrics panel for the current player tab (remembered independently per player)"
+msgstr ""
+
+# Data source group
+msgid "Data Source"
+msgstr ""
+
+msgid "Where lyrics come from"
+msgstr ""
+
+msgid "lrclib.net"
+msgstr ""
+
+msgid "Free, open-source time-synced lyrics database — no sign-up, no tracking, no ads"
+msgstr ""
+
+msgid "Privacy note"
+msgstr ""
+
+msgid "A request containing the track title, artist, album and duration is sent to lrclib.net when you open the lyrics panel. No personal data or user identifiers are included."
+msgstr ""
+
+# ── LyricsWidget runtime strings ──────────────────────────────────────────
+
+msgid "Fetching lyrics…"
+msgstr ""
+
+msgid "No lyrics found"
+msgstr ""

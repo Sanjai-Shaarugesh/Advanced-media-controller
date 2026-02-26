@@ -375,3 +375,164 @@ msgstr "Trennzeichen"
 
 msgid "Browser sources tracked separately (YouTube, YouTube Music, Spotify Web)"
 msgstr "Browserquellen werden separat erfasst (YouTube, YouTube Music, Spotify Web)"
+
+
+msgid "Lyrics"
+msgstr "Liedtexte"
+
+msgid "Synced Lyrics"
+msgstr "Synchronisierte Liedtexte"
+
+msgid "Time-synced lyrics fetched from lrclib.net — free, no account needed"
+msgstr "Zeitsynchronisierte Liedtexte von lrclib.net – kostenlos, kein Konto erforderlich"
+
+msgid "Enable Synced Lyrics"
+msgstr "Synchronisierte Liedtexte aktivieren"
+
+msgid "Fetch and display scrolling lyrics that follow the current playback position"
+msgstr "Scrollende Liedtexte abrufen und anzeigen, die der aktuellen Wiedergabeposition folgen"
+
+msgid "How to Use Lyrics"
+msgstr "So werden Liedtexte verwendet"
+
+msgid "Lyrics are tied to each player tab independently — Spotify and Firefox each remember their own setting"
+msgstr "Liedtexte sind für jeden Player-Tab unabhängig gespeichert – Spotify und Firefox merken sich jeweils ihre eigene Einstellung"
+
+msgid "Start playing a song"
+msgstr "Einen Song abspielen"
+
+msgid "Open the popup player"
+msgstr "Popup-Player öffnen"
+
+msgid "Triple-click the album art to show lyrics"
+msgstr "Dreifach auf das Album-Cover klicken, um Liedtexte anzuzeigen"
+
+msgid "Single-click the lyrics panel to go back"
+msgstr "Einmal auf den Liedtext-Bereich klicken, um zurückzukehren"
+
+msgid "Triple-click again to re-open"
+msgstr "Erneut dreifach klicken, um den Liedtext wieder zu öffnen"
+
+msgid "Open any media player or browser tab (Spotify, YouTube Music, VLC, Rhythmbox…) and play a track so it appears in the panel."
+msgstr "Öffnen Sie einen beliebigen Mediaplayer oder Browser-Tab (Spotify, YouTube Music, VLC, Rhythmbox …) und spielen Sie einen Titel ab, damit er im Panel erscheint."
+
+msgid "Click the media controller icon in the top panel to open the popup. You'll see the album art, track title, and playback controls."
+msgstr "Klicken Sie auf das Mediencontroller-Symbol im oberen Panel, um das Popup zu öffnen. Sie sehen das Album-Cover, den Titelname und die Wiedergabesteuerung."
+
+msgid "Click the album art three times in quick succession. The cover image will be replaced by the lyrics panel, which scrolls automatically in time with the music."
+msgstr "Klicken Sie dreimal schnell hintereinander auf das Album-Cover. Das Cover wird durch den Liedtext-Bereich ersetzt, der automatisch mit der Musik scrollt."
+
+msgid "Tap anywhere on the lyrics panel once to dismiss it and return to the album art — vinyl or normal cover, whichever that app uses."
+msgstr "Einmal irgendwo auf den Liedtext-Bereich tippen, um ihn zu schließen und zum Album-Cover zurückzukehren – Vinyl oder normales Cover, je nach App."
+
+msgid "You can toggle the lyrics panel as many times as you like. Each player tab remembers independently whether lyrics are open."
+msgstr "Sie können den Liedtext-Bereich beliebig oft ein- und ausschalten. Jeder Player-Tab merkt sich unabhängig, ob die Liedtexte geöffnet sind."
+
+msgid "Lyrics Behaviour"
+msgstr "Verhalten der Liedtexte"
+
+msgid "What happens behind the scenes"
+msgstr "Was im Hintergrund passiert"
+
+msgid "Lyrics details & edge cases"
+msgstr "Details und Sonderfälle bei Liedtexten"
+
+msgid "What to expect when the lyrics panel is open"
+msgstr "Was zu erwarten ist, wenn der Liedtext-Bereich geöffnet ist"
+
+msgid ""
+"Source\n"
+"  • Lyrics are fetched from lrclib.net — a free, open public database\n"
+"  • No account or API key is required; the request is made silently in the background\n"
+"\n"
+"Display\n"
+"  • The active lyric line is shown larger and centred in the panel\n"
+"  • The line above and below are shown at medium size; all others fade out\n"
+"  • The panel scrolls smoothly so the active line is always in view\n"
+"\n"
+"Track changes\n"
+"  • When a new song starts while the lyrics panel is open, the view clears\n"
+"    and new lyrics are fetched automatically\n"
+"  • If no lyrics are found, a “No lyrics found” message is shown\n"
+"\n"
+"Multiple players\n"
+"  • Each player tab (Spotify, YouTube, VLC…) has its own independent\n"
+"    lyrics toggle — opening lyrics for one player does not affect any other\n"
+"  • Switching tabs restores the correct view (lyrics or album art) for\n"
+"    the player you switch to\n"
+"\n"
+"Seeking\n"
+"  • When you seek forward or backward, the highlighted line jumps\n"
+"    instantly to the correct position"
+msgstr ""
+"Quelle\n"
+"  • Liedtexte werden von lrclib.net abgerufen – einer freien, öffentlichen Datenbank\n"
+"  • Kein Konto oder API-Schlüssel erforderlich; die Anfrage wird still im Hintergrund gestellt\n"
+"\n"
+"Anzeige\n"
+"  • Die aktive Zeile wird größer und zentriert im Bereich angezeigt\n"
+"  • Die Zeile darüber und darunter erscheinen in mittlerer Größe; alle anderen werden ausgeblendet\n"
+"  • Der Bereich scrollt sanft, sodass die aktive Zeile immer sichtbar ist\n"
+"\n"
+"Titelwechsel\n"
+"  • Wenn ein neues Lied beginnt, während der Liedtext-Bereich geöffnet ist, wird die Ansicht geleert\n"
+"    und neue Liedtexte werden automatisch abgerufen\n"
+"  • Werden keine Liedtexte gefunden, erscheint die Meldung „Keine Liedtexte gefunden\"\n"
+"\n"
+"Mehrere Player\n"
+"  • Jeder Player-Tab (Spotify, YouTube, VLC …) hat einen eigenen unabhängigen\n"
+"    Liedtext-Schalter – das Öffnen von Liedtexten für einen Player betrifft keinen anderen\n"
+"  • Ein Tab-Wechsel stellt die korrekte Ansicht (Liedtext oder Album-Cover) für\n"
+"    den gewechselten Player wieder her\n"
+"\n"
+"Suchen\n"
+"  • Beim Vor- oder Zurückspulen springt die hervorgehobene Zeile\n"
+"    sofort zur richtigen Position"
+
+msgid "Album Art Click Actions"
+msgstr "Klick-Aktionen auf das Album-Cover"
+
+msgid "Summary of what each click pattern does on the album art cover"
+msgstr "Übersicht, was jedes Klickmuster auf dem Album-Cover bewirkt"
+
+msgid "Single click"
+msgstr "Einfacher Klick"
+
+msgid "When lyrics are showing: closes the lyrics panel and returns to the album art"
+msgstr "Wenn Liedtexte angezeigt werden: Schließt den Liedtext-Bereich und kehrt zum Album-Cover zurück"
+
+msgid "Double click"
+msgstr "Doppelklick"
+
+msgid "Toggles the spinning vinyl record effect for that specific app (remembered independently per app)"
+msgstr "Schaltet den rotierenden Vinyl-Platteneffekt für die jeweilige App um (wird pro App unabhängig gespeichert)"
+
+msgid "Triple click"
+msgstr "Dreifacher Klick"
+
+msgid "Toggles the synced lyrics panel for the current player tab (remembered independently per player)"
+msgstr "Schaltet den synchronisierten Liedtext-Bereich für den aktuellen Player-Tab um (wird pro Player unabhängig gespeichert)"
+
+msgid "Data Source"
+msgstr "Datenquelle"
+
+msgid "Where lyrics come from"
+msgstr "Woher die Liedtexte stammen"
+
+msgid "lrclib.net"
+msgstr "lrclib.net"
+
+msgid "Free, open-source time-synced lyrics database — no sign-up, no tracking, no ads"
+msgstr "Kostenlose, quelloffene zeitsynchronisierte Liedtext-Datenbank – keine Registrierung, kein Tracking, keine Werbung"
+
+msgid "Privacy note"
+msgstr "Datenschutzhinweis"
+
+msgid "A request containing the track title, artist, album and duration is sent to lrclib.net when you open the lyrics panel. No personal data or user identifiers are included."
+msgstr "Beim Öffnen des Liedtext-Bereichs wird eine Anfrage mit Titelname, Künstler, Album und Länge an lrclib.net gesendet. Es werden keine persönlichen Daten oder Nutzerkenner übermittelt."
+
+msgid "Fetching lyrics…"
+msgstr "Liedtexte werden abgerufen …"
+
+msgid "No lyrics found"
+msgstr "Keine Liedtexte gefunden"

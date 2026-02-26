@@ -375,3 +375,163 @@ msgstr "分隔符文本"
 
 msgid "Browser sources tracked separately (YouTube, YouTube Music, Spotify Web)"
 msgstr "浏览器来源单独追踪（YouTube、YouTube Music、Spotify Web)"
+
+
+msgid "Lyrics"
+msgstr "歌词"
+
+msgid "Synced Lyrics"
+msgstr "同步歌词"
+
+msgid "Time-synced lyrics fetched from lrclib.net — free, no account needed"
+msgstr "从 lrclib.net 获取的时间同步歌词 — 免费，无需账号"
+
+msgid "Enable Synced Lyrics"
+msgstr "启用同步歌词"
+
+msgid "Fetch and display scrolling lyrics that follow the current playback position"
+msgstr "获取并显示跟随当前播放位置滚动的歌词"
+
+msgid "How to Use Lyrics"
+msgstr "如何使用歌词"
+
+msgid "Lyrics are tied to each player tab independently — Spotify and Firefox each remember their own setting"
+msgstr "歌词与每个播放器标签页独立关联 — Spotify 和 Firefox 各自记住自己的设置"
+
+msgid "Start playing a song"
+msgstr "开始播放一首歌曲"
+
+msgid "Open the popup player"
+msgstr "打开弹出播放器"
+
+msgid "Triple-click the album art to show lyrics"
+msgstr "三击专辑封面以显示歌词"
+
+msgid "Single-click the lyrics panel to go back"
+msgstr "单击歌词面板返回"
+
+msgid "Triple-click again to re-open"
+msgstr "再次三击以重新打开歌词"
+
+msgid "Open any media player or browser tab (Spotify, YouTube Music, VLC, Rhythmbox…) and play a track so it appears in the panel."
+msgstr "打开任意媒体播放器或浏览器标签页（Spotify、YouTube Music、VLC、Rhythmbox…），播放一首曲目使其显示在面板中。"
+
+msgid "Click the media controller icon in the top panel to open the popup. You'll see the album art, track title, and playback controls."
+msgstr "点击顶部面板的媒体控制器图标以打开弹出窗口。您将看到专辑封面、曲目标题和播放控件。"
+
+msgid "Click the album art three times in quick succession. The cover image will be replaced by the lyrics panel, which scrolls automatically in time with the music."
+msgstr "快速连续点击专辑封面三次。封面图像将被歌词面板替换，歌词面板会随音乐自动滚动。"
+
+msgid "Tap anywhere on the lyrics panel once to dismiss it and return to the album art — vinyl or normal cover, whichever that app uses."
+msgstr "在歌词面板上任意位置单击一次即可关闭并返回专辑封面 — 黑胶唱片或普通封面，取决于该应用使用哪种。"
+
+msgid "You can toggle the lyrics panel as many times as you like. Each player tab remembers independently whether lyrics are open."
+msgstr "您可以随意多次切换歌词面板。每个播放器标签页会独立记住歌词是否处于打开状态。"
+
+msgid "Lyrics Behaviour"
+msgstr "歌词行为"
+
+msgid "What happens behind the scenes"
+msgstr "后台发生的事情"
+
+msgid "Lyrics details & edge cases"
+msgstr "歌词详情与边缘情况"
+
+msgid "What to expect when the lyrics panel is open"
+msgstr "歌词面板打开时的预期效果"
+
+msgid ""
+"Source\n"
+"  • Lyrics are fetched from lrclib.net — a free, open public database\n"
+"  • No account or API key is required; the request is made silently in the background\n"
+"\n"
+"Display\n"
+"  • The active lyric line is shown larger and centred in the panel\n"
+"  • The line above and below are shown at medium size; all others fade out\n"
+"  • The panel scrolls smoothly so the active line is always in view\n"
+"\n"
+"Track changes\n"
+"  • When a new song starts while the lyrics panel is open, the view clears\n"
+"    and new lyrics are fetched automatically\n"
+"  • If no lyrics are found, a “No lyrics found” message is shown\n"
+"\n"
+"Multiple players\n"
+"  • Each player tab (Spotify, YouTube, VLC…) has its own independent\n"
+"    lyrics toggle — opening lyrics for one player does not affect any other\n"
+"  • Switching tabs restores the correct view (lyrics or album art) for\n"
+"    the player you switch to\n"
+"\n"
+"Seeking\n"
+"  • When you seek forward or backward, the highlighted line jumps\n"
+"    instantly to the correct position"
+msgstr ""
+"来源\n"
+"  • 歌词从 lrclib.net 获取 — 这是一个免费的开放公共数据库\n"
+"  • 无需账号或 API 密钥；请求在后台静默进行\n"
+"\n"
+"显示\n"
+"  • 当前激活的歌词行在面板中放大并居中显示\n"
+"  • 上下相邻行以中等大小显示；其余行淡出\n"
+"  • 面板平滑滚动，使激活行始终处于可视范围内\n"
+"\n"
+"曲目切换\n"
+"  • 当歌词面板打开时新歌曲开始播放，视图将清空\n"
+"    并自动获取新歌词\n"
+"  • 如果找不到歌词，将显示\"未找到歌词\"消息\n"
+"\n"
+"多播放器\n"
+"  • 每个播放器标签页（Spotify、YouTube、VLC…）都有其独立的\n"
+"    歌词开关 — 为一个播放器开启歌词不会影响其他播放器\n"
+"  • 切换标签页会为切换到的播放器恢复正确的视图（歌词或专辑封面）\n"
+"\n"
+"定位\n"
+"  • 向前或向后跳转时，高亮显示的歌词行会\n"
+"    立即跳转到正确位置"
+
+msgid "Album Art Click Actions"
+msgstr "专辑封面点击操作"
+
+msgid "Summary of what each click pattern does on the album art cover"
+msgstr "各点击方式在专辑封面上的操作说明"
+
+msgid "Single click"
+msgstr "单击"
+
+msgid "When lyrics are showing: closes the lyrics panel and returns to the album art"
+msgstr "显示歌词时：关闭歌词面板并返回专辑封面"
+
+msgid "Double click"
+msgstr "双击"
+
+msgid "Toggles the spinning vinyl record effect for that specific app (remembered independently per app)"
+msgstr "切换该特定应用的黑胶唱片旋转效果（每个应用独立记住）"
+
+msgid "Triple click"
+msgstr "三击"
+
+msgid "Toggles the synced lyrics panel for the current player tab (remembered independently per player)"
+msgstr "切换当前播放器标签页的同步歌词面板（每个播放器独立记住）"
+
+msgid "Data Source"
+msgstr "数据来源"
+
+msgid "Where lyrics come from"
+msgstr "歌词来自何处"
+
+msgid "lrclib.net"
+msgstr "lrclib.net"
+
+msgid "Free, open-source time-synced lyrics database — no sign-up, no tracking, no ads"
+msgstr "免费开源的时间同步歌词数据库 — 无需注册，不追踪，无广告"
+
+msgid "Privacy note"
+msgstr "隐私说明"
+
+msgid "A request containing the track title, artist, album and duration is sent to lrclib.net when you open the lyrics panel. No personal data or user identifiers are included."
+msgstr "打开歌词面板时，会向 lrclib.net 发送包含曲目标题、艺术家、专辑和时长的请求。不包含任何个人数据或用户标识符。"
+
+msgid "Fetching lyrics…"
+msgstr "正在获取歌词…"
+
+msgid "No lyrics found"
+msgstr "未找到歌词"
