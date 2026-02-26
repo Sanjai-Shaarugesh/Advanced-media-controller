@@ -3,7 +3,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: advanced-media-controller 1.0\n"
+"Project-Id-Version: advanced-media-controller 5.2\n"
 "Report-Msgid-Bugs-To: https://github.com/Sanjai-Shaarugesh/Advance-media-controller/issues\n"
 "POT-Creation-Date: 2026-02-23 12:00+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -232,9 +232,12 @@ msgstr ""
 msgid "Rename Instance"
 msgstr ""
 
-msgid "Enter a custom display name for “%s”.\n"
-"Leave blank to reset to the default name."
+msgid ""
+"Enter a custom display name for \"%s\".\n"
+"Leave blank to reset to the default."
 msgstr ""
+""
+""
 
 msgid "Cancel"
 msgstr ""
@@ -251,7 +254,7 @@ msgstr ""
 msgid "Beautiful and modern media controls with multi-instance support"
 msgstr ""
 
-msgid "Version 1.0"
+msgid "Version 5.2"
 msgstr ""
 
 msgid "Modern media controls with native GNOME design"
@@ -355,3 +358,5 @@ msgstr ""
 msgid "Separator Text"
 msgstr ""
 
+msgid "Browser sources tracked separately (YouTube, YouTube Music, Spotify Web)"
+msgstr ""

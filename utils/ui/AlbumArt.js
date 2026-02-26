@@ -12,6 +12,9 @@ import {
   isVinylEnabledForIds,
   getVinylApps,
   setVinylApps,
+  isBrowserId,
+  buildBrowserSourceId,
+  labelForId,
 } from "./helper/vinylHelpers.js";
 
 // albumart
@@ -67,21 +70,44 @@ export const AlbumArt = GObject.registerClass(
     }
 
     _resolvePreferredId() {
+      let baseId = null;
       const appInfo = this._resolveAppInfo();
       if (appInfo) {
         const id = appInfo.get_id();
-        if (id) return id.endsWith(".desktop") ? id.slice(0, -8) : id;
+        if (id) baseId = id.endsWith(".desktop") ? id.slice(0, -8) : id;
       }
 
-      if (this._manager) {
+      if (!baseId && this._manager) {
         const de = this._manager._desktopEntries?.get(this._playerName);
-        if (de) return de.endsWith(".desktop") ? de.slice(0, -8) : de;
+        if (de) baseId = de.endsWith(".desktop") ? de.slice(0, -8) : de;
       }
 
-      const raw = this._playerName?.replace(/^org\.mpris\.MediaPlayer2\./, "");
-      return (
-        raw?.replace(/\.instance_\d+_\d+$/i, "").replace(/\.\d+$/, "") ?? null
-      );
+      if (!baseId) {
+        const raw = this._playerName?.replace(
+          /^org\.mpris\.MediaPlayer2\./,
+          "",
+        );
+        baseId =
+          raw
+            ?.replace(/\.instance[_\-]?\d+(_\d+)?$/i, "")
+            .replace(/\.\d+$/, "") ?? null;
+      }
+
+      if (!baseId) return null;
+
+      const cleanBase = baseId
+        .replace(/\.instance[_\-]?\d+(_\d+)?$/i, "")
+        .replace(/\.\d+$/, "");
+
+      if (isBrowserId(cleanBase)) {
+        const identity = this._manager?._identities?.get(this._playerName);
+        if (identity && identity.trim()) {
+          return buildBrowserSourceId(cleanBase, identity.trim());
+        }
+        return cleanBase;
+      }
+
+      return cleanBase;
     }
 
     /**
@@ -110,7 +136,7 @@ export const AlbumArt = GObject.registerClass(
             .replace(/\.\d+$/, "");
           candidates.add(raw.toLowerCase());
           candidates.add(`${raw}.desktop`.toLowerCase());
-          // Also try just the last segment
+
           const parts = raw.split(".");
           if (parts.length > 1) {
             candidates.add(parts[parts.length - 1].toLowerCase());
@@ -163,67 +189,122 @@ export const AlbumArt = GObject.registerClass(
     _saveInstance(preferredId) {
       if (!preferredId) return;
 
+      const { parseBrowserSourceId: _parseBSI, labelForId: _labelForId } = {
+        parseBrowserSourceId: (id) => {
+          if (!id || !id.includes("--")) return null;
+          const idx = id.indexOf("--");
+          return { browser: id.slice(0, idx), source: id.slice(idx + 2) };
+        },
+        labelForId: labelForId,
+      };
+
+      const parsed = _parseBSI(preferredId);
+      const isBrowser = parsed !== null;
+
+      // Resolve via the system app database
       const appInfo = this._resolveAppInfo();
 
       let canonicalId = preferredId;
+
       let desktopId = preferredId;
-      let displayName = preferredId;
+      let displayName = isBrowser ? _labelForId(preferredId) : preferredId;
 
       if (appInfo) {
         const rawId = appInfo.get_id() ?? "";
         const clean = rawId.endsWith(".desktop") ? rawId.slice(0, -8) : rawId;
-        canonicalId = clean;
-        desktopId = clean;
-        displayName =
-          appInfo.get_display_name() || appInfo.get_name() || displayName;
+        if (isBrowser) {
+          // Keep composite as canonicalId, but record the real browser desktopId
+          desktopId = clean;
+        } else {
+          canonicalId = clean;
+          desktopId = clean;
+          displayName =
+            appInfo.get_display_name() || appInfo.get_name() || displayName;
+        }
       } else {
         // Fallback: use what MprisManager cached
         if (this._manager) {
           const identity = this._manager._identities?.get(this._playerName);
-          if (identity) displayName = identity;
 
-          const de = this._manager._desktopEntries?.get(this._playerName);
-          if (de) {
-            const clean = de.endsWith(".desktop") ? de.slice(0, -8) : de;
-            canonicalId = clean;
-            desktopId = clean;
+          if (isBrowser) {
+            // displayName already set from labelForId; desktopId from desktopEntries
+            const de = this._manager._desktopEntries?.get(this._playerName);
+            if (de) desktopId = de.endsWith(".desktop") ? de.slice(0, -8) : de;
+          } else {
+            if (identity) displayName = identity;
+            const de = this._manager._desktopEntries?.get(this._playerName);
+            if (de) {
+              const clean = de.endsWith(".desktop") ? de.slice(0, -8) : de;
+              canonicalId = clean;
+              desktopId = clean;
+            }
           }
         }
       }
 
       const canonicalLower = canonicalId.toLowerCase();
-
+      // Short tail
       const canonicalTail = canonicalLower.split(".").pop();
 
       const record = JSON.stringify({
-        id: canonicalId, // always the canonical desktop ID
+        id: canonicalId, // composite for browsers; desktop-id for native apps
         name: displayName,
-        desktopId,
+        desktopId, // always the browser/app .desktop id for icon lookup
         busName: this._playerName || "",
         enabled: true,
+
+        ...(isBrowser && {
+          browserSource: parsed.source,
+          browserBase: parsed.browser,
+          mprisIdentity:
+            this._manager?._identities?.get(this._playerName) ?? "",
+        }),
       });
 
       try {
         const existing = this._settings.get_strv("vinyl-app-instances") ?? [];
+
+        let preservedCustomName = null;
+        let preservedEnabled = true;
 
         const deduped = existing.filter((raw) => {
           try {
             const obj = JSON.parse(raw);
             const storedId = (obj.id ?? "").toLowerCase();
             const storedDesktop = (obj.desktopId ?? "").toLowerCase();
-            const storedTail = storedId.split(".").pop();
-            // Match if any of the stored forms equal the new canonical key
-            return (
-              storedId !== canonicalLower &&
-              storedDesktop !== canonicalLower &&
-              storedTail !== canonicalTail &&
-              storedId !== canonicalTail
-            );
+
+            const isComposite = canonicalLower.includes("--");
+            let isMatch;
+            if (isComposite) {
+              isMatch = storedId === canonicalLower;
+            } else {
+              const storedTail = storedId.split(".").pop();
+              isMatch =
+                storedId === canonicalLower ||
+                storedDesktop === canonicalLower ||
+                storedTail === canonicalTail ||
+                storedId === canonicalTail;
+            }
+
+            if (isMatch) {
+              // Preserve user customisations before removing the old record
+              if (obj.customName) preservedCustomName = obj.customName;
+              if (typeof obj.enabled === "boolean")
+                preservedEnabled = obj.enabled;
+              return false; // remove — will be replaced with updated record below
+            }
+            return true;
           } catch (_) {
             return true;
           }
         });
-        deduped.push(record);
+
+        // Merge preserved fields back into the new record
+        const finalRecord = JSON.parse(record);
+        if (preservedCustomName) finalRecord.customName = preservedCustomName;
+        finalRecord.enabled = preservedEnabled;
+
+        deduped.push(JSON.stringify(finalRecord));
         this._settings.set_strv("vinyl-app-instances", deduped);
       } catch (_e) {}
     }
