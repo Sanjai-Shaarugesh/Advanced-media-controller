@@ -238,7 +238,7 @@ function _buildCandidateSet(playerName, manager) {
 }
 
 /**
- * Returns true if any entry in vinylApps matches any id in canonicalIds.
+ * Returns true if any entry in vinylApps matches any id in canonicalIds
 
  * @param {Set<string>} canonicalIds
  * @param {string[]}    vinylApps

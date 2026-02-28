@@ -207,7 +207,6 @@ export const AlbumArt = GObject.registerClass(
       const parsed = _parseBSI(preferredId);
       const isBrowser = parsed !== null;
 
-      // Resolve via the system app database
       const appInfo = this._resolveAppInfo();
 
       let canonicalId = preferredId;
@@ -228,12 +227,10 @@ export const AlbumArt = GObject.registerClass(
             appInfo.get_display_name() || appInfo.get_name() || displayName;
         }
       } else {
-        // Fallback: use what MprisManager cached
         if (this._manager) {
           const identity = this._manager._identities?.get(this._playerName);
 
           if (isBrowser) {
-            // displayName already set from labelForId; desktopId from desktopEntries
             const de = this._manager._desktopEntries?.get(this._playerName);
             if (de) desktopId = de.endsWith(".desktop") ? de.slice(0, -8) : de;
           } else {
@@ -349,7 +346,7 @@ export const AlbumArt = GObject.registerClass(
     }
 
     _buildUI() {
-      // ── Normal (flat cover art) mode ────────────────────────────────────────
+      //  Normal mode
       this._normalContainer = new St.BoxLayout({
         x_align: Clutter.ActorAlign.CENTER,
         style: "margin-bottom: 24px;",
@@ -384,23 +381,20 @@ export const AlbumArt = GObject.registerClass(
           background-position: center;
           background-repeat: no-repeat;
         `,
-        // NOT reactive — let clicks fall through to the Button
+
         reactive: false,
       });
 
       this._normalButton.set_child(this._normalCoverImage);
       this._normalContainer.add_child(this._normalButton);
 
-      // Use button's 'clicked' signal — fires exactly once per press/release
-      // pair on primary button, avoiding the double-fire that raw
-      // button-press-event can cause inside popup menus.
       this._normalButton.connectObject(
         "clicked",
         () => this._onAlbumArtClicked(),
         this,
       );
 
-      // ── Vinyl (rotating disc) mode ──────────────────────────────────────────
+      // Vinyl  mode
       this._vinylContainer = new St.Widget({
         style: "width: 340px; height: 340px;",
         layout_manager: new Clutter.FixedLayout(),
@@ -415,7 +409,7 @@ export const AlbumArt = GObject.registerClass(
         y: 0,
         pivot_point: new Graphene.Point({ x: 0.5, y: 0.5 }),
         layout_manager: new Clutter.FixedLayout(),
-        // NOT reactive — clicks must reach _vinylButton
+
         reactive: false,
       });
 
@@ -462,7 +456,6 @@ export const AlbumArt = GObject.registerClass(
       this._rotatingContainer.add_child(this._vinylLayer);
       this._rotatingContainer.add_child(this._vinylCoverArt);
 
-      // Transparent full-area button on top — always catches clicks
       this._vinylButton = new St.Button({
         width: 340,
         height: 340,
@@ -491,9 +484,6 @@ export const AlbumArt = GObject.registerClass(
     }
 
     _onAlbumArtClicked() {
-      // MULTI_CLICK_MS is the window within which successive clicks are
-      // grouped.  GLib.get_monotonic_time() returns microseconds; divide by
-      // 1000 to compare against milliseconds.
       const MULTI_CLICK_MS = 400;
       const now = GLib.get_monotonic_time();
       const elapsedMs = (now - this._lastClickTime) / 1000;
@@ -506,14 +496,11 @@ export const AlbumArt = GObject.registerClass(
       }
       this._lastClickTime = now;
 
-      // Always cancel the previous pending dispatch so we keep accumulating
       if (this._clickTimeout) {
         GLib.source_remove(this._clickTimeout);
         this._clickTimeout = null;
       }
 
-      // Snapshot count NOW — the closure must not read this._clickCount later
-      // because a third click will already have incremented it by then.
       const count = this._clickCount;
 
       this._clickTimeout = GLib.timeout_add(

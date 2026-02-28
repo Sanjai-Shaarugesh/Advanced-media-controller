@@ -9,13 +9,8 @@ export class LyricsClient {
     this._session.timeout = 15;
   }
 
-  // ── public API ──────────────────────────────────────────────────────────────
-
   /**
-   * Fetch synced (LRC) lyrics.
-   * 1. Exact GET  → title + artist + album + duration
-   * 2. Search fallback → title + artist, best duration match
-   *
+
    * @param {string} title
    * @param {string} artist
    * @param {string} album
@@ -42,19 +37,18 @@ export class LyricsClient {
     }
   }
 
-  // ── private ─────────────────────────────────────────────────────────────────
-
   async _getExact(title, artist, album, durationSec) {
     if (!this._session) return null;
     try {
       const p = new URLSearchParams();
-      p.set("track_name",  title  || "");
+      p.set("track_name", title || "");
       p.set("artist_name", artist || "");
-      if (album)           p.set("album_name", album);
+      if (album) p.set("album_name", album);
       if (durationSec > 0) p.set("duration", String(Math.round(durationSec)));
 
       const msg = Soup.Message.new(
-        "GET", `https://lrclib.net/api/get?${p.toString()}`
+        "GET",
+        `https://lrclib.net/api/get?${p.toString()}`,
       );
       if (!msg) return null;
 
@@ -64,7 +58,9 @@ export class LyricsClient {
       );
 
       const bytes = await this._session.send_and_read_async(
-        msg, GLib.PRIORITY_DEFAULT, null,
+        msg,
+        GLib.PRIORITY_DEFAULT,
+        null,
       );
       if (msg.status_code !== 200) return null;
 
@@ -83,7 +79,8 @@ export class LyricsClient {
     try {
       const q = encodeURIComponent(`${title} ${artist}`.trim());
       const msg = Soup.Message.new(
-        "GET", `https://lrclib.net/api/search?q=${q}`,
+        "GET",
+        `https://lrclib.net/api/search?q=${q}`,
       );
       if (!msg) return null;
 
@@ -93,7 +90,9 @@ export class LyricsClient {
       );
 
       const bytes = await this._session.send_and_read_async(
-        msg, GLib.PRIORITY_DEFAULT, null,
+        msg,
+        GLib.PRIORITY_DEFAULT,
+        null,
       );
       if (msg.status_code !== 200) return null;
 
@@ -111,16 +110,15 @@ export class LyricsClient {
       let best = null;
       let bestDiff = Infinity;
       for (const r of withSynced) {
-        const diff = durationSec > 0
-          ? Math.abs((r.duration ?? 0) - durationSec)
-          : 0;
+        const diff =
+          durationSec > 0 ? Math.abs((r.duration ?? 0) - durationSec) : 0;
         if (diff < bestDiff) {
           bestDiff = diff;
           best = r;
         }
       }
       if (!best) return null;
-      // Reject if duration mismatch is too large (track is different song)
+      // Reject if duration mismatch is too large
       if (durationSec > 0 && bestDiff > 5) return null;
 
       return this._parseLRC(best.syncedLyrics);
@@ -128,8 +126,6 @@ export class LyricsClient {
       return null;
     }
   }
-
-  // ── LRC parser ──────────────────────────────────────────────────────────────
 
   _parseLRC(lrcText) {
     if (!lrcText) return null;
@@ -142,9 +138,7 @@ export class LyricsClient {
       const ms =
         parseInt(m[1], 10) * 60_000 +
         parseInt(m[2], 10) * 1_000 +
-        (m[3].length === 2
-          ? parseInt(m[3], 10) * 10
-          : parseInt(m[3], 10));
+        (m[3].length === 2 ? parseInt(m[3], 10) * 10 : parseInt(m[3], 10));
       const text = m[4].trim();
       if (text) lines.push({ time: ms, text });
     }
