@@ -12,7 +12,9 @@ import { IndicatorUIUpdater } from "./indicator/IndicatorUIUpdater.js";
 export const MediaIndicator = GObject.registerClass(
   class MediaIndicator extends PanelMenu.Button {
     _init(settings, extension) {
-      super._init(0.5, "Media Controls", false);
+      const _ = extension.gettext.bind(extension);
+
+      super._init(0.5, _("Media Controls"), false);
 
       this._settings = settings;
       this._extension = extension;
@@ -41,6 +43,10 @@ export const MediaIndicator = GObject.registerClass(
             this._eventHandlers.setupWindowMonitoring();
           } else {
             this._controls.stopPositionUpdate();
+            // Notify controls the menu is closing so the lyrics sync timer
+            // is stopped cleanly (stopPositionUpdate alone no longer does
+            // this, to avoid killing the timer on every pause event).
+            this._controls.onMenuClosed();
             this._eventHandlers.removeWindowMonitoring();
           }
         });
@@ -50,7 +56,6 @@ export const MediaIndicator = GObject.registerClass(
         "changed",
         (_, key) => {
           this._state.safeExecute(() => {
-            // panel-position / panel-index handled in extension.js
             if (key !== "panel-position" && key !== "panel-index") {
               this._uiUpdater.updateLabel();
               this._uiUpdater.updateVisibility();

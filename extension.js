@@ -1,4 +1,4 @@
-import { Extension } from "resource:///org/gnome/shell/extensions/extension.js";
+import { Extension, gettext as _ } from "resource:///org/gnome/shell/extensions/extension.js";
 import * as Main from "resource:///org/gnome/shell/ui/main.js";
 import GLib from "gi://GLib";
 import { MediaIndicator } from "./utils/indicator.js";
@@ -12,8 +12,6 @@ export default class MediaExtension extends Extension {
     this._indicator = new MediaIndicator(this._settings, this);
     this._addToPanel();
 
-    // Reposition the indicator when the user changes its panel position/index.
-    // Debounced so rapid back-to-back setting changes only trigger one move.
     this._settingsChangedId = this._settings.connect("changed", (_, key) => {
       if (key !== "panel-position" && key !== "panel-index") return;
 
@@ -91,7 +89,6 @@ export default class MediaExtension extends Extension {
   }
 
   /**
-
    * @returns {{ position: string, index: number }}
    */
   _getPanelPlacement() {

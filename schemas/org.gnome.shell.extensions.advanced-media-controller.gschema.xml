@@ -90,6 +90,26 @@
       <description>Speed of artist scrolling in the popup: 1 = slowest, 10 = fastest</description>
     </key>
 
+    <!-- Per-app vinyl effect -->
+    <key name="vinyl-app-ids" type="as">
+      <default>[]</default>
+      <summary>Apps with vinyl effect enabled</summary>
+      <description>List of desktop-entry IDs (e.g. "spotify", "rhythmbox") for which the rotating vinyl record effect is active. Managed via the Vinyl Apps preferences page or by double-clicking the album art in the popup.</description>
+    </key>
+
+    <key name="vinyl-app-disabled-ids" type="as">
+      <default>[]</default>
+      <summary>Apps with vinyl effect explicitly disabled</summary>
+      <description>List of desktop-entry IDs that have been seen and explicitly disabled by the user. These are remembered so the user can re-enable them from the Vinyl Apps page without searching again.</description>
+    </key>
+
+    <!-- Per-instance vinyl records (richer metadata saved by double-clicking album art) -->
+    <key name="vinyl-app-instances" type="as">
+      <default>[]</default>
+      <summary>Stored vinyl app instances</summary>
+      <description>JSON-encoded list of {id, name, desktopId, busName} objects. Each entry represents a player instance the user stored by double-clicking the album art in the popup. The prefs page shows these and resolves their icons from the system .desktop database.</description>
+    </key>
+
     <!-- Album art -->
     <key name="enable-album-art-rotation" type="b">
       <default>true</default>
@@ -102,6 +122,13 @@
       <range min="5" max="60"/>
       <summary>Album art rotation speed</summary>
       <description>Seconds per full rotation: 5 = fastest, 60 = slowest</description>
+    </key>
+
+    <!-- Synced Lyrics -->
+    <key name="enable-lyrics" type="b">
+      <default>true</default>
+      <summary>Enable synced lyrics</summary>
+      <description>Fetch and display time-synced lyrics from lrclib.net. Triple-click the album art in the popup to show/hide lyrics while a track is playing.</description>
     </key>
 
   </schema>
