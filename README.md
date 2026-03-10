@@ -18,14 +18,18 @@
 
 ---
 
+> **Hey there, fellow Linux nerd** 👋 — tired of alt-tabbing to your media player just to skip a track? Yeah, same. I built this extension because the built-in GNOME media controls felt... underwhelming. This thing is what I actually wanted to use every day. Hope you love it too.
+
+---
+
 ## ✨ Features
 
 ### 🎨 Modern & Beautiful UI
 
-- **Sleek album art display** — View your album covers in stunning detail
-- **Smooth animations** — Buttery smooth transitions and interactions
-- **Native GNOME design** — Perfectly integrated with your desktop theme
-- **Dark mode friendly** — Looks gorgeous in both light and dark themes
+- **Sleek album art display** — Your album covers, crisp and gorgeous right in the shell
+- **Smooth animations** — No janky transitions. Just buttery smooth everything
+- **Native GNOME design** — Blends in like it was always there
+- **Dark mode friendly** — Looks equally stunning in light and dark themes
 
 <div align="center">
 <img width="580" height="703" alt="image" src="https://github.com/user-attachments/assets/bf9bd6a5-baf8-4430-8a86-e781d8bc890d" />
@@ -39,9 +43,9 @@
 - ▶️ **Play/Pause** — Quick playback control
 - ⏭️ **Next/Previous** — Skip through your tracks
 - 🔀 **Shuffle** — Randomize your playlist
-- 🔁 **Repeat** — Loop your favorite songs (None/Track/Playlist)
+- 🔁 **Repeat** — Loop your favorite songs (None / Track / Playlist)
 - 📊 **Progress slider** — Seek to any position in your track
-- 🎵 **Track information** — Display artist, title, and album
+- 🎵 **Track information** — Artist, title, album — all right there
 
 <div align="center">
 <img src="icons/img5.png" alt="Panel Controls" width="600">
@@ -51,10 +55,10 @@
 
 ### 🌐 Multi-Instance Browser Support
 
-Works flawlessly with **multiple browser tabs** playing media simultaneously!
+Got 12 YouTube tabs open? Relatable. This extension handles it like a pro.
 
-- 🦊 **Firefox** — Multiple tabs with different videos
-- 🌐 **Chrome/Chromium** — Each tab appears as a separate player
+- 🦊 **Firefox** — Multiple tabs with different videos, all tracked
+- 🌐 **Chrome/Chromium** — Each tab as a separate player instance
 - 🦁 **Brave** — Full multi-instance support
 - 🔵 **Edge** — Seamlessly manages multiple media sources
 
@@ -66,17 +70,45 @@ Works flawlessly with **multiple browser tabs** playing media simultaneously!
 <em>Switch between multiple media sources effortlessly</em>
 </div>
 
-### Rotating album art image cover 
+### 🌀 Rotating Album Art Cover
+
+Your music should *feel* like it's spinning. So it does.
+
 ![reddit](https://github.com/user-attachments/assets/2ce518d1-e1f5-435b-a07e-8c8d02e04402)
 
+### 🔄 Rotating Album & Artist Name
 
-### Rotating album & artist name 
+Long track name? No worries — it scrolls and rotates so nothing gets cut off.
+
 ![rotate](https://github.com/user-attachments/assets/87015682-1818-439e-a16a-9b46a83200e5)
 
+### 💿 Double-click for Vinyl Record Effect
 
-### Double-click album art cover to enable(or)disable vinyl record effect
+Because sometimes you just want it to look *cool*. Double-click the album art to toggle the vinyl record animation on or off.
+
 ![reddit (online-video-cutter com) (1)](https://github.com/user-attachments/assets/cdaab701-b012-466a-ae71-52133d4f785a)
 
+### 🎤 Time-Synced Lyrics
+
+This one's a game changer. Triple-click the album art and boom — **scrolling, synced lyrics** appear.
+
+- Lyrics are fetched automatically from **[lrclib.net](https://lrclib.net)** — free, no account, no BS
+- The **active lyric line is highlighted and auto-centered** as the song progresses
+- Single-click anywhere on the lyrics panel to go back to album art
+- Each player tab **remembers its own lyrics preference independently**
+- Huge shoutout to [@NarkAgni/spotify-controller](https://github.com/NarkAgni/spotify-controller) for the inspiration 🙏
+
+![lyrics](https://github.com/user-attachments/assets/bce0d490-3116-4cf8-a4cc-caf1811e8a74)
+
+### 💿 Per-App Instance Vinyl Style Effect
+
+Fine-grained control over the vinyl effect, because one size doesn't fit all:
+
+- Enable the **vinyl effect per application instance** — double-click the album art in the popup
+- Prefer a global toggle? **Enable vinyl for all apps at once** from settings
+- Want to exclude a specific app? **Disable vinyl per-app** directly from the preferences panel
+
+![app3](https://github.com/user-attachments/assets/9b7ee4f8-7a6d-4a4a-ae9d-0e21f2ac54b7)
 
 ### ⚙️ Highly Customizable
 
@@ -88,11 +120,11 @@ Works flawlessly with **multiple browser tabs** playing media simultaneously!
 
 #### Label Customization
 
-- 📝 **Custom label format** — Arrange artist, title, album, track number
+- 📝 **Custom label format** — Arrange artist, title, album, track number however you like
 - 📏 **Adjustable length** — Fixed or dynamic title length
-- 🌊 **Smooth scrolling** — For long track names
-- ⚡ **Adjustable scroll speed** — Control animation speed
-- ⏸️ **Scroll pause time** — Configure pause between scrolls
+- 🌊 **Smooth scrolling** — For those extra-long track names
+- ⚡ **Adjustable scroll speed** — You're in control
+- ⏸️ **Scroll pause time** — Configure the pause between scrolls
 
 <div align="center">
 <img src="icons/img4.png" alt="Settings Panel" width="600">
@@ -102,38 +134,89 @@ Works flawlessly with **multiple browser tabs** playing media simultaneously!
 
 ### 🎮 Available Actions
 
-- Play/Pause/Stop
-- Next/Previous track
-- Volume up/down
-- Toggle shuffle/repeat
+- Play / Pause / Stop
+- Next / Previous track
+- Volume up / down
+- Toggle shuffle / repeat
 - Show popup menu
-- Raise/Quit player
+- Raise / Quit player
 - Open preferences
+
+---
+
+## 🌍 Language Support
+
+> The extension speaks your language — literally.
+
+This extension is **fully internationalized (i18n)** and currently supports the following languages. The UI adapts automatically based on your system locale:
+
+<div align="center">
+
+<!-- Language support animation table -->
+
+| 🌐 Language | Locale Code | Status |
+|:-----------:|:-----------:|:------:|
+| 🇩🇪 German | `de` | ✅ Available |
+| 🇪🇸 Spanish | `es`, `es_ES`, `es@latin`, `es_ES.UTF-8` | ✅ Available |
+| 🇫🇷 French | `fr` | ✅ Available |
+| 🇯🇵 Japanese | `ja` | ✅ Available |
+| 🇨🇳 Chinese (Simplified) | `zh_CN` | ✅ Available |
+| 🇹🇼 Chinese (Traditional) | `zh_TW` | ✅ Available |
+| 🇬🇧 English | `en` | ✅ Default |
+
+</div>
+
+```
+po/
+├── de/LC_MESSAGES/       # 🇩🇪 Deutsch
+├── es/LC_MESSAGES/       # 🇪🇸 Español
+├── es@latin/LC_MESSAGES/ # 🇪🇸 Español (Latin)
+├── es_ES/LC_MESSAGES/    # 🇪🇸 Español (España)
+├── es_ES.UTF-8/          # 🇪🇸 Español (España UTF-8)
+├── es_ES.utf8/           # 🇪🇸 Español (España utf8)
+├── fr/LC_MESSAGES/       # 🇫🇷 Français
+├── ja/LC_MESSAGES/       # 🇯🇵 日本語
+├── zh_CN/LC_MESSAGES/    # 🇨🇳 中文 (简体)
+└── zh_TW/LC_MESSAGES/    # 🇹🇼 中文 (繁體)
+```
+
+**Want to add your language?** It's easier than you think — check out the [Contributing](#-contributing) section. Translations are always welcome! 🙌
+
+---
+
+## 🐛 Bug Fixes
+
+Because polish matters. Recent fixes include:
+
+- **Fixed caching issues** with the progress slider and timing labels per app instance — no more weird desync
+- **Time labels and progress bar now retain their position correctly** using improved per-instance caching
+- **Scrolling state is now preserved** — no more unexpected jumps mid-track
+- General stability improvements across multiple simultaneous player sessions
 
 ---
 
 ## 📦 Installation
 
-### Method 1: GNOME Extensions Website (Recommended)
+### Method 1: GNOME Extensions Website *(Recommended)*
 
-1. Visit [GNOME Extensions](https://extensions.gnome.org/) (coming soon)
-2. Search for "Advanced Media Controller"
-3. Click the toggle switch to install
-4. Enjoy!
+1. Visit [GNOME Extensions](https://extensions.gnome.org/)
+2. Search for **"Advanced Media Controller"**
+3. Hit the toggle switch to install
+4. That's it. You're done. Go enjoy your music 🎶
 
 ### Method 2: Manual Installation
 
 ```bash
-# Clone the repository
+# Clone the repo
 git clone https://github.com/Sanjai-Shaarugesh/Advanced-media-controller.git
 cd Advanced-media-controller
 
-# Copy to extensions directory
+# Drop it into your extensions directory
 cp -r . ~/.local/share/gnome-shell/extensions/Advanced-media-controller/
 
 # Restart GNOME Shell
-# X11: Alt+F2, type 'r', press Enter
-# Wayland: Log out and log back in
+# X11: Alt+F2 → type 'r' → Enter
+# Wayland: Log out and back in (I know, I know...)
 
 # Enable the extension
 gnome-extensions enable advanced-media-controller@sanjai.com
@@ -142,13 +225,13 @@ gnome-extensions enable advanced-media-controller@sanjai.com
 ### Method 3: From Release Package
 
 ```bash
-# Download the latest release
+# Grab the latest release
 wget https://github.com/Sanjai-Shaarugesh/advanced-media-controller/releases/latest/download/Advanced-media-controller.github.com.zip
 
-# Install
+# Install it
 gnome-extensions install Advanced-media-controller.github.com.zip
 
-# Enable
+# Enable it
 gnome-extensions enable Advanced-media-controller.github.com
 ```
 
@@ -159,16 +242,21 @@ gnome-extensions enable Advanced-media-controller.github.com
 ### Quick Start
 
 1. Install the extension
-2. Open any media player (Rhythmbox, VLC, Firefox with YouTube, etc.)
-3. The media controller appears automatically in your panel
-4. Click to see full controls!
+2. Open any media player (Rhythmbox, VLC, Firefox + YouTube, Spotify, whatever)
+3. The controller shows up automatically in your panel
+4. Click it. Explore. Enjoy.
 
-### Basic Controls
+### Controls Cheatsheet
 
-- **Click the play button** in the panel for quick play/pause
-- **Click the extension** to open the full control popup
-- **Use the slider** to seek through your track
-- **Click player icons** to switch between multiple media sources
+| Action | How |
+|--------|-----|
+| Play/Pause | Click the ▶️ button in panel |
+| Full controls | Click the extension popup |
+| Seek | Use the progress slider |
+| Switch players | Click the player icons |
+| **Lyrics** | Triple-click album art |
+| **Vinyl effect** | Double-click album art |
+| **Back to art** | Single-click lyrics panel |
 
 ---
 
@@ -204,7 +292,7 @@ gnome-extensions enable Advanced-media-controller.github.com
 
 ## 🔧 Supported Players
 
-This extension works with **any MPRIS-compatible media player**, including:
+Works with **any MPRIS-compatible player** — if it plays media on Linux, this extension probably handles it:
 
 - 🎵 Rhythmbox
 - 🎬 VLC
@@ -212,7 +300,7 @@ This extension works with **any MPRIS-compatible media player**, including:
 - 🌐 Web browsers (Firefox, Chrome, Brave, Edge)
 - 🎼 Lollypop
 - 📻 Gapless
-- And many more!
+- And practically anything else that uses MPRIS
 
 ---
 
@@ -220,14 +308,14 @@ This extension works with **any MPRIS-compatible media player**, including:
 
 ### Extension doesn't appear
 
-1. Make sure the extension is enabled: `gnome-extensions list`
-2. Check if you have media playing
-3. Restart GNOME Shell (Alt+F2, type 'r', Enter on X11)
-4. Check system logs: `journalctl -f -o cat /usr/bin/gnome-shell`
+1. Make sure it's enabled: `gnome-extensions list`
+2. Check if you actually have media playing (yes, really)
+3. Restart GNOME Shell — X11: `Alt+F2` → `r` → Enter
+4. Dig into the logs: `journalctl -f -o cat /usr/bin/gnome-shell`
 
 ### Controls not responding
 
-- Ensure your media player supports MPRIS (most modern players do)
+- Your player needs to support MPRIS (most modern ones do)
 - Try restarting the media player
 - Check extension settings for conflicts
 
@@ -235,34 +323,34 @@ This extension works with **any MPRIS-compatible media player**, including:
 
 ## 🤝 Contributing
 
-We love contributions! Whether it's:
+Contributions make open source go round. Here's what's appreciated:
 
-- 🐛 Bug reports
-- 💡 Feature requests
-- 📝 Documentation improvements
-- 🎨 UI/UX enhancements
-- 🌍 Translations
-- 💻 Code contributions
+- 🐛 **Bug reports** — Found something broken? Tell me
+- 💡 **Feature requests** — Got a wild idea? Open a discussion
+- 📝 **Docs** — Spelling, clarity, anything helps
+- 🎨 **UI/UX** — If you've got design chops, go wild
+- 🌍 **Translations** — Add your language to the `po/` folder
+- 💻 **Code** — PRs are always welcome
 
-Please read our [CONTRIBUTING.md](CONTRIBUTING.md) guide to get started!
+Check out [CONTRIBUTING.md](CONTRIBUTING.md) to get started!
 
 ---
 
 ## 📜 License
 
-This project is licensed under the **GPL-3.0 License** — see the [LICENSE](LICENSE) file for details.
+Licensed under **GPL-3.0** — see [LICENSE](LICENSE) for the legal stuff.
 
 ---
 
 ## 💖 Support
 
-If you find this extension useful, consider:
+If this extension made your GNOME setup just a little bit better:
 
-- ⭐ **Starring** the repository
-- 🐛 **Reporting** bugs
-- 💡 **Suggesting** features
-- 🌍 **Translating** to your language
-- ☕ **Buying me a coffee**
+- ⭐ **Star** the repo — it genuinely helps
+- 🐛 **Report** bugs you find
+- 💡 **Suggest** features you want
+- 🌍 **Translate** to your language
+- ☕ **Buy me a coffee** if you're feeling generous
 
 <div align="center">
 
@@ -280,7 +368,7 @@ If you find this extension useful, consider:
 
 <br>
 
-*Your support helps maintain and improve this extension!* 💙
+*Your support keeps this thing maintained and growing* 💙
 
 </div>
 
@@ -288,18 +376,18 @@ If you find this extension useful, consider:
 
 ## 🏆 Credits
 
-### Data Sources
-
-- **MPRIS D-Bus Interface** — Standard media player remote interfacing specification
-- **GNOME Shell** — For the amazing desktop environment
-
 ### Built With
 
-- JavaScript (GJS)
+- JavaScript (GJS) — the glue holding it all together
 - GNOME Shell API
 - D-Bus
-- GTK4/Libadwaita (preferences)
-- Love and coffee ☕
+- GTK4 / Libadwaita (for preferences)
+- Way too much coffee ☕
+
+### Inspired By
+
+- [NarkAgni/spotify-controller](https://github.com/NarkAgni/spotify-controller) — lyrics feature inspiration
+- The GNOME community for building such an extensible platform
 
 <div align="center">
 
@@ -313,7 +401,7 @@ If you find this extension useful, consider:
 
 - The GNOME community
 - All contributors and testers
-- Everyone who reported bugs and suggested features
+- Everyone who opened an issue, suggested a feature, or just left a kind comment
 
 ---
 
@@ -324,11 +412,11 @@ If you find this extension useful, consider:
 
 ---
 
-
+## 🗺️ Roadmap
 
 ### Planned Features
 
-- [ ] 🌍 More translations
+- [ ] 🌍 More language translations
 - [ ] 🎛️ Advanced EQ controls
 - [ ] 🔊 Per-player volume control
 - [ ] 📊 Playback statistics
@@ -341,11 +429,10 @@ If you find this extension useful, consider:
 
 ## ⭐ Star History
 
-**Star ⭐ this repository if you find it useful!**
+**If this made your desktop life better, a star means a lot — thanks!** ⭐
 
 ---
 
-Made with ❤️ by [Sanjai Shaarugesh](https://github.com/Sanjai-Shaarugesh)
+Made with ❤️ and too much late-night caffeine by [Sanjai Shaarugesh](https://github.com/Sanjai-Shaarugesh)
 
 </div>
-
