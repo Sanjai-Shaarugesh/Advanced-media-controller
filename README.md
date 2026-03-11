@@ -94,6 +94,7 @@ This one's a game changer. Triple-click the album art and boom — **scrolling, 
 
 - Lyrics are fetched automatically from **[lrclib.net](https://lrclib.net)** — free, no account, no BS
 - The **active lyric line is highlighted and auto-centered** as the song progresses
+- Triple-click anywhere on the album art  switch to lyrics panel
 - Single-click anywhere on the lyrics panel to go back to album art
 - Each player tab **remembers its own lyrics preference independently**
 - Huge shoutout to [@NarkAgni/spotify-controller](https://github.com/NarkAgni/spotify-controller) for the inspiration 🙏
