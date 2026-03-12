@@ -526,24 +526,39 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     page.add(modeGroup);
 
     const filterModel = new Gtk.StringList();
+    // Short labels fit the ComboRow without truncation; full descriptions are
+    // shown in the dynamic subtitle below.
     [
-      _("Off — Show all media players (no filtering)"),
-      _("Blacklist — Hide only the players you add to the list"),
-      _("Whitelist — Show only the players you add to the list"),
+      _("Off"),
+      _("Blacklist"),
+      _("Whitelist"),
     ].forEach((l) => filterModel.append(l));
+
+    // Per-mode descriptions shown in the subtitle when the user changes the
+    // selection so the full meaning is always visible without truncation.
+    const filterModeDescriptions = [
+      _("Show all media players — filtering is disabled"),
+      _("Hide only the players you add to the list below"),
+      _("Show only the players you add to the list below"),
+    ];
 
     const filterModeRow = new Adw.ComboRow({
       title: _("Filter Mode"),
-      subtitle: _("Controls which media players the extension tracks and displays"),
+      subtitle: filterModeDescriptions[settings.get_int("player-filter-mode")],
       model: filterModel,
       selected: settings.get_int("player-filter-mode"),
     });
     filterModeRow.connect("notify::selected", () => {
-      settings.set_int("player-filter-mode", filterModeRow.selected);
+      const idx = filterModeRow.selected;
+      settings.set_int("player-filter-mode", idx);
+      filterModeRow.subtitle = filterModeDescriptions[idx];
     });
     settings.connect("changed::player-filter-mode", () => {
       const v = settings.get_int("player-filter-mode");
-      if (filterModeRow.selected !== v) filterModeRow.selected = v;
+      if (filterModeRow.selected !== v) {
+        filterModeRow.selected = v;
+        filterModeRow.subtitle = filterModeDescriptions[v];
+      }
     });
     modeGroup.add(filterModeRow);
 
@@ -2424,12 +2439,57 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
       }
     });
 
+    // ── Donation options ──────────────────────────────────────────────────────
+    // Two platforms supported: Buy Me a Coffee and GitHub Sponsors.
+    // Selecting either platform swaps the QR code image and the copy-address row.
+    const DONATION_OPTIONS = [
+      {
+        label: _("\u2615 Buy Me a Coffee"),
+        subtitle: _("Support development with a small donation"),
+        url: "https://buymeacoffee.com/sanjai",
+        qrFile: "qr.png",           // icons/qr.png  (Buy Me a Coffee QR)
+        createIcon: (size = 20) => new Gtk.Image({ icon_name: "emblem-favorite-symbolic", pixel_size: size }),
+        qrTitle: _("\u2615 Support by buying me a coffee \u2013 just scan the QR code!"),
+        qrDesc: _("Scan QR code to open Buy Me a Coffee"),
+      },
+      {
+        label: _("\u2764 GitHub Sponsors"),
+        subtitle: _("Sponsor via GitHub — one-time or monthly"),
+        url: "https://github.com/sponsors/Sanjai-Shaarugesh",
+        qrFile: "qr-github.png",    // icons/qr-github.png  (GitHub Sponsors QR)
+        createIcon: (size = 20) => this._createGitHubIcon(size),
+        qrTitle: _("\u2764 Support via GitHub Sponsors \u2013 just scan the QR code!"),
+        qrDesc: _("Scan QR code to open GitHub Sponsors"),
+      },
+    ];
+
+    // ── QR group — platform selector + live QR swap ──────────────────────────
+    // An Adw.ComboRow lets the user pick the platform; the QR image below
+    // updates immediately without opening any external link.  This satisfies
+    // the review guideline that UI controls should be self-contained and not
+    // require navigation to reveal their effect.
     const qrGroup = new Adw.PreferencesGroup({
-      title: _(
-        "\u2615 Support by buying me a coffee \u2013 just scan the QR code!",
-      ),
-      description: _("Preferred Method - Scan QR code to support development"),
+      title: DONATION_OPTIONS[0].qrTitle,
+      description: DONATION_OPTIONS[0].qrDesc,
     });
+
+    // ── Platform ComboRow (selector) ─────────────────────────────────────────
+    const qrPlatformModel = new Gtk.StringList();
+    DONATION_OPTIONS.forEach((opt) => qrPlatformModel.append(opt.label));
+
+    // Prefix icon swaps alongside the selected platform
+    let qrSelectorIcon = DONATION_OPTIONS[0].createIcon(20);
+
+    const qrPlatformRow = new Adw.ComboRow({
+      title: _("Donation Platform"),
+      subtitle: _("Switch to see the QR code for each platform"),
+      model: qrPlatformModel,
+      selected: 0,
+    });
+    qrPlatformRow.add_prefix(qrSelectorIcon);
+    qrGroup.add(qrPlatformRow);
+
+    // ── QR image container ───────────────────────────────────────────────────
     const qrContainer = new Gtk.Box({
       orientation: Gtk.Orientation.VERTICAL,
       spacing: 16,
@@ -2439,26 +2499,32 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
       margin_start: 24,
       margin_end: 24,
     });
-    const qrPath = `${this.dir.get_path()}/icons/qr.png`;
-    let qrImage;
-    try {
-      qrImage = Gtk.Image.new_from_file(qrPath);
-      qrImage.set_pixel_size(200);
-    } catch (_e) {
-      qrImage = new Gtk.Image({
-        icon_name: "camera-web-symbolic",
-        pixel_size: 200,
-      });
-    }
+
+    // Helper: load a QR image by filename, fall back to a generic icon
+    const _loadQr = (filename) => {
+      const path = `${this.dir.get_path()}/icons/${filename}`;
+      try {
+        const img = Gtk.Image.new_from_file(path);
+        img.set_pixel_size(200);
+        return img;
+      } catch (_e) {
+        return new Gtk.Image({ icon_name: "camera-web-symbolic", pixel_size: 200 });
+      }
+    };
+
+    let qrImage = _loadQr(DONATION_OPTIONS[0].qrFile);
     qrContainer.append(qrImage);
+
     const qrRow = new Adw.ActionRow({ title: "", activatable: false });
     qrRow.set_child(qrContainer);
 
+    // ── Address group (copy-link row, updated on platform switch) ────────────
     const addressGroup = new Adw.PreferencesGroup({
       title: _("Donation Address"),
     });
+
     const addressRow = new Adw.ActionRow({
-      title: "https://buymeacoffee.com/sanjai",
+      title: DONATION_OPTIONS[0].url,
       activatable: true,
     });
     addressRow.add_prefix(
@@ -2468,34 +2534,87 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
       new Gtk.Image({ icon_name: "edit-copy-symbolic", pixel_size: 16 }),
     );
     addressRow.connect("activated", () =>
-      this._copyToClipboard(
-        "https://buymeacoffee.com/sanjai",
-        _("Donation address"),
-      ),
+      this._copyToClipboard(addressRow.title, _("Donation address")),
     );
 
+    // Track which platform is currently selected (0 = BMC, 1 = GitHub)
+    let _activeDonation = 0;
+
+    // Central update function: swaps QR image, address, group labels,
+    // the ComboRow prefix icon, and keeps the ComboRow selection in sync.
+    const _switchDonation = (idx) => {
+      if (idx === _activeDonation) return;
+      _activeDonation = idx;
+      const opt = DONATION_OPTIONS[idx];
+
+      // Swap QR image
+      qrContainer.remove(qrImage);
+      qrImage = _loadQr(opt.qrFile);
+      qrContainer.append(qrImage);
+
+      // Swap ComboRow prefix icon
+      qrPlatformRow.remove(qrSelectorIcon);
+      qrSelectorIcon = opt.createIcon(20);
+      qrPlatformRow.add_prefix(qrSelectorIcon);
+
+      // Update QR group header
+      qrGroup.title = opt.qrTitle;
+      qrGroup.description = opt.qrDesc;
+
+      // Update address row
+      addressRow.title = opt.url;
+
+      // Keep the ComboRow in sync when triggered from the open-link rows
+      if (qrPlatformRow.selected !== idx)
+        qrPlatformRow.selected = idx;
+    };
+
+    // Wire the ComboRow → QR swap
+    qrPlatformRow.connect("notify::selected", () => {
+      _switchDonation(qrPlatformRow.selected);
+    });
+
+    // ── Platform selector rows (open-link buttons) ───────────────────────────
+    const donationSelectorGroup = new Adw.PreferencesGroup({
+      title: _("Support Development"),
+      description: _("Choose your preferred donation platform"),
+    });
+
+    // Buy Me a Coffee row
     const sponsorRow = new Adw.ActionRow({
-      title: _("\u2615 Buy Me a Coffee"),
-      subtitle: _("Support development with a small donation"),
+      title: DONATION_OPTIONS[0].label,
+      subtitle: DONATION_OPTIONS[0].subtitle,
       activatable: true,
     });
-    sponsorRow.add_prefix(
-      new Gtk.Image({ icon_name: "emblem-favorite-symbolic", pixel_size: 20 }),
-    );
+    sponsorRow.add_prefix(DONATION_OPTIONS[0].createIcon(20));
     sponsorRow.add_suffix(
-      new Gtk.Image({
-        icon_name: "adw-external-link-symbolic",
-        pixel_size: 16,
-      }),
+      new Gtk.Image({ icon_name: "adw-external-link-symbolic", pixel_size: 16 }),
     );
     sponsorRow.connect("activated", () => {
+      _switchDonation(0);
       try {
-        Gio.AppInfo.launch_default_for_uri(
-          "https://buymeacoffee.com/sanjai",
-          null,
-        );
+        Gio.AppInfo.launch_default_for_uri(DONATION_OPTIONS[0].url, null);
       } catch (e) {
-        console.error("Could not open sponsor link:", e);
+        console.error("Could not open Buy Me a Coffee link:", e);
+      }
+    });
+
+    // GitHub Sponsors row
+    const githubSponsorRow = new Adw.ActionRow({
+      title: DONATION_OPTIONS[1].label,
+      subtitle: DONATION_OPTIONS[1].subtitle,
+      activatable: true,
+    });
+    githubSponsorRow.add_prefix(DONATION_OPTIONS[1].createIcon(20));
+    githubSponsorRow.add_suffix(
+      new Gtk.Image({ icon_name: "adw-external-link-symbolic", pixel_size: 16 }),
+    );
+    githubSponsorRow.connect("activated", () => {
+      _switchDonation(1);
+      try {
+        Gio.AppInfo.launch_default_for_uri(DONATION_OPTIONS[1].url, null);
+      } catch (e) {
+        console.error("Could not open GitHub Sponsors link:", e);
       }
     });
 
@@ -2540,15 +2659,17 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
 
     infoGroup.add(headerRow);
     linksGroup.add(githubRow);
+    donationSelectorGroup.add(sponsorRow);
+    donationSelectorGroup.add(githubSponsorRow);
     qrGroup.add(qrRow);
     addressGroup.add(addressRow);
-    addressGroup.add(sponsorRow);
     licenseGroup.add(licenseRow);
     licenseGroup.add(creditsRow);
     licenseGroup.add(featuresRow);
 
     page.add(infoGroup);
     page.add(linksGroup);
+    page.add(donationSelectorGroup);
     page.add(qrGroup);
     page.add(addressGroup);
     page.add(licenseGroup);
@@ -2556,19 +2677,19 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     return page;
   }
 
-  _createGitHubIcon() {
+  _createGitHubIcon(pixel_size = 20) {
     const svgPath = `${this.dir.get_path()}/icons/github.svg`;
 
     if (Gio.File.new_for_path(svgPath).query_exists(null)) {
       return new Gtk.Image({
         file: svgPath,
-        pixel_size: 20,
+        pixel_size,
       });
     }
 
     return new Gtk.Image({
       icon_name: "adw-external-link-symbolic",
-      pixel_size: 20,
+      pixel_size,
     });
   }
 
