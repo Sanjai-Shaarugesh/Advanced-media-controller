@@ -131,5 +131,26 @@
       <description>Fetch and display time-synced lyrics from lrclib.net. Triple-click the album art in the popup to show/hide lyrics while a track is playing.</description>
     </key>
 
+    <!-- System Integration -->
+    <key name="hide-default-player" type="b">
+      <default>true</default>
+      <summary>Hide default GNOME media player</summary>
+      <description>Hide the built-in GNOME Shell media player controls from the date/time menu. They are fully restored when the extension is disabled.</description>
+    </key>
+
+    <!-- Player Filter -->
+    <key name="player-filter-mode" type="i">
+      <default>0</default>
+      <range min="0" max="2"/>
+      <summary>Player filter mode</summary>
+      <description>0 = off (allow all), 1 = blacklist (exclude listed), 2 = whitelist (only allow listed)</description>
+    </key>
+
+    <key name="player-filter-list" type="s">
+      <default>""</default>
+      <summary>Player filter list</summary>
+      <description>Comma-separated list of MPRIS short names to include or exclude depending on the filter mode</description>
+    </key>
+
   </schema>
 </schemalist>

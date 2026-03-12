@@ -220,6 +220,67 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     );
     panelScrollGroup.add(panelScrollSpeedRow);
 
+    const systemGroup = new Adw.PreferencesGroup({
+      title: _("System Integration"),
+      description: _(
+        "Controls how this extension interacts with other parts of GNOME Shell.",
+      ),
+    });
+    generalPage.add(systemGroup);
+
+    // ── Hide Default GNOME Media Player ──────────────────────────────────────
+    // Prefs side: binds the GSettings boolean.
+    // Extension side: _applyHideDefaultPlayer(hide) must be called on enable(),
+    // on every "changed::hide-default-player" signal, and with hide=false on
+    // disable() so the widget is unconditionally restored.
+    const hideDefaultExpanderRow = new Adw.ExpanderRow({
+      title: _("Hide Default GNOME Media Player"),
+      subtitle: _(
+        "Remove the built-in media controls from the system date/time menu",
+      ),
+    });
+
+    const hideDefaultToggle = new Gtk.Switch({
+      active: settings.get_boolean("hide-default-player"),
+      valign: Gtk.Align.CENTER,
+    });
+    settings.bind(
+      "hide-default-player",
+      hideDefaultToggle,
+      "active",
+      Gio.SettingsBindFlags.DEFAULT,
+    );
+    // Attach the switch as the activatable widget so clicking the row title
+    // toggles the switch but does not fight the expander arrow.
+    hideDefaultExpanderRow.add_suffix(hideDefaultToggle);
+    hideDefaultExpanderRow.activatable_widget = hideDefaultToggle;
+
+    const hideDefaultInfoLabel = new Gtk.Label({
+      label: _(
+        "When ON, the extension hides the stock GNOME media controls that\n" +
+        "normally appear in the calendar / notification panel (the date-time\n" +
+        "menu). This prevents a duplicate 'now playing' widget.\n\n" +
+        "The built-in controls are fully restored the moment you:\n" +
+        "  \u2022 Turn this switch off, or\n" +
+        "  \u2022 Disable or uninstall this extension."
+      ),
+      wrap: true,
+      xalign: 0,
+      margin_top: 10,
+      margin_bottom: 10,
+      margin_start: 16,
+      margin_end: 16,
+      css_classes: ["dim-label"],
+    });
+
+    const hideDefaultInfoBox = new Gtk.Box({
+      orientation: Gtk.Orientation.VERTICAL,
+    });
+    hideDefaultInfoBox.append(hideDefaultInfoLabel);
+    hideDefaultExpanderRow.add_row(hideDefaultInfoBox);
+
+    systemGroup.add(hideDefaultExpanderRow);
+
     // ── Popup Player page ────────────────────────────────────────────────────
     const popupPage = new Adw.PreferencesPage({
       title: _("Popup Player"),
@@ -387,6 +448,14 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     window.add(vinylPage);
     this._buildVinylAppsPage(vinylPage, settings);
 
+    // ── Player Filter page ───────────────────────────────────────────────────
+    const filterPage = new Adw.PreferencesPage({
+      title: _("Player Filter"),
+      icon_name: "view-list-symbolic",
+    });
+    window.add(filterPage);
+    this._buildPlayerFilterPage(filterPage, settings);
+
     // ── Lyrics page ──────────────────────────────────────────────────────────
     const lyricsPage = new Adw.PreferencesPage({
       title: _("Lyrics"),
@@ -398,6 +467,413 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
 
     // ── About page ───────────────────────────────────────────────────────────
     window.add(this._createAboutPage(window));
+  }
+
+  // ── Player Filter page builder ────────────────────────────────────────────
+  //
+  // Storage format for player-filter-list:
+  //   Comma-separated entries.  Each entry is either:
+  //     "shortName"          – app is in the list AND enabled (active)
+  //     "~shortName"         – app is in the list BUT disabled (inactive)
+  //
+  // The MprisManager only acts on entries WITHOUT the "~" prefix.
+  // The "~" prefix lets users keep the app saved while temporarily
+  // bypassing the filter for it (toggle off = disabled = "~name").
+
+  _buildPlayerFilterPage(page, settings) {
+
+    // ── Helper: parse the raw list string into an array of {name, enabled} ──
+    const parseList = () => {
+      const raw = settings.get_string("player-filter-list") || "";
+      return raw
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean)
+        .map((entry) => {
+          if (entry.startsWith("~")) {
+            return { name: entry.slice(1).trim(), enabled: false };
+          }
+          return { name: entry, enabled: true };
+        });
+    };
+
+    // ── Helper: write an array of {name, enabled} back to settings ──────────
+    const serializeList = (entries) => {
+      const str = entries
+        .map((e) => (e.enabled ? e.name : `~${e.name}`))
+        .join(", ");
+      settings.set_string("player-filter-list", str);
+    };
+
+    // ── Helper: get short MPRIS name from a full bus name ────────────────────
+    const toShort = (busName) =>
+      busName
+        .replace("org.mpris.MediaPlayer2.", "")
+        .replace(/\.instance[_\d]+$/i, "")
+        .replace(/\.\d+$/, "");
+
+    // ═════════════════════════════════════════════════════════════════════════
+    // Section 1 – Filter Mode
+    // ═════════════════════════════════════════════════════════════════════════
+    const modeGroup = new Adw.PreferencesGroup({
+      title: _("Filter Mode"),
+      description: _(
+        "Choose whether the list below acts as a blacklist (block listed " +
+          "apps) or a whitelist (allow only listed apps). Set to Off to " +
+          "disable filtering entirely.",
+      ),
+    });
+    page.add(modeGroup);
+
+    const filterModel = new Gtk.StringList();
+    [
+      _("Off — Show all media players (no filtering)"),
+      _("Blacklist — Hide only the players you add to the list"),
+      _("Whitelist — Show only the players you add to the list"),
+    ].forEach((l) => filterModel.append(l));
+
+    const filterModeRow = new Adw.ComboRow({
+      title: _("Filter Mode"),
+      subtitle: _("Controls which media players the extension tracks and displays"),
+      model: filterModel,
+      selected: settings.get_int("player-filter-mode"),
+    });
+    filterModeRow.connect("notify::selected", () => {
+      settings.set_int("player-filter-mode", filterModeRow.selected);
+    });
+    settings.connect("changed::player-filter-mode", () => {
+      const v = settings.get_int("player-filter-mode");
+      if (filterModeRow.selected !== v) filterModeRow.selected = v;
+    });
+    modeGroup.add(filterModeRow);
+
+    // ═════════════════════════════════════════════════════════════════════════
+    // Section 2 – Saved Players List  (toggle + remove per row)
+    // ═════════════════════════════════════════════════════════════════════════
+    const savedGroup = new Adw.PreferencesGroup({
+      title: _("Saved Players"),
+      description: _(
+        "Each saved player can be individually enabled or disabled in the " +
+          "filter without removing it. The toggle controls whether the filter " +
+          "rule is active for that app. Use the trash button to remove it " +
+          "from the list entirely.",
+      ),
+    });
+    page.add(savedGroup);
+
+    // We keep track of dynamically-added rows so we can rebuild the list
+    this._savedFilterRows = [];
+
+    // Central rebuild function – called after every list mutation
+    const rebuildSavedList = () => {
+      // Remove all previously built rows
+      for (const r of this._savedFilterRows) {
+        try {
+          savedGroup.remove(r);
+        } catch (_e) {}
+      }
+      this._savedFilterRows = [];
+
+      const entries = parseList();
+
+      if (entries.length === 0) {
+        // Placeholder when list is empty
+        const ph = new Adw.ActionRow({
+          title: _("No players saved yet"),
+          subtitle: _(
+            "Detect running players below and click \u201cAdd to Filter\u201d " +
+              "to add them here.",
+          ),
+          activatable: false,
+        });
+        ph.add_prefix(
+          new Gtk.Image({
+            icon_name: "view-list-symbolic",
+            pixel_size: 28,
+            valign: Gtk.Align.CENTER,
+            opacity: 0.4,
+          }),
+        );
+        savedGroup.add(ph);
+        this._savedFilterRows.push(ph);
+        return;
+      }
+
+      for (const entry of entries) {
+        const { name, enabled } = entry;
+
+        // Try to resolve a system app icon
+        const appInfo = this._findAppInfo(name, name);
+        const appIcon = appInfo ? appInfo.get_icon() : null;
+
+        const row = new Adw.ActionRow({
+          title: appInfo
+            ? appInfo.get_display_name() || appInfo.get_name() || name
+            : name,
+          subtitle: name,
+          activatable: false,
+        });
+
+        // App icon prefix
+        row.add_prefix(
+          appIcon
+            ? new Gtk.Image({
+                gicon: appIcon,
+                pixel_size: 32,
+                valign: Gtk.Align.CENTER,
+              })
+            : new Gtk.Image({
+                icon_name: "application-x-executable-symbolic",
+                pixel_size: 32,
+                valign: Gtk.Align.CENTER,
+                opacity: 0.6,
+              }),
+        );
+
+        // ── Toggle switch: enable / disable this entry in the filter ──────
+        const toggle = new Gtk.Switch({
+          active: enabled,
+          valign: Gtk.Align.CENTER,
+          tooltip_text: enabled
+            ? _("Filter rule active for \u201c%s\u201d \u2014 click to disable").format(name)
+            : _("Filter rule disabled for \u201c%s\u201d \u2014 click to enable").format(name),
+        });
+
+        toggle.connect("state-set", (_sw, state) => {
+          // Re-read the latest list (may have changed since row was built)
+          const current = parseList();
+          const idx = current.findIndex((e) => e.name === name);
+          if (idx !== -1) {
+            current[idx].enabled = state;
+            serializeList(current);
+          }
+          // Return false so GTK updates the visual state normally
+          return false;
+        });
+
+        row.add_suffix(toggle);
+
+        // ── Remove button: delete this entry from the list entirely ───────
+        const removeBtn = new Gtk.Button({
+          icon_name: "user-trash-symbolic",
+          valign: Gtk.Align.CENTER,
+          css_classes: ["flat", "destructive-action"],
+          tooltip_text: _("Remove \u201c%s\u201d from the filter list").format(name),
+        });
+
+        removeBtn.connect("clicked", () => {
+          const current = parseList();
+          const updated = current.filter((e) => e.name !== name);
+          serializeList(updated);
+          // rebuildSavedList is triggered by the settings changed signal below
+        });
+
+        row.add_suffix(removeBtn);
+
+        savedGroup.add(row);
+        this._savedFilterRows.push(row);
+      }
+    };
+
+    // Rebuild the saved list whenever the underlying setting changes
+    // (covers direct edits from any source)
+    settings.connect("changed::player-filter-list", () => {
+      GLib.idle_add(GLib.PRIORITY_DEFAULT_IDLE, () => {
+        rebuildSavedList();
+        return GLib.SOURCE_REMOVE;
+      });
+    });
+
+    // Initial build
+    rebuildSavedList();
+
+    // ═════════════════════════════════════════════════════════════════════════
+    // Section 3 – Detect running players  (live D-Bus scan)
+    // ═════════════════════════════════════════════════════════════════════════
+    const detectGroup = new Adw.PreferencesGroup({
+      title: _("Detected Players"),
+      description: _(
+        "Active MPRIS players found on the session D-Bus. " +
+          "Click \u201cAdd to Filter\u201d to save a player to the list above.",
+      ),
+    });
+    page.add(detectGroup);
+
+    const scanHeaderRow = new Adw.ActionRow({
+      title: _("Scan for running players"),
+      subtitle: _("Detects players currently broadcasting on MPRIS"),
+    });
+    const refreshBtn = new Gtk.Button({
+      icon_name: "view-refresh-symbolic",
+      valign: Gtk.Align.CENTER,
+      css_classes: ["flat"],
+      tooltip_text: _("Refresh the detected player list"),
+    });
+    scanHeaderRow.add_suffix(refreshBtn);
+    detectGroup.add(scanHeaderRow);
+
+    // Live rows live in a separate group so we can wipe them cleanly
+    const liveGroup = new Adw.PreferencesGroup();
+    page.add(liveGroup);
+
+    this._filterLiveRows = [];
+
+    const clearLiveRows = () => {
+      for (const r of this._filterLiveRows) {
+        try {
+          liveGroup.remove(r);
+        } catch (_e) {}
+      }
+      this._filterLiveRows = [];
+    };
+
+    const scanPlayers = () => {
+      clearLiveRows();
+
+      let connection;
+      try {
+        connection = Gio.bus_get_sync(Gio.BusType.SESSION, null);
+      } catch (_e) {
+        const errRow = new Adw.ActionRow({
+          title: _("Could not connect to the session bus"),
+          activatable: false,
+        });
+        liveGroup.add(errRow);
+        this._filterLiveRows.push(errRow);
+        return;
+      }
+
+      connection.call(
+        "org.freedesktop.DBus",
+        "/org/freedesktop/DBus",
+        "org.freedesktop.DBus",
+        "ListNames",
+        null,
+        null,
+        Gio.DBusCallFlags.NONE,
+        -1,
+        null,
+        (conn, res) => {
+          try {
+            const result = conn.call_finish(res);
+            const names = result.deep_unpack()[0];
+            const mprisNames = names.filter((n) =>
+              n.startsWith("org.mpris.MediaPlayer2."),
+            );
+
+            clearLiveRows();
+
+            if (mprisNames.length === 0) {
+              const noneRow = new Adw.ActionRow({
+                title: _("No active players detected"),
+                subtitle: _("Open a music app and click Refresh"),
+                activatable: false,
+              });
+              noneRow.add_prefix(
+                new Gtk.Image({
+                  icon_name: "media-playback-stop-symbolic",
+                  pixel_size: 24,
+                  valign: Gtk.Align.CENTER,
+                  opacity: 0.5,
+                }),
+              );
+              liveGroup.add(noneRow);
+              this._filterLiveRows.push(noneRow);
+              return;
+            }
+
+            const seen = new Set();
+
+            for (const fullBus of mprisNames) {
+              const short = toShort(fullBus);
+              if (seen.has(short)) continue;
+              seen.add(short);
+
+              const appInfo = this._findAppInfo(short, short);
+              const appIcon = appInfo ? appInfo.get_icon() : null;
+              const displayName = appInfo
+                ? appInfo.get_display_name() || appInfo.get_name() || short
+                : short;
+
+              const row = new Adw.ActionRow({
+                title: displayName,
+                subtitle: fullBus,
+                activatable: false,
+              });
+
+              // App icon
+              row.add_prefix(
+                appIcon
+                  ? new Gtk.Image({
+                      gicon: appIcon,
+                      pixel_size: 32,
+                      valign: Gtk.Align.CENTER,
+                    })
+                  : new Gtk.Image({
+                      icon_name: "application-x-executable-symbolic",
+                      pixel_size: 32,
+                      valign: Gtk.Align.CENTER,
+                      opacity: 0.6,
+                    }),
+              );
+
+              // Helper: is this short name already in the saved list?
+              const isAlreadySaved = () =>
+                parseList().some((e) => e.name === short);
+
+              // "Add to Filter" button – becomes "Saved ✓" once added
+              const addBtn = new Gtk.Button({
+                label: isAlreadySaved()
+                  ? _("Saved \u2713")
+                  : _("Add to Filter"),
+                valign: Gtk.Align.CENTER,
+                css_classes: isAlreadySaved()
+                  ? ["flat"]
+                  : ["suggested-action"],
+                tooltip_text: isAlreadySaved()
+                  ? _("\u201c%s\u201d is already in the filter list").format(short)
+                  : _("Add \u201c%s\u201d to the filter list (enabled by default)").format(short),
+              });
+
+              addBtn.connect("clicked", () => {
+                if (isAlreadySaved()) return; // idempotent
+
+                const current = parseList();
+                current.push({ name: short, enabled: true });
+                serializeList(current);
+
+                // Update button appearance immediately
+                addBtn.label = _("Saved \u2713");
+                addBtn.css_classes = ["flat"];
+                addBtn.tooltip_text = _(
+                  "\u201c%s\u201d is already in the filter list",
+                ).format(short);
+              });
+
+              // Keep the button state in sync if the list changes elsewhere
+              settings.connect("changed::player-filter-list", () => {
+                const saved = isAlreadySaved();
+                addBtn.label = saved ? _("Saved \u2713") : _("Add to Filter");
+                addBtn.css_classes = saved ? ["flat"] : ["suggested-action"];
+              });
+
+              row.add_suffix(addBtn);
+              liveGroup.add(row);
+              this._filterLiveRows.push(row);
+            }
+          } catch (e) {
+            console.error("AMC prefs: error scanning players:", e);
+          }
+        },
+      );
+    };
+
+    refreshBtn.connect("clicked", scanPlayers);
+
+    GLib.idle_add(GLib.PRIORITY_DEFAULT_IDLE, () => {
+      scanPlayers();
+      return GLib.SOURCE_REMOVE;
+    });
   }
 
   // ── Lyrics page builder ───────────────────────────────────────────────────
@@ -813,6 +1289,236 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
         this._renderAppList(this._allApps, settings);
       },
     );
+
+    // ── Live player detector ──────────────────────────────────────────────────
+    const liveDetectGroup = new Adw.PreferencesGroup({
+      title: _("Running Players (Live Detection)"),
+      description: _(
+        "MPRIS players active right now. Click \u201cUse This\u201d to immediately " +
+          "add the player as a vinyl-enabled instance without waiting for a double-click.",
+      ),
+    });
+    page.add(liveDetectGroup);
+
+    const liveRefreshRow = new Adw.ActionRow({
+      title: _("Scan for active players"),
+      subtitle: _("Detects players currently broadcasting on the MPRIS D-Bus"),
+    });
+    const liveRefreshBtn = new Gtk.Button({
+      icon_name: "view-refresh-symbolic",
+      valign: Gtk.Align.CENTER,
+      css_classes: ["flat"],
+      tooltip_text: _("Refresh"),
+    });
+    liveRefreshRow.add_suffix(liveRefreshBtn);
+    liveDetectGroup.add(liveRefreshRow);
+
+    const livePlayerGroup = new Adw.PreferencesGroup();
+    page.add(livePlayerGroup);
+
+    this._vinylLiveRows = [];
+
+    const clearVinylLiveRows = () => {
+      for (const r of this._vinylLiveRows) {
+        try { livePlayerGroup.remove(r); } catch (_e) {}
+      }
+      this._vinylLiveRows = [];
+    };
+
+    const scanVinylPlayers = () => {
+      clearVinylLiveRows();
+
+      let connection;
+      try {
+        connection = Gio.bus_get_sync(Gio.BusType.SESSION, null);
+      } catch (_e) {
+        return;
+      }
+
+      connection.call(
+        "org.freedesktop.DBus",
+        "/org/freedesktop/DBus",
+        "org.freedesktop.DBus",
+        "ListNames",
+        null,
+        null,
+        Gio.DBusCallFlags.NONE,
+        -1,
+        null,
+        (conn, res) => {
+          try {
+            const result = conn.call_finish(res);
+            const names = result.deep_unpack()[0];
+            const mprisNames = names.filter((n) =>
+              n.startsWith("org.mpris.MediaPlayer2."),
+            );
+
+            clearVinylLiveRows();
+
+            if (mprisNames.length === 0) {
+              const noneRow = new Adw.ActionRow({
+                title: _("No active players detected"),
+                subtitle: _("Open a music app and click Refresh"),
+                activatable: false,
+              });
+              noneRow.add_prefix(
+                new Gtk.Image({
+                  icon_name: "media-playback-stop-symbolic",
+                  pixel_size: 24,
+                  valign: Gtk.Align.CENTER,
+                  opacity: 0.5,
+                }),
+              );
+              livePlayerGroup.add(noneRow);
+              this._vinylLiveRows.push(noneRow);
+              return;
+            }
+
+            const seenShort = new Set();
+            for (const fullBus of mprisNames) {
+              let short = fullBus.replace("org.mpris.MediaPlayer2.", "");
+              // strip .instanceN suffixes
+              short = short
+                .replace(/\.instance[_\d]+$/i, "")
+                .replace(/\.\d+$/, "");
+
+              if (seenShort.has(short)) continue;
+              seenShort.add(short);
+
+              // Check if already saved
+              const existing = (() => {
+                try {
+                  return settings.get_strv("vinyl-app-instances") ?? [];
+                } catch (_e) {
+                  return [];
+                }
+              })();
+              const alreadySaved = existing.some((raw) => {
+                try {
+                  const obj = JSON.parse(raw);
+                  const lower = (obj.id ?? "").toLowerCase();
+                  return (
+                    lower === short.toLowerCase() ||
+                    lower.replace(/\.instance[_\d]+$/i, "") === short.toLowerCase()
+                  );
+                } catch (_) {
+                  return false;
+                }
+              });
+
+              if (alreadySaved) continue;
+
+              const appInfo = this._findAppInfo(short, short);
+              const appIcon = appInfo ? appInfo.get_icon() : null;
+              const displayName = appInfo
+                ? appInfo.get_display_name() || appInfo.get_name() || short
+                : short;
+
+              const row = new Adw.ActionRow({
+                title: displayName,
+                subtitle: fullBus,
+                activatable: false,
+              });
+
+              row.add_prefix(
+                appIcon
+                  ? new Gtk.Image({
+                      gicon: appIcon,
+                      pixel_size: 28,
+                      valign: Gtk.Align.CENTER,
+                    })
+                  : new Gtk.Image({
+                      icon_name: "application-x-executable-symbolic",
+                      pixel_size: 28,
+                      valign: Gtk.Align.CENTER,
+                    }),
+              );
+
+              const useBtn = new Gtk.Button({
+                label: _("Use This"),
+                valign: Gtk.Align.CENTER,
+                css_classes: ["suggested-action"],
+                tooltip_text: _(
+                  "Add \u201c%s\u201d as a vinyl-enabled instance",
+                ).format(displayName),
+              });
+
+              useBtn.connect("clicked", () => {
+                const record = JSON.stringify({
+                  id: short,
+                  name: displayName,
+                  desktopId: appInfo ? this._normalizeAppId(appInfo.get_id() ?? short) : short,
+                  busName: fullBus,
+                  enabled: true,
+                });
+                try {
+                  const cur = settings.get_strv("vinyl-app-instances") ?? [];
+                  const deduped = cur.filter((raw) => {
+                    try {
+                      return (
+                        JSON.parse(raw).id?.toLowerCase() !== short.toLowerCase()
+                      );
+                    } catch (_) {
+                      return true;
+                    }
+                  });
+                  deduped.push(record);
+                  settings.set_strv("vinyl-app-instances", deduped);
+                } catch (_e) {
+                  console.error("AMC prefs: failed to save vinyl instance:", _e);
+                }
+                this._setAppVinylState(settings, short, short.toLowerCase(), true);
+                // Re-scan so this row disappears (it is now in saved instances)
+                GLib.idle_add(GLib.PRIORITY_DEFAULT_IDLE, () => {
+                  scanVinylPlayers();
+                  return GLib.SOURCE_REMOVE;
+                });
+              });
+
+              row.add_suffix(useBtn);
+              livePlayerGroup.add(row);
+              this._vinylLiveRows.push(row);
+            }
+
+            // If all running players are already saved, show a friendly note
+            if (this._vinylLiveRows.length === 0) {
+              const allSavedRow = new Adw.ActionRow({
+                title: _("All running players are already saved"),
+                subtitle: _("Manage them in the Saved App Instances section above"),
+                activatable: false,
+              });
+              allSavedRow.add_prefix(
+                new Gtk.Image({
+                  icon_name: "object-select-symbolic",
+                  pixel_size: 24,
+                  valign: Gtk.Align.CENTER,
+                }),
+              );
+              livePlayerGroup.add(allSavedRow);
+              this._vinylLiveRows.push(allSavedRow);
+            }
+          } catch (e) {
+            console.error("AMC prefs: error scanning vinyl players:", e);
+          }
+        },
+      );
+    };
+
+    liveRefreshBtn.connect("clicked", scanVinylPlayers);
+
+    // Auto-scan once the page is loaded
+    GLib.idle_add(GLib.PRIORITY_DEFAULT_IDLE, () => {
+      scanVinylPlayers();
+      return GLib.SOURCE_REMOVE;
+    });
+
+    // Re-scan whenever saved instances change (so "Use This" rows hide)
+    settings.connect("changed::vinyl-app-instances", () => {
+      GLib.idle_add(GLib.PRIORITY_DEFAULT_IDLE, () => {
+        scanVinylPlayers();
+        return GLib.SOURCE_REMOVE;
+      });
+    });
   }
 
   _refreshInstancesList(settings) {
