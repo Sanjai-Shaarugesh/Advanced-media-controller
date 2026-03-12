@@ -1,148 +1,242 @@
-# French translation for advanced-media-controller.
+# French translation of Advanced Media Controller
 # Copyright (C) 2026 Sanjai Shaarugesh
-# GPL-2.0-or-later
-#
+# This file is distributed under the same license as the advanced-media-controller package.
 msgid ""
 msgstr ""
-"Project-Id-Version: advanced-media-controller 1.0\n"
-"Report-Msgid-Bugs-To: https://github.com/Sanjai-Shaarugesh/Advance-media-controller/issues\n"
-"POT-Creation-Date: 2026-02-23 12:00+0000\n"
-"PO-Revision-Date: 2026-02-23 12:00+0000\n"
-"Last-Translator: auto-generated\n"
+"Project-Id-Version: advanced-media-controller 5.2\n"
+"Report-Msgid-Bugs-To: https://github.com/Sanjai-Shaarugesh/Advance-media-"
+"controller/issues\n"
+"POT-Creation-Date: 2026-03-12 19:01+0530\n"
+"PO-Revision-Date: 2026-03-12 00:00+0000\n"
+"Last-Translator: Automatically generated\n"
 "Language-Team: French\n"
 "Language: fr\n"
-"MIME-Version: 5.2\n"
+"MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-msgid "Advanced Media Controller"
-msgstr "Contrôleur Multimédia Avancé"
+#: utils/indicator.js:19
+msgid "Media Controls"
+msgstr "Contrôles multimédias"
 
+#: prefs.js:91 prefs.js:2339 prefs.js:2372
+msgid "Advanced Media Controller"
+msgstr "Contrôleur multimédia avancé"
+
+#: prefs.js:97
 msgid "General"
 msgstr "Général"
 
+#: prefs.js:103
 msgid "Panel Placement"
-msgstr "Emplacement du panneau"
+msgstr "Emplacement dans le panneau"
 
+#: prefs.js:104
 msgid "Where the indicator sits in the top bar"
-msgstr "Où l’indicateur se trouve dans la barre supérieure"
+msgstr "Emplacement de l'indicateur dans la barre supérieure"
 
+#: prefs.js:108
 msgid "Panel Position"
-msgstr "Position du panneau"
+msgstr "Position dans le panneau"
 
+#: prefs.js:110
 msgid "Left"
 msgstr "Gauche"
 
+#: prefs.js:110
 msgid "Center"
 msgstr "Centre"
 
+#: prefs.js:110
 msgid "Right"
 msgstr "Droite"
 
+#: prefs.js:125
 msgid "Panel Index"
 msgstr "Index du panneau"
 
+#: prefs.js:126
 msgid "Position within the panel area (-1 = automatic)"
 msgstr "Position dans la zone du panneau (-1 = automatique)"
 
+#: prefs.js:144
 msgid "Panel Label"
 msgstr "Étiquette du panneau"
 
+#: prefs.js:145
 msgid "Track name shown in the top bar"
 msgstr "Nom de la piste affiché dans la barre supérieure"
 
+#: prefs.js:150
 msgid "Show Track Name"
 msgstr "Afficher le nom de la piste"
 
+#: prefs.js:151
 msgid "Display the current track title in the panel"
 msgstr "Afficher le titre de la piste actuelle dans le panneau"
 
+#: prefs.js:162
 msgid "Show Artist Name"
-msgstr "Afficher le nom de l’artiste"
+msgstr "Afficher le nom de l'artiste"
 
+#: prefs.js:163
 msgid "Append the artist name to the track title"
-msgstr "Ajouter le nom de l’artiste au titre de la piste"
+msgstr "Ajouter le nom de l'artiste au titre de la piste"
 
+#: prefs.js:174
 msgid "Title / Artist Separator"
-msgstr "Séparateur titre / artiste"
+msgstr "Séparateur Titre / Artiste"
 
+#: prefs.js:184
 msgid "Panel Scrolling"
 msgstr "Défilement du panneau"
 
+#: prefs.js:185
 msgid "Marquee scroll of the track label in the top bar"
-msgstr "Défilement en marquée dans la barre supérieure"
+msgstr "Défilement en marquee de l'étiquette dans la barre supérieure"
 
+#: prefs.js:190
 msgid "Enable Panel Label Scrolling"
-msgstr "Activer le défilement de l’étiquette du panneau"
+msgstr "Activer le défilement de l'étiquette du panneau"
 
-msgid "Scroll the track/artist text one full loop then pause before repeating. When off, the text is truncated with an ellipsis."
-msgstr "Fait défiler le texte sur une boucle complète puis pause avant de recommencer."
+#: prefs.js:192
+msgid ""
+"Scroll the track/artist text one full loop then pause before repeating. When "
+"off, the text is truncated with an ellipsis."
+msgstr ""
+"Fait défiler le texte piste/artiste sur un cycle complet, pause puis répète. "
+"Désactivé, le texte est tronqué avec des points de suspension."
 
+#: prefs.js:205
 msgid "Panel Scroll Speed"
 msgstr "Vitesse de défilement du panneau"
 
+#: prefs.js:206 prefs.js:314 prefs.js:354
 msgid "1 = slowest, 10 = fastest"
-msgstr "1 = plus lent, 10 = plus rapide"
+msgstr "1 = le plus lent, 10 = le plus rapide"
 
+#: prefs.js:224
+msgid "System Integration"
+msgstr "Intégration système"
+
+#: prefs.js:226
+msgid "Controls how this extension interacts with other parts of GNOME Shell."
+msgstr ""
+
+#: prefs.js:237
+msgid "Hide Default GNOME Media Player"
+msgstr "Masquer le lecteur multimédia GNOME par défaut"
+
+#: prefs.js:239
+msgid "Remove the built-in media controls from the system date/time menu"
+msgstr ""
+"Supprimer les contrôles multimédias intégrés du menu date/heure du système"
+
+#: prefs.js:260
+msgid ""
+"When ON, the extension hides the stock GNOME media controls that\n"
+"normally appear in the calendar / notification panel (the date-time\n"
+"menu). This prevents a duplicate 'now playing' widget.\n"
+"\n"
+"The built-in controls are fully restored the moment you:\n"
+"  • Turn this switch off, or\n"
+"  • Disable or uninstall this extension."
+msgstr ""
+
+#: prefs.js:286
 msgid "Popup Player"
 msgstr "Lecteur contextuel"
 
+#: prefs.js:292
 msgid "Title Scrolling"
 msgstr "Défilement du titre"
 
+#: prefs.js:293
 msgid "Marquee behaviour for the track title inside the popup"
-msgstr "Défilement du titre dans la fenêtre contextuelle"
+msgstr "Comportement de défilement pour le titre de la piste dans le popup"
 
+#: prefs.js:298
 msgid "Enable Title Scrolling"
 msgstr "Activer le défilement du titre"
 
-msgid "Scroll long track titles from start to end, pause, then repeat. When off, the text is truncated with an ellipsis."
-msgstr "Défilement du début à la fin, pause, puis répétition."
+#: prefs.js:300
+msgid ""
+"Scroll long track titles from start to end, pause, then repeat. When off, "
+"the text is truncated with an ellipsis."
+msgstr ""
+"Fait défiler les titres longs du début à la fin, pause puis répète. "
+"Désactivé, le texte est tronqué avec des points de suspension."
 
+#: prefs.js:313
 msgid "Title Scroll Speed"
 msgstr "Vitesse de défilement du titre"
 
+#: prefs.js:332
 msgid "Artist Scrolling"
-msgstr "Défilement de l’artiste"
+msgstr "Défilement de l'artiste"
 
+#: prefs.js:333
 msgid "Marquee behaviour for the artist name inside the popup"
-msgstr "Défilement du nom de l’artiste dans la fenêtre contextuelle"
+msgstr "Comportement de défilement pour le nom de l'artiste dans le popup"
 
+#: prefs.js:338
 msgid "Enable Artist Scrolling"
-msgstr "Activer le défilement de l’artiste"
+msgstr "Activer le défilement de l'artiste"
 
-msgid "Scroll long artist names from start to end, pause, then repeat. When off, the text is truncated with an ellipsis."
-msgstr "Défilement du nom de l’artiste du début à la fin, puis répétition."
+#: prefs.js:340
+msgid ""
+"Scroll long artist names from start to end, pause, then repeat. When off, "
+"the text is truncated with an ellipsis."
+msgstr ""
+"Fait défiler les noms d'artistes longs du début à la fin, pause puis répète. "
+"Désactivé, le texte est tronqué avec des points de suspension."
 
+#: prefs.js:353
 msgid "Artist Scroll Speed"
-msgstr "Vitesse de défilement de l’artiste"
+msgstr "Vitesse de défilement de l'artiste"
 
+#: prefs.js:373
 msgid "Album Art"
-msgstr "Pochette d’album"
+msgstr "Pochette d'album"
 
+#: prefs.js:374
 msgid "Vinyl-record rotation animation"
-msgstr "Animation de rotation du disque vinyle"
+msgstr "Animation de rotation de disque vinyle"
 
+#: prefs.js:379
 msgid "Enable Vinyl Record Rotation (Global Default)"
-msgstr "Activer la rotation du disque vinyle (par défaut global)"
+msgstr "Activer la rotation du disque vinyle (défaut global)"
 
-msgid "Global default when no per-app setting exists. Per-app overrides in the ‘Vinyl Apps’ section take priority."
-msgstr "Valeur par défaut globale. Les réglages par application dans « Applications vinyle » sont prioritaires."
+#: prefs.js:381
+#, fuzzy
+msgid ""
+"Global default when no per-app setting exists. Per-app overrides in the "
+"‘Vinyl Apps’ section take priority."
+msgstr ""
+"Défaut global quand aucun réglage par application n'existe. Les "
+"remplacements par application dans la section « Apps vinyle » ont priorité."
 
+#: prefs.js:395
 msgid "Rotation Speed (seconds per revolution)"
 msgstr "Vitesse de rotation (secondes par tour)"
 
+#: prefs.js:396
 msgid "5 = fastest, 60 = slowest. Recommended: 20–30"
-msgstr "5 = plus rapide, 60 = plus lent. Recommandé : 20–30"
+msgstr "5 = le plus rapide, 60 = le plus lent. Recommandé : 20–30"
 
+#: prefs.js:414
 msgid "Vinyl Effect Details"
-msgstr "Détails de l’effet vinyle"
+msgstr "Détails de l'effet vinyle"
 
+#: prefs.js:415
 msgid "How the animated vinyl record works"
 msgstr "Fonctionnement du disque vinyle animé"
 
-msgid "- Album cover appears on a spinning vinyl disc\n"
+#: prefs.js:420
+#, fuzzy
+msgid ""
+"- Album cover appears on a spinning vinyl disc\n"
 "- Black vinyl grooves are visible around the edges\n"
 "- Animated tonearm moves in and out with playback state\n"
 "- Rotation pauses smoothly when music pauses\n"
@@ -151,298 +245,267 @@ msgid "- Album cover appears on a spinning vinyl disc\n"
 "- Double-click album art to toggle vinyl for THAT player’s app only\n"
 "- Per-app settings override the global default above\n"
 "- All seen apps are stored; re-enable any time from Vinyl Apps page"
-msgstr "- La pochette apparaît sur un disque vinyle en rotation\n"
-"- Les sillons sont visibles sur les bords\n"
-"- Le bras de lecture animé se déplace selon l’état de lecture\n"
-"- La rotation s’arrête doucement lors d’une pause\n"
-"  (l’angle est conservé et reprend à la même position)\n"
-"- Le disque revient à 0° uniquement lors d’un véritable arrêt\n"
-"- Double-cliquez sur la pochette pour basculer le vinyle pour cette app\n"
-"- Les réglages par app remplacent le paramètre global\n"
-"- Toutes les apps vues sont stockées ; réactivez-les depuis la page Applications vinyle"
-
-msgid "Vinyl Apps"
-msgstr "Applications vinyle"
-
-msgid "How to Enable Vinyl Style for an App"
-msgstr "Comment activer le style vinyle pour une application"
-
-msgid "Start playing music"
-msgstr "Lancer la lecture de musique"
-
-msgid "Open any media player or browser web app (YouTube, Spotify Web, SoundCloud, etc.) and play a track so it appears as a media source."
-msgstr "Ouvrez un lecteur ou une application web et lisez une piste pour qu’elle apparaîsse comme source multimédia."
-
-msgid "Open the extension popup"
-msgstr "Ouvrir la fenêtre contextuelle de l’extension"
-
-msgid "Click the media controller in the top panel to open the popup player."
-msgstr "Cliquez sur le contrôleur dans le panneau supérieur pour ouvrir le lecteur contextuel."
-
-msgid "Double-click the album art"
-msgstr "Double-cliquer sur la pochette"
-
-msgid "Double-click the album art image in the popup to toggle the vinyl record style for that specific app instance. The instance is saved here automatically."
-msgstr "Double-cliquez sur la pochette dans la fenêtre contextuelle pour activer/désactiver le style vinyle. L’instance est enregistrée automatiquement."
-
-msgid "Manage saved instances below"
-msgstr "Gérer les instances enregistrées ci-dessous"
-
-msgid "All stored instances appear in the section below with their app icon and name. Toggle them on/off or remove them at any time."
-msgstr "Toutes les instances stockées apparaissent ci-dessous. Activez-les, désactivez-les ou supprimez-les à tout moment."
-
-msgid "Saved App Instances"
-msgstr "Instances d’application enregistrées"
-
-msgid "Instances stored by double-clicking the album art in the popup. Icons are loaded from the system .desktop database. Toggle the vinyl effect on/off or remove any entry."
-msgstr "Instances stockées par double-clic sur la pochette. Les icônes sont chargées depuis la base de données .desktop du système."
-
-msgid "No instances saved yet"
-msgstr "Aucune instance enregistrée pour l’instant"
-
-msgid "Double-click the album art in the popup while music is playing to save an instance here."
-msgstr "Double-cliquez sur la pochette pendant la lecture pour enregistrer une instance ici."
-
-msgid "Add an App Manually"
-msgstr "Ajouter une application manuellement"
-
-msgid "Search installed apps — including browsers — to manually add a vinyl entry. Useful for browser web apps whose instance hasn’t been captured yet via double-click."
-msgstr "Recherchez des applications installées pour ajouter manuellement une entrée vinyle."
-
-msgid "Browser web apps (YouTube, Spotify Web, etc.)"
-msgstr "Applications web de navigateur (YouTube, Spotify Web, etc.)"
-
-msgid "For web apps, add the browser itself (e.g. Google Chrome, Firefox). Then double-click the album art when that browser is playing music — the extension will capture the exact instance automatically."
-msgstr "Pour les apps web, ajoutez le navigateur lui-même. Puis double-cliquez sur la pochette lorsqu’il lit de la musique."
-
-msgid "Search apps"
-msgstr "Rechercher des applications"
-
-msgid "Type an app or browser name…"
-msgstr "Tapez un nom d’application ou de navigateur…"
-
-msgid "Saved Instances"
-msgstr "Instances enregistrées"
-
-msgid "Other Apps"
-msgstr "Autres applications"
-
-msgid "No matching apps found"
-msgstr "Aucune application correspondante trouvée"
-
-msgid "renamed from"
-msgstr "renommé depuis"
-
-msgid "Rename “%s”"
-msgstr "Renommer « %s »"
-
-msgid "Remove %s from saved instances"
-msgstr "Supprimer %s des instances enregistrées"
-
-msgid "Rename Instance"
-msgstr "Renommer l’instance"
-
-msgid ""
-"Enter a custom display name for \"%s\".\n"
-"Leave blank to reset to the default."
 msgstr ""
-"Saisissez un nom d'affichage pour \"%s\".\n"
-"Laissez vide pour rétablir le nom par défaut."
+"- La pochette apparaît sur un disque vinyle en rotation\n"
+"- Les sillons noirs du vinyle sont visibles sur les bords\n"
+"- Le bras de lecture animé se déplace avec l'état de lecture\n"
+"- La rotation se met en pause doucement lorsque la musique est en pause\n"
+"  (l'angle du disque est préservé et reprend depuis la même position)\n"
+"- Le disque se réinitialise à 0° uniquement lors d'un vrai Arrêt\n"
+"- Double-clic sur la pochette pour activer/désactiver le vinyle pour CETTE "
+"app uniquement\n"
+"- Les réglages par application remplacent le défaut global ci-dessus\n"
+"- Toutes les applications vues sont stockées ; réactivables à tout moment "
+"depuis la page Apps vinyle"
 
-msgid "Cancel"
-msgstr "Annuler"
+#: prefs.js:445
+msgid "Vinyl Apps"
+msgstr "Apps vinyle"
 
-msgid "Rename"
-msgstr "Renommer"
+#: prefs.js:453
+msgid "Player Filter"
+msgstr "Filtre de lecteurs"
 
-msgid "Display name"
-msgstr "Nom d’affichage"
-
-msgid "About"
-msgstr "À propos"
-
-msgid "Beautiful and modern media controls with multi-instance support"
-msgstr "Contrôles multimédias beaux et modernes avec prise en charge multi-instance"
-
-msgid "Version 5.2"
-msgstr "Version 5.2"
-
-msgid "Modern media controls with native GNOME design"
-msgstr "Contrôles multimédias modernes avec design GNOME natif"
-
-msgid "Extension Links"
-msgstr "Liens de l’extension"
-
-msgid "Source code, issues, and contributions"
-msgstr "Code source, problèmes et contributions"
-
-msgid "View on GitHub"
-msgstr "Voir sur GitHub"
-
-msgid "☕ Support by buying me a coffee – just scan the QR code!"
-msgstr "☕ Soutenez-moi en m’offrant un café – scannez le QR code !"
-
-msgid "Preferred Method - Scan QR code to support development"
-msgstr "Méthode préférée – Scannez le QR code pour soutenir le développement"
-
-msgid "Donation Address"
-msgstr "Adresse de don"
-
-msgid "Donation address"
-msgstr "Adresse de don"
-
-msgid "☕ Buy Me a Coffee"
-msgstr "☕ Offrez-moi un café"
-
-msgid "Support development with a small donation"
-msgstr "Soutenez le développement par un petit don"
-
-msgid "License & Credits"
-msgstr "Licence et crédits"
-
-msgid "Open source software information"
-msgstr "Informations sur le logiciel libre"
-
-msgid "Open Source License"
-msgstr "Licence open source"
-
-msgid "GPL-3.0 License - Free and open source software"
-msgstr "Licence GPL-3.0 – Logiciel libre et open source"
-
-msgid "Media Data Sources"
-msgstr "Sources de données multimédia"
-
-msgid "MPRIS D-Bus interface - Standard media player remote interfacing"
-msgstr "Interface MPRIS D-Bus – Interface distante standard"
-
-msgid "Key Features"
-msgstr "Fonctionnalités clés"
-
-msgid "• Multi-instance browser support\n"
-"• Per-app rotating vinyl record album art\n"
-"• Animated tonearm\n"
-"• Smooth animations\n"
-"• Double-click to toggle vinyl per app\n"
-"• All seen apps remembered — re-enable any time"
-msgstr "• Prise en charge multi-instance des navigateurs\n"
-"• Pochette vinyle rotative par application\n"
-"• Bras de lecture animé\n"
-"• Animations fluides\n"
-"• Double-clic pour basculer le vinyle par application\n"
-"• Toutes les apps vues mémorisées — réactivables à tout moment"
-
-msgid "Copy to Clipboard"
-msgstr "Copier dans le presse-papiers"
-
-msgid "Unable to copy automatically. Select the address below and press Ctrl+C:"
-msgstr "Impossible de copier automatiquement. Sélectionnez l’adresse ci-dessous et appuyez sur Ctrl+C :"
-
-msgid "Close"
-msgstr "Fermer"
-
-msgid "Media Controls"
-msgstr "Contrôles multimédias"
-
-msgid "Panel Settings"
-msgstr "Paramètres du panneau"
-
-msgid "Configure the position and appearance in the top panel"
-msgstr "Configurer la position et l’apparence dans le panneau supérieur"
-
-msgid "Display Settings"
-msgstr "Paramètres d’affichage"
-
-msgid "Configure what appears in the panel"
-msgstr "Configurer ce qui apparaît dans le panneau"
-
-msgid "Display track information in the panel"
-msgstr "Afficher les informations de la piste dans le panneau"
-
-msgid "Include artist name with track title"
-msgstr "Inclure le nom de l’artiste avec le titre de la piste"
-
-msgid "Maximum Title Length"
-msgstr "Longueur maximale du titre"
-
-msgid "Characters to display before scrolling starts"
-msgstr "Caractères à afficher avant le début du défilement"
-
-msgid "Scroll Speed"
-msgstr "Vitesse de défilement"
-
-msgid "Separator Text"
-msgstr "Texte séparateur"
-
-msgid "Browser sources tracked separately (YouTube, YouTube Music, Spotify Web)"
-msgstr "Les sources du navigateur sont suivies séparément (YouTube, YouTube Music, Spotify Web)"
-
+#: prefs.js:461
 msgid "Lyrics"
 msgstr "Paroles"
 
+#: prefs.js:519 prefs.js:536
+msgid "Filter Mode"
+msgstr "Mode de filtrage"
+
+#: prefs.js:521
+msgid ""
+"Choose whether the list below acts as a blacklist (block listed apps) or a "
+"whitelist (allow only listed apps). Set to Off to disable filtering entirely."
+msgstr ""
+
+#: prefs.js:530
+#, fuzzy
+msgid "Off — Show all media players (no filtering)"
+msgstr "Afficher tous les lecteurs multimédias — filtrage désactivé"
+
+#: prefs.js:531
+#, fuzzy
+msgid "Blacklist — Hide only the players you add to the list"
+msgstr "Masquer uniquement les lecteurs ajoutés à la liste ci-dessous"
+
+#: prefs.js:532
+#, fuzzy
+msgid "Whitelist — Show only the players you add to the list"
+msgstr "Afficher uniquement les lecteurs ajoutés à la liste ci-dessous"
+
+#: prefs.js:537
+msgid "Controls which media players the extension tracks and displays"
+msgstr ""
+
+#: prefs.js:554
+msgid "Saved Players"
+msgstr "Lecteurs sauvegardés"
+
+#: prefs.js:556
+msgid ""
+"Each saved player can be individually enabled or disabled in the filter "
+"without removing it. The toggle controls whether the filter rule is active "
+"for that app. Use the trash button to remove it from the list entirely."
+msgstr ""
+
+#: prefs.js:582
+msgid "No players saved yet"
+msgstr "Aucun lecteur sauvegardé pour le moment"
+
+#: prefs.js:584
+msgid ""
+"Detect running players below and click “Add to Filter” to add them here."
+msgstr ""
+
+#: prefs.js:638
+#, javascript-format
+msgid "Filter rule active for “%s” — click to disable"
+msgstr ""
+
+#: prefs.js:639
+#, javascript-format
+msgid "Filter rule disabled for “%s” — click to enable"
+msgstr ""
+
+#: prefs.js:661
+#, fuzzy, javascript-format
+msgid "Remove “%s” from the filter list"
+msgstr "Supprimer %s des instances sauvegardées"
+
+#: prefs.js:694
+msgid "Detected Players"
+msgstr "Lecteurs détectés"
+
+#: prefs.js:696
+msgid ""
+"Active MPRIS players found on the session D-Bus. Click “Add to Filter” to "
+"save a player to the list above."
+msgstr ""
+
+#: prefs.js:703
+msgid "Scan for running players"
+msgstr ""
+
+#: prefs.js:704
+msgid "Detects players currently broadcasting on MPRIS"
+msgstr ""
+
+#: prefs.js:710
+msgid "Refresh the detected player list"
+msgstr "Actualiser la liste des lecteurs détectés"
+
+#: prefs.js:738
+msgid "Could not connect to the session bus"
+msgstr ""
+
+#: prefs.js:768 prefs.js:1360
+msgid "No active players detected"
+msgstr "Aucun lecteur actif détecté"
+
+#: prefs.js:769 prefs.js:1361
+msgid "Open a music app and click Refresh"
+msgstr "Ouvrir une application musicale et cliquer sur Actualiser"
+
+#: prefs.js:827 prefs.js:846 prefs.js:856
+msgid "Saved ✓"
+msgstr "Enregistré ✓"
+
+#: prefs.js:828 prefs.js:856
+msgid "Add to Filter"
+msgstr "Ajouter au filtre"
+
+#: prefs.js:834 prefs.js:849
+#, javascript-format
+msgid "“%s” is already in the filter list"
+msgstr ""
+
+#: prefs.js:835
+#, javascript-format
+msgid "Add “%s” to the filter list (enabled by default)"
+msgstr ""
+
+#: prefs.js:884
 msgid "Synced Lyrics"
 msgstr "Paroles synchronisées"
 
+#: prefs.js:886
 msgid "Time-synced lyrics fetched from lrclib.net — free, no account needed"
-msgstr "Paroles synchronisées en temps réel récupérées depuis lrclib.net — gratuit, sans compte requis"
+msgstr ""
+"Paroles synchronisées récupérées depuis lrclib.net — gratuit, sans compte"
 
+#: prefs.js:892
 msgid "Enable Synced Lyrics"
 msgstr "Activer les paroles synchronisées"
 
-msgid "Fetch and display scrolling lyrics that follow the current playback position"
-msgstr "Récupérer et afficher les paroles défilantes qui suivent la position de lecture actuelle"
+#: prefs.js:894
+msgid ""
+"Fetch and display scrolling lyrics that follow the current playback position"
+msgstr ""
+"Récupérer et afficher les paroles défilantes qui suivent la position de "
+"lecture actuelle"
 
+#: prefs.js:911
 msgid "How to Use Lyrics"
 msgstr "Comment utiliser les paroles"
 
-msgid "Lyrics are tied to each player tab independently — Spotify and Firefox each remember their own setting"
-msgstr "Les paroles sont liées à chaque onglet du lecteur indépendamment — Spotify et Firefox mémorisent chacun leur propre réglage"
+#: prefs.js:913
+msgid ""
+"Lyrics are tied to each player tab independently — Spotify and Firefox each "
+"remember their own setting"
+msgstr ""
+"Les paroles sont liées indépendamment à chaque onglet du lecteur — Spotify "
+"et Firefox mémorisent chacun leur propre réglage"
 
+#: prefs.js:921
 msgid "Start playing a song"
 msgstr "Lancer la lecture d'une chanson"
 
-msgid "Open the popup player"
-msgstr "Ouvrir le lecteur contextuel"
+#: prefs.js:923
+msgid ""
+"Open any media player or browser tab (Spotify, YouTube Music, VLC, "
+"Rhythmbox…) and play a track so it appears in the panel."
+msgstr ""
+"Ouvrir n'importe quel lecteur multimédia ou onglet de navigateur (Spotify, "
+"YouTube Music, VLC, Rhythmbox…) et lire une piste pour qu'elle apparaisse "
+"dans le panneau."
 
+#: prefs.js:928
+msgid "Open the popup player"
+msgstr "Ouvrir le lecteur popup"
+
+#: prefs.js:930
+#, fuzzy
+msgid ""
+"Click the media controller icon in the top panel to open the popup. You’ll "
+"see the album art, track title, and playback controls."
+msgstr ""
+"Cliquer sur l'icône du contrôleur multimédia dans le panneau supérieur pour "
+"ouvrir le popup. La pochette, le titre de la piste et les contrôles de "
+"lecture seront visibles."
+
+#: prefs.js:935
 msgid "Triple-click the album art to show lyrics"
 msgstr "Triple-cliquer sur la pochette pour afficher les paroles"
 
+#: prefs.js:937
+msgid ""
+"Click the album art three times in quick succession. The cover image will be "
+"replaced by the lyrics panel, which scrolls automatically in time with the "
+"music."
+msgstr ""
+"Cliquer trois fois rapidement sur la pochette. L'image sera remplacée par le "
+"panneau de paroles, qui défile automatiquement en rythme avec la musique."
+
+#: prefs.js:942
 msgid "Single-click the lyrics panel to go back"
-msgstr "Cliquer une fois sur le panneau des paroles pour revenir en arrière"
+msgstr "Cliquer une fois sur le panneau de paroles pour revenir"
 
+#: prefs.js:944
+msgid ""
+"Tap anywhere on the lyrics panel once to dismiss it and return to the album "
+"art — vinyl or normal cover, whichever that app uses."
+msgstr ""
+"Appuyer une fois n'importe où sur le panneau de paroles pour le fermer et "
+"revenir à la pochette — vinyle ou couverture normale, selon l'application."
+
+#: prefs.js:949
 msgid "Triple-click again to re-open"
-msgstr "Triple-cliquer à nouveau pour rouvrir les paroles"
+msgstr "Triple-cliquer à nouveau pour rouvrir"
 
-msgid "Open any media player or browser tab (Spotify, YouTube Music, VLC, Rhythmbox…) and play a track so it appears in the panel."
-msgstr "Ouvrez n'importe quel lecteur multimédia ou onglet de navigateur (Spotify, YouTube Music, VLC, Rhythmbox…) et lancez la lecture d'une piste pour qu'elle apparaisse dans le panneau."
+#: prefs.js:951
+msgid ""
+"You can toggle the lyrics panel as many times as you like. Each player tab "
+"remembers independently whether lyrics are open."
+msgstr ""
+"Le panneau de paroles peut être activé/désactivé autant de fois que "
+"souhaité. Chaque onglet du lecteur mémorise indépendamment si les paroles "
+"sont ouvertes."
 
-msgid "Click the media controller icon in the top panel to open the popup. You'll see the album art, track title, and playback controls."
-msgstr "Cliquez sur l'icône du contrôleur multimédia dans le panneau supérieur pour ouvrir le menu contextuel. Vous verrez la pochette, le titre de la piste et les commandes de lecture."
-
-msgid "Click the album art three times in quick succession. The cover image will be replaced by the lyrics panel, which scrolls automatically in time with the music."
-msgstr "Cliquez trois fois rapidement sur la pochette. L'image de couverture sera remplacée par le panneau des paroles, qui défile automatiquement en rythme avec la musique."
-
-msgid "Tap anywhere on the lyrics panel once to dismiss it and return to the album art — vinyl or normal cover, whichever that app uses."
-msgstr "Touchez une fois n'importe où sur le panneau des paroles pour le fermer et revenir à la pochette — vinyle ou couverture normale, selon ce qu'utilise cette application."
-
-msgid "You can toggle the lyrics panel as many times as you like. Each player tab remembers independently whether lyrics are open."
-msgstr "Vous pouvez activer ou désactiver le panneau des paroles autant de fois que vous le souhaitez. Chaque onglet du lecteur mémorise indépendamment si les paroles sont ouvertes."
-
+#: prefs.js:971
 msgid "Lyrics Behaviour"
 msgstr "Comportement des paroles"
 
+#: prefs.js:972
 msgid "What happens behind the scenes"
-msgstr "Ce qui se passe en arrière-plan"
+msgstr "Ce qui se passe en coulisses"
 
+#: prefs.js:977
 msgid "Lyrics details & edge cases"
-msgstr "Détails et cas particuliers des paroles"
+msgstr "Détails des paroles et cas particuliers"
 
+#: prefs.js:978
 msgid "What to expect when the lyrics panel is open"
-msgstr "Ce à quoi s'attendre lorsque le panneau des paroles est ouvert"
+msgstr "Ce à quoi s'attendre lorsque le panneau de paroles est ouvert"
 
+#: prefs.js:984
+#, fuzzy
 msgid ""
 "Source\n"
 "  • Lyrics are fetched from lrclib.net — a free, open public database\n"
-"  • No account or API key is required; the request is made silently in the background\n"
+"  • No account or API key is required; the request is made silently in the "
+"background\n"
 "\n"
 "Display\n"
 "  • The active lyric line is shown larger and centred in the panel\n"
@@ -465,73 +528,528 @@ msgid ""
 "    instantly to the correct position"
 msgstr ""
 "Source\n"
-"  • Les paroles sont récupérées depuis lrclib.net — une base de données publique, libre et gratuite\n"
-"  • Aucun compte ni clé API n'est requis ; la requête est effectuée silencieusement en arrière-plan\n"
+"  • Les paroles sont récupérées depuis lrclib.net — une base de données "
+"publique gratuite et ouverte\n"
+"  • Aucun compte ni clé API requis ; la requête est effectuée "
+"silencieusement en arrière-plan\n"
 "\n"
 "Affichage\n"
-"  • La ligne de paroles active est affichée plus grande et centrée dans le panneau\n"
-"  • Les lignes au-dessus et en dessous apparaissent en taille moyenne ; toutes les autres s'estompent\n"
-"  • Le panneau défile doucement pour que la ligne active soit toujours visible\n"
+"  • La ligne de paroles active est affichée plus grande et centrée dans le "
+"panneau\n"
+"  • Les lignes au-dessus et en dessous sont affichées en taille moyenne ; "
+"les autres s'estompent\n"
+"  • Le panneau défile doucement pour que la ligne active soit toujours "
+"visible\n"
 "\n"
 "Changements de piste\n"
-"  • Lorsqu'une nouvelle chanson commence pendant que le panneau des paroles est ouvert, la vue se réinitialise\n"
+"  • Quand une nouvelle chanson commence pendant que le panneau est ouvert, "
+"la vue se vide\n"
 "    et de nouvelles paroles sont récupérées automatiquement\n"
-"  • Si aucune parole n'est trouvée, le message « Aucune parole trouvée » s'affiche\n"
+"  • Si aucune parole n'est trouvée, le message \"Aucune parole trouvée\" "
+"s'affiche\n"
 "\n"
 "Plusieurs lecteurs\n"
-"  • Chaque onglet du lecteur (Spotify, YouTube, VLC…) possède son propre interrupteur\n"
-"    indépendant pour les paroles — ouvrir les paroles d'un lecteur n'affecte aucun autre\n"
-"  • Changer d'onglet restaure la vue correcte (paroles ou pochette) pour\n"
-"    le lecteur vers lequel vous basculez\n"
+"  • Chaque onglet (Spotify, YouTube, VLC…) a son propre interrupteur de "
+"paroles indépendant\n"
+"    — ouvrir les paroles pour un lecteur n'affecte pas les autres\n"
+"  • Changer d'onglet restaure la vue correcte (paroles ou pochette)\n"
 "\n"
-"Déplacement dans la piste\n"
-"  • Lorsque vous avancez ou reculez dans la piste, la ligne mise en surbrillance saute\n"
+"Recherche\n"
+"  • Lors d'un saut en avant ou en arrière, la ligne mise en évidence saute\n"
 "    instantanément à la bonne position"
 
+#: prefs.js:1024
 msgid "Album Art Click Actions"
 msgstr "Actions de clic sur la pochette"
 
+#: prefs.js:1026
 msgid "Summary of what each click pattern does on the album art cover"
-msgstr "Récapitulatif de ce que fait chaque schéma de clic sur la pochette"
+msgstr "Résumé de ce que fait chaque motif de clic sur la pochette"
 
+#: prefs.js:1034
 msgid "Single click"
 msgstr "Clic simple"
 
-msgid "When lyrics are showing: closes the lyrics panel and returns to the album art"
-msgstr "Lorsque les paroles sont affichées : ferme le panneau des paroles et revient à la pochette"
+#: prefs.js:1036
+msgid ""
+"When lyrics are showing: closes the lyrics panel and returns to the album art"
+msgstr ""
+"Quand les paroles sont affichées : ferme le panneau de paroles et revient à "
+"la pochette"
 
+#: prefs.js:1041
 msgid "Double click"
-msgstr "Double clic"
+msgstr "Double-clic"
 
-msgid "Toggles the spinning vinyl record effect for that specific app (remembered independently per app)"
-msgstr "Active ou désactive l'effet de disque vinyle tournant pour cette application spécifique (mémorisé indépendamment par application)"
+#: prefs.js:1043
+msgid ""
+"Toggles the spinning vinyl record effect for that specific app (remembered "
+"independently per app)"
+msgstr ""
+"Active/désactive l'effet de disque vinyle tournant pour cette application "
+"(mémorisé indépendamment par app)"
 
+#: prefs.js:1048
 msgid "Triple click"
-msgstr "Triple clic"
+msgstr "Triple-clic"
 
-msgid "Toggles the synced lyrics panel for the current player tab (remembered independently per player)"
-msgstr "Active ou désactive le panneau des paroles synchronisées pour l'onglet du lecteur actuel (mémorisé indépendamment par lecteur)"
+#: prefs.js:1050
+msgid ""
+"Toggles the synced lyrics panel for the current player tab (remembered "
+"independently per player)"
+msgstr ""
+"Active/désactive le panneau de paroles synchronisées pour l'onglet du "
+"lecteur actuel (mémorisé indépendamment par lecteur)"
 
+#: prefs.js:1069
 msgid "Data Source"
 msgstr "Source de données"
 
+#: prefs.js:1070
 msgid "Where lyrics come from"
-msgstr "Provenance des paroles"
+msgstr "D'où viennent les paroles"
 
+#: prefs.js:1075
 msgid "lrclib.net"
 msgstr "lrclib.net"
 
-msgid "Free, open-source time-synced lyrics database — no sign-up, no tracking, no ads"
-msgstr "Base de données de paroles synchronisées, open source et gratuite — sans inscription, sans suivi, sans publicité"
+#: prefs.js:1077
+msgid ""
+"Free, open-source time-synced lyrics database — no sign-up, no tracking, no "
+"ads"
+msgstr ""
+"Base de données de paroles synchronisées, gratuite et open source — sans "
+"inscription, sans suivi, sans publicité"
 
+#: prefs.js:1105
 msgid "Privacy note"
 msgstr "Note de confidentialité"
 
-msgid "A request containing the track title, artist, album and duration is sent to lrclib.net when you open the lyrics panel. No personal data or user identifiers are included."
-msgstr "Lors de l'ouverture du panneau des paroles, une requête contenant le titre de la piste, l'artiste, l'album et la durée est envoyée à lrclib.net. Aucune donnée personnelle ni identifiant utilisateur n'est inclus."
+#: prefs.js:1107
+msgid ""
+"A request containing the track title, artist, album and duration is sent to "
+"lrclib.net when you open the lyrics panel. No personal data or user "
+"identifiers are included."
+msgstr ""
+"Une requête contenant le titre, l'artiste, l'album et la durée est envoyée à "
+"lrclib.net à l'ouverture du panneau de paroles. Aucune donnée personnelle ni "
+"identifiant utilisateur n'est inclus."
 
-msgid "Fetching lyrics…"
-msgstr "Récupération des paroles…"
+#: prefs.js:1125
+msgid "How to Enable Vinyl Style for an App"
+msgstr "Comment activer le style vinyle pour une application"
 
-msgid "No lyrics found"
-msgstr "Aucune parole trouvée"
+#: prefs.js:1132
+msgid "Start playing music"
+msgstr "Lancer la lecture de musique"
+
+#: prefs.js:1134
+msgid ""
+"Open any media player or browser web app (YouTube, Spotify Web, SoundCloud, "
+"etc.) and play a track so it appears as a media source."
+msgstr ""
+"Ouvrir n'importe quel lecteur multimédia ou application web du navigateur "
+"(YouTube, Spotify Web, SoundCloud, etc.) et lire une piste pour qu'elle "
+"apparaisse comme source multimédia."
+
+#: prefs.js:1139
+msgid "Open the extension popup"
+msgstr "Ouvrir le popup de l'extension"
+
+#: prefs.js:1141
+msgid "Click the media controller in the top panel to open the popup player."
+msgstr ""
+"Cliquer sur le contrôleur multimédia dans le panneau supérieur pour ouvrir "
+"le lecteur popup."
+
+#: prefs.js:1146
+msgid "Double-click the album art"
+msgstr "Double-cliquer sur la pochette"
+
+#: prefs.js:1148
+#, fuzzy
+msgid ""
+"Double-click the album art image in the popup to toggle the vinyl record "
+"style for that specific app or browser source. For browsers (Chrome, "
+"Firefox, etc.) each site (YouTube, YouTube Music, Spotify Web) is stored as "
+"its own separate entry."
+msgstr ""
+"Double-cliquer sur la pochette dans le popup pour activer/désactiver le "
+"style vinyle pour cette instance d'application. L'instance est sauvegardée "
+"ici automatiquement."
+
+#: prefs.js:1154
+msgid "Manage saved instances below"
+msgstr "Gérer les instances sauvegardées ci-dessous"
+
+#: prefs.js:1156
+#, fuzzy
+msgid ""
+"All stored instances appear in the section below. Browser web-app sources "
+"appear as e.g. “YouTube Music (Chrome)” and are tracked independently. "
+"Toggle them on/off or remove them at any time."
+msgstr ""
+"Toutes les instances stockées apparaissent dans la section ci-dessous avec "
+"leur icône et leur nom. Activez/désactivez-les ou supprimez-les à tout "
+"moment."
+
+#: prefs.js:1177
+msgid "Saved App Instances"
+msgstr "Instances d'application sauvegardées"
+
+#: prefs.js:1179
+msgid ""
+"Instances stored by double-clicking the album art in the popup. Icons are "
+"loaded from the system .desktop database. Toggle the vinyl effect on/off or "
+"remove any entry."
+msgstr ""
+"Instances stockées par double-clic sur la pochette. Les icônes sont chargées "
+"depuis la base de données .desktop du système. Activer/désactiver l'effet "
+"vinyle ou supprimer des entrées."
+
+#: prefs.js:1193
+msgid "Add an App Manually"
+msgstr "Ajouter une application manuellement"
+
+#: prefs.js:1195
+#, fuzzy
+msgid ""
+"Search installed apps — including browsers — to manually add a vinyl entry. "
+"Useful for browser web apps whose instance hasn’t been captured yet via "
+"double-click."
+msgstr ""
+"Rechercher les applications installées — y compris les navigateurs — pour "
+"ajouter manuellement une entrée vinyle. Utile pour les applications web dont "
+"l'instance n'a pas encore été capturée par double-clic."
+
+#: prefs.js:1203
+msgid ""
+"Browser sources tracked separately (YouTube, YouTube Music, Spotify Web)"
+msgstr ""
+"Sources du navigateur suivies séparément (YouTube, YouTube Music, Spotify "
+"Web)"
+
+#: prefs.js:1206
+msgid ""
+"For web apps, add the browser itself (e.g. Google Chrome, Firefox). Then "
+"double-click the album art when that browser is playing music — the "
+"extension will capture the exact instance automatically."
+msgstr ""
+"Pour les applications web, ajouter le navigateur lui-même (ex. : Google "
+"Chrome, Firefox). Puis double-cliquer sur la pochette quand ce navigateur "
+"joue de la musique — l'extension capturera l'instance exacte automatiquement."
+
+#: prefs.js:1222
+msgid "Search apps"
+msgstr "Rechercher des applications"
+
+#: prefs.js:1226
+msgid "Type an app or browser name…"
+msgstr "Saisir un nom d'application ou de navigateur…"
+
+#: prefs.js:1295
+msgid "Running Players (Live Detection)"
+msgstr ""
+
+#: prefs.js:1297
+msgid ""
+"MPRIS players active right now. Click “Use This” to immediately add the "
+"player as a vinyl-enabled instance without waiting for a double-click."
+msgstr ""
+
+#: prefs.js:1304
+#, fuzzy
+msgid "Scan for active players"
+msgstr "Aucun lecteur actif détecté"
+
+#: prefs.js:1305
+msgid "Detects players currently broadcasting on the MPRIS D-Bus"
+msgstr ""
+
+#: prefs.js:1311
+msgid "Refresh"
+msgstr "Actualiser"
+
+#: prefs.js:1438
+msgid "Use This"
+msgstr "Utiliser"
+
+#: prefs.js:1442
+#, javascript-format
+msgid "Add “%s” as a vinyl-enabled instance"
+msgstr ""
+
+#: prefs.js:1486
+msgid "All running players are already saved"
+msgstr ""
+
+#: prefs.js:1487
+msgid "Manage them in the Saved App Instances section above"
+msgstr ""
+
+#: prefs.js:1544
+msgid "No instances saved yet"
+msgstr "Aucune instance sauvegardée pour le moment"
+
+#: prefs.js:1546
+msgid ""
+"Double-click the album art in the popup while music is playing to save an "
+"instance here."
+msgstr ""
+"Double-cliquer sur la pochette dans le popup pendant la lecture pour "
+"sauvegarder une instance ici."
+
+#: prefs.js:1645
+#, javascript-format
+msgid "%s via %s"
+msgstr ""
+
+#: prefs.js:1654 prefs.js:2119
+msgid "renamed from"
+msgstr "renommé depuis"
+
+#: prefs.js:1677
+#, fuzzy, javascript-format
+msgid "Rename “%s”"
+msgstr "Renommer « %s »"
+
+#: prefs.js:1701
+#, javascript-format
+msgid "Remove %s from saved instances"
+msgstr "Supprimer %s des instances sauvegardées"
+
+#: prefs.js:1718
+msgid "Rename Instance"
+msgstr "Renommer l'instance"
+
+#: prefs.js:1720
+#, javascript-format
+msgid ""
+"Enter a custom display name for \"%s\".\n"
+"Leave blank to reset to the default."
+msgstr ""
+"Saisir un nom d'affichage personnalisé pour « %s ».\n"
+"Laisser vide pour réinitialiser à la valeur par défaut."
+
+#: prefs.js:1726
+msgid "Cancel"
+msgstr "Annuler"
+
+#: prefs.js:1727
+msgid "Rename"
+msgstr "Renommer"
+
+#: prefs.js:1745
+msgid "Display name"
+msgstr "Nom d'affichage"
+
+#: prefs.js:2090
+msgid "Saved Instances"
+msgstr "Instances sauvegardées"
+
+#: prefs.js:2111
+#, javascript-format
+msgid "Browser: %s · Source: %s"
+msgstr ""
+
+#: prefs.js:2162
+msgid "Other Apps"
+msgstr "Autres applications"
+
+#: prefs.js:2235
+msgid "No matching apps found"
+msgstr "Aucune application correspondante trouvée"
+
+#: prefs.js:2334
+msgid "About"
+msgstr "À propos"
+
+#: prefs.js:2341
+msgid "Beautiful and modern media controls with multi-instance support"
+msgstr ""
+"Contrôles multimédias beaux et modernes avec prise en charge multi-instance"
+
+#: prefs.js:2379
+msgid "Version 5.2"
+msgstr "Version 5.2"
+
+#: prefs.js:2386
+msgid "Modern media controls with native GNOME design"
+msgstr "Contrôles multimédias modernes avec design GNOME natif"
+
+#: prefs.js:2400
+msgid "Extension Links"
+msgstr "Liens de l'extension"
+
+#: prefs.js:2401 prefs.js:2406
+msgid "Source code, issues, and contributions"
+msgstr "Code source, problèmes et contributions"
+
+#: prefs.js:2405
+msgid "View on GitHub"
+msgstr "Voir sur GitHub"
+
+#: prefs.js:2429
+msgid "☕ Support by buying me a coffee – just scan the QR code!"
+msgstr "☕ Soutenez en m'offrant un café – scannez simplement le code QR !"
+
+#: prefs.js:2431
+msgid "Preferred Method - Scan QR code to support development"
+msgstr "Méthode préférée — Scanner le code QR pour soutenir le développement"
+
+#: prefs.js:2458
+msgid "Donation Address"
+msgstr "Adresse de don"
+
+#: prefs.js:2473
+msgid "Donation address"
+msgstr "Adresse de don"
+
+#: prefs.js:2478
+msgid "☕ Buy Me a Coffee"
+msgstr "☕ Offrez-moi un café"
+
+#: prefs.js:2479
+msgid "Support development with a small donation"
+msgstr "Soutenir le développement avec un petit don"
+
+#: prefs.js:2503
+msgid "License & Credits"
+msgstr "Licence et crédits"
+
+#: prefs.js:2504
+msgid "Open source software information"
+msgstr "Informations sur le logiciel libre"
+
+#: prefs.js:2507
+msgid "Open Source License"
+msgstr "Licence open source"
+
+#: prefs.js:2508
+msgid "GPL-3.0 License - Free and open source software"
+msgstr "Licence GPL-3.0 — Logiciel libre et open source"
+
+#: prefs.js:2515
+msgid "Media Data Sources"
+msgstr "Sources de données multimédias"
+
+#: prefs.js:2517
+msgid "MPRIS D-Bus interface - Standard media player remote interfacing"
+msgstr ""
+"Interface MPRIS D-Bus — Interface standard de contrôle à distance des "
+"lecteurs"
+
+#: prefs.js:2525
+msgid "Key Features"
+msgstr "Fonctionnalités principales"
+
+#: prefs.js:2527
+#, fuzzy
+msgid ""
+"• Multi-instance browser support\n"
+"• Per-app rotating vinyl record album art\n"
+"• Animated tonearm\n"
+"• Smooth animations\n"
+"• Double-click to toggle vinyl per app\n"
+"• Triple-click album art to show synced lyrics\n"
+"• Single-click lyrics panel to return to album art\n"
+"• Lyrics synced to playback via lrclib.net\n"
+"• Per-player lyrics toggle (each tab independent)\n"
+"• All seen apps remembered — re-enable any time"
+msgstr ""
+"• Prise en charge multi-instance du navigateur\n"
+"• Pochette de disque vinyle rotatif par application\n"
+"• Bras de lecture animé\n"
+"• Animations fluides\n"
+"• Double-clic pour activer/désactiver le vinyle par application\n"
+"• Toutes les applications vues mémorisées — réactivables à tout moment"
+
+#: prefs.js:2589
+msgid "Copy to Clipboard"
+msgstr "Copier dans le presse-papiers"
+
+#: prefs.js:2591
+msgid ""
+"Unable to copy automatically. Select the address below and press Ctrl+C:"
+msgstr ""
+"Impossible de copier automatiquement. Sélectionnez l'adresse ci-dessous et "
+"appuyez sur Ctrl+C :"
+
+#: prefs.js:2594
+msgid "Close"
+msgstr "Fermer"
+
+#~ msgid "Browser web apps (YouTube, Spotify Web, etc.)"
+#~ msgstr "Applications web du navigateur (YouTube, Spotify Web, etc.)"
+
+#~ msgid "Off"
+#~ msgstr "Désactivé"
+
+#~ msgid "Blacklist"
+#~ msgstr "Liste noire"
+
+#~ msgid "Whitelist"
+#~ msgstr "Liste blanche"
+
+#~ msgid "Support Development"
+#~ msgstr "Soutenir le développement"
+
+#~ msgid "Choose your preferred donation platform"
+#~ msgstr "Choisir votre plateforme de don préférée"
+
+#~ msgid "Donation Platform"
+#~ msgstr "Plateforme de don"
+
+#~ msgid "Switch to see the QR code for each platform"
+#~ msgstr "Changer pour voir le code QR de chaque plateforme"
+
+#~ msgid "❤ GitHub Sponsors"
+#~ msgstr "❤ GitHub Sponsors"
+
+#~ msgid "Sponsor via GitHub — one-time or monthly"
+#~ msgstr "Sponsoriser via GitHub — ponctuel ou mensuel"
+
+#~ msgid "Scan QR code to open Buy Me a Coffee"
+#~ msgstr "Scanner le code QR pour ouvrir Buy Me a Coffee"
+
+#~ msgid "❤ Support via GitHub Sponsors – just scan the QR code!"
+#~ msgstr "❤ Soutenir via GitHub Sponsors – scannez simplement le code QR !"
+
+#~ msgid "Scan QR code to open GitHub Sponsors"
+#~ msgstr "Scanner le code QR pour ouvrir GitHub Sponsors"
+
+#~ msgid "Panel Settings"
+#~ msgstr "Paramètres du panneau"
+
+#~ msgid "Configure the position and appearance in the top panel"
+#~ msgstr "Configurer la position et l'apparence dans le panneau supérieur"
+
+#~ msgid "Display Settings"
+#~ msgstr "Paramètres d'affichage"
+
+#~ msgid "Configure what appears in the panel"
+#~ msgstr "Configurer ce qui s'affiche dans le panneau"
+
+#~ msgid "Display track information in the panel"
+#~ msgstr "Afficher les informations de la piste dans le panneau"
+
+#~ msgid "Include artist name with track title"
+#~ msgstr "Inclure le nom de l'artiste avec le titre de la piste"
+
+#~ msgid "Maximum Title Length"
+#~ msgstr "Longueur maximale du titre"
+
+#~ msgid "Characters to display before scrolling starts"
+#~ msgstr "Nombre de caractères avant le début du défilement"
+
+#~ msgid "Scroll Speed"
+#~ msgstr "Vitesse de défilement"
+
+#~ msgid "Separator Text"
+#~ msgstr "Texte de séparation"
+
+#~ msgid "Fetching lyrics…"
+#~ msgstr "Récupération des paroles…"
+
+#~ msgid "No lyrics found"
+#~ msgstr "Aucune parole trouvée"

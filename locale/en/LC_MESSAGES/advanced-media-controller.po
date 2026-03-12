@@ -1,4 +1,4 @@
-# Chinese Traditional translation of Advanced Media Controller
+# English translation of Advanced Media Controller
 # Copyright (C) 2026 Sanjai Shaarugesh
 # This file is distributed under the same license as the advanced-media-controller package.
 msgid ""
@@ -9,116 +9,116 @@ msgstr ""
 "POT-Creation-Date: 2026-03-12 19:01+0530\n"
 "PO-Revision-Date: 2026-03-12 00:00+0000\n"
 "Last-Translator: Automatically generated\n"
-"Language-Team: Chinese Traditional\n"
-"Language: zh_TW\n"
+"Language-Team: English\n"
+"Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: utils/indicator.js:19
 msgid "Media Controls"
-msgstr "媒體控制項"
+msgstr "Media Controls"
 
 #: prefs.js:91 prefs.js:2339 prefs.js:2372
 msgid "Advanced Media Controller"
-msgstr "進階媒體控制器"
+msgstr "Advanced Media Controller"
 
 #: prefs.js:97
 msgid "General"
-msgstr "一般"
+msgstr "General"
 
 #: prefs.js:103
 msgid "Panel Placement"
-msgstr "面板位置"
+msgstr "Panel Placement"
 
 #: prefs.js:104
 msgid "Where the indicator sits in the top bar"
-msgstr "指示器在頂端列中的位置"
+msgstr "Where the indicator sits in the top bar"
 
 #: prefs.js:108
 msgid "Panel Position"
-msgstr "面板位置"
+msgstr "Panel Position"
 
 #: prefs.js:110
 msgid "Left"
-msgstr "左"
+msgstr "Left"
 
 #: prefs.js:110
 msgid "Center"
-msgstr "置中"
+msgstr "Center"
 
 #: prefs.js:110
 msgid "Right"
-msgstr "右"
+msgstr "Right"
 
 #: prefs.js:125
 msgid "Panel Index"
-msgstr "面板索引"
+msgstr "Panel Index"
 
 #: prefs.js:126
 msgid "Position within the panel area (-1 = automatic)"
-msgstr "面板區域內的位置（-1 = 自動）"
+msgstr "Position within the panel area (-1 = automatic)"
 
 #: prefs.js:144
 msgid "Panel Label"
-msgstr "面板標籤"
+msgstr "Panel Label"
 
 #: prefs.js:145
 msgid "Track name shown in the top bar"
-msgstr "頂端列中顯示的曲目名稱"
+msgstr "Track name shown in the top bar"
 
 #: prefs.js:150
 msgid "Show Track Name"
-msgstr "顯示曲目名稱"
+msgstr "Show Track Name"
 
 #: prefs.js:151
 msgid "Display the current track title in the panel"
-msgstr "在面板中顯示目前曲目標題"
+msgstr "Display the current track title in the panel"
 
 #: prefs.js:162
 msgid "Show Artist Name"
-msgstr "顯示藝術家名稱"
+msgstr "Show Artist Name"
 
 #: prefs.js:163
 msgid "Append the artist name to the track title"
-msgstr "將藝術家名稱附加到曲目標題"
+msgstr "Append the artist name to the track title"
 
 #: prefs.js:174
 msgid "Title / Artist Separator"
-msgstr "標題 / 藝術家分隔符號"
+msgstr "Title / Artist Separator"
 
 #: prefs.js:184
 msgid "Panel Scrolling"
-msgstr "面板捲動"
+msgstr "Panel Scrolling"
 
 #: prefs.js:185
 msgid "Marquee scroll of the track label in the top bar"
-msgstr "頂端列中曲目標籤的跑馬燈捲動"
+msgstr "Marquee scroll of the track label in the top bar"
 
 #: prefs.js:190
 msgid "Enable Panel Label Scrolling"
-msgstr "啟用面板標籤捲動"
+msgstr "Enable Panel Label Scrolling"
 
 #: prefs.js:192
 msgid ""
 "Scroll the track/artist text one full loop then pause before repeating. When "
 "off, the text is truncated with an ellipsis."
 msgstr ""
-"將曲目/藝術家文字捲動一個完整循環，然後暫停再重複。關閉時，文字將以省略符號截"
-"斷。"
+"Scroll the track/artist text one full loop then pause before repeating. When "
+"off, the text is truncated with an ellipsis."
 
 #: prefs.js:205
 msgid "Panel Scroll Speed"
-msgstr "面板捲動速度"
+msgstr "Panel Scroll Speed"
 
 #: prefs.js:206 prefs.js:314 prefs.js:354
 msgid "1 = slowest, 10 = fastest"
-msgstr "1 = 最慢，10 = 最快"
+msgstr "1 = slowest, 10 = fastest"
 
 #: prefs.js:224
 msgid "System Integration"
-msgstr "系統整合"
+msgstr "System Integration"
 
 #: prefs.js:226
 msgid "Controls how this extension interacts with other parts of GNOME Shell."
@@ -126,11 +126,11 @@ msgstr ""
 
 #: prefs.js:237
 msgid "Hide Default GNOME Media Player"
-msgstr "隱藏預設 GNOME 媒體播放器"
+msgstr "Hide Default GNOME Media Player"
 
 #: prefs.js:239
 msgid "Remove the built-in media controls from the system date/time menu"
-msgstr "從系統日期/時間選單中移除內建媒體控制項"
+msgstr "Remove the built-in media controls from the system date/time menu"
 
 #: prefs.js:260
 msgid ""
@@ -145,66 +145,67 @@ msgstr ""
 
 #: prefs.js:286
 msgid "Popup Player"
-msgstr "彈出播放器"
+msgstr "Popup Player"
 
 #: prefs.js:292
 msgid "Title Scrolling"
-msgstr "標題捲動"
+msgstr "Title Scrolling"
 
 #: prefs.js:293
 msgid "Marquee behaviour for the track title inside the popup"
-msgstr "彈出視窗內曲目標題的跑馬燈行為"
+msgstr "Marquee behaviour for the track title inside the popup"
 
 #: prefs.js:298
 msgid "Enable Title Scrolling"
-msgstr "啟用標題捲動"
+msgstr "Enable Title Scrolling"
 
 #: prefs.js:300
 msgid ""
 "Scroll long track titles from start to end, pause, then repeat. When off, "
 "the text is truncated with an ellipsis."
 msgstr ""
-"將較長的曲目標題從頭捲動到尾，暫停，然後重複。關閉時，文字將以省略符號截斷。"
+"Scroll long track titles from start to end, pause, then repeat. When off, "
+"the text is truncated with an ellipsis."
 
 #: prefs.js:313
 msgid "Title Scroll Speed"
-msgstr "標題捲動速度"
+msgstr "Title Scroll Speed"
 
 #: prefs.js:332
 msgid "Artist Scrolling"
-msgstr "藝術家捲動"
+msgstr "Artist Scrolling"
 
 #: prefs.js:333
 msgid "Marquee behaviour for the artist name inside the popup"
-msgstr "彈出視窗內藝術家名稱的跑馬燈行為"
+msgstr "Marquee behaviour for the artist name inside the popup"
 
 #: prefs.js:338
 msgid "Enable Artist Scrolling"
-msgstr "啟用藝術家捲動"
+msgstr "Enable Artist Scrolling"
 
 #: prefs.js:340
 msgid ""
 "Scroll long artist names from start to end, pause, then repeat. When off, "
 "the text is truncated with an ellipsis."
 msgstr ""
-"將較長的藝術家名稱從頭捲動到尾，暫停，然後重複。關閉時，文字將以省略符號截"
-"斷。"
+"Scroll long artist names from start to end, pause, then repeat. When off, "
+"the text is truncated with an ellipsis."
 
 #: prefs.js:353
 msgid "Artist Scroll Speed"
-msgstr "藝術家捲動速度"
+msgstr "Artist Scroll Speed"
 
 #: prefs.js:373
 msgid "Album Art"
-msgstr "專輯封面"
+msgstr "Album Art"
 
 #: prefs.js:374
 msgid "Vinyl-record rotation animation"
-msgstr "黑膠唱片旋轉動畫"
+msgstr "Vinyl-record rotation animation"
 
 #: prefs.js:379
 msgid "Enable Vinyl Record Rotation (Global Default)"
-msgstr "啟用黑膠唱片旋轉（全域預設值）"
+msgstr "Enable Vinyl Record Rotation (Global Default)"
 
 #: prefs.js:381
 #, fuzzy
@@ -212,24 +213,24 @@ msgid ""
 "Global default when no per-app setting exists. Per-app overrides in the "
 "‘Vinyl Apps’ section take priority."
 msgstr ""
-"當沒有每個應用程式設定時的全域預設值。「黑膠應用程式」區段中的每個應用程式覆"
-"蓋設定優先。"
+"Global default when no per-app setting exists. Per-app overrides in the "
+"'Vinyl Apps' section take priority."
 
 #: prefs.js:395
 msgid "Rotation Speed (seconds per revolution)"
-msgstr "旋轉速度（每轉秒數）"
+msgstr "Rotation Speed (seconds per revolution)"
 
 #: prefs.js:396
 msgid "5 = fastest, 60 = slowest. Recommended: 20–30"
-msgstr "5 = 最快，60 = 最慢。建議：20–30"
+msgstr "5 = fastest, 60 = slowest. Recommended: 20–30"
 
 #: prefs.js:414
 msgid "Vinyl Effect Details"
-msgstr "黑膠效果詳細資訊"
+msgstr "Vinyl Effect Details"
 
 #: prefs.js:415
 msgid "How the animated vinyl record works"
-msgstr "動畫黑膠唱片的運作方式"
+msgstr "How the animated vinyl record works"
 
 #: prefs.js:420
 #, fuzzy
@@ -244,31 +245,31 @@ msgid ""
 "- Per-app settings override the global default above\n"
 "- All seen apps are stored; re-enable any time from Vinyl Apps page"
 msgstr ""
-"- 專輯封面顯示在旋轉的黑膠唱片上\n"
-"- 黑色黑膠紋槽在邊緣清晰可見\n"
-"- 動畫唱臂隨播放狀態進出\n"
-"- 音樂暫停時旋轉平滑暫停\n"
-"  （唱片角度保持不變，從同一位置恢復）\n"
-"- 僅在真正停止時唱片才重置為 0°\n"
-"- 雙擊專輯封面僅切換該播放器應用程式的黑膠效果\n"
-"- 每個應用程式設定覆蓋上方的全域預設值\n"
-"- 所有已見應用程式均已儲存；隨時可從黑膠應用程式頁面重新啟用"
+"- Album cover appears on a spinning vinyl disc\n"
+"- Black vinyl grooves are visible around the edges\n"
+"- Animated tonearm moves in and out with playback state\n"
+"- Rotation pauses smoothly when music pauses\n"
+"  (disc angle is preserved and resumes from the same position)\n"
+"- Disc resets to 0° only on a genuine Stop\n"
+"- Double-click album art to toggle vinyl for THAT player's app only\n"
+"- Per-app settings override the global default above\n"
+"- All seen apps are stored; re-enable any time from Vinyl Apps page"
 
 #: prefs.js:445
 msgid "Vinyl Apps"
-msgstr "黑膠應用程式"
+msgstr "Vinyl Apps"
 
 #: prefs.js:453
 msgid "Player Filter"
-msgstr "播放器篩選器"
+msgstr "Player Filter"
 
 #: prefs.js:461
 msgid "Lyrics"
-msgstr "歌詞"
+msgstr "Lyrics"
 
 #: prefs.js:519 prefs.js:536
 msgid "Filter Mode"
-msgstr "篩選模式"
+msgstr "Filter Mode"
 
 #: prefs.js:521
 msgid ""
@@ -279,17 +280,17 @@ msgstr ""
 #: prefs.js:530
 #, fuzzy
 msgid "Off — Show all media players (no filtering)"
-msgstr "顯示所有媒體播放器 — 篩選已停用"
+msgstr "Show all media players — filtering is disabled"
 
 #: prefs.js:531
 #, fuzzy
 msgid "Blacklist — Hide only the players you add to the list"
-msgstr "僅隱藏新增到清單中的播放器"
+msgstr "Hide only the players you add to the list below"
 
 #: prefs.js:532
 #, fuzzy
 msgid "Whitelist — Show only the players you add to the list"
-msgstr "僅顯示新增到清單中的播放器"
+msgstr "Show only the players you add to the list below"
 
 #: prefs.js:537
 msgid "Controls which media players the extension tracks and displays"
@@ -297,7 +298,7 @@ msgstr ""
 
 #: prefs.js:554
 msgid "Saved Players"
-msgstr "已儲存的播放器"
+msgstr "Saved Players"
 
 #: prefs.js:556
 msgid ""
@@ -308,7 +309,7 @@ msgstr ""
 
 #: prefs.js:582
 msgid "No players saved yet"
-msgstr "尚未儲存任何播放器"
+msgstr "No players saved yet"
 
 #: prefs.js:584
 msgid ""
@@ -328,11 +329,11 @@ msgstr ""
 #: prefs.js:661
 #, fuzzy, javascript-format
 msgid "Remove “%s” from the filter list"
-msgstr "從已儲存執行個體中移除 %s"
+msgstr "Remove %s from saved instances"
 
 #: prefs.js:694
 msgid "Detected Players"
-msgstr "偵測到的播放器"
+msgstr "Detected Players"
 
 #: prefs.js:696
 msgid ""
@@ -350,7 +351,7 @@ msgstr ""
 
 #: prefs.js:710
 msgid "Refresh the detected player list"
-msgstr "重新整理偵測到的播放器清單"
+msgstr "Refresh the detected player list"
 
 #: prefs.js:738
 msgid "Could not connect to the session bus"
@@ -358,19 +359,19 @@ msgstr ""
 
 #: prefs.js:768 prefs.js:1360
 msgid "No active players detected"
-msgstr "未偵測到活動播放器"
+msgstr "No active players detected"
 
 #: prefs.js:769 prefs.js:1361
 msgid "Open a music app and click Refresh"
-msgstr "開啟音樂應用程式並點選重新整理"
+msgstr "Open a music app and click Refresh"
 
 #: prefs.js:827 prefs.js:846 prefs.js:856
 msgid "Saved ✓"
-msgstr "已儲存 ✓"
+msgstr "Saved ✓"
 
 #: prefs.js:828 prefs.js:856
 msgid "Add to Filter"
-msgstr "新增至篩選器"
+msgstr "Add to Filter"
 
 #: prefs.js:834 prefs.js:849
 #, javascript-format
@@ -384,47 +385,49 @@ msgstr ""
 
 #: prefs.js:884
 msgid "Synced Lyrics"
-msgstr "同步歌詞"
+msgstr "Synced Lyrics"
 
 #: prefs.js:886
 msgid "Time-synced lyrics fetched from lrclib.net — free, no account needed"
-msgstr "從 lrclib.net 擷取的時間同步歌詞 — 免費，無需帳戶"
+msgstr "Time-synced lyrics fetched from lrclib.net — free, no account needed"
 
 #: prefs.js:892
 msgid "Enable Synced Lyrics"
-msgstr "啟用同步歌詞"
+msgstr "Enable Synced Lyrics"
 
 #: prefs.js:894
 msgid ""
 "Fetch and display scrolling lyrics that follow the current playback position"
-msgstr "擷取並顯示跟隨目前播放位置的捲動歌詞"
+msgstr ""
+"Fetch and display scrolling lyrics that follow the current playback position"
 
 #: prefs.js:911
 msgid "How to Use Lyrics"
-msgstr "如何使用歌詞"
+msgstr "How to Use Lyrics"
 
 #: prefs.js:913
 msgid ""
 "Lyrics are tied to each player tab independently — Spotify and Firefox each "
 "remember their own setting"
 msgstr ""
-"歌詞獨立綁定到每個播放器索引標籤 — Spotify 和 Firefox 各自記住自己的設定"
+"Lyrics are tied to each player tab independently — Spotify and Firefox each "
+"remember their own setting"
 
 #: prefs.js:921
 msgid "Start playing a song"
-msgstr "開始播放歌曲"
+msgstr "Start playing a song"
 
 #: prefs.js:923
 msgid ""
 "Open any media player or browser tab (Spotify, YouTube Music, VLC, "
 "Rhythmbox…) and play a track so it appears in the panel."
 msgstr ""
-"開啟任意媒體播放器或瀏覽器索引標籤（Spotify、YouTube Music、VLC、"
-"Rhythmbox…），播放曲目使其出現在面板中。"
+"Open any media player or browser tab (Spotify, YouTube Music, VLC, "
+"Rhythmbox…) and play a track so it appears in the panel."
 
 #: prefs.js:928
 msgid "Open the popup player"
-msgstr "開啟彈出播放器"
+msgstr "Open the popup player"
 
 #: prefs.js:930
 #, fuzzy
@@ -432,12 +435,12 @@ msgid ""
 "Click the media controller icon in the top panel to open the popup. You’ll "
 "see the album art, track title, and playback controls."
 msgstr ""
-"點選頂端面板中的媒體控制器圖示以開啟彈出視窗。您將看到專輯封面、曲目標題和播"
-"放控制項。"
+"Click the media controller icon in the top panel to open the popup. You'll "
+"see the album art, track title, and playback controls."
 
 #: prefs.js:935
 msgid "Triple-click the album art to show lyrics"
-msgstr "三擊專輯封面顯示歌詞"
+msgstr "Triple-click the album art to show lyrics"
 
 #: prefs.js:937
 msgid ""
@@ -445,46 +448,49 @@ msgid ""
 "replaced by the lyrics panel, which scrolls automatically in time with the "
 "music."
 msgstr ""
-"快速連續點選專輯封面三次。封面影像將被歌詞面板取代，歌詞面板會隨音樂自動捲"
-"動。"
+"Click the album art three times in quick succession. The cover image will be "
+"replaced by the lyrics panel, which scrolls automatically in time with the "
+"music."
 
 #: prefs.js:942
 msgid "Single-click the lyrics panel to go back"
-msgstr "單擊歌詞面板返回"
+msgstr "Single-click the lyrics panel to go back"
 
 #: prefs.js:944
 msgid ""
 "Tap anywhere on the lyrics panel once to dismiss it and return to the album "
 "art — vinyl or normal cover, whichever that app uses."
 msgstr ""
-"在歌詞面板上任意位置單擊一次即可關閉並返回專輯封面 — 黑膠或普通封面，取決於該"
-"應用程式使用哪種。"
+"Tap anywhere on the lyrics panel once to dismiss it and return to the album "
+"art — vinyl or normal cover, whichever that app uses."
 
 #: prefs.js:949
 msgid "Triple-click again to re-open"
-msgstr "再次三擊重新開啟"
+msgstr "Triple-click again to re-open"
 
 #: prefs.js:951
 msgid ""
 "You can toggle the lyrics panel as many times as you like. Each player tab "
 "remembers independently whether lyrics are open."
-msgstr "您可以隨意切換歌詞面板。每個播放器索引標籤獨立記住歌詞是否已開啟。"
+msgstr ""
+"You can toggle the lyrics panel as many times as you like. Each player tab "
+"remembers independently whether lyrics are open."
 
 #: prefs.js:971
 msgid "Lyrics Behaviour"
-msgstr "歌詞行為"
+msgstr "Lyrics Behaviour"
 
 #: prefs.js:972
 msgid "What happens behind the scenes"
-msgstr "背景發生的事情"
+msgstr "What happens behind the scenes"
 
 #: prefs.js:977
 msgid "Lyrics details & edge cases"
-msgstr "歌詞詳細資訊與邊界情況"
+msgstr "Lyrics details & edge cases"
 
 #: prefs.js:978
 msgid "What to expect when the lyrics panel is open"
-msgstr "歌詞面板開啟時的預期效果"
+msgstr "What to expect when the lyrics panel is open"
 
 #: prefs.js:984
 #, fuzzy
@@ -514,73 +520,80 @@ msgid ""
 "  • When you seek forward or backward, the highlighted line jumps\n"
 "    instantly to the correct position"
 msgstr ""
-"來源\n"
-"  • 歌詞從 lrclib.net 擷取 — 一個免費的開放公共資料庫\n"
-"  • 不需要帳戶或 API 金鑰；請求在背景靜默發出\n"
+"Source\n"
+"  • Lyrics are fetched from lrclib.net — a free, open public database\n"
+"  • No account or API key is required; the request is made silently in the "
+"background\n"
 "\n"
-"顯示\n"
-"  • 活躍歌詞行在面板中以較大字型置中顯示\n"
-"  • 上下行以中等大小顯示；其他行淡出\n"
-"  • 面板平滑捲動，使活躍行始終可見\n"
+"Display\n"
+"  • The active lyric line is shown larger and centred in the panel\n"
+"  • The line above and below are shown at medium size; all others fade out\n"
+"  • The panel scrolls smoothly so the active line is always in view\n"
 "\n"
-"曲目變更\n"
-"  • 歌詞面板開啟時新歌曲開始，檢視清空\n"
-"    並自動擷取新歌詞\n"
-"  • 如果找不到歌詞，顯示\"找不到歌詞\"訊息\n"
+"Track changes\n"
+"  • When a new song starts while the lyrics panel is open, the view clears\n"
+"    and new lyrics are fetched automatically\n"
+"  • If no lyrics are found, a \"No lyrics found\" message is shown\n"
 "\n"
-"多個播放器\n"
-"  • 每個播放器索引標籤（Spotify、YouTube、VLC…）都有自己獨立的\n"
-"    歌詞切換 — 為一個播放器開啟歌詞不影響其他播放器\n"
-"  • 切換索引標籤可恢復您切換到的播放器的正確檢視（歌詞或專輯封面）\n"
+"Multiple players\n"
+"  • Each player tab (Spotify, YouTube, VLC…) has its own independent\n"
+"    lyrics toggle — opening lyrics for one player does not affect any other\n"
+"  • Switching tabs restores the correct view (lyrics or album art) for\n"
+"    the player you switch to\n"
 "\n"
-"跳轉\n"
-"  • 向前或向後跳轉時，反白行\n"
-"    立即跳轉到正確位置"
+"Seeking\n"
+"  • When you seek forward or backward, the highlighted line jumps\n"
+"    instantly to the correct position"
 
 #: prefs.js:1024
 msgid "Album Art Click Actions"
-msgstr "專輯封面點擊操作"
+msgstr "Album Art Click Actions"
 
 #: prefs.js:1026
 msgid "Summary of what each click pattern does on the album art cover"
-msgstr "專輯封面上每種點擊模式操作的摘要"
+msgstr "Summary of what each click pattern does on the album art cover"
 
 #: prefs.js:1034
 msgid "Single click"
-msgstr "單擊"
+msgstr "Single click"
 
 #: prefs.js:1036
 msgid ""
 "When lyrics are showing: closes the lyrics panel and returns to the album art"
-msgstr "顯示歌詞時：關閉歌詞面板並返回專輯封面"
+msgstr ""
+"When lyrics are showing: closes the lyrics panel and returns to the album art"
 
 #: prefs.js:1041
 msgid "Double click"
-msgstr "雙擊"
+msgstr "Double click"
 
 #: prefs.js:1043
 msgid ""
 "Toggles the spinning vinyl record effect for that specific app (remembered "
 "independently per app)"
-msgstr "切換特定應用程式的旋轉黑膠唱片效果（每個應用程式獨立記住）"
+msgstr ""
+"Toggles the spinning vinyl record effect for that specific app (remembered "
+"independently per app)"
 
 #: prefs.js:1048
 msgid "Triple click"
-msgstr "三擊"
+msgstr "Triple click"
 
 #: prefs.js:1050
 msgid ""
 "Toggles the synced lyrics panel for the current player tab (remembered "
 "independently per player)"
-msgstr "切換目前播放器索引標籤的同步歌詞面板（每個播放器獨立記住）"
+msgstr ""
+"Toggles the synced lyrics panel for the current player tab (remembered "
+"independently per player)"
 
 #: prefs.js:1069
 msgid "Data Source"
-msgstr "資料來源"
+msgstr "Data Source"
 
 #: prefs.js:1070
 msgid "Where lyrics come from"
-msgstr "歌詞的來源"
+msgstr "Where lyrics come from"
 
 #: prefs.js:1075
 msgid "lrclib.net"
@@ -590,11 +603,13 @@ msgstr "lrclib.net"
 msgid ""
 "Free, open-source time-synced lyrics database — no sign-up, no tracking, no "
 "ads"
-msgstr "免費開源的時間同步歌詞資料庫 — 無需註冊，無追蹤，無廣告"
+msgstr ""
+"Free, open-source time-synced lyrics database — no sign-up, no tracking, no "
+"ads"
 
 #: prefs.js:1105
 msgid "Privacy note"
-msgstr "隱私說明"
+msgstr "Privacy note"
 
 #: prefs.js:1107
 msgid ""
@@ -602,36 +617,37 @@ msgid ""
 "lrclib.net when you open the lyrics panel. No personal data or user "
 "identifiers are included."
 msgstr ""
-"開啟歌詞面板時，包含曲目標題、藝術家、專輯和時長的請求將傳送至 lrclib.net。不"
-"包含個人資料或使用者識別碼。"
+"A request containing the track title, artist, album and duration is sent to "
+"lrclib.net when you open the lyrics panel. No personal data or user "
+"identifiers are included."
 
 #: prefs.js:1125
 msgid "How to Enable Vinyl Style for an App"
-msgstr "如何為應用程式啟用黑膠樣式"
+msgstr "How to Enable Vinyl Style for an App"
 
 #: prefs.js:1132
 msgid "Start playing music"
-msgstr "開始播放音樂"
+msgstr "Start playing music"
 
 #: prefs.js:1134
 msgid ""
 "Open any media player or browser web app (YouTube, Spotify Web, SoundCloud, "
 "etc.) and play a track so it appears as a media source."
 msgstr ""
-"開啟任意媒體播放器或瀏覽器網頁應用程式（YouTube、Spotify Web、SoundCloud "
-"等），播放曲目使其顯示為媒體來源。"
+"Open any media player or browser web app (YouTube, Spotify Web, SoundCloud, "
+"etc.) and play a track so it appears as a media source."
 
 #: prefs.js:1139
 msgid "Open the extension popup"
-msgstr "開啟擴充功能彈出視窗"
+msgstr "Open the extension popup"
 
 #: prefs.js:1141
 msgid "Click the media controller in the top panel to open the popup player."
-msgstr "點選頂端面板中的媒體控制器以開啟彈出播放器。"
+msgstr "Click the media controller in the top panel to open the popup player."
 
 #: prefs.js:1146
 msgid "Double-click the album art"
-msgstr "雙擊專輯封面"
+msgstr "Double-click the album art"
 
 #: prefs.js:1148
 #, fuzzy
@@ -641,12 +657,13 @@ msgid ""
 "Firefox, etc.) each site (YouTube, YouTube Music, Spotify Web) is stored as "
 "its own separate entry."
 msgstr ""
-"雙擊彈出視窗中的專輯封面影像，切換該特定應用程式執行個體的黑膠樣式。執行個體"
-"將自動儲存在此處。"
+"Double-click the album art image in the popup to toggle the vinyl record "
+"style for that specific app instance. The instance is saved here "
+"automatically."
 
 #: prefs.js:1154
 msgid "Manage saved instances below"
-msgstr "在下方管理已儲存的執行個體"
+msgstr "Manage saved instances below"
 
 #: prefs.js:1156
 #, fuzzy
@@ -655,12 +672,12 @@ msgid ""
 "appear as e.g. “YouTube Music (Chrome)” and are tracked independently. "
 "Toggle them on/off or remove them at any time."
 msgstr ""
-"所有已儲存的執行個體將在下方區段顯示其應用程式圖示和名稱。可隨時切換開/關或刪"
-"除。"
+"All stored instances appear in the section below with their app icon and "
+"name. Toggle them on/off or remove them at any time."
 
 #: prefs.js:1177
 msgid "Saved App Instances"
-msgstr "已儲存的應用程式執行個體"
+msgstr "Saved App Instances"
 
 #: prefs.js:1179
 msgid ""
@@ -668,12 +685,13 @@ msgid ""
 "loaded from the system .desktop database. Toggle the vinyl effect on/off or "
 "remove any entry."
 msgstr ""
-"透過雙擊彈出視窗中的專輯封面所儲存的執行個體。圖示從系統 .desktop 資料庫載"
-"入。切換黑膠效果開/關或刪除任意項目。"
+"Instances stored by double-clicking the album art in the popup. Icons are "
+"loaded from the system .desktop database. Toggle the vinyl effect on/off or "
+"remove any entry."
 
 #: prefs.js:1193
 msgid "Add an App Manually"
-msgstr "手動新增應用程式"
+msgstr "Add an App Manually"
 
 #: prefs.js:1195
 #, fuzzy
@@ -682,13 +700,15 @@ msgid ""
 "Useful for browser web apps whose instance hasn’t been captured yet via "
 "double-click."
 msgstr ""
-"搜尋已安裝的應用程式（包括瀏覽器）以手動新增黑膠項目。適用於尚未透過雙擊擷取"
-"執行個體的瀏覽器網頁應用程式。"
+"Search installed apps — including browsers — to manually add a vinyl entry. "
+"Useful for browser web apps whose instance hasn't been captured yet via "
+"double-click."
 
 #: prefs.js:1203
 msgid ""
 "Browser sources tracked separately (YouTube, YouTube Music, Spotify Web)"
-msgstr "瀏覽器來源單獨追蹤（YouTube、YouTube Music、Spotify Web）"
+msgstr ""
+"Browser sources tracked separately (YouTube, YouTube Music, Spotify Web)"
 
 #: prefs.js:1206
 msgid ""
@@ -696,16 +716,17 @@ msgid ""
 "double-click the album art when that browser is playing music — the "
 "extension will capture the exact instance automatically."
 msgstr ""
-"對於網頁應用程式，請新增瀏覽器本身（如 Google Chrome、Firefox）。然後在該瀏覽"
-"器播放音樂時雙擊專輯封面 — 擴充功能將自動擷取確切的執行個體。"
+"For web apps, add the browser itself (e.g. Google Chrome, Firefox). Then "
+"double-click the album art when that browser is playing music — the "
+"extension will capture the exact instance automatically."
 
 #: prefs.js:1222
 msgid "Search apps"
-msgstr "搜尋應用程式"
+msgstr "Search apps"
 
 #: prefs.js:1226
 msgid "Type an app or browser name…"
-msgstr "輸入應用程式或瀏覽器名稱…"
+msgstr "Type an app or browser name…"
 
 #: prefs.js:1295
 msgid "Running Players (Live Detection)"
@@ -720,7 +741,7 @@ msgstr ""
 #: prefs.js:1304
 #, fuzzy
 msgid "Scan for active players"
-msgstr "未偵測到活動播放器"
+msgstr "No active players detected"
 
 #: prefs.js:1305
 msgid "Detects players currently broadcasting on the MPRIS D-Bus"
@@ -728,11 +749,11 @@ msgstr ""
 
 #: prefs.js:1311
 msgid "Refresh"
-msgstr "重新整理"
+msgstr "Refresh"
 
 #: prefs.js:1438
 msgid "Use This"
-msgstr "使用此項目"
+msgstr "Use This"
 
 #: prefs.js:1442
 #, javascript-format
@@ -749,13 +770,15 @@ msgstr ""
 
 #: prefs.js:1544
 msgid "No instances saved yet"
-msgstr "尚未儲存任何執行個體"
+msgstr "No instances saved yet"
 
 #: prefs.js:1546
 msgid ""
 "Double-click the album art in the popup while music is playing to save an "
 "instance here."
-msgstr "在音樂播放時雙擊彈出視窗中的專輯封面，可在此處儲存執行個體。"
+msgstr ""
+"Double-click the album art in the popup while music is playing to save an "
+"instance here."
 
 #: prefs.js:1645
 #, javascript-format
@@ -764,21 +787,21 @@ msgstr ""
 
 #: prefs.js:1654 prefs.js:2119
 msgid "renamed from"
-msgstr "重新命名自"
+msgstr "renamed from"
 
 #: prefs.js:1677
 #, fuzzy, javascript-format
 msgid "Rename “%s”"
-msgstr "重新命名「%s」"
+msgstr "Rename \"%s\""
 
 #: prefs.js:1701
 #, javascript-format
 msgid "Remove %s from saved instances"
-msgstr "從已儲存執行個體中移除 %s"
+msgstr "Remove %s from saved instances"
 
 #: prefs.js:1718
 msgid "Rename Instance"
-msgstr "重新命名執行個體"
+msgstr "Rename Instance"
 
 #: prefs.js:1720
 #, javascript-format
@@ -786,24 +809,24 @@ msgid ""
 "Enter a custom display name for \"%s\".\n"
 "Leave blank to reset to the default."
 msgstr ""
-"為「%s」輸入自訂顯示名稱。\n"
-"留空可重置為預設值。"
+"Enter a custom display name for \"%s\".\n"
+"Leave blank to reset to the default."
 
 #: prefs.js:1726
 msgid "Cancel"
-msgstr "取消"
+msgstr "Cancel"
 
 #: prefs.js:1727
 msgid "Rename"
-msgstr "重新命名"
+msgstr "Rename"
 
 #: prefs.js:1745
 msgid "Display name"
-msgstr "顯示名稱"
+msgstr "Display name"
 
 #: prefs.js:2090
 msgid "Saved Instances"
-msgstr "已儲存的執行個體"
+msgstr "Saved Instances"
 
 #: prefs.js:2111
 #, javascript-format
@@ -812,91 +835,91 @@ msgstr ""
 
 #: prefs.js:2162
 msgid "Other Apps"
-msgstr "其他應用程式"
+msgstr "Other Apps"
 
 #: prefs.js:2235
 msgid "No matching apps found"
-msgstr "找不到符合的應用程式"
+msgstr "No matching apps found"
 
 #: prefs.js:2334
 msgid "About"
-msgstr "關於"
+msgstr "About"
 
 #: prefs.js:2341
 msgid "Beautiful and modern media controls with multi-instance support"
-msgstr "支援多執行個體的美觀現代媒體控制項"
+msgstr "Beautiful and modern media controls with multi-instance support"
 
 #: prefs.js:2379
 msgid "Version 5.2"
-msgstr "版本 5.2"
+msgstr "Version 5.2"
 
 #: prefs.js:2386
 msgid "Modern media controls with native GNOME design"
-msgstr "具有原生 GNOME 設計的現代媒體控制項"
+msgstr "Modern media controls with native GNOME design"
 
 #: prefs.js:2400
 msgid "Extension Links"
-msgstr "擴充功能連結"
+msgstr "Extension Links"
 
 #: prefs.js:2401 prefs.js:2406
 msgid "Source code, issues, and contributions"
-msgstr "原始碼、問題與貢獻"
+msgstr "Source code, issues, and contributions"
 
 #: prefs.js:2405
 msgid "View on GitHub"
-msgstr "在 GitHub 上檢視"
+msgstr "View on GitHub"
 
 #: prefs.js:2429
 msgid "☕ Support by buying me a coffee – just scan the QR code!"
-msgstr "☕ 透過請我喝咖啡來支持 — 掃描 QR 碼即可！"
+msgstr "☕ Support by buying me a coffee – just scan the QR code!"
 
 #: prefs.js:2431
 msgid "Preferred Method - Scan QR code to support development"
-msgstr "首選方法 — 掃描 QR 碼支持開發"
+msgstr "Preferred Method - Scan QR code to support development"
 
 #: prefs.js:2458
 msgid "Donation Address"
-msgstr "捐款地址"
+msgstr "Donation Address"
 
 #: prefs.js:2473
 msgid "Donation address"
-msgstr "捐款地址"
+msgstr "Donation address"
 
 #: prefs.js:2478
 msgid "☕ Buy Me a Coffee"
-msgstr "☕ 請我喝杯咖啡"
+msgstr "☕ Buy Me a Coffee"
 
 #: prefs.js:2479
 msgid "Support development with a small donation"
-msgstr "透過小額捐款支持開發"
+msgstr "Support development with a small donation"
 
 #: prefs.js:2503
 msgid "License & Credits"
-msgstr "授權條款與致謝"
+msgstr "License & Credits"
 
 #: prefs.js:2504
 msgid "Open source software information"
-msgstr "開源軟體資訊"
+msgstr "Open source software information"
 
 #: prefs.js:2507
 msgid "Open Source License"
-msgstr "開源授權條款"
+msgstr "Open Source License"
 
 #: prefs.js:2508
 msgid "GPL-3.0 License - Free and open source software"
-msgstr "GPL-3.0 授權條款 — 自由開源軟體"
+msgstr "GPL-3.0 License - Free and open source software"
 
 #: prefs.js:2515
 msgid "Media Data Sources"
-msgstr "媒體資料來源"
+msgstr "Media Data Sources"
 
 #: prefs.js:2517
 msgid "MPRIS D-Bus interface - Standard media player remote interfacing"
-msgstr "MPRIS D-Bus 介面 — 媒體播放器標準遠端介面"
+msgstr "MPRIS D-Bus interface - Standard media player remote interfacing"
 
 #: prefs.js:2525
 msgid "Key Features"
-msgstr "主要功能"
+msgstr "Key Features"
 
 #: prefs.js:2527
 #, fuzzy
@@ -912,97 +935,98 @@ msgid ""
 "• Per-player lyrics toggle (each tab independent)\n"
 "• All seen apps remembered — re-enable any time"
 msgstr ""
-"• 多執行個體瀏覽器支援\n"
-"• 每個應用程式旋轉黑膠唱片專輯封面\n"
-"• 動畫唱臂\n"
-"• 流暢動畫\n"
-"• 雙擊切換每個應用程式的黑膠效果\n"
-"• 所有已見應用程式均被記住 — 隨時可重新啟用"
+"• Multi-instance browser support\n"
+"• Per-app rotating vinyl record album art\n"
+"• Animated tonearm\n"
+"• Smooth animations\n"
+"• Double-click to toggle vinyl per app\n"
+"• All seen apps remembered — re-enable any time"
 
 #: prefs.js:2589
 msgid "Copy to Clipboard"
-msgstr "複製到剪貼簿"
+msgstr "Copy to Clipboard"
 
 #: prefs.js:2591
 msgid ""
 "Unable to copy automatically. Select the address below and press Ctrl+C:"
-msgstr "無法自動複製。請選取下方地址並按 Ctrl+C："
+msgstr ""
+"Unable to copy automatically. Select the address below and press Ctrl+C:"
 
 #: prefs.js:2594
 msgid "Close"
-msgstr "關閉"
+msgstr "Close"
 
 #~ msgid "Browser web apps (YouTube, Spotify Web, etc.)"
-#~ msgstr "瀏覽器網頁應用程式（YouTube、Spotify Web 等）"
+#~ msgstr "Browser web apps (YouTube, Spotify Web, etc.)"
 
 #~ msgid "Off"
-#~ msgstr "關閉"
+#~ msgstr "Off"
 
 #~ msgid "Blacklist"
-#~ msgstr "黑名單"
+#~ msgstr "Blacklist"
 
 #~ msgid "Whitelist"
-#~ msgstr "白名單"
+#~ msgstr "Whitelist"
 
 #~ msgid "Support Development"
-#~ msgstr "支持開發"
+#~ msgstr "Support Development"
 
 #~ msgid "Choose your preferred donation platform"
-#~ msgstr "選擇您偏好的捐款平台"
+#~ msgstr "Choose your preferred donation platform"
 
 #~ msgid "Donation Platform"
-#~ msgstr "捐款平台"
+#~ msgstr "Donation Platform"
 
 #~ msgid "Switch to see the QR code for each platform"
-#~ msgstr "切換以查看每個平台的 QR 碼"
+#~ msgstr "Switch to see the QR code for each platform"
 
 #~ msgid "❤ GitHub Sponsors"
-#~ msgstr "❤ GitHub 贊助"
+#~ msgstr "❤ GitHub Sponsors"
 
 #~ msgid "Sponsor via GitHub — one-time or monthly"
-#~ msgstr "透過 GitHub 贊助 — 一次性或每月"
+#~ msgstr "Sponsor via GitHub — one-time or monthly"
 
 #~ msgid "Scan QR code to open Buy Me a Coffee"
-#~ msgstr "掃描 QR 碼開啟 Buy Me a Coffee"
+#~ msgstr "Scan QR code to open Buy Me a Coffee"
 
 #~ msgid "❤ Support via GitHub Sponsors – just scan the QR code!"
-#~ msgstr "❤ 透過 GitHub 贊助支持 — 掃描 QR 碼即可！"
+#~ msgstr "❤ Support via GitHub Sponsors – just scan the QR code!"
 
 #~ msgid "Scan QR code to open GitHub Sponsors"
-#~ msgstr "掃描 QR 碼開啟 GitHub 贊助"
+#~ msgstr "Scan QR code to open GitHub Sponsors"
 
 #~ msgid "Panel Settings"
-#~ msgstr "面板設定"
+#~ msgstr "Panel Settings"
 
 #~ msgid "Configure the position and appearance in the top panel"
-#~ msgstr "設定頂端面板中的位置和外觀"
+#~ msgstr "Configure the position and appearance in the top panel"
 
 #~ msgid "Display Settings"
-#~ msgstr "顯示設定"
+#~ msgstr "Display Settings"
 
 #~ msgid "Configure what appears in the panel"
-#~ msgstr "設定面板中顯示的內容"
+#~ msgstr "Configure what appears in the panel"
 
 #~ msgid "Display track information in the panel"
-#~ msgstr "在面板中顯示曲目資訊"
+#~ msgstr "Display track information in the panel"
 
 #~ msgid "Include artist name with track title"
-#~ msgstr "在曲目標題中包含藝術家名稱"
+#~ msgstr "Include artist name with track title"
 
 #~ msgid "Maximum Title Length"
-#~ msgstr "最大標題長度"
+#~ msgstr "Maximum Title Length"
 
 #~ msgid "Characters to display before scrolling starts"
-#~ msgstr "捲動開始前顯示的字元數"
+#~ msgstr "Characters to display before scrolling starts"
 
 #~ msgid "Scroll Speed"
-#~ msgstr "捲動速度"
+#~ msgstr "Scroll Speed"
 
 #~ msgid "Separator Text"
-#~ msgstr "分隔符號文字"
+#~ msgstr "Separator Text"
 
 #~ msgid "Fetching lyrics…"
-#~ msgstr "正在擷取歌詞…"
+#~ msgstr "Fetching lyrics…"
 
 #~ msgid "No lyrics found"
-#~ msgstr "找不到歌詞"
+#~ msgstr "No lyrics found"
