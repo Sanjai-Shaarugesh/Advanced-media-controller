@@ -1,17 +1,15 @@
-# Simplified Chinese translation for advanced-media-controller.
-# Copyright (C) 2026 Sanjai Shaarugesh
-# GPL-2.0-or-later
+# Korean translation for advanced-media-controller
+# Copyright (C) 2026 THE PACKAGE'S COPYRIGHT HOLDER
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: advanced-media-controller 5.2\n"
-"Report-Msgid-Bugs-To: https://github.com/Sanjai-Shaarugesh/Advance-media-"
-"controller/issues\n"
+"Report-Msgid-Bugs-To: https://github.com/Sanjai-Shaarugesh/Advance-media-controller/issues\n"
 "POT-Creation-Date: 2026-03-12 20:33+0530\n"
 "PO-Revision-Date: 2026-03-13 00:00+0000\n"
-"Last-Translator: auto-generated\n"
-"Language-Team: Simplified Chinese\n"
-"Language: zh_CN\n"
+"Last-Translator: Claude <noreply@anthropic.com>\n"
+"Language-Team: Korean\n"
+"Language: ko\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,114 +17,115 @@ msgstr ""
 
 #: prefs.js:91 prefs.js:2354 prefs.js:2387
 msgid "Advanced Media Controller"
-msgstr "高级媒体控制器"
+msgstr "고급 미디어 컨트롤러"
 
 #: prefs.js:97
 msgid "General"
-msgstr "常规"
+msgstr "일반"
 
 #: prefs.js:103
 msgid "Panel Placement"
-msgstr "面板放置"
+msgstr "패널 배치"
 
 #: prefs.js:104
 msgid "Where the indicator sits in the top bar"
-msgstr "指示器在顶部栏中的位置"
+msgstr "상단 표시줄에서 표시기의 위치"
 
 #: prefs.js:108
 msgid "Panel Position"
-msgstr "面板位置"
+msgstr "패널 위치"
 
 #: prefs.js:110
 msgid "Left"
-msgstr "左侧"
+msgstr "왼쪽"
 
 #: prefs.js:110
 msgid "Center"
-msgstr "中央"
+msgstr "가운데"
 
 #: prefs.js:110
 msgid "Right"
-msgstr "右侧"
+msgstr "오른쪽"
 
 #: prefs.js:125
 msgid "Panel Index"
-msgstr "面板索引"
+msgstr "패널 인덱스"
 
 #: prefs.js:126
 msgid "Position within the panel area (-1 = automatic)"
-msgstr "面板区域内的位置（-1 = 自动）"
+msgstr "패널 영역 내 위치 (-1 = 자동)"
 
 #: prefs.js:144
 msgid "Panel Label"
-msgstr "面板标签"
+msgstr "패널 레이블"
 
 #: prefs.js:145
 msgid "Track name shown in the top bar"
-msgstr "顶部栏中显示的曲目名称"
+msgstr "상단 표시줄에 표시되는 트랙 이름"
 
 #: prefs.js:150
 msgid "Show Track Name"
-msgstr "显示曲目名称"
+msgstr "트랙 이름 표시"
 
 #: prefs.js:151
 msgid "Display the current track title in the panel"
-msgstr "在面板中显示当前曲目标题"
+msgstr "패널에 현재 트랙 제목 표시"
 
 #: prefs.js:162
 msgid "Show Artist Name"
-msgstr "显示艺术家名称"
+msgstr "아티스트 이름 표시"
 
 #: prefs.js:163
 msgid "Append the artist name to the track title"
-msgstr "将艺术家名称附加到曲目标题"
+msgstr "트랙 제목에 아티스트 이름 추가"
 
 #: prefs.js:174
 msgid "Title / Artist Separator"
-msgstr "标题 / 艺术家分隔符"
+msgstr "제목 / 아티스트 구분자"
 
 #: prefs.js:184
 msgid "Panel Scrolling"
-msgstr "面板滚动"
+msgstr "패널 스크롤"
 
 #: prefs.js:185
 msgid "Marquee scroll of the track label in the top bar"
-msgstr "顶部栏中曲目标签的跑马灯滚动"
+msgstr "상단 표시줄에서 트랙 레이블의 마키 스크롤"
 
 #: prefs.js:190
 msgid "Enable Panel Label Scrolling"
-msgstr "启用面板标签滚动"
+msgstr "패널 레이블 스크롤 활성화"
 
 #: prefs.js:192
 msgid ""
 "Scroll the track/artist text one full loop then pause before repeating. When "
 "off, the text is truncated with an ellipsis."
-msgstr "将曲目/艺术家文字滚动一个完整循环后暂停，然后重复。关闭时以“…”截断。"
+msgstr ""
+"트랙/아티스트 텍스트를 한 번 스크롤한 후 잠시 멈추고 반복합니다. "
+"꺼져 있으면 텍스트가 말줄임표로 잘립니다."
 
 #: prefs.js:205
 msgid "Panel Scroll Speed"
-msgstr "面板滚动速度"
+msgstr "패널 스크롤 속도"
 
 #: prefs.js:206 prefs.js:314 prefs.js:354
 msgid "1 = slowest, 10 = fastest"
-msgstr "1 = 最慢，10 = 最快"
+msgstr "1 = 가장 느림, 10 = 가장 빠름"
 
-# ── Additional strings from prefs.js ────────────────────────────────────
 #: prefs.js:224
 msgid "System Integration"
-msgstr "系统集成"
+msgstr "시스템 통합"
 
 #: prefs.js:226
 msgid "Controls how this extension interacts with other parts of GNOME Shell."
-msgstr "控制此扩展程序与GNOME Shell其他部分的交互方式。"
+msgstr "이 확장이 GNOME Shell의 다른 부분과 상호작용하는 방식을 제어합니다."
 
 #: prefs.js:237
 msgid "Hide Default GNOME Media Player"
-msgstr "隐藏默认GNOME媒体播放器"
+msgstr "기본 GNOME 미디어 플레이어 숨기기"
 
 #: prefs.js:239
 msgid "Remove the built-in media controls from the system date/time menu"
-msgstr "从系统日期/时间菜单中删除内置媒体控件"
+msgstr "시스템 날짜/시간 메뉴에서 내장 미디어 컨트롤 제거"
 
 #: prefs.js:260
 msgid ""
@@ -138,93 +137,100 @@ msgid ""
 "  • Turn this switch off, or\n"
 "  • Disable or uninstall this extension."
 msgstr ""
+"켜져 있으면 확장이 캘린더/알림 패널(날짜-시간 메뉴)에\n"
+"일반적으로 나타나는 기본 GNOME 미디어 컨트롤을 숨깁니다.\n"
+"이렇게 하면 중복된 '현재 재생 중' 위젯이 표시되지 않습니다.\n"
+"\n"
+"다음과 같은 경우 내장 컨트롤이 완전히 복원됩니다:\n"
+"  • 이 스위치를 끄거나,\n"
+"  • 이 확장을 비활성화하거나 제거할 때."
 
 #: prefs.js:286
 msgid "Popup Player"
-msgstr "弹出播放器"
+msgstr "팝업 플레이어"
 
 #: prefs.js:292
 msgid "Title Scrolling"
-msgstr "标题滚动"
+msgstr "제목 스크롤"
 
 #: prefs.js:293
 msgid "Marquee behaviour for the track title inside the popup"
-msgstr "弹出窗口中曲目标题的跑马灯行为"
+msgstr "팝업 내 트랙 제목의 마키 동작"
 
 #: prefs.js:298
 msgid "Enable Title Scrolling"
-msgstr "启用标题滚动"
+msgstr "제목 스크롤 활성화"
 
 #: prefs.js:300
 msgid ""
 "Scroll long track titles from start to end, pause, then repeat. When off, "
 "the text is truncated with an ellipsis."
-msgstr "从头到尾滚动长曲目标题，暂停后重复。关闭时以“…”截断。"
+msgstr ""
+"긴 트랙 제목을 처음부터 끝까지 스크롤하고 잠시 멈춘 후 반복합니다. "
+"꺼져 있으면 텍스트가 말줄임표로 잘립니다."
 
 #: prefs.js:313
 msgid "Title Scroll Speed"
-msgstr "标题滚动速度"
+msgstr "제목 스크롤 속도"
 
 #: prefs.js:332
 msgid "Artist Scrolling"
-msgstr "艺术家滚动"
+msgstr "아티스트 스크롤"
 
 #: prefs.js:333
 msgid "Marquee behaviour for the artist name inside the popup"
-msgstr "弹出窗口中艺术家名称的跑马灯行为"
+msgstr "팝업 내 아티스트 이름의 마키 동작"
 
 #: prefs.js:338
 msgid "Enable Artist Scrolling"
-msgstr "启用艺术家滚动"
+msgstr "아티스트 스크롤 활성화"
 
 #: prefs.js:340
 msgid ""
 "Scroll long artist names from start to end, pause, then repeat. When off, "
 "the text is truncated with an ellipsis."
-msgstr "从头到尾滚动长艺术家名称，暂停后重复。"
+msgstr ""
+"긴 아티스트 이름을 처음부터 끝까지 스크롤하고 잠시 멈춘 후 반복합니다. "
+"꺼져 있으면 텍스트가 말줄임표로 잘립니다."
 
 #: prefs.js:353
 msgid "Artist Scroll Speed"
-msgstr "艺术家滚动速度"
+msgstr "아티스트 스크롤 속도"
 
 #: prefs.js:373
 msgid "Album Art"
-msgstr "专辑封面"
+msgstr "앨범 아트"
 
 #: prefs.js:374
 msgid "Vinyl-record rotation animation"
-msgstr "黑胶唱片旋转动画"
+msgstr "바이닐 레코드 회전 애니메이션"
 
 #: prefs.js:379
 msgid "Enable Vinyl Record Rotation (Global Default)"
-msgstr "启用黑胶唱片旋转（全局默认）"
+msgstr "바이닐 레코드 회전 활성화 (전역 기본값)"
 
-# ── Global default key with curly quotes ──
 #: prefs.js:381
 msgid ""
 "Global default when no per-app setting exists. Per-app overrides in the "
 "‘Vinyl Apps’ section take priority."
-msgstr ""
-"当没有每个应用程序设置时的全局默认值。‘黑胶应用’部分中的每个应用程序覆盖优"
-"先。"
+msgstr "앱별 설정이 없을 때의 전역 기본값입니다. '바이닐 앱' 섹션의 앱별 설정이 우선합니다."
 
 #: prefs.js:395
 msgid "Rotation Speed (seconds per revolution)"
-msgstr "旋转速度（每圈秒数）"
+msgstr "회전 속도 (회전당 초)"
 
 #: prefs.js:396
 msgid "5 = fastest, 60 = slowest. Recommended: 20–30"
-msgstr "5 = 最快，60 = 最慢。建议：20–30"
+msgstr "5 = 가장 빠름, 60 = 가장 느림. 권장: 20–30"
 
 #: prefs.js:414
 msgid "Vinyl Effect Details"
-msgstr "黑胶效果详情"
+msgstr "바이닐 효과 세부 정보"
 
 #: prefs.js:415
 msgid "How the animated vinyl record works"
-msgstr "动态黑胶唱片的运作方式"
+msgstr "애니메이션 바이닐 레코드의 작동 방식"
 
-# ── Multiline strings matched to exact POT keys ──
 #: prefs.js:420
 msgid ""
 "- Album cover appears on a spinning vinyl disc\n"
@@ -237,65 +243,68 @@ msgid ""
 "- Per-app settings override the global default above\n"
 "- All seen apps are stored; re-enable any time from Vinyl Apps page"
 msgstr ""
-"- 专辑封面显示在旋转的黑胶唱片上\n"
-"- 黑胶沟纹在边缘可见\n"
-"- 动态唱臂随播放状态移动\n"
-"- 音乐暂停时旋转平滑停止\n"
-"  (保留碎片角度，从相同位置继续)\n"
-"- 碎片仅在真正停止时重置为0°\n"
-"- 双击专辑封面以切换该播放器应用程序的黑胶\n"
-"- 每个应用程序设置覆盖全局默认\n"
-"- 所有已见应用程序均已保存；随时从黑胶应用页面重新启用"
+"- 앨범 커버가 회전하는 바이닐 디스크에 표시됩니다\n"
+"- 검정색 바이닐 홈이 가장자리 주변에 보입니다\n"
+"- 애니메이션 톤암이 재생 상태에 따라 이동합니다\n"
+"- 음악이 일시 정지되면 회전이 부드럽게 멈춥니다\n"
+"  (디스크 각도가 유지되고 같은 위치에서 재개됩니다)\n"
+"- 디스크는 실제 정지 시에만 0°로 재설정됩니다\n"
+"- 앨범 아트를 더블 클릭하면 해당 플레이어 앱에만 바이닐이 토글됩니다\n"
+"- 앱별 설정이 위의 전역 기본값보다 우선합니다\n"
+"- 모든 확인된 앱이 저장됩니다. 바이닐 앱 페이지에서 언제든지 다시 활성화할 수 있습니다"
 
 #: prefs.js:445
 msgid "Vinyl Apps"
-msgstr "黑胶应用"
+msgstr "바이닐 앱"
 
 #: prefs.js:453
 msgid "Player Filter"
-msgstr "播放器过滤器"
+msgstr "플레이어 필터"
 
 #: prefs.js:461
 msgid "Lyrics"
-msgstr "歌词"
+msgstr "가사"
 
 #: prefs.js:519 prefs.js:546
 msgid "Filter Mode"
-msgstr "过滤模式"
+msgstr "필터 모드"
 
 #: prefs.js:521
 msgid ""
 "Choose whether the list below acts as a blacklist (block listed apps) or a "
 "whitelist (allow only listed apps). Set to Off to disable filtering entirely."
 msgstr ""
+"아래 목록이 블랙리스트(나열된 앱 차단) 또는 "
+"화이트리스트(나열된 앱만 허용)로 작동할지 선택하세요. "
+"꺼짐으로 설정하면 필터링이 완전히 비활성화됩니다."
 
 #: prefs.js:532
 msgid "Off"
-msgstr "关闭"
+msgstr "꺼짐"
 
 #: prefs.js:533
 msgid "Blacklist"
-msgstr "黑名单"
+msgstr "블랙리스트"
 
 #: prefs.js:534
 msgid "Whitelist"
-msgstr "白名单"
+msgstr "화이트리스트"
 
 #: prefs.js:540
 msgid "Show all media players — filtering is disabled"
-msgstr "显示所有媒体播放器 — 过滤已禁用"
+msgstr "모든 미디어 플레이어 표시 — 필터링 비활성화됨"
 
 #: prefs.js:541
 msgid "Hide only the players you add to the list below"
-msgstr "仅隐藏您添加到以下列表中的播放器"
+msgstr "아래 목록에 추가한 플레이어만 숨기기"
 
 #: prefs.js:542
 msgid "Show only the players you add to the list below"
-msgstr "仅显示您添加到以下列表中的播放器"
+msgstr "아래 목록에 추가한 플레이어만 표시"
 
 #: prefs.js:569
 msgid "Saved Players"
-msgstr "已保存的播放器"
+msgstr "저장된 플레이어"
 
 #: prefs.js:571
 msgid ""
@@ -303,138 +312,145 @@ msgid ""
 "without removing it. The toggle controls whether the filter rule is active "
 "for that app. Use the trash button to remove it from the list entirely."
 msgstr ""
+"저장된 각 플레이어는 제거하지 않고 필터에서 개별적으로 활성화하거나 "
+"비활성화할 수 있습니다. 토글은 해당 앱에 대한 필터 규칙이 활성화되어 있는지 "
+"제어합니다. 휴지통 버튼을 사용하면 목록에서 완전히 제거됩니다."
 
 #: prefs.js:597
 msgid "No players saved yet"
-msgstr "尚未保存任何播放器"
+msgstr "아직 저장된 플레이어 없음"
 
 #: prefs.js:599
 msgid ""
 "Detect running players below and click “Add to Filter” to add them here."
 msgstr ""
+"아래에서 실행 중인 플레이어를 감지하고 \"필터에 추가\"를 클릭하여 여기에 추가하세요."
 
 #: prefs.js:653
 #, javascript-format
 msgid "Filter rule active for “%s” — click to disable"
-msgstr ""
+msgstr "\"%s\"에 대한 필터 규칙이 활성 — 비활성화하려면 클릭"
 
 #: prefs.js:654
 #, javascript-format
 msgid "Filter rule disabled for “%s” — click to enable"
-msgstr ""
+msgstr "\"%s\"에 대한 필터 규칙이 비활성 — 활성화하려면 클릭"
 
 #: prefs.js:676
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "Remove “%s” from the filter list"
-msgstr "从已保存实例中移除%s"
+msgstr "필터 목록에서 \"%s\" 제거"
 
 #: prefs.js:709
 msgid "Detected Players"
-msgstr "检测到的播放器"
+msgstr "감지된 플레이어"
 
 #: prefs.js:711
 msgid ""
 "Active MPRIS players found on the session D-Bus. Click “Add to Filter” to "
 "save a player to the list above."
 msgstr ""
+"세션 D-Bus에서 찾은 활성 MPRIS 플레이어. \"필터에 추가\"를 클릭하여 "
+"위 목록에 플레이어를 저장하세요."
 
 #: prefs.js:718
 msgid "Scan for running players"
-msgstr "扫描正在运行的播放器"
+msgstr "실행 중인 플레이어 스캔"
 
 #: prefs.js:719
 msgid "Detects players currently broadcasting on MPRIS"
-msgstr "检测当前在MPRIS上广播的播放器"
+msgstr "현재 MPRIS에서 방송 중인 플레이어 감지"
 
 #: prefs.js:725
 msgid "Refresh the detected player list"
-msgstr "刷新检测到的播放器列表"
+msgstr "감지된 플레이어 목록 새로 고침"
 
 #: prefs.js:753
 msgid "Could not connect to the session bus"
-msgstr ""
+msgstr "세션 버스에 연결할 수 없습니다"
 
 #: prefs.js:783 prefs.js:1375
 msgid "No active players detected"
-msgstr "未检测到活跃的播放器"
+msgstr "활성 플레이어가 감지되지 않았습니다"
 
 #: prefs.js:784 prefs.js:1376
 msgid "Open a music app and click Refresh"
-msgstr "打开一个音乐应用程序并点击刷新"
+msgstr "음악 앱을 열고 새로 고침을 클릭하세요"
 
 #: prefs.js:842 prefs.js:861 prefs.js:871
 msgid "Saved ✓"
-msgstr "已保存 ✓"
+msgstr "저장됨 ✓"
 
 #: prefs.js:843 prefs.js:871
 msgid "Add to Filter"
-msgstr "添加到过滤器"
+msgstr "필터에 추가"
 
 #: prefs.js:849 prefs.js:864
 #, javascript-format
 msgid "“%s” is already in the filter list"
-msgstr ""
+msgstr "\"%s\"은(는) 이미 필터 목록에 있습니다"
 
 #: prefs.js:850
 #, javascript-format
 msgid "Add “%s” to the filter list (enabled by default)"
-msgstr ""
+msgstr "\"%s\"을(를) 필터 목록에 추가 (기본적으로 활성화됨)"
 
 #: prefs.js:899
 msgid "Synced Lyrics"
-msgstr "同步歌词"
+msgstr "싱크 가사"
 
 #: prefs.js:901
 msgid "Time-synced lyrics fetched from lrclib.net — free, no account needed"
-msgstr "从 lrclib.net 获取的时间同步歌词 — 免费，无需账号"
+msgstr "lrclib.net에서 가져온 시간 동기화 가사 — 무료, 계정 불필요"
 
 #: prefs.js:907
 msgid "Enable Synced Lyrics"
-msgstr "启用同步歌词"
+msgstr "싱크 가사 활성화"
 
 #: prefs.js:909
 msgid ""
 "Fetch and display scrolling lyrics that follow the current playback position"
-msgstr "获取并显示跟随当前播放位置滚动的歌词"
+msgstr "현재 재생 위치를 따르는 스크롤 가사를 가져와 표시합니다"
 
 #: prefs.js:926
 msgid "How to Use Lyrics"
-msgstr "如何使用歌词"
+msgstr "가사 사용 방법"
 
 #: prefs.js:928
 msgid ""
 "Lyrics are tied to each player tab independently — Spotify and Firefox each "
 "remember their own setting"
-msgstr "歌词与每个播放器选项卡独立关联 — Spotify 和 Firefox 各自记住自己的设置"
+msgstr ""
+"가사는 각 플레이어 탭에 독립적으로 연결됩니다 — Spotify와 Firefox는 각각 "
+"자체 설정을 기억합니다"
 
 #: prefs.js:936
 msgid "Start playing a song"
-msgstr "开始播放一首歌曲"
+msgstr "노래 재생 시작"
 
 #: prefs.js:938
 msgid ""
 "Open any media player or browser tab (Spotify, YouTube Music, VLC, "
 "Rhythmbox…) and play a track so it appears in the panel."
 msgstr ""
-"打开任意媒体播放器或浏览器选项卡（Spotify、YouTube Music、VLC、Rhythmbox…），"
-"播放一首曲目使其显示在面板中。"
+"미디어 플레이어 또는 브라우저 탭(Spotify, YouTube Music, VLC, "
+"Rhythmbox…)을 열고 트랙을 재생하여 패널에 표시되도록 하세요."
 
 #: prefs.js:943
 msgid "Open the popup player"
-msgstr "打开弹出播放器"
+msgstr "팝업 플레이어 열기"
 
 #: prefs.js:945
-#, fuzzy
 msgid ""
 "Click the media controller icon in the top panel to open the popup. You’ll "
 "see the album art, track title, and playback controls."
 msgstr ""
-"点击顶部面板的媒体控制器图标以打开弹出窗口。您将看到专辑封面、曲目标题和播放"
-"控制项。"
+"상단 패널의 미디어 컨트롤러 아이콘을 클릭하여 팝업을 여세요. "
+"앨범 아트, 트랙 제목 및 재생 컨트롤이 표시됩니다."
 
 #: prefs.js:950
 msgid "Triple-click the album art to show lyrics"
-msgstr "三下点击专辑封面以显示歌词"
+msgstr "앨범 아트를 세 번 클릭하여 가사 표시"
 
 #: prefs.js:952
 msgid ""
@@ -442,47 +458,48 @@ msgid ""
 "replaced by the lyrics panel, which scrolls automatically in time with the "
 "music."
 msgstr ""
-"快速连续点击专辑封面三次。封面图片将被歌词面板取代，歌词面板会随音乐自动滚"
-"动。"
+"앨범 아트를 빠르게 세 번 클릭하세요. 커버 이미지가 음악에 맞춰 "
+"자동으로 스크롤되는 가사 패널로 교체됩니다."
 
 #: prefs.js:957
 msgid "Single-click the lyrics panel to go back"
-msgstr "单击歌词面板以返回"
+msgstr "가사 패널을 한 번 클릭하여 돌아가기"
 
 #: prefs.js:959
 msgid ""
 "Tap anywhere on the lyrics panel once to dismiss it and return to the album "
 "art — vinyl or normal cover, whichever that app uses."
 msgstr ""
-"在歌词面板上任意位置单击一次即可关闭并返回专辑封面 — 黑胶唱片或一般封面，取决"
-"于该应用程序使用哪种。"
+"가사 패널의 아무 곳이나 한 번 탭하면 닫히고 앨범 아트로 돌아갑니다 "
+"— 해당 앱이 사용하는 바이닐 또는 일반 커버로 돌아갑니다."
 
 #: prefs.js:964
 msgid "Triple-click again to re-open"
-msgstr "再次三下点击以重新打开歌词"
+msgstr "다시 세 번 클릭하여 다시 열기"
 
 #: prefs.js:966
 msgid ""
 "You can toggle the lyrics panel as many times as you like. Each player tab "
 "remembers independently whether lyrics are open."
 msgstr ""
-"您可以随意多次切换歌词面板。每个播放器选项卡会独立记住歌词是否处于打开状态。"
+"원하는 만큼 가사 패널을 토글할 수 있습니다. 각 플레이어 탭은 "
+"가사가 열려 있는지 독립적으로 기억합니다."
 
 #: prefs.js:986
 msgid "Lyrics Behaviour"
-msgstr "歌词行为"
+msgstr "가사 동작"
 
 #: prefs.js:987
 msgid "What happens behind the scenes"
-msgstr "背景中发生的事情"
+msgstr "백그라운드에서 일어나는 일"
 
 #: prefs.js:992
 msgid "Lyrics details & edge cases"
-msgstr "歌词详情与边缘情况"
+msgstr "가사 세부 정보 및 예외 상황"
 
 #: prefs.js:993
 msgid "What to expect when the lyrics panel is open"
-msgstr "歌词面板打开时的预期效果"
+msgstr "가사 패널이 열려 있을 때 예상되는 내용"
 
 #: prefs.js:999
 msgid ""
@@ -511,73 +528,77 @@ msgid ""
 "  • When you seek forward or backward, the highlighted line jumps\n"
 "    instantly to the correct position"
 msgstr ""
-"来源\n"
-"  • 歌词从 lrclib.net 获取 — 这是一个免费的开放公共数据库\n"
-"  • 无需账号或 API 密鑰；请求在后台静默进行\n"
+"소스\n"
+"  • 가사는 lrclib.net에서 가져옵니다 — 무료 오픈 퍼블릭 데이터베이스\n"
+"  • 계정이나 API 키가 필요 없습니다. 요청은 백그라운드에서 조용히 수행됩니다\n"
 "\n"
-"显示\n"
-"  • 当前启用的歌词行在面板中放大并居中显示\n"
-"  • 上下相邻行以中等大小显示；其余行淡出\n"
-"  • 面板平滑滚动，使启用行始终在可视范围内\n"
+"표시\n"
+"  • 활성 가사 줄이 패널에서 더 크게 중앙에 표시됩니다\n"
+"  • 위아래 줄은 중간 크기로 표시되고, 나머지는 흐려집니다\n"
+"  • 패널이 부드럽게 스크롤되어 활성 줄이 항상 보입니다\n"
 "\n"
-"曲目切换\n"
-"  • 当歌词面板打开时新歌曲开始播放，画面将清空\n"
-"    并自动获取新歌词\n"
-"  • 如果找不到歌词，将显示“找不到歌词”消息\n"
+"트랙 변경\n"
+"  • 가사 패널이 열려 있는 동안 새 노래가 시작되면 화면이 지워지고\n"
+"    새 가사가 자동으로 가져와집니다\n"
+"  • 가사를 찾을 수 없는 경우 \"가사를 찾을 수 없습니다\" 메시지가 표시됩니다\n"
 "\n"
-"多播放器\n"
-"  • 每个播放器选项卡（Spotify、YouTube、VLC…）都有其独立的\n"
-"    歌词开关 — 为一个播放器打开歌词不会影响其他播放器\n"
-"  • 切换选项卡会为切换到的播放器还原正确的画面（歌词或专辑封面）\n"
+"여러 플레이어\n"
+"  • 각 플레이어 탭(Spotify, YouTube, VLC…)에는 자체 독립적인\n"
+"    가사 토글이 있습니다 — 한 플레이어의 가사를 열어도 다른 플레이어에는 영향을 주지 않습니다\n"
+"  • 탭을 전환하면 전환한 플레이어의 올바른 보기(가사 또는 앨범 아트)가 복원됩니다\n"
 "\n"
-"定位\n"
-"  • 向前或向后跳转时，高亮显示的歌词行会\n"
-"    立即跳转到正确位置"
+"탐색\n"
+"  • 앞이나 뒤로 탐색할 때 강조 표시된 줄이\n"
+"    즉시 올바른 위치로 이동합니다"
 
 #: prefs.js:1039
 msgid "Album Art Click Actions"
-msgstr "专辑封面点击操作"
+msgstr "앨범 아트 클릭 동작"
 
 #: prefs.js:1041
 msgid "Summary of what each click pattern does on the album art cover"
-msgstr "各点击方式在专辑封面上的操作说明"
+msgstr "앨범 아트 커버에서 각 클릭 패턴의 기능 요약"
 
 #: prefs.js:1049
 msgid "Single click"
-msgstr "单击"
+msgstr "한 번 클릭"
 
 #: prefs.js:1051
 msgid ""
 "When lyrics are showing: closes the lyrics panel and returns to the album art"
-msgstr "显示歌词时：关闭歌词面板并返回专辑封面"
+msgstr "가사가 표시될 때: 가사 패널을 닫고 앨범 아트로 돌아갑니다"
 
 #: prefs.js:1056
 msgid "Double click"
-msgstr "双击"
+msgstr "두 번 클릭"
 
 #: prefs.js:1058
 msgid ""
 "Toggles the spinning vinyl record effect for that specific app (remembered "
 "independently per app)"
-msgstr "切换该特定应用程序的黑胶唱片旋转效果（每个应用程序独立记住）"
+msgstr ""
+"해당 특정 앱의 회전 바이닐 레코드 효과를 토글합니다 "
+"(앱별로 독립적으로 기억됨)"
 
 #: prefs.js:1063
 msgid "Triple click"
-msgstr "三击"
+msgstr "세 번 클릭"
 
 #: prefs.js:1065
 msgid ""
 "Toggles the synced lyrics panel for the current player tab (remembered "
 "independently per player)"
-msgstr "切换当前播放器选项卡的同步歌词面板（每个播放器独立记住）"
+msgstr ""
+"현재 플레이어 탭의 동기화 가사 패널을 토글합니다 "
+"(플레이어별로 독립적으로 기억됨)"
 
 #: prefs.js:1084
 msgid "Data Source"
-msgstr "数据来源"
+msgstr "데이터 소스"
 
 #: prefs.js:1085
 msgid "Where lyrics come from"
-msgstr "歌词来自何处"
+msgstr "가사 출처"
 
 #: prefs.js:1090
 msgid "lrclib.net"
@@ -587,11 +608,12 @@ msgstr "lrclib.net"
 msgid ""
 "Free, open-source time-synced lyrics database — no sign-up, no tracking, no "
 "ads"
-msgstr "免费开源的时间同步歌词数据库 — 无需注册，不追踪，无广告"
+msgstr ""
+"무료 오픈소스 시간 동기화 가사 데이터베이스 — 회원가입 없음, 추적 없음, 광고 없음"
 
 #: prefs.js:1120
 msgid "Privacy note"
-msgstr "隐私说明"
+msgstr "개인정보 참고"
 
 #: prefs.js:1122
 msgid ""
@@ -599,90 +621,91 @@ msgid ""
 "lrclib.net when you open the lyrics panel. No personal data or user "
 "identifiers are included."
 msgstr ""
-"打开歌词面板时，会向 lrclib.net 发送包含曲目标题、艺术家、专辑和时长的请求。"
-"不包含任何个人数据或用户标识符。"
+"가사 패널을 열면 트랙 제목, 아티스트, 앨범 및 재생 시간이 포함된 요청이 "
+"lrclib.net으로 전송됩니다. 개인 데이터나 사용자 식별자는 포함되지 않습니다."
 
 #: prefs.js:1140
 msgid "How to Enable Vinyl Style for an App"
-msgstr "如何为应用程序启用黑胶样式"
+msgstr "앱에서 바이닐 스타일을 활성화하는 방법"
 
 #: prefs.js:1147
 msgid "Start playing music"
-msgstr "开始播放音乐"
+msgstr "음악 재생 시작"
 
 #: prefs.js:1149
 msgid ""
 "Open any media player or browser web app (YouTube, Spotify Web, SoundCloud, "
 "etc.) and play a track so it appears as a media source."
 msgstr ""
-"打开任意媒体播放器或浏览器网页应用程序（YouTube、Spotify Web、SoundCloud"
-"等），播放曲目使其显示为媒体来源。"
+"미디어 플레이어 또는 브라우저 웹 앱(YouTube, Spotify Web, SoundCloud 등)을 열고 "
+"트랙을 재생하여 미디어 소스로 표시되도록 하세요."
 
 #: prefs.js:1154
 msgid "Open the extension popup"
-msgstr "打开扩展弹出窗口"
+msgstr "확장 팝업 열기"
 
 #: prefs.js:1156
 msgid "Click the media controller in the top panel to open the popup player."
-msgstr "点击顶部面板中的媒体控制器以打开弹出播放器。"
+msgstr "상단 패널의 미디어 컨트롤러를 클릭하여 팝업 플레이어를 여세요."
 
 #: prefs.js:1161
 msgid "Double-click the album art"
-msgstr "双击专辑封面"
+msgstr "앨범 아트 두 번 클릭"
 
 #: prefs.js:1163
-#, fuzzy
 msgid ""
 "Double-click the album art image in the popup to toggle the vinyl record "
 "style for that specific app or browser source. For browsers (Chrome, "
 "Firefox, etc.) each site (YouTube, YouTube Music, Spotify Web) is stored as "
 "its own separate entry."
 msgstr ""
-"双击弹出窗口中的专辑封面图像，以切换该特定应用程序实例的黑胶样式。实例将自动"
-"保存。"
+"팝업의 앨범 아트 이미지를 두 번 클릭하여 해당 특정 앱 또는 브라우저 소스의 "
+"바이닐 레코드 스타일을 토글하세요. 브라우저(Chrome, Firefox 등)의 경우 "
+"각 사이트(YouTube, YouTube Music, Spotify Web)가 별도 항목으로 저장됩니다."
 
 #: prefs.js:1169
 msgid "Manage saved instances below"
-msgstr "在下方管理已保存的实例"
+msgstr "아래에서 저장된 인스턴스 관리"
 
 #: prefs.js:1171
-#, fuzzy
 msgid ""
 "All stored instances appear in the section below. Browser web-app sources "
 "appear as e.g. “YouTube Music (Chrome)” and are tracked independently. "
 "Toggle them on/off or remove them at any time."
 msgstr ""
-"所有已保存的实例在下方部分显示，带有应用程序图标和名称。随时切换开启/关闭或移"
-"除。"
+"저장된 모든 인스턴스가 아래 섹션에 나타납니다. 브라우저 웹앱 소스는 "
+"예를 들어 \"YouTube Music (Chrome)\"으로 표시되며 독립적으로 추적됩니다. "
+"언제든지 켜기/끄기 또는 제거할 수 있습니다."
 
 #: prefs.js:1192
 msgid "Saved App Instances"
-msgstr "已保存的应用程序实例"
+msgstr "저장된 앱 인스턴스"
 
 #: prefs.js:1194
 msgid ""
 "Instances stored by double-clicking the album art in the popup. Icons are "
 "loaded from the system .desktop database. Toggle the vinyl effect on/off or "
 "remove any entry."
-msgstr "通过双击专辑封面保存的实例。图标从系统.desktop数据库载入。"
+msgstr ""
+"팝업에서 앨범 아트를 두 번 클릭하여 저장된 인스턴스. 아이콘은 "
+"시스템 .desktop 데이터베이스에서 로드됩니다. 바이닐 효과를 켜기/끄기 또는 "
+"항목을 제거하세요."
 
 #: prefs.js:1208
 msgid "Add an App Manually"
-msgstr "手动添加应用程序"
+msgstr "앱 수동으로 추가"
 
 #: prefs.js:1210
 msgid ""
 "Search installed apps — including browsers — to manually add a vinyl entry. "
 "Useful for browser web apps whose instance hasn’t been captured yet via "
 "double-click."
-msgstr ""
-"搜索已安装的应用程序（包括浏览器）以手动添加黑胶条目。适用于尚未通过双击捕获"
-"实例的浏览器网页应用程序。"
+msgstr "설치된 앱(브라우저 포함)을 검색하여 바이닐 항목을 수동으로 추가하세요. 두 번 클릭으로 아직 캡처되지 않은 브라우저 웹 앱 인스턴스에 유용합니다."
 
 #: prefs.js:1218
 msgid ""
 "Browser sources tracked separately (YouTube, YouTube Music, Spotify Web)"
-msgstr "浏览器来源单独追踪（YouTube、YouTube Music、Spotify Web）"
+msgstr "브라우저 소스 별도 추적 (YouTube, YouTube Music, Spotify Web)"
 
 #: prefs.js:1221
 msgid ""
@@ -690,88 +713,93 @@ msgid ""
 "double-click the album art when that browser is playing music — the "
 "extension will capture the exact instance automatically."
 msgstr ""
-"对于网页应用程序，请添加浏览器本身（例如Google Chrome、Firefox）。然后在该浏"
-"览器播放音乐时双击专辑封面，扩展程序将自动捕获确切的实例。"
+"웹 앱의 경우 브라우저 자체(예: Google Chrome, Firefox)를 추가하세요. "
+"그런 다음 해당 브라우저가 음악을 재생할 때 앨범 아트를 두 번 클릭하면 "
+"확장이 정확한 인스턴스를 자동으로 캡처합니다."
 
 #: prefs.js:1237
 msgid "Search apps"
-msgstr "搜索应用程序"
+msgstr "앱 검색"
 
 #: prefs.js:1241
 msgid "Type an app or browser name…"
-msgstr "输入应用程序或浏览器名称…"
+msgstr "앱 또는 브라우저 이름 입력…"
 
 #: prefs.js:1310
 msgid "Running Players (Live Detection)"
-msgstr "正在运行的播放器（实时检测）"
+msgstr "실행 중인 플레이어 (실시간 감지)"
 
 #: prefs.js:1312
 msgid ""
 "MPRIS players active right now. Click “Use This” to immediately add the "
 "player as a vinyl-enabled instance without waiting for a double-click."
 msgstr ""
+"현재 활성화된 MPRIS 플레이어. \"이것 사용\"을 클릭하면 두 번 클릭을 "
+"기다리지 않고 즉시 플레이어를 바이닐 활성화 인스턴스로 추가합니다."
 
 #: prefs.js:1319
 msgid "Scan for active players"
-msgstr "扫描活跃播放器"
+msgstr "활성 플레이어 스캔"
 
 #: prefs.js:1320
 msgid "Detects players currently broadcasting on the MPRIS D-Bus"
-msgstr "检测当前在MPRIS D-Bus上广播的播放器"
+msgstr "현재 MPRIS D-Bus에서 방송 중인 플레이어 감지"
 
 #: prefs.js:1326
 msgid "Refresh"
-msgstr "刷新"
+msgstr "새로 고침"
 
 #: prefs.js:1453
 msgid "Use This"
-msgstr "使用此"
+msgstr "이것 사용"
 
 #: prefs.js:1457
 #, javascript-format
 msgid "Add “%s” as a vinyl-enabled instance"
-msgstr ""
+msgstr "\"%s\"을(를) 바이닐 활성화 인스턴스로 추가"
 
 #: prefs.js:1501
 msgid "All running players are already saved"
-msgstr "所有正在运行的播放器均已保存"
+msgstr "실행 중인 모든 플레이어가 이미 저장되었습니다"
 
 #: prefs.js:1502
 msgid "Manage them in the Saved App Instances section above"
-msgstr "在上方的“已保存的应用程序实例”部分中管理它们"
+msgstr "위의 저장된 앱 인스턴스 섹션에서 관리하세요"
 
 #: prefs.js:1559
 msgid "No instances saved yet"
-msgstr "尚未保存任何实例"
+msgstr "아직 저장된 인스턴스 없음"
 
 #: prefs.js:1561
 msgid ""
 "Double-click the album art in the popup while music is playing to save an "
 "instance here."
-msgstr "在播放音乐时双击弹出窗口的专辑封面，在此保存一个实例。"
+msgstr ""
+"음악이 재생되는 동안 팝업에서 앨범 아트를 두 번 클릭하여 "
+"여기에 인스턴스를 저장하세요."
 
 #: prefs.js:1660
 #, javascript-format
 msgid "%s via %s"
-msgstr ""
+msgstr "%s via %s"
 
 #: prefs.js:1669 prefs.js:2134
 msgid "renamed from"
-msgstr "从以下重命名"
+msgstr "이름 변경됨:"
 
 #: prefs.js:1692
 #, javascript-format
 msgid "Rename “%s”"
-msgstr "重命名“%s”"
+msgstr "\"%s\" 이름 변경"
 
 #: prefs.js:1716
 #, javascript-format
 msgid "Remove %s from saved instances"
-msgstr "从已保存实例中移除%s"
+msgstr "저장된 인스턴스에서 %s 제거"
 
 #: prefs.js:1733
 msgid "Rename Instance"
-msgstr "重命名实例"
+msgstr "인스턴스 이름 변경"
 
 #: prefs.js:1735
 #, javascript-format
@@ -779,153 +807,151 @@ msgid ""
 "Enter a custom display name for \"%s\".\n"
 "Leave blank to reset to the default."
 msgstr ""
-"输入\"%s\"的自定义显示名称。\n"
-"留空以重置为默认名称。"
+"\"%s\"에 대한 사용자 지정 표시 이름을 입력하세요.\n"
+"기본값으로 재설정하려면 비워 두세요."
 
 #: prefs.js:1741
 msgid "Cancel"
-msgstr "取消"
+msgstr "취소"
 
 #: prefs.js:1742
 msgid "Rename"
-msgstr "重命名"
+msgstr "이름 변경"
 
 #: prefs.js:1760
 msgid "Display name"
-msgstr "显示名称"
+msgstr "표시 이름"
 
 #: prefs.js:2105
 msgid "Saved Instances"
-msgstr "已保存的实例"
+msgstr "저장된 인스턴스"
 
 #: prefs.js:2126
 #, javascript-format
 msgid "Browser: %s · Source: %s"
-msgstr ""
+msgstr "브라우저: %s · 소스: %s"
 
 #: prefs.js:2177
 msgid "Other Apps"
-msgstr "其他应用程序"
+msgstr "다른 앱"
 
 #: prefs.js:2250
 msgid "No matching apps found"
-msgstr "找不到匹配的应用程序"
+msgstr "일치하는 앱을 찾을 수 없습니다"
 
 #: prefs.js:2349
 msgid "About"
-msgstr "关于"
+msgstr "정보"
 
 #: prefs.js:2356
 msgid "Beautiful and modern media controls with multi-instance support"
-msgstr "支持多实例的美观现代媒体控制"
+msgstr "다중 인스턴스 지원을 갖춘 아름답고 현대적인 미디어 컨트롤"
 
 #: prefs.js:2394
 msgid "Version 5.2"
-msgstr "版本 5.2"
+msgstr "버전 5.2"
 
 #: prefs.js:2401
 msgid "Modern media controls with native GNOME design"
-msgstr "采用原生GNOME设计的现代媒体控制"
+msgstr "네이티브 GNOME 디자인의 현대적인 미디어 컨트롤"
 
 #: prefs.js:2415
 msgid "Extension Links"
-msgstr "扩展程序链接"
+msgstr "확장 링크"
 
 #: prefs.js:2416 prefs.js:2421
 msgid "Source code, issues, and contributions"
-msgstr "源代码、问题和贡献"
+msgstr "소스 코드, 이슈 및 기여"
 
 #: prefs.js:2420
 msgid "View on GitHub"
-msgstr "在GitHub上查看"
+msgstr "GitHub에서 보기"
 
 #: prefs.js:2447
 msgid "☕ Buy Me a Coffee"
-msgstr "☕ 请我喝咖啡"
+msgstr "☕ 커피 한 잔 사주세요"
 
 #: prefs.js:2448
 msgid "Support development with a small donation"
-msgstr "通过小额捐赠支持开发"
+msgstr "소액 기부로 개발을 지원하세요"
 
 #: prefs.js:2452
 msgid "☕ Support by buying me a coffee – just scan the QR code!"
-msgstr "☕ 请我喝杯咖啡来支持 - 扫描QR码！"
+msgstr "☕ 커피 한 잔 사주세요 — QR 코드를 스캔하세요!"
 
 #: prefs.js:2453
 msgid "Scan QR code to open Buy Me a Coffee"
-msgstr ""
+msgstr "QR 코드를 스캔하여 Buy Me a Coffee 열기"
 
 #: prefs.js:2456
 msgid "❤ GitHub Sponsors"
-msgstr ""
+msgstr "❤ GitHub 스폰서"
 
 #: prefs.js:2457
 msgid "Sponsor via GitHub — one-time or monthly"
-msgstr ""
+msgstr "GitHub를 통해 후원 — 일회성 또는 월간"
 
 #: prefs.js:2461
-#, fuzzy
 msgid "❤ Support via GitHub Sponsors – just scan the QR code!"
-msgstr "☕ 请我喝杯咖啡来支持 - 扫描QR码！"
+msgstr "❤ GitHub 스폰서를 통해 지원 — QR 코드를 스캔하세요!"
 
 #: prefs.js:2462
 msgid "Scan QR code to open GitHub Sponsors"
-msgstr ""
+msgstr "QR 코드를 스캔하여 GitHub 스폰서 열기"
 
 #: prefs.js:2484
 msgid "Donation Platform"
-msgstr "捐赠平台"
+msgstr "기부 플랫폼"
 
 #: prefs.js:2485
 msgid "Switch to see the QR code for each platform"
-msgstr "切换以查看每个平台的QR码"
+msgstr "각 플랫폼의 QR 코드를 보려면 전환하세요"
 
 #: prefs.js:2523
 msgid "Donation Address"
-msgstr "捐赠地址"
+msgstr "기부 주소"
 
 #: prefs.js:2537
 msgid "Donation address"
-msgstr "捐赠地址"
+msgstr "기부 주소"
 
 #: prefs.js:2579
 msgid "Support Development"
-msgstr "支持开发"
+msgstr "개발 지원"
 
 #: prefs.js:2580
 msgid "Choose your preferred donation platform"
-msgstr "选择您首选的捐赠平台"
+msgstr "원하는 기부 플랫폼을 선택하세요"
 
 #: prefs.js:2622
 msgid "License & Credits"
-msgstr "许可证与致谢"
+msgstr "라이선스 및 크레딧"
 
 #: prefs.js:2623
 msgid "Open source software information"
-msgstr "开放源代码软件信息"
+msgstr "오픈 소스 소프트웨어 정보"
 
 #: prefs.js:2626
 msgid "Open Source License"
-msgstr "开放源代码许可证"
+msgstr "오픈 소스 라이선스"
 
 #: prefs.js:2627
 msgid "GPL-3.0 License - Free and open source software"
-msgstr "GPL-3.0许可证 - 自由开放源代码软件"
+msgstr "GPL-3.0 라이선스 - 무료 오픈 소스 소프트웨어"
 
 #: prefs.js:2634
 msgid "Media Data Sources"
-msgstr "媒体数据来源"
+msgstr "미디어 데이터 소스"
 
 #: prefs.js:2636
 msgid "MPRIS D-Bus interface - Standard media player remote interfacing"
-msgstr "MPRIS D-Bus接口 - 标准媒体播放器远程接口"
+msgstr "MPRIS D-Bus 인터페이스 - 표준 미디어 플레이어 원격 인터페이스"
 
 #: prefs.js:2644
 msgid "Key Features"
-msgstr "主要功能"
+msgstr "주요 기능"
 
 #: prefs.js:2646
-#, fuzzy
 msgid ""
 "• Multi-instance browser support\n"
 "• Per-app rotating vinyl record album art\n"
@@ -938,176 +964,30 @@ msgid ""
 "• Per-player lyrics toggle (each tab independent)\n"
 "• All seen apps remembered — re-enable any time"
 msgstr ""
-"• 多实例浏览器支持\n"
-"• 每个应用程序的旋转黑胶专辑封面\n"
-"• 动态唱臂\n"
-"• 流畅动画\n"
-"• 双击可切换每个应用程序的黑胶\n"
-"• 所有已见应用程序均被记住 — 随时重新启用"
+"• 다중 인스턴스 브라우저 지원\n"
+"• 앱별 회전 바이닐 레코드 앨범 아트\n"
+"• 애니메이션 톤암\n"
+"• 부드러운 애니메이션\n"
+"• 두 번 클릭으로 앱별 바이닐 토글\n"
+"• 앨범 아트 세 번 클릭으로 동기화 가사 표시\n"
+"• 가사 패널 한 번 클릭으로 앨범 아트로 돌아가기\n"
+"• lrclib.net을 통해 재생에 동기화된 가사\n"
+"• 플레이어별 가사 토글 (각 탭 독립적)\n"
+"• 확인된 모든 앱 기억 — 언제든지 다시 활성화"
 
 #: prefs.js:2710
 msgid "Copy to Clipboard"
-msgstr "复制到剪贴板"
+msgstr "클립보드에 복사"
 
 #: prefs.js:2712
 msgid ""
 "Unable to copy automatically. Select the address below and press Ctrl+C:"
-msgstr "无法自动复制。请选取以下地址并按Ctrl+C："
+msgstr "자동으로 복사할 수 없습니다. 아래 주소를 선택하고 Ctrl+C를 누르세요:"
 
 #: prefs.js:2715
 msgid "Close"
-msgstr "关闭"
+msgstr "닫기"
 
 #: utils/indicator.js:19
 msgid "Media Controls"
-msgstr "媒体控制"
-
-#~ msgid ""
-#~ "Global default when no per-app setting exists. Per-app overrides in the "
-#~ "'Vinyl Apps' section take priority."
-#~ msgstr ""
-#~ "当没有每个应用程序设置时的全局默认值。“黑胶应用”部分中的每个应用程序覆盖优"
-#~ "先。"
-
-#~ msgid ""
-#~ "- Album cover appears on a spinning vinyl disc\n"
-#~ "- Black vinyl grooves are visible around the edges\n"
-#~ "- Animated tonearm moves in and out with playback state\n"
-#~ "- Rotation pauses smoothly when music pauses\n"
-#~ "  (disc angle is preserved and resumes from the same position)\n"
-#~ "- Disc resets to 0° only on a genuine Stop\n"
-#~ "- Double-click album art to toggle vinyl for THAT player's app only\n"
-#~ "- Per-app settings override the global default above\n"
-#~ "- All seen apps are stored; re-enable any time from Vinyl Apps page\n"
-#~ msgstr ""
-#~ "- 专辑封面显示在旋转的黑胶唱片上\n"
-#~ "- 黑胶沟纹在边缘可见\n"
-#~ "- 动态唱臂随播放状态移动\n"
-#~ "- 音乐暂停时旋转平滑停止\n"
-#~ "  (保留碟片角度，从相同位置继续)\n"
-#~ "- 碟片仅在真正停止时重置为0°\n"
-#~ "- 双击专辑封面以切换该播放器应用程序的黑胶\n"
-#~ "- 每个应用程序设置覆盖全局默认\n"
-#~ "- 所有已见应用程序均已保存；随时从黑胶应用页面重新启用"
-
-#~ msgid ""
-#~ "Search installed apps — including browsers — to manually add a vinyl "
-#~ "entry. Useful for browser web apps whose instance hasn't been captured "
-#~ "yet via double-click."
-#~ msgstr "搜索已安装的应用程序（包括浏览器）以手动添加黑胶条目。"
-
-#~ msgid "Browser web apps (YouTube, Spotify Web, etc.)"
-#~ msgstr "浏览器网页应用程序（YouTube、Spotify Web等）"
-
-#~ msgid ""
-#~ "Enter a custom display name for \"%s\".\n"
-#~ "Leave blank to reset to the default.\n"
-#~ msgstr ""
-#~ "输入\"%s\"的自定义显示名称。\n"
-#~ "留空以重置为默认名称。"
-
-#~ msgid "Preferred Method - Scan QR code to support development"
-#~ msgstr "首选方法 - 扫描QR码支持开发"
-
-#~ msgid ""
-#~ "• Multi-instance browser support\n"
-#~ "• Per-app rotating vinyl record album art\n"
-#~ "• Animated tonearm\n"
-#~ "• Smooth animations\n"
-#~ "• Double-click to toggle vinyl per app\n"
-#~ "• All seen apps remembered — re-enable any time\n"
-#~ msgstr ""
-#~ "• 多实例浏览器支持\n"
-#~ "• 每个应用程序的旋转黑胶专辑封面\n"
-#~ "• 动态唱臂\n"
-#~ "• 流畅动画\n"
-#~ "• 双击可切换每个应用程序的黑胶\n"
-#~ "• 所有已见应用程序均被记住 — 随时重新启用"
-
-#~ msgid "Panel Settings"
-#~ msgstr "面板设置"
-
-#~ msgid "Configure the position and appearance in the top panel"
-#~ msgstr "配置顶部面板中的位置和外观"
-
-#~ msgid "Display Settings"
-#~ msgstr "显示设置"
-
-#~ msgid "Configure what appears in the panel"
-#~ msgstr "配置面板中显示的内容"
-
-#~ msgid "Display track information in the panel"
-#~ msgstr "在面板中显示曲目信息"
-
-#~ msgid "Include artist name with track title"
-#~ msgstr "在曲目标题中包含艺术家名称"
-
-#~ msgid "Maximum Title Length"
-#~ msgstr "最大标题长度"
-
-#~ msgid "Characters to display before scrolling starts"
-#~ msgstr "滚动开始前显示的字符数"
-
-#~ msgid "Scroll Speed"
-#~ msgstr "滚动速度"
-
-#~ msgid "Separator Text"
-#~ msgstr "分隔符文字"
-
-#~ msgid ""
-#~ "Source\n"
-#~ "  • Lyrics are fetched from lrclib.net — a free, open public database\n"
-#~ "  • No account or API key is required; the request is made silently in "
-#~ "the background\n"
-#~ "\n"
-#~ "Display\n"
-#~ "  • The active lyric line is shown larger and centred in the panel\n"
-#~ "  • The line above and below are shown at medium size; all others fade "
-#~ "out\n"
-#~ "  • The panel scrolls smoothly so the active line is always in view\n"
-#~ "\n"
-#~ "Track changes\n"
-#~ "  • When a new song starts while the lyrics panel is open, the view "
-#~ "clears\n"
-#~ "    and new lyrics are fetched automatically\n"
-#~ "  • If no lyrics are found, a “No lyrics found” message is shown\n"
-#~ "\n"
-#~ "Multiple players\n"
-#~ "  • Each player tab (Spotify, YouTube, VLC…) has its own independent\n"
-#~ "    lyrics toggle — opening lyrics for one player does not affect any "
-#~ "other\n"
-#~ "  • Switching tabs restores the correct view (lyrics or album art) for\n"
-#~ "    the player you switch to\n"
-#~ "\n"
-#~ "Seeking\n"
-#~ "  • When you seek forward or backward, the highlighted line jumps\n"
-#~ "    instantly to the correct position\n"
-#~ msgstr ""
-#~ "来源\n"
-#~ "  • 歌词从 lrclib.net 获取 — 这是一个免费的开放公共数据库\n"
-#~ "  • 无需账号或 API 密钥；请求在后台静默进行\n"
-#~ "\n"
-#~ "显示\n"
-#~ "  • 当前启用的歌词行在面板中放大并居中显示\n"
-#~ "  • 上下相邻行以中等大小显示；其余行淡出\n"
-#~ "  • 面板平滑滚动，使启用行始终在可视范围内\n"
-#~ "\n"
-#~ "曲目切换\n"
-#~ "  • 当歌词面板打开时新歌曲开始播放，画面将清空\n"
-#~ "    并自动获取新歌词\n"
-#~ "  • 如果找不到歌词，将显示“找不到歌词”消息\n"
-#~ "\n"
-#~ "多播放器\n"
-#~ "  • 每个播放器选项卡（Spotify、YouTube、VLC…）都有其独立的\n"
-#~ "    歌词开关 — 为一个播放器打开歌词不会影响其他播放器\n"
-#~ "  • 切换选项卡会为切换到的播放器还原正确的画面（歌词或专辑封面）\n"
-#~ "\n"
-#~ "定位\n"
-#~ "  • 向前或向后跳转时，高亮显示的歌词行会\n"
-#~ "    立即跳转到正确位置"
-
-#~ msgid "Fetching lyrics…"
-#~ msgstr "正在获取歌词…"
-
-#~ msgid "No lyrics found"
-#~ msgstr "找不到歌词"
+msgstr "미디어 컨트롤"

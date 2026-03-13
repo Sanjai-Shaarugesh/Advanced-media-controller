@@ -1,0 +1,994 @@
+# Tamil translation for advanced-media-controller
+# Copyright (C) 2026 THE PACKAGE'S COPYRIGHT HOLDER
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: advanced-media-controller 5.2\n"
+"Report-Msgid-Bugs-To: https://github.com/Sanjai-Shaarugesh/Advance-media-controller/issues\n"
+"POT-Creation-Date: 2026-03-12 20:33+0530\n"
+"PO-Revision-Date: 2026-03-13 00:00+0000\n"
+"Last-Translator: Claude <noreply@anthropic.com>\n"
+"Language-Team: Tamil\n"
+"Language: ta\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: prefs.js:91 prefs.js:2354 prefs.js:2387
+msgid "Advanced Media Controller"
+msgstr "மேம்பட்ட மீடியா கட்டுப்படுத்தி"
+
+#: prefs.js:97
+msgid "General"
+msgstr "பொது"
+
+#: prefs.js:103
+msgid "Panel Placement"
+msgstr "பேனல் அமைவு"
+
+#: prefs.js:104
+msgid "Where the indicator sits in the top bar"
+msgstr "மேல் பட்டியில் காட்டி எங்கு இருக்கும்"
+
+#: prefs.js:108
+msgid "Panel Position"
+msgstr "பேனல் நிலை"
+
+#: prefs.js:110
+msgid "Left"
+msgstr "இடது"
+
+#: prefs.js:110
+msgid "Center"
+msgstr "மையம்"
+
+#: prefs.js:110
+msgid "Right"
+msgstr "வலது"
+
+#: prefs.js:125
+msgid "Panel Index"
+msgstr "பேனல் குறியீடு"
+
+#: prefs.js:126
+msgid "Position within the panel area (-1 = automatic)"
+msgstr "பேனல் பகுதியில் நிலை (-1 = தானியங்கி)"
+
+#: prefs.js:144
+msgid "Panel Label"
+msgstr "பேனல் லேபிள்"
+
+#: prefs.js:145
+msgid "Track name shown in the top bar"
+msgstr "மேல் பட்டியில் காட்டப்படும் பாடல் பெயர்"
+
+#: prefs.js:150
+msgid "Show Track Name"
+msgstr "பாடல் பெயரை காட்டு"
+
+#: prefs.js:151
+msgid "Display the current track title in the panel"
+msgstr "பேனலில் தற்போதைய பாடல் தலைப்பை காட்டு"
+
+#: prefs.js:162
+msgid "Show Artist Name"
+msgstr "கலைஞர் பெயரை காட்டு"
+
+#: prefs.js:163
+msgid "Append the artist name to the track title"
+msgstr "பாடல் தலைப்பில் கலைஞர் பெயரை இணை"
+
+#: prefs.js:174
+msgid "Title / Artist Separator"
+msgstr "தலைப்பு / கலைஞர் பிரிப்பான்"
+
+#: prefs.js:184
+msgid "Panel Scrolling"
+msgstr "பேனல் உருட்டல்"
+
+#: prefs.js:185
+msgid "Marquee scroll of the track label in the top bar"
+msgstr "மேல் பட்டியில் பாடல் லேபிளின் மார்க்கி உருட்டல்"
+
+#: prefs.js:190
+msgid "Enable Panel Label Scrolling"
+msgstr "பேனல் லேபிள் உருட்டலை இயக்கு"
+
+#: prefs.js:192
+msgid ""
+"Scroll the track/artist text one full loop then pause before repeating. When "
+"off, the text is truncated with an ellipsis."
+msgstr ""
+"பாடல்/கலைஞர் உரையை ஒரு முழு சுற்று உருட்டி பிறகு மீண்டும் செய்வதற்கு முன் "
+"இடைநிறுத்தவும். அணைக்கப்பட்டால், உரை மூன்று புள்ளிகளால் வெட்டப்படும்."
+
+#: prefs.js:205
+msgid "Panel Scroll Speed"
+msgstr "பேனல் உருட்டல் வேகம்"
+
+#: prefs.js:206 prefs.js:314 prefs.js:354
+msgid "1 = slowest, 10 = fastest"
+msgstr "1 = மிகவும் மெதுவாக, 10 = மிகவும் வேகமாக"
+
+#: prefs.js:224
+msgid "System Integration"
+msgstr "கணினி ஒருங்கிணைப்பு"
+
+#: prefs.js:226
+msgid "Controls how this extension interacts with other parts of GNOME Shell."
+msgstr "இந்த நீட்டிப்பு GNOME Shell இன் மற்ற பகுதிகளுடன் எவ்வாறு தொடர்பு கொள்கிறது என்பதை கட்டுப்படுத்துகிறது."
+
+#: prefs.js:237
+msgid "Hide Default GNOME Media Player"
+msgstr "இயல்புநிலை GNOME மீடியா பிளேயரை மறை"
+
+#: prefs.js:239
+msgid "Remove the built-in media controls from the system date/time menu"
+msgstr "கணினி தேதி/நேர மெனுவிலிருந்து உள்ளமைந்த மீடியா கட்டுப்பாடுகளை அகற்று"
+
+#: prefs.js:260
+msgid ""
+"When ON, the extension hides the stock GNOME media controls that\n"
+"normally appear in the calendar / notification panel (the date-time\n"
+"menu). This prevents a duplicate 'now playing' widget.\n"
+"\n"
+"The built-in controls are fully restored the moment you:\n"
+"  • Turn this switch off, or\n"
+"  • Disable or uninstall this extension."
+msgstr ""
+"இயக்கப்படும்போது, நீட்டிப்பு இயல்பாக காலண்டர் / அறிவிப்பு பேனலில்\n"
+"(தேதி-நேர மெனு) தோன்றும் இயல்புநிலை GNOME மீடியா கட்டுப்பாடுகளை மறைக்கிறது.\n"
+"இது நகல் 'இப்போது இயங்குகிறது' விட்ஜெட்டை தடுக்கிறது.\n"
+"\n"
+"நீங்கள் பின்வருவனவற்றை செய்யும் தருணத்தில் உள்ளமைந்த கட்டுப்பாடுகள் முழுமையாக மீட்டமைக்கப்படும்:\n"
+"  • இந்த சுவிட்சை அணைக்கும்போது, அல்லது\n"
+"  • இந்த நீட்டிப்பை முடக்கும் அல்லது நிறுவல் நீக்கும்போது."
+
+#: prefs.js:286
+msgid "Popup Player"
+msgstr "பாப்அப் பிளேயர்"
+
+#: prefs.js:292
+msgid "Title Scrolling"
+msgstr "தலைப்பு உருட்டல்"
+
+#: prefs.js:293
+msgid "Marquee behaviour for the track title inside the popup"
+msgstr "பாப்அப்பில் பாடல் தலைப்பிற்கான மார்க்கி நடத்தை"
+
+#: prefs.js:298
+msgid "Enable Title Scrolling"
+msgstr "தலைப்பு உருட்டலை இயக்கு"
+
+#: prefs.js:300
+msgid ""
+"Scroll long track titles from start to end, pause, then repeat. When off, "
+"the text is truncated with an ellipsis."
+msgstr ""
+"நீண்ட பாடல் தலைப்புகளை தொடக்கத்திலிருந்து இறுதிவரை உருட்டி, இடைநிறுத்தி, பிறகு மீண்டும் செய்யவும். "
+"அணைக்கப்பட்டால், உரை மூன்று புள்ளிகளால் வெட்டப்படும்."
+
+#: prefs.js:313
+msgid "Title Scroll Speed"
+msgstr "தலைப்பு உருட்டல் வேகம்"
+
+#: prefs.js:332
+msgid "Artist Scrolling"
+msgstr "கலைஞர் உருட்டல்"
+
+#: prefs.js:333
+msgid "Marquee behaviour for the artist name inside the popup"
+msgstr "பாப்அப்பில் கலைஞர் பெயருக்கான மார்க்கி நடத்தை"
+
+#: prefs.js:338
+msgid "Enable Artist Scrolling"
+msgstr "கலைஞர் உருட்டலை இயக்கு"
+
+#: prefs.js:340
+msgid ""
+"Scroll long artist names from start to end, pause, then repeat. When off, "
+"the text is truncated with an ellipsis."
+msgstr ""
+"நீண்ட கலைஞர் பெயர்களை தொடக்கத்திலிருந்து இறுதிவரை உருட்டி, இடைநிறுத்தி, பிறகு மீண்டும் செய்யவும். "
+"அணைக்கப்பட்டால், உரை மூன்று புள்ளிகளால் வெட்டப்படும்."
+
+#: prefs.js:353
+msgid "Artist Scroll Speed"
+msgstr "கலைஞர் உருட்டல் வேகம்"
+
+#: prefs.js:373
+msgid "Album Art"
+msgstr "ஆல்பம் கலை"
+
+#: prefs.js:374
+msgid "Vinyl-record rotation animation"
+msgstr "வைனல் ரெக்கார்ட் சுழற்சி அனிமேஷன்"
+
+#: prefs.js:379
+msgid "Enable Vinyl Record Rotation (Global Default)"
+msgstr "வைனல் ரெக்கார்ட் சுழற்சியை இயக்கு (உலகளாவிய இயல்புநிலை)"
+
+#: prefs.js:381
+msgid ""
+"Global default when no per-app setting exists. Per-app overrides in the "
+"‘Vinyl Apps’ section take priority."
+msgstr "செயலி-சார் அமைப்பு இல்லாதபோது உலகளாவிய இயல்புநிலை. 'வைனல் ஆப்ஸ்' பிரிவில் உள்ள செயலி-சார் மேலெழுத்துகள் முன்னுரிமை பெறும்."
+
+#: prefs.js:395
+msgid "Rotation Speed (seconds per revolution)"
+msgstr "சுழற்சி வேகம் (ஒரு சுற்றுக்கு வினாடிகள்)"
+
+#: prefs.js:396
+msgid "5 = fastest, 60 = slowest. Recommended: 20–30"
+msgstr "5 = மிகவும் வேகமாக, 60 = மிகவும் மெதுவாக. பரிந்துரை: 20–30"
+
+#: prefs.js:414
+msgid "Vinyl Effect Details"
+msgstr "வைனல் விளைவு விவரங்கள்"
+
+#: prefs.js:415
+msgid "How the animated vinyl record works"
+msgstr "அனிமேஷன் வைனல் ரெக்கார்ட் எவ்வாறு செயல்படுகிறது"
+
+#: prefs.js:420
+msgid ""
+"- Album cover appears on a spinning vinyl disc\n"
+"- Black vinyl grooves are visible around the edges\n"
+"- Animated tonearm moves in and out with playback state\n"
+"- Rotation pauses smoothly when music pauses\n"
+"  (disc angle is preserved and resumes from the same position)\n"
+"- Disc resets to 0° only on a genuine Stop\n"
+"- Double-click album art to toggle vinyl for THAT player’s app only\n"
+"- Per-app settings override the global default above\n"
+"- All seen apps are stored; re-enable any time from Vinyl Apps page"
+msgstr ""
+"- ஆல்பம் அட்டை சுழலும் வைனல் வட்டில் தோன்றும்\n"
+"- கறுப்பு வைனல் வரிசைகள் விளிம்புகளில் தெரியும்\n"
+"- அனிமேஷன் டோனாம் இயக்க நிலையுடன் உள்ளே வெளியே நகரும்\n"
+"- இசை இடைநிறுத்தப்படும்போது சுழற்சி மென்மையாக நிறுத்தப்படும்\n"
+"  (வட்டு கோணம் பாதுகாக்கப்பட்டு அதே நிலையில் மீண்டும் தொடரும்)\n"
+"- வட்டு உண்மையான நிறுத்தத்தில் மட்டுமே 0°-க்கு மீட்டமைக்கப்படும்\n"
+"- ஆல்பம் கலையை இரட்டை-கிளிக் செய்து அந்த பிளேயரின் செயலிக்கு மட்டும் வைனல் மாற்று\n"
+"- செயலி-சார் அமைப்புகள் மேலே உள்ள உலகளாவிய இயல்புநிலையை மேலெழுதும்\n"
+"- பார்த்த அனைத்து செயலிகளும் சேமிக்கப்படும்; வைனல் ஆப்ஸ் பக்கத்திலிருந்து எந்த நேரத்திலும் மீண்டும் இயக்கலாம்"
+
+#: prefs.js:445
+msgid "Vinyl Apps"
+msgstr "வைனல் ஆப்ஸ்"
+
+#: prefs.js:453
+msgid "Player Filter"
+msgstr "பிளேயர் வடிகட்டி"
+
+#: prefs.js:461
+msgid "Lyrics"
+msgstr "பாடல் வரிகள்"
+
+#: prefs.js:519 prefs.js:546
+msgid "Filter Mode"
+msgstr "வடிகட்டி முறை"
+
+#: prefs.js:521
+msgid ""
+"Choose whether the list below acts as a blacklist (block listed apps) or a "
+"whitelist (allow only listed apps). Set to Off to disable filtering entirely."
+msgstr ""
+"கீழே உள்ள பட்டியல் கருப்புப் பட்டியலாக (பட்டியலிடப்பட்ட செயலிகளை தடை) அல்லது "
+"வெள்ளைப் பட்டியலாக (பட்டியலிடப்பட்ட செயலிகளை மட்டும் அனுமதி) செயல்படுமா என தேர்ந்தெடுக்கவும். "
+"வடிகட்டலை முற்றிலும் முடக்க அணைவிற்கு அமைக்கவும்."
+
+#: prefs.js:532
+msgid "Off"
+msgstr "அணை"
+
+#: prefs.js:533
+msgid "Blacklist"
+msgstr "கருப்புப் பட்டியல்"
+
+#: prefs.js:534
+msgid "Whitelist"
+msgstr "வெள்ளைப் பட்டியல்"
+
+#: prefs.js:540
+msgid "Show all media players — filtering is disabled"
+msgstr "அனைத்து மீடியா பிளேயர்களையும் காட்டு — வடிகட்டல் முடக்கப்பட்டுள்ளது"
+
+#: prefs.js:541
+msgid "Hide only the players you add to the list below"
+msgstr "கீழே உள்ள பட்டியலில் சேர்க்கும் பிளேயர்களை மட்டும் மறை"
+
+#: prefs.js:542
+msgid "Show only the players you add to the list below"
+msgstr "கீழே உள்ள பட்டியலில் சேர்க்கும் பிளேயர்களை மட்டும் காட்டு"
+
+#: prefs.js:569
+msgid "Saved Players"
+msgstr "சேமிக்கப்பட்ட பிளேயர்கள்"
+
+#: prefs.js:571
+msgid ""
+"Each saved player can be individually enabled or disabled in the filter "
+"without removing it. The toggle controls whether the filter rule is active "
+"for that app. Use the trash button to remove it from the list entirely."
+msgstr ""
+"சேமிக்கப்பட்ட ஒவ்வொரு பிளேயரையும் அகற்றாமல் வடிகட்டியில் தனித்தனியாக "
+"இயக்கலாம் அல்லது முடக்கலாம். டாகிள் அந்த செயலிக்கு வடிகட்டி விதி செயலில் "
+"உள்ளதா என்பதை கட்டுப்படுத்துகிறது. பட்டியலிலிருந்து முழுவதுமாக அகற்ற குப்பை பொத்தானை பயன்படுத்தவும்."
+
+#: prefs.js:597
+msgid "No players saved yet"
+msgstr "இன்னும் எந்த பிளேயரும் சேமிக்கப்படவில்லை"
+
+#: prefs.js:599
+msgid ""
+"Detect running players below and click “Add to Filter” to add them here."
+msgstr ""
+"கீழே இயங்கும் பிளேயர்களை கண்டறிந்து இங்கே சேர்க்க \"வடிகட்டியில் சேர்\" என்பதை கிளிக் செய்யவும்."
+
+#: prefs.js:653
+#, javascript-format
+msgid "Filter rule active for “%s” — click to disable"
+msgstr "\"%s\"-க்கு வடிகட்டி விதி செயலில் உள்ளது — முடக்க கிளிக் செய்யவும்"
+
+#: prefs.js:654
+#, javascript-format
+msgid "Filter rule disabled for “%s” — click to enable"
+msgstr "\"%s\"-க்கு வடிகட்டி விதி முடக்கப்பட்டுள்ளது — இயக்க கிளிக் செய்யவும்"
+
+#: prefs.js:676
+#, javascript-format
+msgid "Remove “%s” from the filter list"
+msgstr "வடிகட்டி பட்டியலிலிருந்து \"%s\" அகற்று"
+
+#: prefs.js:709
+msgid "Detected Players"
+msgstr "கண்டறியப்பட்ட பிளேயர்கள்"
+
+#: prefs.js:711
+msgid ""
+"Active MPRIS players found on the session D-Bus. Click “Add to Filter” to "
+"save a player to the list above."
+msgstr ""
+"அமர்வு D-Bus-ல் கண்டறியப்பட்ட செயலில் MPRIS பிளேயர்கள். "
+"மேலே உள்ள பட்டியலில் பிளேயரை சேமிக்க \"வடிகட்டியில் சேர்\" என்பதை கிளிக் செய்யவும்."
+
+#: prefs.js:718
+msgid "Scan for running players"
+msgstr "இயங்கும் பிளேயர்களை ஸ்கேன் செய்"
+
+#: prefs.js:719
+msgid "Detects players currently broadcasting on MPRIS"
+msgstr "தற்போது MPRIS-ல் ஒளிபரப்பும் பிளேயர்களை கண்டறி"
+
+#: prefs.js:725
+msgid "Refresh the detected player list"
+msgstr "கண்டறியப்பட்ட பிளேயர் பட்டியலை புதுப்பி"
+
+#: prefs.js:753
+msgid "Could not connect to the session bus"
+msgstr "அமர்வு பஸ்ஸுடன் இணைக்க முடியவில்லை"
+
+#: prefs.js:783 prefs.js:1375
+msgid "No active players detected"
+msgstr "செயலில் பிளேயர்கள் எதுவும் கண்டறியப்படவில்லை"
+
+#: prefs.js:784 prefs.js:1376
+msgid "Open a music app and click Refresh"
+msgstr "ஒரு இசை செயலியை திறந்து புதுப்பி என கிளிக் செய்யவும்"
+
+#: prefs.js:842 prefs.js:861 prefs.js:871
+msgid "Saved ✓"
+msgstr "சேமிக்கப்பட்டது ✓"
+
+#: prefs.js:843 prefs.js:871
+msgid "Add to Filter"
+msgstr "வடிகட்டியில் சேர்"
+
+#: prefs.js:849 prefs.js:864
+#, javascript-format
+msgid "“%s” is already in the filter list"
+msgstr "\"%s\" ஏற்கனவே வடிகட்டி பட்டியலில் உள்ளது"
+
+#: prefs.js:850
+#, javascript-format
+msgid "Add “%s” to the filter list (enabled by default)"
+msgstr "\"%s\"-ஐ வடிகட்டி பட்டியலில் சேர் (இயல்பாக இயக்கப்பட்டது)"
+
+#: prefs.js:899
+msgid "Synced Lyrics"
+msgstr "ஒத்திசைக்கப்பட்ட பாடல் வரிகள்"
+
+#: prefs.js:901
+msgid "Time-synced lyrics fetched from lrclib.net — free, no account needed"
+msgstr "lrclib.net-இலிருந்து பெறப்பட்ட நேர-ஒத்திசைக்கப்பட்ட பாடல் வரிகள் — இலவசம், கணக்கு தேவையில்லை"
+
+#: prefs.js:907
+msgid "Enable Synced Lyrics"
+msgstr "ஒத்திசைக்கப்பட்ட பாடல் வரிகளை இயக்கு"
+
+#: prefs.js:909
+msgid ""
+"Fetch and display scrolling lyrics that follow the current playback position"
+msgstr "தற்போதைய இயக்க நிலையை பின்தொடரும் உருட்டல் பாடல் வரிகளை பெற்று காட்டு"
+
+#: prefs.js:926
+msgid "How to Use Lyrics"
+msgstr "பாடல் வரிகளை எவ்வாறு பயன்படுத்துவது"
+
+#: prefs.js:928
+msgid ""
+"Lyrics are tied to each player tab independently — Spotify and Firefox each "
+"remember their own setting"
+msgstr ""
+"பாடல் வரிகள் ஒவ்வொரு பிளேயர் தாவலுடன் சுயாதீனமாக இணைக்கப்பட்டுள்ளன — "
+"Spotify மற்றும் Firefox ஒவ்வொன்றும் தனது சொந்த அமைப்பை நினைவில் வைத்திருக்கும்"
+
+#: prefs.js:936
+msgid "Start playing a song"
+msgstr "ஒரு பாடலை இயக்க தொடங்கு"
+
+#: prefs.js:938
+msgid ""
+"Open any media player or browser tab (Spotify, YouTube Music, VLC, "
+"Rhythmbox…) and play a track so it appears in the panel."
+msgstr ""
+"எந்த மீடியா பிளேயர் அல்லது உலாவி தாவலையும் (Spotify, YouTube Music, VLC, "
+"Rhythmbox…) திறந்து பேனலில் தோன்றுமாறு ஒரு பாடலை இயக்கவும்."
+
+#: prefs.js:943
+msgid "Open the popup player"
+msgstr "பாப்அப் பிளேயரை திற"
+
+#: prefs.js:945
+msgid ""
+"Click the media controller icon in the top panel to open the popup. You’ll "
+"see the album art, track title, and playback controls."
+msgstr ""
+"பாப்அப்பை திற மேல் பேனலில் மீடியா கட்டுப்படுத்தி சின்னத்தை கிளிக் செய்யவும். "
+"ஆல்பம் கலை, பாடல் தலைப்பு மற்றும் இயக்க கட்டுப்பாடுகள் தெரியும்."
+
+#: prefs.js:950
+msgid "Triple-click the album art to show lyrics"
+msgstr "பாடல் வரிகளை காட்ட ஆல்பம் கலையை மூன்று முறை கிளிக் செய்"
+
+#: prefs.js:952
+msgid ""
+"Click the album art three times in quick succession. The cover image will be "
+"replaced by the lyrics panel, which scrolls automatically in time with the "
+"music."
+msgstr ""
+"ஆல்பம் கலையை விரைவாக மூன்று முறை கிளிக் செய்யவும். அட்டை படம் "
+"இசையுடன் தானாக உருட்டும் பாடல் வரிகள் பேனலால் மாற்றப்படும்."
+
+#: prefs.js:957
+msgid "Single-click the lyrics panel to go back"
+msgstr "திரும்பி செல்ல பாடல் வரிகள் பேனலை ஒரு முறை கிளிக் செய்"
+
+#: prefs.js:959
+msgid ""
+"Tap anywhere on the lyrics panel once to dismiss it and return to the album "
+"art — vinyl or normal cover, whichever that app uses."
+msgstr ""
+"பாடல் வரிகள் பேனலில் எங்கும் ஒரு முறை தட்டி அதை மூடி ஆல்பம் கலைக்கு திரும்பவும் "
+"— அந்த செயலி பயன்படுத்தும் வைனல் அல்லது சாதாரண அட்டை எதுவாகினும்."
+
+#: prefs.js:964
+msgid "Triple-click again to re-open"
+msgstr "மீண்டும் திற மூன்று முறை கிளிக் செய்"
+
+#: prefs.js:966
+msgid ""
+"You can toggle the lyrics panel as many times as you like. Each player tab "
+"remembers independently whether lyrics are open."
+msgstr ""
+"நீங்கள் விரும்பும் எத்தனை முறையும் பாடல் வரிகள் பேனலை மாற்றலாம். "
+"ஒவ்வொரு பிளேயர் தாவலும் பாடல் வரிகள் திறந்திருக்கின்றனவா என்பதை சுயாதீனமாக நினைவில் வைத்திருக்கும்."
+
+#: prefs.js:986
+msgid "Lyrics Behaviour"
+msgstr "பாடல் வரிகள் நடத்தை"
+
+#: prefs.js:987
+msgid "What happens behind the scenes"
+msgstr "திரைமறைவில் என்ன நடக்கிறது"
+
+#: prefs.js:992
+msgid "Lyrics details & edge cases"
+msgstr "பாடல் வரிகள் விவரங்கள் & விளிம்பு சூழ்நிலைகள்"
+
+#: prefs.js:993
+msgid "What to expect when the lyrics panel is open"
+msgstr "பாடல் வரிகள் பேனல் திறந்திருக்கும்போது என்ன எதிர்பார்க்கலாம்"
+
+#: prefs.js:999
+msgid ""
+"Source\n"
+"  • Lyrics are fetched from lrclib.net — a free, open public database\n"
+"  • No account or API key is required; the request is made silently in the "
+"background\n"
+"\n"
+"Display\n"
+"  • The active lyric line is shown larger and centred in the panel\n"
+"  • The line above and below are shown at medium size; all others fade out\n"
+"  • The panel scrolls smoothly so the active line is always in view\n"
+"\n"
+"Track changes\n"
+"  • When a new song starts while the lyrics panel is open, the view clears\n"
+"    and new lyrics are fetched automatically\n"
+"  • If no lyrics are found, a “No lyrics found” message is shown\n"
+"\n"
+"Multiple players\n"
+"  • Each player tab (Spotify, YouTube, VLC…) has its own independent\n"
+"    lyrics toggle — opening lyrics for one player does not affect any other\n"
+"  • Switching tabs restores the correct view (lyrics or album art) for\n"
+"    the player you switch to\n"
+"\n"
+"Seeking\n"
+"  • When you seek forward or backward, the highlighted line jumps\n"
+"    instantly to the correct position"
+msgstr ""
+"மூலம்\n"
+"  • பாடல் வரிகள் lrclib.net-இலிருந்து பெறப்படுகின்றன — ஒரு இலவச, திறந்த பொது தரவுத்தளம்\n"
+"  • கணக்கு அல்லது API விசை தேவையில்லை; கோரிக்கை பின்னணியில் அமைதியாக செய்யப்படுகிறது\n"
+"\n"
+"காட்சி\n"
+"  • செயலில் உள்ள பாடல் வரி பேனலில் பெரிதாகவும் மையத்திலும் காட்டப்படுகிறது\n"
+"  • மேலும் கீழும் உள்ள வரி நடுத்தர அளவில் காட்டப்படும்; மற்றவை மங்கும்\n"
+"  • பேனல் மென்மையாக உருட்டுகிறது, எனவே செயலில் உள்ள வரி எப்போதும் தெரியும்\n"
+"\n"
+"பாடல் மாற்றங்கள்\n"
+"  • பாடல் வரிகள் பேனல் திறந்திருக்கும்போது புதிய பாடல் தொடங்கினால், காட்சி அழிக்கப்படும்\n"
+"    மற்றும் புதிய பாடல் வரிகள் தானாக பெறப்படும்\n"
+"  • பாடல் வரிகள் கிடைக்கவில்லை என்றால், \"பாடல் வரிகள் கிடைக்கவில்லை\" செய்தி காட்டப்படும்\n"
+"\n"
+"பல பிளேயர்கள்\n"
+"  • ஒவ்வொரு பிளேயர் தாவலும் (Spotify, YouTube, VLC…) சொந்த சுயாதீன\n"
+"    பாடல் வரிகள் மாற்றியை கொண்டுள்ளது — ஒரு பிளேயருக்கு பாடல் வரிகளை திறப்பது மற்றவற்றை பாதிக்காது\n"
+"  • தாவல்களை மாற்றும்போது நீங்கள் மாறும் பிளேயருக்கான சரியான காட்சி (பாடல் வரிகள் அல்லது ஆல்பம் கலை) மீட்டமைக்கப்படும்\n"
+"\n"
+"தேடல்\n"
+"  • நீங்கள் முன்னோ பின்னோ தேடும்போது, முன்னிலைப்படுத்தப்பட்ட வரி\n"
+"    உடனடியாக சரியான நிலைக்கு தாவும்"
+
+#: prefs.js:1039
+msgid "Album Art Click Actions"
+msgstr "ஆல்பம் கலை கிளிக் செயல்கள்"
+
+#: prefs.js:1041
+msgid "Summary of what each click pattern does on the album art cover"
+msgstr "ஆல்பம் கலை அட்டையில் ஒவ்வொரு கிளிக் முறையும் என்ன செய்கிறது என்பதின் சுருக்கம்"
+
+#: prefs.js:1049
+msgid "Single click"
+msgstr "ஒரு கிளிக்"
+
+#: prefs.js:1051
+msgid ""
+"When lyrics are showing: closes the lyrics panel and returns to the album art"
+msgstr "பாடல் வரிகள் காட்டப்படும்போது: பாடல் வரிகள் பேனலை மூடி ஆல்பம் கலைக்கு திரும்பும்"
+
+#: prefs.js:1056
+msgid "Double click"
+msgstr "இரட்டை கிளிக்"
+
+#: prefs.js:1058
+msgid ""
+"Toggles the spinning vinyl record effect for that specific app (remembered "
+"independently per app)"
+msgstr ""
+"அந்த குறிப்பிட்ட செயலிக்கான சுழலும் வைனல் ரெக்கார்ட் விளைவை மாற்றும் "
+"(செயலிக்கு சுயாதீனமாக நினைவில் வைக்கப்படும்)"
+
+#: prefs.js:1063
+msgid "Triple click"
+msgstr "மூன்று கிளிக்"
+
+#: prefs.js:1065
+msgid ""
+"Toggles the synced lyrics panel for the current player tab (remembered "
+"independently per player)"
+msgstr ""
+"தற்போதைய பிளேயர் தாவலுக்கான ஒத்திசைக்கப்பட்ட பாடல் வரிகள் பேனலை மாற்றும் "
+"(பிளேயருக்கு சுயாதீனமாக நினைவில் வைக்கப்படும்)"
+
+#: prefs.js:1084
+msgid "Data Source"
+msgstr "தரவு மூலம்"
+
+#: prefs.js:1085
+msgid "Where lyrics come from"
+msgstr "பாடல் வரிகள் எங்கிருந்து வருகின்றன"
+
+#: prefs.js:1090
+msgid "lrclib.net"
+msgstr "lrclib.net"
+
+#: prefs.js:1092
+msgid ""
+"Free, open-source time-synced lyrics database — no sign-up, no tracking, no "
+"ads"
+msgstr ""
+"இலவச, திறந்த மூல நேர-ஒத்திசைக்கப்பட்ட பாடல் வரிகள் தரவுத்தளம் — பதிவு இல்லை, கண்காணிப்பு இல்லை, விளம்பரங்கள் இல்லை"
+
+#: prefs.js:1120
+msgid "Privacy note"
+msgstr "தனியுரிமை குறிப்பு"
+
+#: prefs.js:1122
+msgid ""
+"A request containing the track title, artist, album and duration is sent to "
+"lrclib.net when you open the lyrics panel. No personal data or user "
+"identifiers are included."
+msgstr ""
+"பாடல் வரிகள் பேனலை திறக்கும்போது பாடல் தலைப்பு, கலைஞர், ஆல்பம் மற்றும் கால அளவு கொண்ட "
+"கோரிக்கை lrclib.net-க்கு அனுப்பப்படும். தனிப்பட்ட தரவு அல்லது பயனர் அடையாளங்கள் சேர்க்கப்படவில்லை."
+
+#: prefs.js:1140
+msgid "How to Enable Vinyl Style for an App"
+msgstr "ஒரு செயலிக்கு வைனல் நடை எவ்வாறு இயக்குவது"
+
+#: prefs.js:1147
+msgid "Start playing music"
+msgstr "இசை இயக்க தொடங்கு"
+
+#: prefs.js:1149
+msgid ""
+"Open any media player or browser web app (YouTube, Spotify Web, SoundCloud, "
+"etc.) and play a track so it appears as a media source."
+msgstr ""
+"எந்த மீடியா பிளேயர் அல்லது உலாவி வலை செயலியையும் (YouTube, Spotify Web, SoundCloud "
+"முதலியன) திறந்து மீடியா மூலமாக தோன்றுமாறு ஒரு பாடலை இயக்கவும்."
+
+#: prefs.js:1154
+msgid "Open the extension popup"
+msgstr "நீட்டிப்பு பாப்அப்பை திற"
+
+#: prefs.js:1156
+msgid "Click the media controller in the top panel to open the popup player."
+msgstr "பாப்அப் பிளேயரை திற மேல் பேனலில் மீடியா கட்டுப்படுத்தியை கிளிக் செய்யவும்."
+
+#: prefs.js:1161
+msgid "Double-click the album art"
+msgstr "ஆல்பம் கலையை இரட்டை-கிளிக் செய்"
+
+#: prefs.js:1163
+msgid ""
+"Double-click the album art image in the popup to toggle the vinyl record "
+"style for that specific app or browser source. For browsers (Chrome, "
+"Firefox, etc.) each site (YouTube, YouTube Music, Spotify Web) is stored as "
+"its own separate entry."
+msgstr ""
+"அந்த குறிப்பிட்ட செயலி அல்லது உலாவி மூலத்திற்கான வைனல் ரெக்கார்ட் நடையை மாற்ற "
+"பாப்அப்பில் ஆல்பம் கலை படத்தை இரட்டை-கிளிக் செய்யவும். உலாவிகளுக்கு (Chrome, "
+"Firefox முதலியன) ஒவ்வொரு தளமும் (YouTube, YouTube Music, Spotify Web) "
+"தனித்தனி பதிவாக சேமிக்கப்படும்."
+
+#: prefs.js:1169
+msgid "Manage saved instances below"
+msgstr "கீழே சேமிக்கப்பட்ட நிகழ்வுகளை நிர்வகி"
+
+#: prefs.js:1171
+msgid ""
+"All stored instances appear in the section below. Browser web-app sources "
+"appear as e.g. “YouTube Music (Chrome)” and are tracked independently. "
+"Toggle them on/off or remove them at any time."
+msgstr ""
+"சேமிக்கப்பட்ட அனைத்து நிகழ்வுகளும் கீழே உள்ள பிரிவில் தோன்றும். உலாவி வலை-செயலி மூலங்கள் "
+"எடுத்துக்காட்டாக \"YouTube Music (Chrome)\" என தோன்றும் மற்றும் சுயாதீனமாக கண்காணிக்கப்படும். "
+"எந்த நேரத்திலும் இயக்கு/அணை அல்லது அகற்றலாம்."
+
+#: prefs.js:1192
+msgid "Saved App Instances"
+msgstr "சேமிக்கப்பட்ட செயலி நிகழ்வுகள்"
+
+#: prefs.js:1194
+msgid ""
+"Instances stored by double-clicking the album art in the popup. Icons are "
+"loaded from the system .desktop database. Toggle the vinyl effect on/off or "
+"remove any entry."
+msgstr ""
+"பாப்அப்பில் ஆல்பம் கலையை இரட்டை-கிளிக் செய்து சேமிக்கப்பட்ட நிகழ்வுகள். சின்னங்கள் "
+"கணினி .desktop தரவுத்தளத்திலிருந்து ஏற்றப்படும். வைனல் விளைவை இயக்கு/அணை அல்லது "
+"எந்த பதிவையும் அகற்றவும்."
+
+#: prefs.js:1208
+msgid "Add an App Manually"
+msgstr "ஒரு செயலியை கைமுறையாக சேர்"
+
+#: prefs.js:1210
+msgid ""
+"Search installed apps — including browsers — to manually add a vinyl entry. "
+"Useful for browser web apps whose instance hasn’t been captured yet via "
+"double-click."
+msgstr "வைனல் பதிவை கைமுறையாக சேர்க்க நிறுவப்பட்ட செயலிகளை (உலாவிகள் உட்பட) தேடவும். இரட்டை-கிளிக் மூலம் இன்னும் கைப்பற்றப்படாத உலாவி வலை செயலி நிகழ்வுகளுக்கு பயனுள்ளது."
+
+#: prefs.js:1218
+msgid ""
+"Browser sources tracked separately (YouTube, YouTube Music, Spotify Web)"
+msgstr "உலாவி மூலங்கள் தனித்தனியாக கண்காணிக்கப்படுகின்றன (YouTube, YouTube Music, Spotify Web)"
+
+#: prefs.js:1221
+msgid ""
+"For web apps, add the browser itself (e.g. Google Chrome, Firefox). Then "
+"double-click the album art when that browser is playing music — the "
+"extension will capture the exact instance automatically."
+msgstr ""
+"வலை செயலிகளுக்கு, உலாவியையே (எடுத்துக்காட்டாக Google Chrome, Firefox) சேர்க்கவும். "
+"பிறகு அந்த உலாவி இசை இயக்கும்போது ஆல்பம் கலையை இரட்டை-கிளிக் செய்யவும் — "
+"நீட்டிப்பு சரியான நிகழ்வை தானாக கைப்பற்றும்."
+
+#: prefs.js:1237
+msgid "Search apps"
+msgstr "செயலிகளை தேடு"
+
+#: prefs.js:1241
+msgid "Type an app or browser name…"
+msgstr "ஒரு செயலி அல்லது உலாவி பெயரை தட்டச்சு செய்யவும்…"
+
+#: prefs.js:1310
+msgid "Running Players (Live Detection)"
+msgstr "இயங்கும் பிளேயர்கள் (நேரடி கண்டறிதல்)"
+
+#: prefs.js:1312
+msgid ""
+"MPRIS players active right now. Click “Use This” to immediately add the "
+"player as a vinyl-enabled instance without waiting for a double-click."
+msgstr ""
+"இப்போது செயலில் உள்ள MPRIS பிளேயர்கள். இரட்டை-கிளிக்கிற்காக காத்திராமல் "
+"உடனடியாக பிளேயரை வைனல்-இயக்கப்பட்ட நிகழ்வாக சேர்க்க \"இதை பயன்படுத்து\" என்பதை கிளிக் செய்யவும்."
+
+#: prefs.js:1319
+msgid "Scan for active players"
+msgstr "செயலில் உள்ள பிளேயர்களை ஸ்கேன் செய்"
+
+#: prefs.js:1320
+msgid "Detects players currently broadcasting on the MPRIS D-Bus"
+msgstr "தற்போது MPRIS D-Bus-ல் ஒளிபரப்பும் பிளேயர்களை கண்டறி"
+
+#: prefs.js:1326
+msgid "Refresh"
+msgstr "புதுப்பி"
+
+#: prefs.js:1453
+msgid "Use This"
+msgstr "இதை பயன்படுத்து"
+
+#: prefs.js:1457
+#, javascript-format
+msgid "Add “%s” as a vinyl-enabled instance"
+msgstr "\"%s\"-ஐ வைனல்-இயக்கப்பட்ட நிகழ்வாக சேர்"
+
+#: prefs.js:1501
+msgid "All running players are already saved"
+msgstr "இயங்கும் அனைத்து பிளேயர்களும் ஏற்கனவே சேமிக்கப்பட்டுள்ளன"
+
+#: prefs.js:1502
+msgid "Manage them in the Saved App Instances section above"
+msgstr "மேலே உள்ள சேமிக்கப்பட்ட செயலி நிகழ்வுகள் பிரிவில் அவற்றை நிர்வகிக்கவும்"
+
+#: prefs.js:1559
+msgid "No instances saved yet"
+msgstr "இன்னும் எந்த நிகழ்வும் சேமிக்கப்படவில்லை"
+
+#: prefs.js:1561
+msgid ""
+"Double-click the album art in the popup while music is playing to save an "
+"instance here."
+msgstr ""
+"இசை இயங்கும்போது பாப்அப்பில் ஆல்பம் கலையை இரட்டை-கிளிக் செய்து "
+"இங்கே ஒரு நிகழ்வை சேமிக்கவும்."
+
+#: prefs.js:1660
+#, javascript-format
+msgid "%s via %s"
+msgstr "%s மூலம் %s"
+
+#: prefs.js:1669 prefs.js:2134
+msgid "renamed from"
+msgstr "இதிலிருந்து மறுபெயரிடப்பட்டது:"
+
+#: prefs.js:1692
+#, javascript-format
+msgid "Rename “%s”"
+msgstr "\"%s\" மறுபெயரிடு"
+
+#: prefs.js:1716
+#, javascript-format
+msgid "Remove %s from saved instances"
+msgstr "சேமிக்கப்பட்ட நிகழ்வுகளிலிருந்து %s அகற்று"
+
+#: prefs.js:1733
+msgid "Rename Instance"
+msgstr "நிகழ்வை மறுபெயரிடு"
+
+#: prefs.js:1735
+#, javascript-format
+msgid ""
+"Enter a custom display name for \"%s\".\n"
+"Leave blank to reset to the default."
+msgstr ""
+"\"%s\"-க்கான தனிப்பயன் காட்சி பெயரை உள்ளிடவும்.\n"
+"இயல்புநிலைக்கு மீட்டமைக்க காலியாக விடவும்."
+
+#: prefs.js:1741
+msgid "Cancel"
+msgstr "ரத்துசெய்"
+
+#: prefs.js:1742
+msgid "Rename"
+msgstr "மறுபெயரிடு"
+
+#: prefs.js:1760
+msgid "Display name"
+msgstr "காட்சி பெயர்"
+
+#: prefs.js:2105
+msgid "Saved Instances"
+msgstr "சேமிக்கப்பட்ட நிகழ்வுகள்"
+
+#: prefs.js:2126
+#, javascript-format
+msgid "Browser: %s · Source: %s"
+msgstr "உலாவி: %s · மூலம்: %s"
+
+#: prefs.js:2177
+msgid "Other Apps"
+msgstr "மற்ற செயலிகள்"
+
+#: prefs.js:2250
+msgid "No matching apps found"
+msgstr "பொருந்தும் செயலிகள் எதுவும் கிடைக்கவில்லை"
+
+#: prefs.js:2349
+msgid "About"
+msgstr "பற்றி"
+
+#: prefs.js:2356
+msgid "Beautiful and modern media controls with multi-instance support"
+msgstr "பல-நிகழ்வு ஆதரவுடன் அழகான மற்றும் நவீன மீடியா கட்டுப்பாடுகள்"
+
+#: prefs.js:2394
+msgid "Version 5.2"
+msgstr "பதிப்பு 5.2"
+
+#: prefs.js:2401
+msgid "Modern media controls with native GNOME design"
+msgstr "நேட்டிவ் GNOME வடிவமைப்புடன் நவீன மீடியா கட்டுப்பாடுகள்"
+
+#: prefs.js:2415
+msgid "Extension Links"
+msgstr "நீட்டிப்பு இணைப்புகள்"
+
+#: prefs.js:2416 prefs.js:2421
+msgid "Source code, issues, and contributions"
+msgstr "மூல குறியீடு, சிக்கல்கள் மற்றும் பங்களிப்புகள்"
+
+#: prefs.js:2420
+msgid "View on GitHub"
+msgstr "GitHub-ல் பார்"
+
+#: prefs.js:2447
+msgid "☕ Buy Me a Coffee"
+msgstr "☕ எனக்கு ஒரு காபி வாங்குங்கள்"
+
+#: prefs.js:2448
+msgid "Support development with a small donation"
+msgstr "சிறிய நன்கொடையுடன் வளர்ச்சியை ஆதரிக்கவும்"
+
+#: prefs.js:2452
+msgid "☕ Support by buying me a coffee – just scan the QR code!"
+msgstr "☕ காபி வாங்கி ஆதரிக்கவும் — QR குறியீட்டை ஸ்கேன் செய்யுங்கள்!"
+
+#: prefs.js:2453
+msgid "Scan QR code to open Buy Me a Coffee"
+msgstr "Buy Me a Coffee திற QR குறியீட்டை ஸ்கேன் செய்யவும்"
+
+#: prefs.js:2456
+msgid "❤ GitHub Sponsors"
+msgstr "❤ GitHub நிதியுதவியாளர்கள்"
+
+#: prefs.js:2457
+msgid "Sponsor via GitHub — one-time or monthly"
+msgstr "GitHub மூலம் நிதியுதவி — ஒரு முறை அல்லது மாதாந்திர"
+
+#: prefs.js:2461
+msgid "❤ Support via GitHub Sponsors – just scan the QR code!"
+msgstr "❤ GitHub Sponsors மூலம் ஆதரிக்கவும் — QR குறியீட்டை ஸ்கேன் செய்யுங்கள்!"
+
+#: prefs.js:2462
+msgid "Scan QR code to open GitHub Sponsors"
+msgstr "GitHub Sponsors திற QR குறியீட்டை ஸ்கேன் செய்யவும்"
+
+#: prefs.js:2484
+msgid "Donation Platform"
+msgstr "நன்கொடை தளம்"
+
+#: prefs.js:2485
+msgid "Switch to see the QR code for each platform"
+msgstr "ஒவ்வொரு தளத்திற்கான QR குறியீட்டை பார்க்க மாற்று"
+
+#: prefs.js:2523
+msgid "Donation Address"
+msgstr "நன்கொடை முகவரி"
+
+#: prefs.js:2537
+msgid "Donation address"
+msgstr "நன்கொடை முகவரி"
+
+#: prefs.js:2579
+msgid "Support Development"
+msgstr "வளர்ச்சியை ஆதரி"
+
+#: prefs.js:2580
+msgid "Choose your preferred donation platform"
+msgstr "உங்களுக்கு விருப்பமான நன்கொடை தளத்தை தேர்ந்தெடுக்கவும்"
+
+#: prefs.js:2622
+msgid "License & Credits"
+msgstr "உரிமம் & பங்களிப்பாளர்கள்"
+
+#: prefs.js:2623
+msgid "Open source software information"
+msgstr "திறந்த மூல மென்பொருள் தகவல்"
+
+#: prefs.js:2626
+msgid "Open Source License"
+msgstr "திறந்த மூல உரிமம்"
+
+#: prefs.js:2627
+msgid "GPL-3.0 License - Free and open source software"
+msgstr "GPL-3.0 உரிமம் - இலவச மற்றும் திறந்த மூல மென்பொருள்"
+
+#: prefs.js:2634
+msgid "Media Data Sources"
+msgstr "மீடியா தரவு மூலங்கள்"
+
+#: prefs.js:2636
+msgid "MPRIS D-Bus interface - Standard media player remote interfacing"
+msgstr "MPRIS D-Bus இடைமுகம் - நிலையான மீடியா பிளேயர் தொலைநிலை இடைமுகம்"
+
+#: prefs.js:2644
+msgid "Key Features"
+msgstr "முக்கிய அம்சங்கள்"
+
+#: prefs.js:2646
+msgid ""
+"• Multi-instance browser support\n"
+"• Per-app rotating vinyl record album art\n"
+"• Animated tonearm\n"
+"• Smooth animations\n"
+"• Double-click to toggle vinyl per app\n"
+"• Triple-click album art to show synced lyrics\n"
+"• Single-click lyrics panel to return to album art\n"
+"• Lyrics synced to playback via lrclib.net\n"
+"• Per-player lyrics toggle (each tab independent)\n"
+"• All seen apps remembered — re-enable any time"
+msgstr ""
+"• பல-நிகழ்வு உலாவி ஆதரவு\n"
+"• செயலி-சார் சுழலும் வைனல் ரெக்கார்ட் ஆல்பம் கலை\n"
+"• அனிமேஷன் டோனாம்\n"
+"• மென்மையான அனிமேஷன்கள்\n"
+"• செயலிக்கு வைனல் மாற்ற இரட்டை-கிளிக்\n"
+"• ஒத்திசைக்கப்பட்ட பாடல் வரிகளை காட்ட ஆல்பம் கலையை மூன்று-கிளிக்\n"
+"• ஆல்பம் கலைக்கு திரும்ப பாடல் வரிகள் பேனலை ஒரு-கிளிக்\n"
+"• lrclib.net மூலம் இயக்கத்துடன் ஒத்திசைக்கப்பட்ட பாடல் வரிகள்\n"
+"• பிளேயர்-சார் பாடல் வரிகள் மாற்றி (ஒவ்வொரு தாவலும் சுயாதீனம்)\n"
+"• பார்த்த அனைத்து செயலிகளும் நினைவில் வைக்கப்படும் — எந்த நேரத்திலும் மீண்டும் இயக்கலாம்"
+
+#: prefs.js:2710
+msgid "Copy to Clipboard"
+msgstr "கிளிப்போர்டில் நகலெடு"
+
+#: prefs.js:2712
+msgid ""
+"Unable to copy automatically. Select the address below and press Ctrl+C:"
+msgstr "தானாக நகலெடுக்க முடியவில்லை. கீழே உள்ள முகவரியை தேர்ந்தெடுத்து Ctrl+C அழுத்தவும்:"
+
+#: prefs.js:2715
+msgid "Close"
+msgstr "மூடு"
+
+#: utils/indicator.js:19
+msgid "Media Controls"
+msgstr "மீடியா கட்டுப்பாடுகள்"

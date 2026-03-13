@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: advanced-media-controller 5.2\n"
 "Report-Msgid-Bugs-To: https://github.com/Sanjai-Shaarugesh/Advance-media-"
 "controller/issues\n"
-"POT-Creation-Date: 2026-03-12 19:01+0530\n"
+"POT-Creation-Date: 2026-03-12 20:33+0530\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,11 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: utils/indicator.js:19
-msgid "Media Controls"
-msgstr ""
-
-#: prefs.js:91 prefs.js:2339 prefs.js:2372
+#: prefs.js:91 prefs.js:2354 prefs.js:2387
 msgid "Advanced Media Controller"
 msgstr ""
 
@@ -250,7 +246,7 @@ msgstr ""
 msgid "Lyrics"
 msgstr ""
 
-#: prefs.js:519 prefs.js:536
+#: prefs.js:519 prefs.js:546
 msgid "Filter Mode"
 msgstr ""
 
@@ -260,204 +256,212 @@ msgid ""
 "whitelist (allow only listed apps). Set to Off to disable filtering entirely."
 msgstr ""
 
-#: prefs.js:530
-msgid "Off — Show all media players (no filtering)"
-msgstr ""
-
-#: prefs.js:531
-msgid "Blacklist — Hide only the players you add to the list"
-msgstr ""
-
 #: prefs.js:532
-msgid "Whitelist — Show only the players you add to the list"
+msgid "Off"
 msgstr ""
 
-#: prefs.js:537
-msgid "Controls which media players the extension tracks and displays"
+#: prefs.js:533
+msgid "Blacklist"
 msgstr ""
 
-#: prefs.js:554
+#: prefs.js:534
+msgid "Whitelist"
+msgstr ""
+
+#: prefs.js:540
+msgid "Show all media players — filtering is disabled"
+msgstr ""
+
+#: prefs.js:541
+msgid "Hide only the players you add to the list below"
+msgstr ""
+
+#: prefs.js:542
+msgid "Show only the players you add to the list below"
+msgstr ""
+
+#: prefs.js:569
 msgid "Saved Players"
 msgstr ""
 
-#: prefs.js:556
+#: prefs.js:571
 msgid ""
 "Each saved player can be individually enabled or disabled in the filter "
 "without removing it. The toggle controls whether the filter rule is active "
 "for that app. Use the trash button to remove it from the list entirely."
 msgstr ""
 
-#: prefs.js:582
+#: prefs.js:597
 msgid "No players saved yet"
 msgstr ""
 
-#: prefs.js:584
+#: prefs.js:599
 msgid ""
 "Detect running players below and click “Add to Filter” to add them here."
 msgstr ""
 
-#: prefs.js:638
+#: prefs.js:653
 #, javascript-format
 msgid "Filter rule active for “%s” — click to disable"
 msgstr ""
 
-#: prefs.js:639
+#: prefs.js:654
 #, javascript-format
 msgid "Filter rule disabled for “%s” — click to enable"
 msgstr ""
 
-#: prefs.js:661
+#: prefs.js:676
 #, javascript-format
 msgid "Remove “%s” from the filter list"
 msgstr ""
 
-#: prefs.js:694
+#: prefs.js:709
 msgid "Detected Players"
 msgstr ""
 
-#: prefs.js:696
+#: prefs.js:711
 msgid ""
 "Active MPRIS players found on the session D-Bus. Click “Add to Filter” to "
 "save a player to the list above."
 msgstr ""
 
-#: prefs.js:703
+#: prefs.js:718
 msgid "Scan for running players"
 msgstr ""
 
-#: prefs.js:704
+#: prefs.js:719
 msgid "Detects players currently broadcasting on MPRIS"
 msgstr ""
 
-#: prefs.js:710
+#: prefs.js:725
 msgid "Refresh the detected player list"
 msgstr ""
 
-#: prefs.js:738
+#: prefs.js:753
 msgid "Could not connect to the session bus"
 msgstr ""
 
-#: prefs.js:768 prefs.js:1360
+#: prefs.js:783 prefs.js:1375
 msgid "No active players detected"
 msgstr ""
 
-#: prefs.js:769 prefs.js:1361
+#: prefs.js:784 prefs.js:1376
 msgid "Open a music app and click Refresh"
 msgstr ""
 
-#: prefs.js:827 prefs.js:846 prefs.js:856
+#: prefs.js:842 prefs.js:861 prefs.js:871
 msgid "Saved ✓"
 msgstr ""
 
-#: prefs.js:828 prefs.js:856
+#: prefs.js:843 prefs.js:871
 msgid "Add to Filter"
 msgstr ""
 
-#: prefs.js:834 prefs.js:849
+#: prefs.js:849 prefs.js:864
 #, javascript-format
 msgid "“%s” is already in the filter list"
 msgstr ""
 
-#: prefs.js:835
+#: prefs.js:850
 #, javascript-format
 msgid "Add “%s” to the filter list (enabled by default)"
 msgstr ""
 
-#: prefs.js:884
+#: prefs.js:899
 msgid "Synced Lyrics"
 msgstr ""
 
-#: prefs.js:886
+#: prefs.js:901
 msgid "Time-synced lyrics fetched from lrclib.net — free, no account needed"
 msgstr ""
 
-#: prefs.js:892
+#: prefs.js:907
 msgid "Enable Synced Lyrics"
 msgstr ""
 
-#: prefs.js:894
+#: prefs.js:909
 msgid ""
 "Fetch and display scrolling lyrics that follow the current playback position"
 msgstr ""
 
-#: prefs.js:911
+#: prefs.js:926
 msgid "How to Use Lyrics"
 msgstr ""
 
-#: prefs.js:913
+#: prefs.js:928
 msgid ""
 "Lyrics are tied to each player tab independently — Spotify and Firefox each "
 "remember their own setting"
 msgstr ""
 
-#: prefs.js:921
+#: prefs.js:936
 msgid "Start playing a song"
 msgstr ""
 
-#: prefs.js:923
+#: prefs.js:938
 msgid ""
 "Open any media player or browser tab (Spotify, YouTube Music, VLC, "
 "Rhythmbox…) and play a track so it appears in the panel."
 msgstr ""
 
-#: prefs.js:928
+#: prefs.js:943
 msgid "Open the popup player"
 msgstr ""
 
-#: prefs.js:930
+#: prefs.js:945
 msgid ""
 "Click the media controller icon in the top panel to open the popup. You’ll "
 "see the album art, track title, and playback controls."
 msgstr ""
 
-#: prefs.js:935
+#: prefs.js:950
 msgid "Triple-click the album art to show lyrics"
 msgstr ""
 
-#: prefs.js:937
+#: prefs.js:952
 msgid ""
 "Click the album art three times in quick succession. The cover image will be "
 "replaced by the lyrics panel, which scrolls automatically in time with the "
 "music."
 msgstr ""
 
-#: prefs.js:942
+#: prefs.js:957
 msgid "Single-click the lyrics panel to go back"
 msgstr ""
 
-#: prefs.js:944
+#: prefs.js:959
 msgid ""
 "Tap anywhere on the lyrics panel once to dismiss it and return to the album "
 "art — vinyl or normal cover, whichever that app uses."
 msgstr ""
 
-#: prefs.js:949
+#: prefs.js:964
 msgid "Triple-click again to re-open"
 msgstr ""
 
-#: prefs.js:951
+#: prefs.js:966
 msgid ""
 "You can toggle the lyrics panel as many times as you like. Each player tab "
 "remembers independently whether lyrics are open."
 msgstr ""
 
-#: prefs.js:971
+#: prefs.js:986
 msgid "Lyrics Behaviour"
 msgstr ""
 
-#: prefs.js:972
+#: prefs.js:987
 msgid "What happens behind the scenes"
 msgstr ""
 
-#: prefs.js:977
+#: prefs.js:992
 msgid "Lyrics details & edge cases"
 msgstr ""
 
-#: prefs.js:978
+#: prefs.js:993
 msgid "What to expect when the lyrics panel is open"
 msgstr ""
 
-#: prefs.js:984
+#: prefs.js:999
 msgid ""
 "Source\n"
 "  • Lyrics are fetched from lrclib.net — a free, open public database\n"
@@ -485,99 +489,99 @@ msgid ""
 "    instantly to the correct position"
 msgstr ""
 
-#: prefs.js:1024
+#: prefs.js:1039
 msgid "Album Art Click Actions"
 msgstr ""
 
-#: prefs.js:1026
+#: prefs.js:1041
 msgid "Summary of what each click pattern does on the album art cover"
 msgstr ""
 
-#: prefs.js:1034
+#: prefs.js:1049
 msgid "Single click"
 msgstr ""
 
-#: prefs.js:1036
+#: prefs.js:1051
 msgid ""
 "When lyrics are showing: closes the lyrics panel and returns to the album art"
 msgstr ""
 
-#: prefs.js:1041
+#: prefs.js:1056
 msgid "Double click"
 msgstr ""
 
-#: prefs.js:1043
+#: prefs.js:1058
 msgid ""
 "Toggles the spinning vinyl record effect for that specific app (remembered "
 "independently per app)"
 msgstr ""
 
-#: prefs.js:1048
+#: prefs.js:1063
 msgid "Triple click"
 msgstr ""
 
-#: prefs.js:1050
+#: prefs.js:1065
 msgid ""
 "Toggles the synced lyrics panel for the current player tab (remembered "
 "independently per player)"
 msgstr ""
 
-#: prefs.js:1069
+#: prefs.js:1084
 msgid "Data Source"
 msgstr ""
 
-#: prefs.js:1070
+#: prefs.js:1085
 msgid "Where lyrics come from"
 msgstr ""
 
-#: prefs.js:1075
+#: prefs.js:1090
 msgid "lrclib.net"
 msgstr ""
 
-#: prefs.js:1077
+#: prefs.js:1092
 msgid ""
 "Free, open-source time-synced lyrics database — no sign-up, no tracking, no "
 "ads"
 msgstr ""
 
-#: prefs.js:1105
+#: prefs.js:1120
 msgid "Privacy note"
 msgstr ""
 
-#: prefs.js:1107
+#: prefs.js:1122
 msgid ""
 "A request containing the track title, artist, album and duration is sent to "
 "lrclib.net when you open the lyrics panel. No personal data or user "
 "identifiers are included."
 msgstr ""
 
-#: prefs.js:1125
+#: prefs.js:1140
 msgid "How to Enable Vinyl Style for an App"
 msgstr ""
 
-#: prefs.js:1132
+#: prefs.js:1147
 msgid "Start playing music"
 msgstr ""
 
-#: prefs.js:1134
+#: prefs.js:1149
 msgid ""
 "Open any media player or browser web app (YouTube, Spotify Web, SoundCloud, "
 "etc.) and play a track so it appears as a media source."
 msgstr ""
 
-#: prefs.js:1139
+#: prefs.js:1154
 msgid "Open the extension popup"
 msgstr ""
 
-#: prefs.js:1141
+#: prefs.js:1156
 msgid "Click the media controller in the top panel to open the popup player."
 msgstr ""
 
-#: prefs.js:1146
+#: prefs.js:1161
 msgid "Double-click the album art"
 msgstr ""
 
-#: prefs.js:1148
+#: prefs.js:1163
 msgid ""
 "Double-click the album art image in the popup to toggle the vinyl record "
 "style for that specific app or browser source. For browsers (Chrome, "
@@ -585,248 +589,280 @@ msgid ""
 "its own separate entry."
 msgstr ""
 
-#: prefs.js:1154
+#: prefs.js:1169
 msgid "Manage saved instances below"
 msgstr ""
 
-#: prefs.js:1156
+#: prefs.js:1171
 msgid ""
 "All stored instances appear in the section below. Browser web-app sources "
 "appear as e.g. “YouTube Music (Chrome)” and are tracked independently. "
 "Toggle them on/off or remove them at any time."
 msgstr ""
 
-#: prefs.js:1177
+#: prefs.js:1192
 msgid "Saved App Instances"
 msgstr ""
 
-#: prefs.js:1179
+#: prefs.js:1194
 msgid ""
 "Instances stored by double-clicking the album art in the popup. Icons are "
 "loaded from the system .desktop database. Toggle the vinyl effect on/off or "
 "remove any entry."
 msgstr ""
 
-#: prefs.js:1193
+#: prefs.js:1208
 msgid "Add an App Manually"
 msgstr ""
 
-#: prefs.js:1195
+#: prefs.js:1210
 msgid ""
 "Search installed apps — including browsers — to manually add a vinyl entry. "
 "Useful for browser web apps whose instance hasn’t been captured yet via "
 "double-click."
 msgstr ""
 
-#: prefs.js:1203
+#: prefs.js:1218
 msgid ""
 "Browser sources tracked separately (YouTube, YouTube Music, Spotify Web)"
 msgstr ""
 
-#: prefs.js:1206
+#: prefs.js:1221
 msgid ""
 "For web apps, add the browser itself (e.g. Google Chrome, Firefox). Then "
 "double-click the album art when that browser is playing music — the "
 "extension will capture the exact instance automatically."
 msgstr ""
 
-#: prefs.js:1222
+#: prefs.js:1237
 msgid "Search apps"
 msgstr ""
 
-#: prefs.js:1226
+#: prefs.js:1241
 msgid "Type an app or browser name…"
 msgstr ""
 
-#: prefs.js:1295
+#: prefs.js:1310
 msgid "Running Players (Live Detection)"
 msgstr ""
 
-#: prefs.js:1297
+#: prefs.js:1312
 msgid ""
 "MPRIS players active right now. Click “Use This” to immediately add the "
 "player as a vinyl-enabled instance without waiting for a double-click."
 msgstr ""
 
-#: prefs.js:1304
+#: prefs.js:1319
 msgid "Scan for active players"
 msgstr ""
 
-#: prefs.js:1305
+#: prefs.js:1320
 msgid "Detects players currently broadcasting on the MPRIS D-Bus"
 msgstr ""
 
-#: prefs.js:1311
+#: prefs.js:1326
 msgid "Refresh"
 msgstr ""
 
-#: prefs.js:1438
+#: prefs.js:1453
 msgid "Use This"
 msgstr ""
 
-#: prefs.js:1442
+#: prefs.js:1457
 #, javascript-format
 msgid "Add “%s” as a vinyl-enabled instance"
 msgstr ""
 
-#: prefs.js:1486
+#: prefs.js:1501
 msgid "All running players are already saved"
 msgstr ""
 
-#: prefs.js:1487
+#: prefs.js:1502
 msgid "Manage them in the Saved App Instances section above"
 msgstr ""
 
-#: prefs.js:1544
+#: prefs.js:1559
 msgid "No instances saved yet"
 msgstr ""
 
-#: prefs.js:1546
+#: prefs.js:1561
 msgid ""
 "Double-click the album art in the popup while music is playing to save an "
 "instance here."
 msgstr ""
 
-#: prefs.js:1645
+#: prefs.js:1660
 #, javascript-format
 msgid "%s via %s"
 msgstr ""
 
-#: prefs.js:1654 prefs.js:2119
+#: prefs.js:1669 prefs.js:2134
 msgid "renamed from"
 msgstr ""
 
-#: prefs.js:1677
+#: prefs.js:1692
 #, javascript-format
 msgid "Rename “%s”"
 msgstr ""
 
-#: prefs.js:1701
+#: prefs.js:1716
 #, javascript-format
 msgid "Remove %s from saved instances"
 msgstr ""
 
-#: prefs.js:1718
+#: prefs.js:1733
 msgid "Rename Instance"
 msgstr ""
 
-#: prefs.js:1720
+#: prefs.js:1735
 #, javascript-format
 msgid ""
 "Enter a custom display name for \"%s\".\n"
 "Leave blank to reset to the default."
 msgstr ""
 
-#: prefs.js:1726
+#: prefs.js:1741
 msgid "Cancel"
 msgstr ""
 
-#: prefs.js:1727
+#: prefs.js:1742
 msgid "Rename"
 msgstr ""
 
-#: prefs.js:1745
+#: prefs.js:1760
 msgid "Display name"
 msgstr ""
 
-#: prefs.js:2090
+#: prefs.js:2105
 msgid "Saved Instances"
 msgstr ""
 
-#: prefs.js:2111
+#: prefs.js:2126
 #, javascript-format
 msgid "Browser: %s · Source: %s"
 msgstr ""
 
-#: prefs.js:2162
+#: prefs.js:2177
 msgid "Other Apps"
 msgstr ""
 
-#: prefs.js:2235
+#: prefs.js:2250
 msgid "No matching apps found"
 msgstr ""
 
-#: prefs.js:2334
+#: prefs.js:2349
 msgid "About"
 msgstr ""
 
-#: prefs.js:2341
+#: prefs.js:2356
 msgid "Beautiful and modern media controls with multi-instance support"
 msgstr ""
 
-#: prefs.js:2379
+#: prefs.js:2394
 msgid "Version 5.2"
 msgstr ""
 
-#: prefs.js:2386
+#: prefs.js:2401
 msgid "Modern media controls with native GNOME design"
 msgstr ""
 
-#: prefs.js:2400
+#: prefs.js:2415
 msgid "Extension Links"
 msgstr ""
 
-#: prefs.js:2401 prefs.js:2406
+#: prefs.js:2416 prefs.js:2421
 msgid "Source code, issues, and contributions"
 msgstr ""
 
-#: prefs.js:2405
+#: prefs.js:2420
 msgid "View on GitHub"
 msgstr ""
 
-#: prefs.js:2429
-msgid "☕ Support by buying me a coffee – just scan the QR code!"
-msgstr ""
-
-#: prefs.js:2431
-msgid "Preferred Method - Scan QR code to support development"
-msgstr ""
-
-#: prefs.js:2458
-msgid "Donation Address"
-msgstr ""
-
-#: prefs.js:2473
-msgid "Donation address"
-msgstr ""
-
-#: prefs.js:2478
+#: prefs.js:2447
 msgid "☕ Buy Me a Coffee"
 msgstr ""
 
-#: prefs.js:2479
+#: prefs.js:2448
 msgid "Support development with a small donation"
 msgstr ""
 
-#: prefs.js:2503
+#: prefs.js:2452
+msgid "☕ Support by buying me a coffee – just scan the QR code!"
+msgstr ""
+
+#: prefs.js:2453
+msgid "Scan QR code to open Buy Me a Coffee"
+msgstr ""
+
+#: prefs.js:2456
+msgid "❤ GitHub Sponsors"
+msgstr ""
+
+#: prefs.js:2457
+msgid "Sponsor via GitHub — one-time or monthly"
+msgstr ""
+
+#: prefs.js:2461
+msgid "❤ Support via GitHub Sponsors – just scan the QR code!"
+msgstr ""
+
+#: prefs.js:2462
+msgid "Scan QR code to open GitHub Sponsors"
+msgstr ""
+
+#: prefs.js:2484
+msgid "Donation Platform"
+msgstr ""
+
+#: prefs.js:2485
+msgid "Switch to see the QR code for each platform"
+msgstr ""
+
+#: prefs.js:2523
+msgid "Donation Address"
+msgstr ""
+
+#: prefs.js:2537
+msgid "Donation address"
+msgstr ""
+
+#: prefs.js:2579
+msgid "Support Development"
+msgstr ""
+
+#: prefs.js:2580
+msgid "Choose your preferred donation platform"
+msgstr ""
+
+#: prefs.js:2622
 msgid "License & Credits"
 msgstr ""
 
-#: prefs.js:2504
+#: prefs.js:2623
 msgid "Open source software information"
 msgstr ""
 
-#: prefs.js:2507
+#: prefs.js:2626
 msgid "Open Source License"
 msgstr ""
 
-#: prefs.js:2508
+#: prefs.js:2627
 msgid "GPL-3.0 License - Free and open source software"
 msgstr ""
 
-#: prefs.js:2515
+#: prefs.js:2634
 msgid "Media Data Sources"
 msgstr ""
 
-#: prefs.js:2517
+#: prefs.js:2636
 msgid "MPRIS D-Bus interface - Standard media player remote interfacing"
 msgstr ""
 
-#: prefs.js:2525
+#: prefs.js:2644
 msgid "Key Features"
 msgstr ""
 
-#: prefs.js:2527
+#: prefs.js:2646
 msgid ""
 "• Multi-instance browser support\n"
 "• Per-app rotating vinyl record album art\n"
@@ -840,15 +876,19 @@ msgid ""
 "• All seen apps remembered — re-enable any time"
 msgstr ""
 
-#: prefs.js:2589
+#: prefs.js:2710
 msgid "Copy to Clipboard"
 msgstr ""
 
-#: prefs.js:2591
+#: prefs.js:2712
 msgid ""
 "Unable to copy automatically. Select the address below and press Ctrl+C:"
 msgstr ""
 
-#: prefs.js:2594
+#: prefs.js:2715
 msgid "Close"
+msgstr ""
+
+#: utils/indicator.js:19
+msgid "Media Controls"
 msgstr ""
