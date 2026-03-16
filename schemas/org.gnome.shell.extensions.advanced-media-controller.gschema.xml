@@ -94,7 +94,7 @@
     <key name="vinyl-app-ids" type="as">
       <default>[]</default>
       <summary>Apps with vinyl effect enabled</summary>
-      <description>List of desktop-entry IDs (e.g. "spotify", "rhythmbox") for which the rotating vinyl record effect is active. Managed via the Vinyl Apps preferences page or by double-clicking the album art in the popup.</description>
+      <description>List of desktop-entry IDs (e.g. "spotify", "rhythmbox") for which the rotating vinyl record effect is active. Managed via the Vinyl Apps preferences page or by clicking the album art the configured number of times in the popup.</description>
     </key>
 
     <key name="vinyl-app-disabled-ids" type="as">
@@ -124,11 +124,26 @@
       <description>Seconds per full rotation: 5 = fastest, 60 = slowest</description>
     </key>
 
+    <!-- Album art click thresholds -->
+    <key name="vinyl-click-count" type="i">
+      <default>2</default>
+      <range min="1" max="5"/>
+      <summary>Clicks to toggle vinyl effect</summary>
+      <description>Number of rapid clicks on the album art required to toggle the vinyl record effect for the current app (default: 2)</description>
+    </key>
+
+    <key name="lyrics-click-count" type="i">
+      <default>3</default>
+      <range min="1" max="5"/>
+      <summary>Clicks to toggle lyrics view</summary>
+      <description>Number of rapid clicks on the album art required to open or close the synced lyrics panel (default: 3)</description>
+    </key>
+
     <!-- Synced Lyrics -->
     <key name="enable-lyrics" type="b">
       <default>true</default>
       <summary>Enable synced lyrics</summary>
-      <description>Fetch and display time-synced lyrics from lrclib.net. Triple-click the album art in the popup to show/hide lyrics while a track is playing.</description>
+      <description>Fetch and display time-synced lyrics from lrclib.net. Click the album art in the popup the configured number of times to show/hide lyrics while a track is playing.</description>
     </key>
 
     <!-- System Integration -->

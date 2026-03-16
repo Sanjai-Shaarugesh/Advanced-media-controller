@@ -488,6 +488,20 @@ export const AlbumArt = GObject.registerClass(
       const now = GLib.get_monotonic_time();
       const elapsedMs = (now - this._lastClickTime) / 1000;
 
+      // Read thresholds from settings each time so live changes take effect
+      // without a shell restart.  Fall back to the traditional defaults if the
+      // keys are somehow absent.
+      let vinylClicks = 2;
+      let lyricsClicks = 3;
+      try {
+        vinylClicks = this._settings.get_int("vinyl-click-count");
+        lyricsClicks = this._settings.get_int("lyrics-click-count");
+      } catch (_e) {}
+
+      // Clamp to valid range (1-5) so a corrupted value never locks the UI.
+      vinylClicks  = Math.max(1, Math.min(5, vinylClicks));
+      lyricsClicks = Math.max(1, Math.min(5, lyricsClicks));
+
       if (this._lastClickTime > 0 && elapsedMs < MULTI_CLICK_MS) {
         this._clickCount++;
       } else {
@@ -503,6 +517,17 @@ export const AlbumArt = GObject.registerClass(
 
       const count = this._clickCount;
 
+      // Fire immediately once we've reached the higher threshold so the user
+      // doesn't have to wait for the timeout to expire.
+      const maxThreshold = Math.max(vinylClicks, lyricsClicks);
+      if (count >= maxThreshold) {
+        this._clickTimeout = null;
+        this._clickCount = 0;
+        this._lastClickTime = 0;
+        this._dispatchClickAction(count, vinylClicks, lyricsClicks);
+        return;
+      }
+
       this._clickTimeout = GLib.timeout_add(
         GLib.PRIORITY_DEFAULT,
         MULTI_CLICK_MS,
@@ -510,16 +535,34 @@ export const AlbumArt = GObject.registerClass(
           this._clickTimeout = null;
           this._clickCount = 0;
           this._lastClickTime = 0;
-
-          if (count === 2) {
-            this._toggleVinylForCurrentPlayer();
-          } else if (count >= 3) {
-            this.emit("triple-click");
-          }
-          // Single click (count === 1) intentionally does nothing.
+          this._dispatchClickAction(count, vinylClicks, lyricsClicks);
           return GLib.SOURCE_REMOVE;
         },
       );
+    }
+
+    /**
+     * Dispatch the appropriate action for the completed click sequence.
+     *
+     * Rules (evaluated in priority order so the higher threshold wins when
+     * both thresholds are set to the same value):
+     *   count === lyricsClicks  → toggle lyrics  (higher-priority action)
+     *   count === vinylClicks   → toggle vinyl
+     *   count === 1             → intentionally does nothing (used to dismiss
+     *                             the lyrics panel via the LyricsView widget)
+     *
+     * @param {number} count        – how many rapid clicks were registered
+     * @param {number} vinylClicks  – threshold read from settings
+     * @param {number} lyricsClicks – threshold read from settings
+     */
+    _dispatchClickAction(count, vinylClicks, lyricsClicks) {
+      if (count === lyricsClicks) {
+        this.emit("triple-click"); // signal name kept for backward-compat
+      } else if (count === vinylClicks) {
+        this._toggleVinylForCurrentPlayer();
+      }
+      // Any other count (including 1) intentionally does nothing here;
+      // single-click dismissal of the lyrics panel is handled by LyricsView.
     }
 
     _updateMode() {

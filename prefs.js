@@ -440,6 +440,74 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     rotationInfoRow.add_row(infoBox);
     albumArtGroup.add(rotationInfoRow);
 
+    // ── Album art click thresholds ───────────────────────────────────────────
+    const clickGroup = new Adw.PreferencesGroup({
+      title: _("Album Art Click Thresholds"),
+      description: _(
+        "Set how many rapid clicks trigger each album art action",
+      ),
+    });
+    popupPage.add(clickGroup);
+
+    const vinylClickRow = new Adw.SpinRow({
+      title: _("Clicks to toggle vinyl effect"),
+      subtitle: _(
+        "Rapidly click the album art this many times to enable or disable the vinyl record style for the current app",
+      ),
+      adjustment: new Gtk.Adjustment({
+        lower: 1,
+        upper: 5,
+        step_increment: 1,
+        page_increment: 1,
+        value: settings.get_int("vinyl-click-count"),
+      }),
+    });
+    settings.bind(
+      "vinyl-click-count",
+      vinylClickRow,
+      "value",
+      Gio.SettingsBindFlags.DEFAULT,
+    );
+    clickGroup.add(vinylClickRow);
+
+    const lyricsClickRow = new Adw.SpinRow({
+      title: _("Clicks to toggle lyrics view"),
+      subtitle: _(
+        "Rapidly click the album art this many times to open or close the synced lyrics panel",
+      ),
+      adjustment: new Gtk.Adjustment({
+        lower: 1,
+        upper: 5,
+        step_increment: 1,
+        page_increment: 1,
+        value: settings.get_int("lyrics-click-count"),
+      }),
+    });
+    settings.bind(
+      "lyrics-click-count",
+      lyricsClickRow,
+      "value",
+      Gio.SettingsBindFlags.DEFAULT,
+    );
+    clickGroup.add(lyricsClickRow);
+
+    const thresholdNote = new Adw.ActionRow({
+      title: _("Note: thresholds must be different"),
+      subtitle: _(
+        "If both thresholds are set to the same number the lyrics action takes priority. Use distinct values (e.g. 2 for vinyl, 3 for lyrics) to trigger both independently.",
+      ),
+      activatable: false,
+    });
+    thresholdNote.add_prefix(
+      new Gtk.Image({
+        icon_name: "dialog-warning-symbolic",
+        pixel_size: 20,
+        valign: Gtk.Align.CENTER,
+        css_classes: ["warning"],
+      }),
+    );
+    clickGroup.add(thresholdNote);
+
     // ── Vinyl Apps page ──────────────────────────────────────────────────────
     const vinylPage = new Adw.PreferencesPage({
       title: _("Vinyl Apps"),
@@ -930,6 +998,16 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     });
     page.add(howtoGroup);
 
+    // Read current threshold so the step description is accurate
+    let lyricsN = 3;
+    try { lyricsN = settings.get_int("lyrics-click-count"); } catch (_e) {}
+    lyricsN = Math.max(1, Math.min(5, lyricsN));
+    const clickWord = (n) =>
+      n === 1 ? _("once") :
+      n === 2 ? _("twice") :
+      // Translators: %d is a small number like 3, 4 or 5
+      _("%d times").format(n);
+
     const steps = [
       {
         icon: "media-playback-start-symbolic",
@@ -947,9 +1025,10 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
       },
       {
         icon: "go-jump-symbolic",
-        title: _("Triple-click the album art to show lyrics"),
+        // Translators: %s is "once", "twice", "3 times", etc.
+        title: _("Click the album art %s to show lyrics").format(clickWord(lyricsN)),
         subtitle: _(
-          "Click the album art three times in quick succession. The cover image will be replaced by the lyrics panel, which scrolls automatically in time with the music.",
+          "Click the album art in quick succession. The cover image will be replaced by the lyrics panel, which scrolls automatically in time with the music.",
         ),
       },
       {
@@ -961,7 +1040,7 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
       },
       {
         icon: "media-optical-cd-audio-symbolic",
-        title: _("Triple-click again to re-open"),
+        title: _("Click again to re-open"),
         subtitle: _(
           "You can toggle the lyrics panel as many times as you like. Each player tab remembers independently whether lyrics are open.",
         ),
@@ -1043,7 +1122,12 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     });
     page.add(cheatGroup);
 
-    const clickActions = [
+    // Helper: pluralise "click" correctly.
+    const nClicks = (n) =>
+      n === 1 ? _("1 click") : _("%d clicks").format(n);
+
+    // Helper: build a subtitle string for a given pair of thresholds.
+    const makeSubtitle = (vc, lc) => [
       {
         icon: "input-mouse-symbolic",
         title: _("Single click"),
@@ -1053,30 +1137,67 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
       },
       {
         icon: "input-mouse-symbolic",
-        title: _("Double click"),
+        // Translators: %s is replaced with e.g. "2 clicks"
+        title: _("%s — toggle vinyl effect").format(nClicks(vc)),
         subtitle: _(
           "Toggles the spinning vinyl record effect for that specific app (remembered independently per app)",
         ),
       },
       {
         icon: "input-mouse-symbolic",
-        title: _("Triple click"),
+        // Translators: %s is replaced with e.g. "3 clicks"
+        title: _("%s — toggle lyrics").format(nClicks(lc)),
         subtitle: _(
           "Toggles the synced lyrics panel for the current player tab (remembered independently per player)",
         ),
       },
     ];
 
-    clickActions.forEach(({ icon, title, subtitle }) => {
-      const row = new Adw.ActionRow({ title, subtitle, activatable: false });
-      row.add_prefix(
-        new Gtk.Image({
-          icon_name: icon,
-          pixel_size: 22,
-          valign: Gtk.Align.CENTER,
-        }),
+    // Render rows and keep references so we can update them on settings change.
+    let cheatRows = [];
+    const renderCheatRows = (vc, lc) => {
+      // Remove old rows
+      for (const r of cheatRows) cheatGroup.remove(r);
+      cheatRows = [];
+
+      makeSubtitle(vc, lc).forEach(({ icon, title, subtitle }) => {
+        const row = new Adw.ActionRow({ title, subtitle, activatable: false });
+        row.add_prefix(
+          new Gtk.Image({
+            icon_name: icon,
+            pixel_size: 22,
+            valign: Gtk.Align.CENTER,
+          }),
+        );
+        cheatGroup.add(row);
+        cheatRows.push(row);
+      });
+    };
+
+    // Initial render
+    renderCheatRows(
+      settings.get_int("vinyl-click-count"),
+      settings.get_int("lyrics-click-count"),
+    );
+
+    // Live-update cheat-sheet when thresholds change in prefs
+    const _cheatVinylId = settings.connect("changed::vinyl-click-count", () => {
+      renderCheatRows(
+        settings.get_int("vinyl-click-count"),
+        settings.get_int("lyrics-click-count"),
       );
-      cheatGroup.add(row);
+    });
+    const _cheatLyricsId = settings.connect("changed::lyrics-click-count", () => {
+      renderCheatRows(
+        settings.get_int("vinyl-click-count"),
+        settings.get_int("lyrics-click-count"),
+      );
+    });
+
+    // Disconnect when the prefs window is closed to avoid leaks
+    page.connect("destroy", () => {
+      settings.disconnect(_cheatVinylId);
+      settings.disconnect(_cheatLyricsId);
     });
 
     // ── Data source ───────────────────────────────────────────────────────────
