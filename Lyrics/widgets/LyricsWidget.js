@@ -21,8 +21,6 @@ export const LyricsWidget = GObject.registerClass(
   {
     GTypeName: "LyricsWidget",
     Signals: {
-      // Emitted when the user single-clicks anywhere on the widget
-
       dismiss: {},
     },
   },

@@ -28,34 +28,22 @@ export class MprisManager {
     this._pollingPlayers = new Set();
     this._positionPollingInterval = null;
 
-    // Settings reference for player filtering (set via setSettings)
+    // Settings reference for player filtering
     this._settings = null;
 
     this._player = new MprisPlayer(this);
   }
 
   /**
-   * Provide a GSettings instance so the manager can apply the player filter.
-   * Call this before init().
    * @param {Gio.Settings} settings
    */
   setSettings(settings) {
     this._settings = settings;
   }
 
-  // ── Player filter ──────────────────────────────────────────────────────────
+  //  Player filter
 
   /**
-   * Returns true when the given MPRIS bus name should be tracked.
-   *
-   * Filter modes (player-filter-mode):
-   *   0 – Off  : all players are allowed
-   *   1 – Blacklist : players whose short name appears in the list are excluded
-   *   2 – Whitelist : only players whose short name appears in the list are allowed
-   *
-   * "Short name" = the part after "org.mpris.MediaPlayer2.", with any
-   * ".instanceN" / numeric-suffix removed, lowercased.
-   *
    * @param {string} busName  full MPRIS bus name
    * @returns {boolean}
    */
@@ -66,7 +54,7 @@ export class MprisManager {
     try {
       mode = this._settings.get_int("player-filter-mode");
     } catch (_e) {
-      return true; // key missing – fail open
+      return true;
     }
 
     if (mode === 0) return true; // Off – allow everything
@@ -78,18 +66,14 @@ export class MprisManager {
       return true;
     }
 
-    // Parse entries — skip any prefixed with "~" (those are saved but
-    // disabled by the user via the toggle in prefs).
     const listed = listStr
       .split(",")
       .map((s) => s.trim())
       .filter(Boolean)
-      .filter((s) => !s.startsWith("~"))   // "~name" = saved but inactive
+      .filter((s) => !s.startsWith("~"))
       .map((s) => s.toLowerCase());
 
-    if (listed.length === 0) return true; // empty / all-disabled – allow everything
-
-    // Derive the "short" name (same normalisation as prefs and the UI)
+    if (listed.length === 0) return true;
     const short = busName
       .replace(`${MprisConstants.MPRIS_PREFIX}.`, "")
       .replace(/\.instance[_\d]+$/i, "")
@@ -98,13 +82,13 @@ export class MprisManager {
 
     const inList = listed.includes(short);
 
-    if (mode === 1) return !inList;  // Blacklist – exclude if found in active list
-    if (mode === 2) return inList;   // Whitelist – allow only if found in active list
+    if (mode === 1) return !inList; // Blacklist – exclude if found in active list
+    if (mode === 2) return inList; // Whitelist – allow only if found in active list
 
     return true;
   }
 
-  // ── Position polling ───────────────────────────────────────────────────────
+  // Position polling
 
   startPositionPolling(name) {
     if (!name || this._pollingPlayers.has(name)) return;

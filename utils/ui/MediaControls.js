@@ -1,7 +1,6 @@
 import St from "gi://St";
 import GObject from "gi://GObject";
 import Clutter from "gi://Clutter";
-import Gio from "gi://Gio";
 import GLib from "gi://GLib";
 import { ControlButtons } from "./ControlButtons.js";
 import { AlbumArt } from "./AlbumArt.js";
@@ -16,7 +15,7 @@ const ARTIST_VIEWPORT_WIDTH = 280;
 const LOOP_PAUSE_MS = 1200;
 const BASE_PX_PER_SEC = 50;
 
-// 250 ms gives smooth enough lyric transitions without hammering D-Bus.
+// 250 ms gives smooth enough lyric transitions without hammering D-Bus
 const LYRICS_POLL_MS = 250;
 
 export const MediaControls = GObject.registerClass(
@@ -56,9 +55,11 @@ export const MediaControls = GObject.registerClass(
 
       this._playerLyricsState = new Map();
 
+      this._lyricsCache = new Map();
+
       this._currentTrackInfo = null;
 
-      // the general MPRIS change event (which fires only ~1 s).
+      // the general MPRIS change event (which fires only ~1 s)
       this._lyricsSyncTimer = null;
 
       this._buildUI();
@@ -309,8 +310,6 @@ export const MediaControls = GObject.registerClass(
       const playerState = this._getPlayerLyricsState(playerName);
 
       if (playerChanged) {
-        // Tab switch: restore the incoming player's lyrics preference.
-
         this._stopLyricsSyncTimer();
         this._applyLyricsState(playerName, playerState);
         return;
@@ -353,8 +352,7 @@ export const MediaControls = GObject.registerClass(
       this._progressSlider.startPositionUpdate();
       this._titleScrollLabel?.resumeScrolling();
       this._artistScrollLabel?.resumeScrolling();
-      // Restart the lyrics sync timer only if the current player has lyrics
-      // visible (per-player state).
+
       const state = this._playerLyricsState.get(this._currentPlayerName);
       if (state?.visible) this._startLyricsSyncTimer();
     }
@@ -364,7 +362,7 @@ export const MediaControls = GObject.registerClass(
       this._titleScrollLabel?.pauseScrolling();
       this._artistScrollLabel?.pauseScrolling();
       this._albumArt?.pauseRotation();
-      // Stop lyrics timer when menu is closed — no point polling off-screen
+
       this._stopLyricsSyncTimer();
     }
 
@@ -469,23 +467,24 @@ export const MediaControls = GObject.registerClass(
       state.visible = true;
 
       this._artSlot.set_child(this._lyricsView);
-      // Always start with a clean loading state
-      this._lyricsView.clear();
 
       const info = this._currentTrackInfo;
-      if (!info) return;
+      if (!info) {
+        this._lyricsView.clear();
+        return;
+      }
 
       const newKey = `${info.title || ""}||${(info.artists || []).join(",")}`;
       state.lastKey = newKey;
+
+      if (!this._lyricsCache.has(newKey)) {
+        this._lyricsView.clear();
+      }
+
       this._fetchLyricsForCurrentTrack();
       this._startLyricsSyncTimer();
     }
 
-    /**
-     * Hide lyrics for playerName and restore the correct album-art widget
-     * (vinyl or normal) for that player instance.
-
-     */
     _hideLyricsForPlayer(playerName) {
       const state = this._getPlayerLyricsState(playerName);
       state.visible = false;
@@ -497,13 +496,22 @@ export const MediaControls = GObject.registerClass(
     async _fetchLyricsForCurrentTrack() {
       if (!this._currentTrackInfo || !this._currentPlayerName) return;
 
-      if (!this._lyricsClient) this._lyricsClient = new LyricsClient();
-
-      // Capture the player at call time.  If the user switches tabs while the
-      // network request is in flight the result belongs to fetchPlayerName,
-      // not necessarily the current player.
       const fetchPlayerName = this._currentPlayerName;
       const info = this._currentTrackInfo;
+      const trackKey = `${info.title || ""}||${(info.artists || []).join(",")}`;
+
+      if (this._lyricsCache.has(trackKey)) {
+        const cached = this._lyricsCache.get(trackKey);
+        const state = this._getPlayerLyricsState(fetchPlayerName);
+        if (state.visible && this._currentPlayerName === fetchPlayerName) {
+          this._lyricsView.setLyrics(cached);
+          this._pushLyricsPosition();
+        }
+        return;
+      }
+
+      if (!this._lyricsClient) this._lyricsClient = new LyricsClient();
+
       const artist = (info.artists || []).join(", ");
       const durationS = (info.length || 0) > 0 ? info.length / 1_000_000 : 0;
 
@@ -515,8 +523,8 @@ export const MediaControls = GObject.registerClass(
           durationS,
         );
 
-        // Discard result if lyrics were dismissed or player switched away
-        // while the network request was in flight.
+        this._lyricsCache.set(trackKey, lines ?? null);
+
         const state = this._getPlayerLyricsState(fetchPlayerName);
         if (!state.visible || this._currentPlayerName !== fetchPlayerName)
           return;
@@ -544,6 +552,7 @@ export const MediaControls = GObject.registerClass(
       this._playerSliderPositions.clear();
       this._playerArtCache.clear();
       this._playerLyricsState.clear();
+      this._lyricsCache.clear();
 
       this._albumArt?.disconnectObject(this);
       this._lyricsView?.disconnectObject(this);
