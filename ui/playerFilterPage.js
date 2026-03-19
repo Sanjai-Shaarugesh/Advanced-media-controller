@@ -38,7 +38,7 @@ export function buildPlayerFilterPage(page, settings, findAppInfo) {
       .replace(/\.instance[_\d]+$/i, "")
       .replace(/\.\d+$/, "");
 
-  //  Filter Mode 
+  //  Filter Mode
   const modeGroup = new Adw.PreferencesGroup({
     title: _("Filter Mode"),
     description: _(
@@ -80,7 +80,7 @@ export function buildPlayerFilterPage(page, settings, findAppInfo) {
   });
   modeGroup.add(filterModeRow);
 
-  // Saved Players 
+  // Saved Players
   const savedGroup = new Adw.PreferencesGroup({
     title: _("Saved Players"),
     description: _(
@@ -340,9 +340,7 @@ export function buildPlayerFilterPage(page, settings, findAppInfo) {
               parseList().some((e) => e.name === short);
 
             const addBtn = new Gtk.Button({
-              label: isAlreadySaved()
-                ? _("Saved \u2713")
-                : _("Add to Filter"),
+              label: isAlreadySaved() ? _("Saved \u2713") : _("Add to Filter"),
               valign: Gtk.Align.CENTER,
               css_classes: isAlreadySaved() ? ["flat"] : ["suggested-action"],
               tooltip_text: isAlreadySaved()

@@ -23,20 +23,19 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     window.set_default_size(700, 760);
     window.set_resizable(true);
 
-    // General page 
+    // General page
     window.add(buildGeneralPage(settings));
 
-    //  Popup Player page 
+    //  Popup Player page
     window.add(buildPopupPage(settings));
 
-    //  Vinyl Apps page 
+    //  Vinyl Apps page
     const vinylPage = new Adw.PreferencesPage({
       title: _("Vinyl Apps"),
       icon_name: "media-optical-cd-audio-symbolic",
     });
     window.add(vinylPage);
 
-    
     const vinylHelpers = {
       findAppInfo: (desktopId, fallbackId) =>
         this._findAppInfo(desktopId, fallbackId),
@@ -53,19 +52,19 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
       refreshInstancesList: (s) => this._refreshInstancesList(s),
       showRenameDialog: (s, id, normId, currentDisplay, resolvedName) =>
         this._showRenameDialog(s, id, normId, currentDisplay, resolvedName),
-      
+
       instancesGroup: null,
       instanceRows: null,
       appListBox: null,
       allApps: null,
       currentSearchQuery: "",
     };
-    
+
     this._vinylHelpers = vinylHelpers;
 
     buildVinylAppsPage(vinylPage, settings, vinylHelpers);
 
-    //  Player Filter page 
+    //  Player Filter page
     const filterPage = new Adw.PreferencesPage({
       title: _("Player Filter"),
       icon_name: "view-list-symbolic",
@@ -75,7 +74,7 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
       this._findAppInfo(desktopId, fallbackId),
     );
 
-    //  Lyrics page 
+    //  Lyrics page
     const lyricsPage = new Adw.PreferencesPage({
       title: _("Lyrics"),
       icon_name: "audio-x-generic-symbolic",
@@ -83,11 +82,11 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     window.add(lyricsPage);
     buildLyricsPage(lyricsPage, settings);
 
-    // About page 
+    // About page
     window.add(createAboutPage(this.dir.get_path()));
   }
 
-  //  Vinyl App Helpers 
+  //  Vinyl App Helpers
 
   _refreshInstancesList(settings) {
     const { instancesGroup, instanceRows } = this._vinylHelpers;
@@ -247,13 +246,7 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
         tooltip_text: _("Rename \u201c%s\u201d").format(displayName),
       });
       renameBtn.connect("clicked", () => {
-        this._showRenameDialog(
-          settings,
-          id,
-          normId,
-          displayName,
-          resolvedName,
-        );
+        this._showRenameDialog(settings, id, normId, displayName, resolvedName);
       });
       row.add_suffix(renameBtn);
 
@@ -425,8 +418,6 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     this._deleteInstance(settings, id, normId);
   }
 
-  // ── App loading ────────────────────────────────────────────────────────
-
   _loadMediaAndBrowserApps() {
     const allApps = Gio.AppInfo.get_all();
 
@@ -572,7 +563,7 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     }
   }
 
-  //  Render search results 
+  //  Render search results
 
   _renderAppList(filteredSystemApps, settings) {
     const { appListBox, currentSearchQuery } = this._vinylHelpers;

@@ -6,10 +6,7 @@ import { gettext as _ } from "resource:///org/gnome/Shell/Extensions/js/extensio
 import { parseBrowserSourceId, labelForId } from "../lib/utils.js";
 
 /**
- * Builds the Vinyl Apps preferences page.
- *
- * This function uses several helper methods that must be provided via the
- * `helpers` object so this module remains stateless.
+
  *
  * @param {Adw.PreferencesPage} page
  * @param {Gio.Settings} settings
@@ -40,7 +37,7 @@ export function buildVinylAppsPage(page, settings, helpers) {
     showRenameDialog,
   } = helpers;
 
-  // ── How-to steps ─────────────────────────────────────────────────────────
+  // How-to steps
   const howtoGroup = new Adw.PreferencesGroup({
     title: _("How to Enable Vinyl Style for an App"),
   });
@@ -93,7 +90,7 @@ export function buildVinylAppsPage(page, settings, helpers) {
     howtoGroup.add(row);
   });
 
-  // ── Saved App Instances ──────────────────────────────────────────────────
+  //  Saved App Instances
   const instancesGroup = new Adw.PreferencesGroup({
     title: _("Saved App Instances"),
     description: _(
@@ -110,7 +107,7 @@ export function buildVinylAppsPage(page, settings, helpers) {
 
   refreshInstancesList(settings);
 
-  // ── Add an App Manually ──────────────────────────────────────────────────
+  // Add an App Manually
   const searchGroup = new Adw.PreferencesGroup({
     title: _("Add an App Manually"),
     description: _(
@@ -207,7 +204,7 @@ export function buildVinylAppsPage(page, settings, helpers) {
     renderAppList(allApps, settings);
   });
 
-  // ── Live Player Detector ─────────────────────────────────────────────────
+  //  Live Player Detector
   const liveDetectGroup = new Adw.PreferencesGroup({
     title: _("Running Players (Live Detection)"),
     description: _(
@@ -376,8 +373,7 @@ export function buildVinylAppsPage(page, settings, helpers) {
                 const deduped = cur.filter((raw) => {
                   try {
                     return (
-                      JSON.parse(raw).id?.toLowerCase() !==
-                      short.toLowerCase()
+                      JSON.parse(raw).id?.toLowerCase() !== short.toLowerCase()
                     );
                   } catch (_) {
                     return true;
@@ -386,10 +382,7 @@ export function buildVinylAppsPage(page, settings, helpers) {
                 deduped.push(record);
                 settings.set_strv("vinyl-app-instances", deduped);
               } catch (_e) {
-                console.error(
-                  "AMC prefs: failed to save vinyl instance:",
-                  _e,
-                );
+                console.error("AMC prefs: failed to save vinyl instance:", _e);
               }
               setAppVinylState(settings, short, short.toLowerCase(), true);
               GLib.idle_add(GLib.PRIORITY_DEFAULT_IDLE, () => {

@@ -4,6 +4,8 @@ import Gio from "gi://Gio";
 import { gettext as _ } from "resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js";
 
 /**
+ * Builds and returns the Popup Player preferences page
+ *
  * @param {Gio.Settings} settings
  * @returns {Adw.PreferencesPage}
  */
@@ -13,7 +15,33 @@ export function buildPopupPage(settings) {
     icon_name: "media-playback-start-symbolic",
   });
 
-  // Title Scrolling 
+  // Popup Size
+  const sizeGroup = new Adw.PreferencesGroup({
+    title: _("Popup Size"),
+    description: _("Width of the popup media player panel (height scales with album art)"),
+  });
+  popupPage.add(sizeGroup);
+
+  const popupWidthRow = new Adw.SpinRow({
+    title: _("Popup Width"),
+    subtitle: _("Width in pixels — album art, labels and lyrics panel all scale with this value (280 – 600 px)"),
+    adjustment: new Gtk.Adjustment({
+      lower: 280,
+      upper: 600,
+      step_increment: 10,
+      page_increment: 40,
+      value: settings.get_int("popup-width"),
+    }),
+  });
+  settings.bind(
+    "popup-width",
+    popupWidthRow,
+    "value",
+    Gio.SettingsBindFlags.DEFAULT,
+  );
+  sizeGroup.add(popupWidthRow);
+
+  //  Title Scrolling 
   const titleScrollGroup = new Adw.PreferencesGroup({
     title: _("Title Scrolling"),
     description: _("Marquee behaviour for the track title inside the popup"),
@@ -54,7 +82,7 @@ export function buildPopupPage(settings) {
   );
   titleScrollGroup.add(titleScrollSpeedRow);
 
-  // Artist Scrolling 
+  //  Artist Scrolling 
   const artistScrollGroup = new Adw.PreferencesGroup({
     title: _("Artist Scrolling"),
     description: _("Marquee behaviour for the artist name inside the popup"),
@@ -95,7 +123,7 @@ export function buildPopupPage(settings) {
   );
   artistScrollGroup.add(artistScrollSpeedRow);
 
-  // Album Art & Vinyl 
+  // ── Album Art & Vinyl ────────────────────────────────────────────────────
   const albumArtGroup = new Adw.PreferencesGroup({
     title: _("Album Art"),
     description: _("Vinyl-record rotation animation"),
@@ -167,7 +195,66 @@ export function buildPopupPage(settings) {
   rotationInfoRow.add_row(infoBox);
   albumArtGroup.add(rotationInfoRow);
 
-  // ── Album Art Click Thresholds ───────────────────────────────────────────
+  //  Tonearm Angles 
+  const tonearmGroup = new Adw.PreferencesGroup({
+    title: _("Tonearm Angles"),
+    description: _("Control how far the animated tonearm swings when playing or at rest"),
+  });
+  popupPage.add(tonearmGroup);
+
+  const parkedAngleRow = new Adw.SpinRow({
+    title: _("Parked (resting) angle"),
+    subtitle: _("Degrees from vertical when music is paused or stopped. Higher moves the arm further from the disc (10 – 60°)"),
+    adjustment: new Gtk.Adjustment({
+      lower: 10,
+      upper: 60,
+      step_increment: 1,
+      page_increment: 5,
+      value: settings.get_int("tonearm-parked-angle"),
+    }),
+  });
+  settings.bind(
+    "tonearm-parked-angle",
+    parkedAngleRow,
+    "value",
+    Gio.SettingsBindFlags.DEFAULT,
+  );
+  tonearmGroup.add(parkedAngleRow);
+
+  const playingAngleRow = new Adw.SpinRow({
+    title: _("Playing angle"),
+    subtitle: _("Degrees from vertical when the stylus rests on the groove. Lower brings the arm closer to the disc centre (0 – 30°)"),
+    adjustment: new Gtk.Adjustment({
+      lower: 0,
+      upper: 30,
+      step_increment: 1,
+      page_increment: 3,
+      value: settings.get_int("tonearm-playing-angle"),
+    }),
+  });
+  settings.bind(
+    "tonearm-playing-angle",
+    playingAngleRow,
+    "value",
+    Gio.SettingsBindFlags.DEFAULT,
+  );
+  tonearmGroup.add(playingAngleRow);
+
+  const tonearmNote = new Adw.ActionRow({
+    title: _("Tip: parked angle must be greater than playing angle"),
+    subtitle: _("E.g. parked = 25°, playing = 8°. If they are equal or reversed the arm will animate incorrectly."),
+    activatable: false,
+  });
+  tonearmNote.add_prefix(
+    new Gtk.Image({
+      icon_name: "dialog-information-symbolic",
+      pixel_size: 20,
+      valign: Gtk.Align.CENTER,
+    }),
+  );
+  tonearmGroup.add(tonearmNote);
+
+  //  Album Art Click Thresholds
   const clickGroup = new Adw.PreferencesGroup({
     title: _("Album Art Click Thresholds"),
     description: _("Set how many rapid clicks trigger each album art action"),

@@ -45,9 +45,7 @@ export const MediaIndicator = GObject.registerClass(
             this._eventHandlers.setupWindowMonitoring();
           } else {
             this._controls.stopPositionUpdate();
-            // Notify controls the menu is closing so the lyrics sync timer
-            // is stopped cleanly (stopPositionUpdate alone no longer does
-            // this, to avoid killing the timer on every pause event).
+
             this._controls.onMenuClosed();
             this._eventHandlers.removeWindowMonitoring();
           }
@@ -67,7 +65,7 @@ export const MediaIndicator = GObject.registerClass(
             }
 
             // When filter settings change, reinitialize the manager so new
-            // inclusions/exclusions take effect immediately.
+            // inclusions/exclusions take effect immediately
             if (key === "player-filter-mode" || key === "player-filter-list") {
               this._reinitManager();
               return;
@@ -83,39 +81,12 @@ export const MediaIndicator = GObject.registerClass(
 
       this.hide();
 
-      // Apply hide-default-player on startup.
-      // The date-menu button is always present by the time the extension
-      // enable() runs, but schedule it on the idle queue so the panel has
-      // finished its own init before we touch it.
       this._state.scheduleOperation(() => {
         this._applyHideDefaultPlayer();
       }, 0);
 
       this._state.scheduleOperation(() => this._initManager(), 200);
     }
-
-    // ── Hide / restore the built-in GNOME media player section ───────────────
-    //
-    // GNOME Shell exposes its built-in MPRIS controls through the date-menu
-    // panel button.  The internal structure has changed across major versions:
-    //
-    //   GNOME 43 – 45  →  dateMenu._messageList._mediaSection
-    //   GNOME 46       →  dateMenu._messageList._mediaSection  (same path,
-    //                      but the class was refactored internally)
-    //   GNOME 47+      →  dateMenu._messageList._mediaSection  (still works)
-    //                      some builds also expose _mprisMediaPlayersList
-    //
-    // Strategy: walk every known path and toggle .visible on each object we
-    // actually find.  All paths are individually try/caught so a missing path
-    // on one version never breaks another.  We hide rather than destroy, so
-    // the original behaviour is fully restored when visible is set back to
-    // true inside destroy().
-    //
-    // Review-guideline compliance:
-    //   • We never monkey-patch or modify Shell objects — only set .visible
-    //   • We restore fully in destroy() unconditionally
-    //   • No timeouts are leaked; the scheduleOperation call is already
-    //     tracked by IndicatorState._pendingOperations
 
     _applyHideDefaultPlayer() {
       const hide = this._settings.get_boolean("hide-default-player");
@@ -130,34 +101,29 @@ export const MediaIndicator = GObject.registerClass(
       const dateMenu = Main.panel.statusArea?.dateMenu;
       if (!dateMenu) return;
 
-      // ── Path A: _messageList._mediaSection (GNOME 43 / 44 / 45 / 46 / 47) ─
       try {
         const ms = dateMenu._messageList?._mediaSection;
         if (ms) ms.visible = visible;
       } catch (_e) {}
 
-      // ── Path B: _messageList._mprisMediaPlayersList (some 45/46 builds) ────
       try {
         const ml = dateMenu._messageList?._mprisMediaPlayersList;
         if (ml) ml.visible = visible;
       } catch (_e) {}
 
-      // ── Path C: _indicator subtree (GNOME 46 restructured builds) ───────────
       try {
         const ind = dateMenu._indicator;
         if (ind) {
-          // C1: direct _primaryIndicator child
           if (ind._primaryIndicator) ind._primaryIndicator.visible = visible;
-          // C2: nested _messageList._mediaSection
+
           const ml2 = ind._messageList?._mediaSection;
           if (ml2) ml2.visible = visible;
-          // C3: nested _messageList._mprisMediaPlayersList
+
           const ml3 = ind._messageList?._mprisMediaPlayersList;
           if (ml3) ml3.visible = visible;
         }
       } catch (_e) {}
 
-      // ── Path D: _clock._messageList (some Fedora/Ubuntu 46 spins) ───────────
       try {
         const cl = dateMenu._clock;
         if (cl) {
@@ -166,8 +132,6 @@ export const MediaIndicator = GObject.registerClass(
         }
       } catch (_e) {}
     }
-
-    // ── Re-initialise the MPRIS manager after filter settings change ──────────
 
     _reinitManager() {
       if (
@@ -184,10 +148,7 @@ export const MediaIndicator = GObject.registerClass(
 
       // Delay slightly so the settings write has definitely committed
       GLib.timeout_add(GLib.PRIORITY_DEFAULT_IDLE, 100, () => {
-        if (
-          this._state._sessionChanging ||
-          this._state._safetyLock
-        )
+        if (this._state._sessionChanging || this._state._safetyLock)
           return GLib.SOURCE_REMOVE;
 
         // Tear down current manager

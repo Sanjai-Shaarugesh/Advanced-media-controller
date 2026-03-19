@@ -41,6 +41,14 @@
       <description>Text inserted between the track title and artist name in the panel label</description>
     </key>
 
+    <!-- Panel label width -->
+    <key name="panel-label-width" type="i">
+      <default>160</default>
+      <range min="60" max="400"/>
+      <summary>Panel label width</summary>
+      <description>Visible pixel width of the scrolling track label in the top panel</description>
+    </key>
+
     <!-- Panel scrolling -->
     <key name="enable-panel-scroll" type="b">
       <default>true</default>
@@ -60,6 +68,14 @@
       <range min="10" max="100"/>
       <summary>Panel label max length</summary>
       <description>Maximum characters shown in the panel label when scrolling is disabled</description>
+    </key>
+
+    <!-- Popup size -->
+    <key name="popup-width" type="i">
+      <default>340</default>
+      <range min="280" max="600"/>
+      <summary>Popup player width</summary>
+      <description>Width of the popup media-player panel in pixels. Height scales proportionally with the album-art size.</description>
     </key>
 
     <!-- Popup title scrolling -->
@@ -94,20 +110,19 @@
     <key name="vinyl-app-ids" type="as">
       <default>[]</default>
       <summary>Apps with vinyl effect enabled</summary>
-      <description>List of desktop-entry IDs (e.g. "spotify", "rhythmbox") for which the rotating vinyl record effect is active. Managed via the Vinyl Apps preferences page or by clicking the album art the configured number of times in the popup.</description>
+      <description>List of desktop-entry IDs for which the rotating vinyl record effect is active.</description>
     </key>
 
     <key name="vinyl-app-disabled-ids" type="as">
       <default>[]</default>
       <summary>Apps with vinyl effect explicitly disabled</summary>
-      <description>List of desktop-entry IDs that have been seen and explicitly disabled by the user. These are remembered so the user can re-enable them from the Vinyl Apps page without searching again.</description>
+      <description>List of desktop-entry IDs that have been seen and explicitly disabled by the user.</description>
     </key>
 
-    <!-- Per-instance vinyl records (richer metadata saved by double-clicking album art) -->
     <key name="vinyl-app-instances" type="as">
       <default>[]</default>
       <summary>Stored vinyl app instances</summary>
-      <description>JSON-encoded list of {id, name, desktopId, busName} objects. Each entry represents a player instance the user stored by double-clicking the album art in the popup. The prefs page shows these and resolves their icons from the system .desktop database.</description>
+      <description>JSON-encoded list of {id, name, desktopId, busName} objects representing stored player instances.</description>
     </key>
 
     <!-- Album art -->
@@ -124,33 +139,48 @@
       <description>Seconds per full rotation: 5 = fastest, 60 = slowest</description>
     </key>
 
+    <!-- Tonearm angles -->
+    <key name="tonearm-parked-angle" type="i">
+      <default>25</default>
+      <range min="10" max="60"/>
+      <summary>Tonearm parked (resting) angle</summary>
+      <description>Angle in degrees of the tonearm when music is paused or stopped (resting position). Higher = further from disc.</description>
+    </key>
+
+    <key name="tonearm-playing-angle" type="i">
+      <default>8</default>
+      <range min="0" max="30"/>
+      <summary>Tonearm playing angle</summary>
+      <description>Angle in degrees of the tonearm when music is actively playing (tip resting on groove). Lower = closer to centre.</description>
+    </key>
+
     <!-- Album art click thresholds -->
     <key name="vinyl-click-count" type="i">
       <default>2</default>
       <range min="1" max="5"/>
       <summary>Clicks to toggle vinyl effect</summary>
-      <description>Number of rapid clicks on the album art required to toggle the vinyl record effect for the current app (default: 2)</description>
+      <description>Number of rapid clicks on the album art required to toggle the vinyl record effect for the current app</description>
     </key>
 
     <key name="lyrics-click-count" type="i">
       <default>3</default>
       <range min="1" max="5"/>
       <summary>Clicks to toggle lyrics view</summary>
-      <description>Number of rapid clicks on the album art required to open or close the synced lyrics panel (default: 3)</description>
+      <description>Number of rapid clicks on the album art required to open or close the synced lyrics panel</description>
     </key>
 
     <!-- Synced Lyrics -->
     <key name="enable-lyrics" type="b">
       <default>true</default>
       <summary>Enable synced lyrics</summary>
-      <description>Fetch and display time-synced lyrics from lrclib.net. Click the album art in the popup the configured number of times to show/hide lyrics while a track is playing.</description>
+      <description>Fetch and display time-synced lyrics from lrclib.net.</description>
     </key>
 
     <!-- System Integration -->
     <key name="hide-default-player" type="b">
       <default>true</default>
       <summary>Hide default GNOME media player</summary>
-      <description>Hide the built-in GNOME Shell media player controls from the date/time menu. They are fully restored when the extension is disabled.</description>
+      <description>Hide the built-in GNOME Shell media player controls from the date/time menu. Fully restored when the extension is disabled.</description>
     </key>
 
     <!-- Player Filter -->

@@ -4,7 +4,7 @@ import Gio from "gi://Gio";
 import { gettext as _ } from "resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js";
 
 /**
- * @param {Gio.Settings} settings
+* @param {Gio.Settings} settings
  * @returns {Adw.PreferencesPage}
  */
 export function buildGeneralPage(settings) {
@@ -13,7 +13,6 @@ export function buildGeneralPage(settings) {
     icon_name: "preferences-system-symbolic",
   });
 
-  // Panel Placement 
   const panelGroup = new Adw.PreferencesGroup({
     title: _("Panel Placement"),
     description: _("Where the indicator sits in the top bar"),
@@ -22,9 +21,7 @@ export function buildGeneralPage(settings) {
 
   const positionRow = new Adw.ComboRow({ title: _("Panel Position") });
   const positionModel = new Gtk.StringList();
-  [_("Left"), _("Center"), _("Right")].forEach((l) =>
-    positionModel.append(l),
-  );
+  [_("Left"), _("Center"), _("Right")].forEach((l) => positionModel.append(l));
   positionRow.model = positionModel;
   const positions = ["left", "center", "right"];
   positionRow.selected = Math.max(
@@ -55,7 +52,7 @@ export function buildGeneralPage(settings) {
   );
   panelGroup.add(indexRow);
 
-  // Panel Label 
+  //Panel Label
   const labelGroup = new Adw.PreferencesGroup({
     title: _("Panel Label"),
     description: _("Track name shown in the top bar"),
@@ -96,7 +93,7 @@ export function buildGeneralPage(settings) {
   );
   labelGroup.add(separatorRow);
 
-  // Panel Scrolling 
+  //  Panel Scrolling
   const panelScrollGroup = new Adw.PreferencesGroup({
     title: _("Panel Scrolling"),
     description: _("Marquee scroll of the track label in the top bar"),
@@ -137,7 +134,28 @@ export function buildGeneralPage(settings) {
   );
   panelScrollGroup.add(panelScrollSpeedRow);
 
-  //  System Integration 
+  const panelLabelWidthRow = new Adw.SpinRow({
+    title: _("Panel Label Width"),
+    subtitle: _(
+      "Visible pixel width of the track label in the top bar (60 – 400 px)",
+    ),
+    adjustment: new Gtk.Adjustment({
+      lower: 60,
+      upper: 400,
+      step_increment: 10,
+      page_increment: 40,
+      value: settings.get_int("panel-label-width"),
+    }),
+  });
+  settings.bind(
+    "panel-label-width",
+    panelLabelWidthRow,
+    "value",
+    Gio.SettingsBindFlags.DEFAULT,
+  );
+  panelScrollGroup.add(panelLabelWidthRow);
+
+  // System Integration
   const systemGroup = new Adw.PreferencesGroup({
     title: _("System Integration"),
     description: _(
