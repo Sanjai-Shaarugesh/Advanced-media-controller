@@ -7,30 +7,47 @@ import Gio from "gi://Gio";
 import Clutter from "gi://Clutter";
 import Cairo from "cairo";
 
-// Smooth-scroll easing duration in milliseconds
+// Smooth-scroll easing duration (ms)
 const SCROLL_EASING_MS = 450;
-// Repaint ticker interval (~60 fps)
+// Repaint ticker interval — ~60 fps
 const TICK_INTERVAL_MS = 16;
-
-const PADDING_X = 24;
 
 const DESKTOP_INTERFACE_SCHEMA = "org.gnome.desktop.interface";
 const COLOR_SCHEME_KEY = "color-scheme";
+
+/**
+ * Compute font and layout metrics from the widget  current pixel width
+ *
+ * @param {number} w  widget width in pixels
+ * @returns {{ activeSize, neighborSize, inactiveSize, lineSpacing, paddingX }}
+ */
+function _metricsForWidth(w) {
+  // Base design was 340 px,  all values scale linearly with width
+  const scale = Math.max(0.7, w / 340);
+  const activeSize = Math.round(20 * scale);
+  const neighborSize = Math.round(14 * scale);
+  const inactiveSize = Math.round(12 * scale);
+  const lineSpacing = Math.round(16 * scale);
+  const paddingX = Math.round(24 * scale);
+  return { activeSize, neighborSize, inactiveSize, lineSpacing, paddingX };
+}
 
 export const LyricsWidget = GObject.registerClass(
   {
     GTypeName: "LyricsWidget",
     Signals: {
-      // Emitted when the user single-clicks anywhere on the widget
-
       dismiss: {},
     },
   },
   class LyricsWidget extends St.Widget {
-    _init(width = 340, height = 340) {
+    /**
+     * @param {number}             [width=340]
+     * @param {number}             [height=340]
+     * @param {Gio.Settings|null}  [settings]   Extension GSettings
+     */
+    _init(width = 340, height = 340, settings = null) {
       super._init({
         style_class: "lyrics-widget",
-
         reactive: false,
         can_focus: false,
         width,
@@ -40,7 +57,10 @@ export const LyricsWidget = GObject.registerClass(
 
       this._width = width;
       this._height = height;
+      this._settings = settings;
+      this._widthChangedId = 0;
 
+      // Canvas
       this._canvas = new St.DrawingArea({
         style: "padding: 0; margin: 0;",
         reactive: false,
@@ -50,15 +70,14 @@ export const LyricsWidget = GObject.registerClass(
         width,
         height,
       });
-
       this._canvas.connectObject(
         "repaint",
         (_area) => this._onRepaint(_area),
         this,
       );
-
       this.add_child(this._canvas);
 
+      //  Transparent dismiss button
       this._dismissBtn = new St.Button({
         style: "background: transparent; border: none; padding: 0;",
         reactive: true,
@@ -69,13 +88,11 @@ export const LyricsWidget = GObject.registerClass(
         width,
         height,
       });
-
       this._dismissBtn.connectObject(
         "clicked",
         () => this.emit("dismiss"),
         this,
       );
-
       this.add_child(this._dismissBtn);
 
       //  Lyrics state
@@ -94,22 +111,16 @@ export const LyricsWidget = GObject.registerClass(
       this._scrollStart = 0;
       this._scrollAnimating = false;
 
-      // GLib source id for the repaint ticker
-      this._tickId = 0;
+      this._tickId = 0; // GLib timeout source id
 
       this._state = "loading";
-
       this._palette = this._buildDefaultPalette();
 
-      // Per-instance font-size config that the caller may override via
+      // Font config
+      this._fontConfig = _metricsForWidth(width);
+      this._fontConfigOverride = {};
 
-      this._fontConfig = {
-        activeSize: 20,
-        neighborSize: 14,
-        inactiveSize: 12,
-        lineSpacing: 16,
-      };
-
+      //  Theme tracking
       const themeCtx = St.ThemeContext.get_for_stage(global.stage);
       themeCtx.connectObject("changed", () => this._onThemeChanged(), this);
 
@@ -127,7 +138,7 @@ export const LyricsWidget = GObject.registerClass(
           );
         }
       } catch (_e) {
-        // Schema unavailable — fall back to ThemeContext::changed only.
+        // Schema unavailable => fall back to ThemeContext::changed only
       }
 
       this.connectObject(
@@ -137,7 +148,63 @@ export const LyricsWidget = GObject.registerClass(
         },
         this,
       );
+
+      if (this._settings) {
+        this._widthChangedId = this._settings.connect(
+          "changed::popup-width",
+          () => this._onPopupWidthChanged(),
+        );
+      }
     }
+
+    //  Popup-width setting handler
+
+    _onPopupWidthChanged() {
+      if (!this._settings) return;
+      try {
+        const w = Math.max(280, this._settings.get_int("popup-width"));
+        this.setSize(w, w);
+      } catch (_e) {}
+    }
+
+    /**
+     * @param {number} width
+     * @param {number} height
+     */
+    setSize(width, height) {
+      if (this._width === width && this._height === height) return;
+
+      this._width = width;
+      this._height = height;
+
+      // Resize outer widget
+      this.set_width(width);
+      this.set_height(height);
+
+      // Resize canvas
+      this._canvas.set_width(width);
+      this._canvas.set_height(height);
+
+      // Resize dismiss button overlay
+      this._dismissBtn.set_width(width);
+      this._dismissBtn.set_height(height);
+
+      this._fontConfig = this._buildFontConfig(width);
+
+      this._invalidateGeometry();
+      this._canvas.queue_repaint();
+    }
+
+    /**
+     * Build a font-config object for the given width, then apply any per-key
+     * @param {number} w
+     */
+    _buildFontConfig(w) {
+      const base = _metricsForWidth(w);
+      return Object.assign(base, this._fontConfigOverride);
+    }
+
+    // Theme helpers
 
     _buildDefaultPalette() {
       return {
@@ -154,25 +221,20 @@ export const LyricsWidget = GObject.registerClass(
       try {
         fg = this.get_theme_node().get_foreground_color();
       } catch (_e) {
-        // ThemeNode not ready yet; keep current palette and retry later.
         return;
       }
 
-      // Clutter.Color components
       const r = fg.red / 255;
       const g = fg.green / 255;
       const b = fg.blue / 255;
-
       const isDark = this._isDarkMode();
 
-      // alpha slightly below 1 to avoid harsh pure-black text
       this._palette = {
         activeColor: { r, g, b, a: isDark ? 1.0 : 0.92 },
         neighborColor: { r, g, b, a: isDark ? 0.55 : 0.5 },
         inactiveColor: { r, g, b, a: isDark ? 0.22 : 0.2 },
       };
 
-      // Geometry is size-independent; only colors changed
       this._canvas.queue_repaint();
     }
 
@@ -182,10 +244,8 @@ export const LyricsWidget = GObject.registerClass(
         if (scheme === "prefer-dark") return true;
         if (scheme === "prefer-light") return false;
       }
-
       try {
         const fg = this.get_theme_node().get_foreground_color();
-
         const lum =
           (fg.red * 299 + fg.green * 587 + fg.blue * 114) / (255 * 1000);
         return lum > 0.5;
@@ -199,7 +259,6 @@ export const LyricsWidget = GObject.registerClass(
     }
 
     /**
-
      * @param {object} config
      * @param {number} [config.activeSize]
      * @param {number} [config.neighborSize]
@@ -208,14 +267,16 @@ export const LyricsWidget = GObject.registerClass(
      */
     updateAppearance(config) {
       if (config.activeSize !== undefined)
-        this._fontConfig.activeSize = config.activeSize;
+        this._fontConfigOverride.activeSize = config.activeSize;
       if (config.neighborSize !== undefined)
-        this._fontConfig.neighborSize = config.neighborSize;
+        this._fontConfigOverride.neighborSize = config.neighborSize;
       if (config.inactiveSize !== undefined)
-        this._fontConfig.inactiveSize = config.inactiveSize;
+        this._fontConfigOverride.inactiveSize = config.inactiveSize;
       if (config.spacing !== undefined)
-        this._fontConfig.lineSpacing = config.spacing;
+        this._fontConfigOverride.lineSpacing = config.spacing;
 
+      // Rebuild from current width with the new overrides
+      this._fontConfig = this._buildFontConfig(this._width);
       this._invalidateGeometry();
       this._canvas.queue_repaint();
     }
@@ -253,15 +314,14 @@ export const LyricsWidget = GObject.registerClass(
       this._scrollTo = 0;
       this._scrollAnimating = false;
       this._lineGeometries = [];
-      this._needsGeometryUpdate = true; // measure on first repaint
+      this._needsGeometryUpdate = true;
       this._canvas.queue_repaint();
     }
 
-    // Position sync
-
     /**
-     * Update the playback position.  Called from MediaControls every ~250 ms
-     * @param {number} timeInMs  current position in milliseconds
+     * Update the current playback position
+     * Called from MediaControls every ~250 ms
+     * @param {number} timeInMs
      */
     updatePosition(timeInMs) {
       if (this._state !== "lyrics") return;
@@ -282,10 +342,12 @@ export const LyricsWidget = GObject.registerClass(
       }
     }
 
-    // Aliases for backwards-compatibility with MediaControls call sites
+    // Backward-compat alias
     setPosition(timeInMs) {
       this.updatePosition(timeInMs);
     }
+
+    // Backward-compat alias
     clear() {
       this.showLoading();
     }
@@ -295,7 +357,6 @@ export const LyricsWidget = GObject.registerClass(
       this._totalHeight = 0;
     }
 
-    // Smooth-scroll ticker
     _startTick() {
       if (this._tickId) return;
       this._tickId = GLib.timeout_add(
@@ -330,13 +391,15 @@ export const LyricsWidget = GObject.registerClass(
       }
 
       const t = elapsedMs / SCROLL_EASING_MS;
-      const ease = 1 - Math.pow(1 - t, 3);
+      const ease = 1 - Math.pow(1 - t, 3); // ease-out cubic
       this._scrollOffset =
         this._scrollFrom + (this._scrollTo - this._scrollFrom) * ease;
 
       this._canvas.queue_repaint();
       return GLib.SOURCE_CONTINUE;
     }
+
+    // Cairo repaint
 
     _onRepaint(area) {
       const cr = area.get_context();
@@ -347,7 +410,7 @@ export const LyricsWidget = GObject.registerClass(
         return;
       }
 
-      // Clear background to transparent
+      // Clear to transparent
       cr.save();
       cr.setOperator(Cairo.Operator.CLEAR);
       cr.paint();
@@ -355,7 +418,7 @@ export const LyricsWidget = GObject.registerClass(
 
       const layout = PangoCairo.create_layout(cr);
       const { activeColor, neighborColor, inactiveColor } = this._palette;
-      const { activeSize, neighborSize, inactiveSize, lineSpacing } =
+      const { activeSize, neighborSize, inactiveSize, lineSpacing, paddingX } =
         this._fontConfig;
 
       if (this._state !== "lyrics") {
@@ -380,13 +443,13 @@ export const LyricsWidget = GObject.registerClass(
         return;
       }
 
-      // Lyrics state
-      const TEXT_WIDTH = width - PADDING_X * 2;
+      const TEXT_WIDTH = width - paddingX * 2;
 
-      if (
+      const needsBuild =
         this._needsGeometryUpdate ||
-        (this._lineGeometries.length === 0 && this._lyrics.length > 0)
-      ) {
+        (this._lineGeometries.length === 0 && this._lyrics.length > 0);
+
+      if (needsBuild) {
         this._needsGeometryUpdate = false;
 
         layout.set_width(TEXT_WIDTH * Pango.SCALE);
@@ -399,6 +462,7 @@ export const LyricsWidget = GObject.registerClass(
         for (let i = 0; i < this._lyrics.length; i++) {
           const active = i === this._activeIndex;
           const neighbor = Math.abs(i - this._activeIndex) === 1;
+
           let fontSize = inactiveSize;
           if (active) fontSize = activeSize;
           else if (neighbor) fontSize = neighborSize;
@@ -411,6 +475,7 @@ export const LyricsWidget = GObject.registerClass(
 
           const [, logical] = layout.get_extents();
           const lineH = logical.height / Pango.SCALE;
+
           this._lineGeometries.push({
             y: cursorY,
             height: lineH,
@@ -447,18 +512,21 @@ export const LyricsWidget = GObject.registerClass(
 
       for (const geo of this._lineGeometries) {
         const y = geo.y - this._scrollOffset;
+
+        // Skip lines fully outside the visible area
         if (y + geo.height < -40 || y > height + 40) continue;
 
         layout.set_font_description(geo.font);
         layout.set_text(geo.text, -1);
 
-        let c;
-        if (geo.active) c = activeColor;
-        else if (geo.neighbor) c = neighborColor;
-        else c = inactiveColor;
+        const c = geo.active
+          ? activeColor
+          : geo.neighbor
+            ? neighborColor
+            : inactiveColor;
 
         cr.setSourceRGBA(c.r, c.g, c.b, c.a);
-        cr.moveTo(PADDING_X, y);
+        cr.moveTo(paddingX, y);
         PangoCairo.show_layout(cr, layout);
       }
 
@@ -467,6 +535,11 @@ export const LyricsWidget = GObject.registerClass(
 
     destroy() {
       this._stopTick();
+
+      if (this._widthChangedId && this._settings) {
+        this._settings.disconnect(this._widthChangedId);
+        this._widthChangedId = 0;
+      }
 
       const themeCtx = St.ThemeContext.get_for_stage(global.stage);
       themeCtx.disconnectObject(this);
