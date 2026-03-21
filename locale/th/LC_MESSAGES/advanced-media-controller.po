@@ -1,13 +1,14 @@
-# Thai translation for advanced-media-controller
-# Copyright (C) 2026 THE PACKAGE'S COPYRIGHT HOLDER
+# Thai translation for advanced-media-controller.
+# Copyright (C) 2026 Sanjai Shaarugesh
+# GPL-2.0-or-later
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: advanced-media-controller 5.2\n"
+"Project-Id-Version: advanced-media-controller 5.4\n"
 "Report-Msgid-Bugs-To: https://github.com/Sanjai-Shaarugesh/Advance-media-controller/issues\n"
-"POT-Creation-Date: 2026-03-12 20:33+0530\n"
-"PO-Revision-Date: 2026-03-13 00:00+0000\n"
-"Last-Translator: Claude <noreply@anthropic.com>\n"
+"POT-Creation-Date: 2026-03-19 18:00+0530\n"
+"PO-Revision-Date: 2026-03-19 18:00+0530\n"
+"Last-Translator: Sanjai Shaarugesh\n"
 "Language-Team: Thai\n"
 "Language: th\n"
 "MIME-Version: 1.0\n"
@@ -15,979 +16,647 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: prefs.js:91 prefs.js:2354 prefs.js:2387
 msgid "Advanced Media Controller"
 msgstr "ตัวควบคุมสื่อขั้นสูง"
 
-#: prefs.js:97
 msgid "General"
 msgstr "ทั่วไป"
 
-#: prefs.js:103
 msgid "Panel Placement"
-msgstr "การวางตำแหน่งแผง"
+msgstr "ตำแหน่งแผงควบคุม"
 
-#: prefs.js:104
 msgid "Where the indicator sits in the top bar"
-msgstr "ตำแหน่งของตัวบ่งชี้บนแถบด้านบน"
+msgstr "ตำแหน่งตัวบ่งชี้ในแถบด้านบน"
 
-#: prefs.js:108
 msgid "Panel Position"
-msgstr "ตำแหน่งแผง"
+msgstr "ตำแหน่งแผงควบคุม"
 
-#: prefs.js:110
 msgid "Left"
 msgstr "ซ้าย"
 
-#: prefs.js:110
 msgid "Center"
 msgstr "กลาง"
 
-#: prefs.js:110
 msgid "Right"
 msgstr "ขวา"
 
-#: prefs.js:125
 msgid "Panel Index"
-msgstr "ดัชนีแผง"
+msgstr "ดัชนีแผงควบคุม"
 
-#: prefs.js:126
 msgid "Position within the panel area (-1 = automatic)"
-msgstr "ตำแหน่งในพื้นที่แผง (-1 = อัตโนมัติ)"
+msgstr "ตำแหน่งในพื้นที่แผงควบคุม (-1 = อัตโนมัติ)"
 
-#: prefs.js:144
 msgid "Panel Label"
-msgstr "ป้ายกำกับแผง"
+msgstr "ป้ายกำกับแผงควบคุม"
 
-#: prefs.js:145
 msgid "Track name shown in the top bar"
 msgstr "ชื่อเพลงที่แสดงในแถบด้านบน"
 
-#: prefs.js:150
 msgid "Show Track Name"
 msgstr "แสดงชื่อเพลง"
 
-#: prefs.js:151
 msgid "Display the current track title in the panel"
-msgstr "แสดงชื่อเพลงปัจจุบันในแผง"
+msgstr "แสดงชื่อเพลงปัจจุบันในแผงควบคุม"
 
-#: prefs.js:162
 msgid "Show Artist Name"
 msgstr "แสดงชื่อศิลปิน"
 
-#: prefs.js:163
 msgid "Append the artist name to the track title"
 msgstr "เพิ่มชื่อศิลปินต่อท้ายชื่อเพลง"
 
-#: prefs.js:174
 msgid "Title / Artist Separator"
 msgstr "ตัวคั่นชื่อเพลง / ศิลปิน"
 
-#: prefs.js:184
 msgid "Panel Scrolling"
-msgstr "การเลื่อนแผง"
+msgstr "การเลื่อนแผงควบคุม"
 
-#: prefs.js:185
 msgid "Marquee scroll of the track label in the top bar"
-msgstr "การเลื่อนแบบมาร์คีของป้ายกำกับเพลงในแถบด้านบน"
+msgstr "การเลื่อนข้อความป้ายชื่อเพลงในแถบด้านบน"
 
-#: prefs.js:190
 msgid "Enable Panel Label Scrolling"
-msgstr "เปิดใช้งานการเลื่อนป้ายกำกับแผง"
+msgstr "เปิดใช้การเลื่อนป้ายกำกับแผงควบคุม"
 
-#: prefs.js:192
-msgid ""
-"Scroll the track/artist text one full loop then pause before repeating. When "
-"off, the text is truncated with an ellipsis."
-msgstr ""
-"เลื่อนข้อความเพลง/ศิลปินหนึ่งรอบแล้วหยุดชั่วคราวก่อนทำซ้ำ "
-"เมื่อปิด ข้อความจะถูกตัดด้วยจุดไข่ปลา"
+msgid "Scroll the track/artist text one full loop then pause before repeating. When off, the text is truncated with an ellipsis."
+msgstr "เลื่อนข้อความเพลง/ศิลปินหนึ่งรอบแล้วหยุดชั่วคราวก่อนทำซ้ำ เมื่อปิด จะตัดข้อความด้วยจุดไข่ปลา"
 
-#: prefs.js:205
 msgid "Panel Scroll Speed"
-msgstr "ความเร็วการเลื่อนแผง"
+msgstr "ความเร็วการเลื่อนแผงควบคุม"
 
-#: prefs.js:206 prefs.js:314 prefs.js:354
 msgid "1 = slowest, 10 = fastest"
 msgstr "1 = ช้าที่สุด, 10 = เร็วที่สุด"
 
-#: prefs.js:224
+msgid "Panel Label Width"
+msgstr "ความกว้างป้ายกำกับแผงควบคุม"
+
+msgid "Visible pixel width of the track label in the top bar (60 – 400 px)"
+msgstr "ความกว้างพิกเซลที่มองเห็นของป้ายชื่อเพลงในแถบด้านบน (60 – 400 px)"
+
 msgid "System Integration"
 msgstr "การรวมระบบ"
 
-#: prefs.js:226
 msgid "Controls how this extension interacts with other parts of GNOME Shell."
-msgstr "ควบคุมวิธีที่ส่วนขยายนี้โต้ตอบกับส่วนอื่นๆ ของ GNOME Shell"
+msgstr "ควบคุมวิธีที่ส่วนขยายนี้โต้ตอบกับส่วนอื่น ๆ ของ GNOME Shell"
 
-#: prefs.js:237
 msgid "Hide Default GNOME Media Player"
-msgstr "ซ่อนเครื่องเล่นสื่อเริ่มต้นของ GNOME"
+msgstr "ซ่อนเครื่องเล่นสื่อ GNOME เริ่มต้น"
 
-#: prefs.js:239
 msgid "Remove the built-in media controls from the system date/time menu"
 msgstr "ลบตัวควบคุมสื่อในตัวออกจากเมนูวันที่/เวลาของระบบ"
 
-#: prefs.js:260
-msgid ""
-"When ON, the extension hides the stock GNOME media controls that\n"
-"normally appear in the calendar / notification panel (the date-time\n"
-"menu). This prevents a duplicate 'now playing' widget.\n"
-"\n"
-"The built-in controls are fully restored the moment you:\n"
-"  • Turn this switch off, or\n"
-"  • Disable or uninstall this extension."
-msgstr ""
-"เมื่อเปิด ส่วนขยายจะซ่อนตัวควบคุมสื่อ GNOME ที่มักปรากฏใน\n"
-"แผงปฏิทิน/การแจ้งเตือน (เมนูวันที่-เวลา) ซึ่งช่วยป้องกันวิดเจ็ต\n"
-"'กำลังเล่นอยู่' ที่ซ้ำกัน\n"
-"\n"
-"ตัวควบคุมในตัวจะได้รับการกู้คืนทันทีเมื่อคุณ:\n"
-"  • ปิดสวิตช์นี้ หรือ\n"
-"  • ปิดใช้งานหรือถอนการติดตั้งส่วนขยายนี้"
-
-#: prefs.js:286
 msgid "Popup Player"
-msgstr "เครื่องเล่นป๊อปอัพ"
+msgstr "เครื่องเล่นป๊อปอัป"
 
-#: prefs.js:292
+msgid "Popup Size"
+msgstr "ขนาดป๊อปอัป"
+
+msgid "Width of the popup media player panel (height scales with album art)"
+msgstr "ความกว้างของแผงเครื่องเล่นป๊อปอัป (ความสูงปรับตามอาร์ตเวิร์กอัลบั้ม)"
+
+msgid "Popup Width"
+msgstr "ความกว้างป๊อปอัป"
+
+msgid "Width in pixels — album art, labels and lyrics panel all scale with this value (280 – 600 px)"
+msgstr "ความกว้างเป็นพิกเซล — อาร์ตเวิร์กอัลบั้ม ป้ายกำกับ และแผงเนื้อเพลงจะปรับตามค่านี้ (280 – 600 px)"
+
 msgid "Title Scrolling"
 msgstr "การเลื่อนชื่อเพลง"
 
-#: prefs.js:293
 msgid "Marquee behaviour for the track title inside the popup"
-msgstr "พฤติกรรมมาร์คีสำหรับชื่อเพลงในป๊อปอัพ"
+msgstr "พฤติกรรมการเลื่อนชื่อเพลงในป๊อปอัป"
 
-#: prefs.js:298
 msgid "Enable Title Scrolling"
-msgstr "เปิดใช้งานการเลื่อนชื่อเพลง"
+msgstr "เปิดใช้การเลื่อนชื่อเพลง"
 
-#: prefs.js:300
-msgid ""
-"Scroll long track titles from start to end, pause, then repeat. When off, "
-"the text is truncated with an ellipsis."
-msgstr ""
-"เลื่อนชื่อเพลงที่ยาวจากต้นจนจบ หยุดชั่วคราว แล้วทำซ้ำ "
-"เมื่อปิด ข้อความจะถูกตัดด้วยจุดไข่ปลา"
+msgid "Scroll long track titles from start to end, pause, then repeat. When off, the text is truncated with an ellipsis."
+msgstr "เลื่อนชื่อเพลงยาวจากต้นจนจบ หยุดชั่วคราว แล้วทำซ้ำ เมื่อปิด จะตัดข้อความด้วยจุดไข่ปลา"
 
-#: prefs.js:313
 msgid "Title Scroll Speed"
 msgstr "ความเร็วการเลื่อนชื่อเพลง"
 
-#: prefs.js:332
 msgid "Artist Scrolling"
 msgstr "การเลื่อนชื่อศิลปิน"
 
-#: prefs.js:333
 msgid "Marquee behaviour for the artist name inside the popup"
-msgstr "พฤติกรรมมาร์คีสำหรับชื่อศิลปินในป๊อปอัพ"
+msgstr "พฤติกรรมการเลื่อนชื่อศิลปินในป๊อปอัป"
 
-#: prefs.js:338
 msgid "Enable Artist Scrolling"
-msgstr "เปิดใช้งานการเลื่อนชื่อศิลปิน"
+msgstr "เปิดใช้การเลื่อนชื่อศิลปิน"
 
-#: prefs.js:340
-msgid ""
-"Scroll long artist names from start to end, pause, then repeat. When off, "
-"the text is truncated with an ellipsis."
-msgstr ""
-"เลื่อนชื่อศิลปินที่ยาวจากต้นจนจบ หยุดชั่วคราว แล้วทำซ้ำ "
-"เมื่อปิด ข้อความจะถูกตัดด้วยจุดไข่ปลา"
+msgid "Scroll long artist names from start to end, pause, then repeat. When off, the text is truncated with an ellipsis."
+msgstr "เลื่อนชื่อศิลปินยาวจากต้นจนจบ หยุดชั่วคราว แล้วทำซ้ำ เมื่อปิด จะตัดข้อความด้วยจุดไข่ปลา"
 
-#: prefs.js:353
 msgid "Artist Scroll Speed"
 msgstr "ความเร็วการเลื่อนชื่อศิลปิน"
 
-#: prefs.js:373
 msgid "Album Art"
-msgstr "ภาพปกอัลบั้ม"
+msgstr "อาร์ตเวิร์กอัลบั้ม"
 
-#: prefs.js:374
 msgid "Vinyl-record rotation animation"
 msgstr "แอนิเมชันการหมุนแผ่นเสียงไวนิล"
 
-#: prefs.js:379
 msgid "Enable Vinyl Record Rotation (Global Default)"
-msgstr "เปิดใช้งานการหมุนแผ่นเสียงไวนิล (ค่าเริ่มต้นทั่วโลก)"
+msgstr "เปิดใช้การหมุนแผ่นเสียงไวนิล (ค่าเริ่มต้นทั่วโลก)"
 
-#: prefs.js:381
-msgid ""
-"Global default when no per-app setting exists. Per-app overrides in the "
-"‘Vinyl Apps’ section take priority."
-msgstr "ค่าเริ่มต้นทั่วโลกเมื่อไม่มีการตั้งค่าเฉพาะแอพ การแทนที่เฉพาะแอพในส่วน 'แอพไวนิล' จะมีความสำคัญกว่า"
+msgid "Global default when no per-app setting exists. Per-app overrides in the 'Vinyl Apps' section take priority."
+msgstr "ค่าเริ่มต้นทั่วโลกเมื่อไม่มีการตั้งค่าต่อแอป การตั้งค่าต่อแอปในส่วน 'Vinyl Apps' จะมีความสำคัญสูงกว่า"
 
-#: prefs.js:395
 msgid "Rotation Speed (seconds per revolution)"
 msgstr "ความเร็วการหมุน (วินาทีต่อรอบ)"
 
-#: prefs.js:396
 msgid "5 = fastest, 60 = slowest. Recommended: 20–30"
 msgstr "5 = เร็วที่สุด, 60 = ช้าที่สุด แนะนำ: 20–30"
 
-#: prefs.js:414
 msgid "Vinyl Effect Details"
 msgstr "รายละเอียดเอฟเฟกต์ไวนิล"
 
-#: prefs.js:415
 msgid "How the animated vinyl record works"
-msgstr "วิธีที่แผ่นเสียงไวนิลแบบแอนิเมชันทำงาน"
+msgstr "วิธีการทำงานของแผ่นเสียงไวนิลแบบแอนิเมชัน"
 
-#: prefs.js:420
-msgid ""
-"- Album cover appears on a spinning vinyl disc\n"
-"- Black vinyl grooves are visible around the edges\n"
-"- Animated tonearm moves in and out with playback state\n"
-"- Rotation pauses smoothly when music pauses\n"
-"  (disc angle is preserved and resumes from the same position)\n"
-"- Disc resets to 0° only on a genuine Stop\n"
-"- Double-click album art to toggle vinyl for THAT player’s app only\n"
-"- Per-app settings override the global default above\n"
-"- All seen apps are stored; re-enable any time from Vinyl Apps page"
-msgstr ""
-"- ปกอัลบั้มปรากฏบนแผ่นไวนิลที่หมุน\n"
-"- ร่องไวนิลสีดำมองเห็นได้รอบขอบ\n"
-"- โทนอาร์มแบบแอนิเมชันเคลื่อนเข้าออกตามสถานะการเล่น\n"
-"- การหมุนหยุดชั่วคราวอย่างนุ่มนวลเมื่อดนตรีหยุดชั่วคราว\n"
-"  (มุมของแผ่นถูกเก็บรักษาและดำเนินต่อจากตำแหน่งเดิม)\n"
-"- แผ่นรีเซ็ตเป็น 0° เฉพาะเมื่อหยุดจริงๆ\n"
-"- ดับเบิลคลิกภาพปกอัลบั้มเพื่อสลับไวนิลสำหรับแอพของเครื่องเล่นนั้นเท่านั้น\n"
-"- การตั้งค่าเฉพาะแอพจะแทนที่ค่าเริ่มต้นทั่วโลกด้านบน\n"
-"- แอพทั้งหมดที่เคยเห็นจะถูกบันทึก สามารถเปิดใช้งานใหม่ได้ทุกเวลาจากหน้าแอพไวนิล"
-
-#: prefs.js:445
 msgid "Vinyl Apps"
-msgstr "แอพไวนิล"
+msgstr "แอปไวนิล"
 
-#: prefs.js:453
+msgid "Tonearm Angles"
+msgstr "มุมของแขนเข็ม"
+
+msgid "Control how far the animated tonearm swings when playing or at rest"
+msgstr "ควบคุมว่าแขนเข็มแบบแอนิเมชันแกว่งไปแค่ไหนเมื่อเล่นหรือพัก"
+
+msgid "Parked (resting) angle"
+msgstr "มุมพัก (จอด)"
+
+msgid "Degrees from vertical when music is paused or stopped. Higher moves the arm further from the disc (10 – 60°)"
+msgstr "องศาจากแนวตั้งเมื่อดนตรีหยุดชั่วคราวหรือหยุด ค่าสูงขึ้นจะเลื่อนแขนออกจากแผ่นดิสก์ (10 – 60°)"
+
+msgid "Playing angle"
+msgstr "มุมเล่น"
+
+msgid "Degrees from vertical when the stylus rests on the groove. Lower brings the arm closer to the disc centre (0 – 30°)"
+msgstr "องศาจากแนวตั้งเมื่อเข็มอยู่บนร่อง ค่าต่ำกว่าจะเลื่อนแขนเข้าใกล้ศูนย์กลางแผ่นดิสก์ (0 – 30°)"
+
+msgid "Tip: parked angle must be greater than playing angle"
+msgstr "เคล็ดลับ: มุมพักต้องมากกว่ามุมเล่น"
+
+msgid "E.g. parked = 25°, playing = 8°. If they are equal or reversed the arm will animate incorrectly."
+msgstr "เช่น จอด = 25°, เล่น = 8° ถ้าเท่ากันหรือสลับกัน แขนจะแอนิเมชันผิดพลาด"
+
+msgid "Album Art Click Thresholds"
+msgstr "เกณฑ์การคลิกอาร์ตเวิร์กอัลบั้ม"
+
+msgid "Set how many rapid clicks trigger each album art action"
+msgstr "ตั้งค่าจำนวนคลิกรวดเร็วที่ใช้เรียกแต่ละการกระทำบนอาร์ตเวิร์กอัลบั้ม"
+
+msgid "Clicks to toggle vinyl effect"
+msgstr "คลิกเพื่อสลับเอฟเฟกต์ไวนิล"
+
+msgid "Rapidly click the album art this many times to enable or disable the vinyl record style for the current app"
+msgstr "คลิกอาร์ตเวิร์กอัลบั้มอย่างรวดเร็วจำนวนครั้งนี้เพื่อเปิดหรือปิดสไตล์แผ่นเสียงไวนิลสำหรับแอปปัจจุบัน"
+
+msgid "Clicks to toggle lyrics view"
+msgstr "คลิกเพื่อสลับมุมมองเนื้อเพลง"
+
+msgid "Rapidly click the album art this many times to open or close the synced lyrics panel"
+msgstr "คลิกอาร์ตเวิร์กอัลบั้มอย่างรวดเร็วจำนวนครั้งนี้เพื่อเปิดหรือปิดแผงเนื้อเพลงซิงก์"
+
+msgid "Note: thresholds must be different"
+msgstr "หมายเหตุ: เกณฑ์ต้องแตกต่างกัน"
+
+msgid "If both thresholds are set to the same number the lyrics action takes priority. Use distinct values (e.g. 2 for vinyl, 3 for lyrics) to trigger both independently."
+msgstr "ถ้าเกณฑ์ทั้งสองเท่ากัน การกระทำเนื้อเพลงจะมีความสำคัญสูงกว่า ใช้ค่าที่แตกต่างกัน (เช่น 2 สำหรับไวนิล 3 สำหรับเนื้อเพลง) เพื่อเรียกทั้งสองแยกกัน"
+
 msgid "Player Filter"
 msgstr "ตัวกรองเครื่องเล่น"
 
-#: prefs.js:461
-msgid "Lyrics"
-msgstr "เนื้อเพลง"
-
-#: prefs.js:519 prefs.js:546
 msgid "Filter Mode"
 msgstr "โหมดตัวกรอง"
 
-#: prefs.js:521
-msgid ""
-"Choose whether the list below acts as a blacklist (block listed apps) or a "
-"whitelist (allow only listed apps). Set to Off to disable filtering entirely."
-msgstr ""
-"เลือกว่ารายการด้านล่างทำหน้าที่เป็นบัญชีดำ (บล็อกแอพที่ระบุ) หรือ "
-"บัญชีขาว (อนุญาตเฉพาะแอพที่ระบุ) ตั้งเป็นปิดเพื่อปิดใช้งานการกรองทั้งหมด"
+msgid "Choose whether the list below acts as a blacklist (block listed apps) or a whitelist (allow only listed apps). Set to Off to disable filtering entirely."
+msgstr "เลือกว่ารายการด้านล่างทำหน้าที่เป็นบัญชีดำ (บล็อกแอปที่ระบุ) หรือบัญชีขาว (อนุญาตเฉพาะแอปที่ระบุ) ตั้งเป็นปิดเพื่อปิดใช้การกรองทั้งหมด"
 
-#: prefs.js:532
 msgid "Off"
 msgstr "ปิด"
 
-#: prefs.js:533
 msgid "Blacklist"
 msgstr "บัญชีดำ"
 
-#: prefs.js:534
 msgid "Whitelist"
 msgstr "บัญชีขาว"
 
-#: prefs.js:540
 msgid "Show all media players — filtering is disabled"
-msgstr "แสดงเครื่องเล่นสื่อทั้งหมด — การกรองถูกปิดใช้งาน"
+msgstr "แสดงเครื่องเล่นสื่อทั้งหมด — การกรองปิดใช้งาน"
 
-#: prefs.js:541
 msgid "Hide only the players you add to the list below"
-msgstr "ซ่อนเฉพาะเครื่องเล่นที่คุณเพิ่มในรายการด้านล่าง"
+msgstr "ซ่อนเฉพาะเครื่องเล่นที่เพิ่มในรายการด้านล่าง"
 
-#: prefs.js:542
 msgid "Show only the players you add to the list below"
-msgstr "แสดงเฉพาะเครื่องเล่นที่คุณเพิ่มในรายการด้านล่าง"
+msgstr "แสดงเฉพาะเครื่องเล่นที่เพิ่มในรายการด้านล่าง"
 
-#: prefs.js:569
 msgid "Saved Players"
-msgstr "เครื่องเล่นที่บันทึก"
+msgstr "เครื่องเล่นที่บันทึกไว้"
 
-#: prefs.js:571
-msgid ""
-"Each saved player can be individually enabled or disabled in the filter "
-"without removing it. The toggle controls whether the filter rule is active "
-"for that app. Use the trash button to remove it from the list entirely."
-msgstr ""
-"เครื่องเล่นที่บันทึกแต่ละรายการสามารถเปิดหรือปิดใช้งานในตัวกรองแยกกันได้โดยไม่ต้องลบออก "
-"การสลับควบคุมว่ากฎตัวกรองทำงานอยู่สำหรับแอพนั้นหรือไม่ "
-"ใช้ปุ่มถังขยะเพื่อลบออกจากรายการทั้งหมด"
+msgid "Each saved player can be individually enabled or disabled in the filter without removing it. The toggle controls whether the filter rule is active for that app. Use the trash button to remove it from the list entirely."
+msgstr "เครื่องเล่นที่บันทึกแต่ละตัวสามารถเปิดหรือปิดใช้ในตัวกรองได้โดยไม่ต้องลบออก สวิตช์ควบคุมว่ากฎตัวกรองเปิดใช้งานสำหรับแอปนั้นหรือไม่ ใช้ปุ่มถังขยะเพื่อลบออกจากรายการทั้งหมด"
 
-#: prefs.js:597
 msgid "No players saved yet"
 msgstr "ยังไม่มีเครื่องเล่นที่บันทึกไว้"
 
-#: prefs.js:599
-msgid ""
-"Detect running players below and click “Add to Filter” to add them here."
-msgstr ""
-"ตรวจจับเครื่องเล่นที่กำลังทำงานด้านล่างและคลิก \"เพิ่มในตัวกรอง\" เพื่อเพิ่มที่นี่"
+msgid "Detect running players below and click “Add to Filter” to add them here."
+msgstr "ตรวจจับเครื่องเล่นที่ทำงานอยู่ด้านล่างและคลิก “Add to Filter” เพื่อเพิ่มที่นี่"
 
-#: prefs.js:653
-#, javascript-format
 msgid "Filter rule active for “%s” — click to disable"
-msgstr "กฎตัวกรองทำงานอยู่สำหรับ \"%s\" — คลิกเพื่อปิดใช้งาน"
+msgstr "กฎตัวกรองเปิดใช้งานสำหรับ “%s” — คลิกเพื่อปิด"
 
-#: prefs.js:654
-#, javascript-format
 msgid "Filter rule disabled for “%s” — click to enable"
-msgstr "กฎตัวกรองถูกปิดใช้งานสำหรับ \"%s\" — คลิกเพื่อเปิดใช้งาน"
+msgstr "กฎตัวกรองปิดใช้งานสำหรับ “%s” — คลิกเพื่อเปิด"
 
-#: prefs.js:676
-#, javascript-format
 msgid "Remove “%s” from the filter list"
-msgstr "ลบ \"%s\" ออกจากรายการตัวกรอง"
+msgstr "ลบ “%s” ออกจากรายการตัวกรอง"
 
-#: prefs.js:709
 msgid "Detected Players"
 msgstr "เครื่องเล่นที่ตรวจพบ"
 
-#: prefs.js:711
-msgid ""
-"Active MPRIS players found on the session D-Bus. Click “Add to Filter” to "
-"save a player to the list above."
-msgstr ""
-"พบเครื่องเล่น MPRIS ที่ใช้งานอยู่บน session D-Bus "
-"คลิก \"เพิ่มในตัวกรอง\" เพื่อบันทึกเครื่องเล่นในรายการด้านบน"
+msgid "Active MPRIS players found on the session D-Bus. Click “Add to Filter” to save a player to the list above."
+msgstr "เครื่องเล่น MPRIS ที่ใช้งานอยู่บน session D-Bus คลิก “Add to Filter” เพื่อบันทึกเครื่องเล่นในรายการด้านบน"
 
-#: prefs.js:718
 msgid "Scan for running players"
-msgstr "สแกนหาเครื่องเล่นที่กำลังทำงาน"
+msgstr "สแกนหาเครื่องเล่นที่ทำงานอยู่"
 
-#: prefs.js:719
 msgid "Detects players currently broadcasting on MPRIS"
 msgstr "ตรวจจับเครื่องเล่นที่กำลังออกอากาศบน MPRIS"
 
-#: prefs.js:725
 msgid "Refresh the detected player list"
 msgstr "รีเฟรชรายการเครื่องเล่นที่ตรวจพบ"
 
-#: prefs.js:753
 msgid "Could not connect to the session bus"
 msgstr "ไม่สามารถเชื่อมต่อกับ session bus ได้"
 
-#: prefs.js:783 prefs.js:1375
 msgid "No active players detected"
 msgstr "ไม่พบเครื่องเล่นที่ใช้งานอยู่"
 
-#: prefs.js:784 prefs.js:1376
 msgid "Open a music app and click Refresh"
-msgstr "เปิดแอพเพลงและคลิกรีเฟรช"
+msgstr "เปิดแอปเพลงและคลิกรีเฟรช"
 
-#: prefs.js:842 prefs.js:861 prefs.js:871
 msgid "Saved ✓"
 msgstr "บันทึกแล้ว ✓"
 
-#: prefs.js:843 prefs.js:871
 msgid "Add to Filter"
 msgstr "เพิ่มในตัวกรอง"
 
-#: prefs.js:849 prefs.js:864
-#, javascript-format
 msgid "“%s” is already in the filter list"
-msgstr "\"%s\" อยู่ในรายการตัวกรองแล้ว"
+msgstr "“%s” อยู่ในรายการตัวกรองแล้ว"
 
-#: prefs.js:850
-#, javascript-format
 msgid "Add “%s” to the filter list (enabled by default)"
-msgstr "เพิ่ม \"%s\" ในรายการตัวกรอง (เปิดใช้งานตามค่าเริ่มต้น)"
+msgstr "เพิ่ม “%s” ในรายการตัวกรอง (เปิดใช้งานโดยค่าเริ่มต้น)"
 
-#: prefs.js:899
+msgid "Lyrics"
+msgstr "เนื้อเพลง"
+
 msgid "Synced Lyrics"
-msgstr "เนื้อเพลงซิงค์"
+msgstr "เนื้อเพลงซิงก์"
 
-#: prefs.js:901
 msgid "Time-synced lyrics fetched from lrclib.net — free, no account needed"
-msgstr "เนื้อเพลงซิงค์เวลาจาก lrclib.net — ฟรี ไม่ต้องมีบัญชี"
+msgstr "เนื้อเพลงซิงก์เวลาจาก lrclib.net — ฟรี ไม่ต้องสมัครสมาชิก"
 
-#: prefs.js:907
 msgid "Enable Synced Lyrics"
-msgstr "เปิดใช้งานเนื้อเพลงซิงค์"
+msgstr "เปิดใช้เนื้อเพลงซิงก์"
 
-#: prefs.js:909
-msgid ""
-"Fetch and display scrolling lyrics that follow the current playback position"
-msgstr "ดึงและแสดงเนื้อเพลงแบบเลื่อนที่ติดตามตำแหน่งการเล่นปัจจุบัน"
+msgid "Fetch and display scrolling lyrics that follow the current playback position"
+msgstr "ดึงและแสดงเนื้อเพลงที่เลื่อนตามตำแหน่งการเล่นปัจจุบัน"
 
-#: prefs.js:926
 msgid "How to Use Lyrics"
 msgstr "วิธีใช้เนื้อเพลง"
 
-#: prefs.js:928
-msgid ""
-"Lyrics are tied to each player tab independently — Spotify and Firefox each "
-"remember their own setting"
-msgstr ""
-"เนื้อเพลงเชื่อมโยงกับแต่ละแท็บเครื่องเล่นอย่างอิสระ — "
-"Spotify และ Firefox แต่ละอันจะจำการตั้งค่าของตัวเอง"
+msgid "Lyrics are tied to each player tab independently — Spotify and Firefox each remember their own setting"
+msgstr "เนื้อเพลงผูกกับแต่ละแท็บเครื่องเล่นแยกกัน — Spotify และ Firefox ต่างจำการตั้งค่าของตัวเอง"
 
-#: prefs.js:936
 msgid "Start playing a song"
 msgstr "เริ่มเล่นเพลง"
 
-#: prefs.js:938
-msgid ""
-"Open any media player or browser tab (Spotify, YouTube Music, VLC, "
-"Rhythmbox…) and play a track so it appears in the panel."
-msgstr ""
-"เปิดเครื่องเล่นสื่อหรือแท็บเบราว์เซอร์ใดก็ได้ (Spotify, YouTube Music, VLC, "
-"Rhythmbox…) และเล่นเพลงเพื่อให้ปรากฏในแผง"
+msgid "Open any media player or browser tab (Spotify, YouTube Music, VLC, Rhythmbox…) and play a track so it appears in the panel."
+msgstr "เปิดเครื่องเล่นสื่อหรือแท็บเบราว์เซอร์ใดก็ได้ (Spotify, YouTube Music, VLC, Rhythmbox…) แล้วเล่นเพลงเพื่อให้แสดงในแผง"
 
-#: prefs.js:943
 msgid "Open the popup player"
-msgstr "เปิดเครื่องเล่นป๊อปอัพ"
+msgstr "เปิดเครื่องเล่นป๊อปอัป"
 
-#: prefs.js:945
-msgid ""
-"Click the media controller icon in the top panel to open the popup. You’ll "
-"see the album art, track title, and playback controls."
-msgstr ""
-"คลิกไอคอนตัวควบคุมสื่อในแผงด้านบนเพื่อเปิดป๊อปอัพ "
-"คุณจะเห็นภาพปกอัลบั้ม ชื่อเพลง และตัวควบคุมการเล่น"
+msgid "Click the media controller icon in the top panel to open the popup. You’ll see the album art, track title, and playback controls."
+msgstr "คลิกไอคอนตัวควบคุมสื่อในแผงด้านบนเพื่อเปิดป๊อปอัป คุณจะเห็นอาร์ตเวิร์กอัลบั้ม ชื่อเพลง และตัวควบคุมการเล่น"
 
-#: prefs.js:950
-msgid "Triple-click the album art to show lyrics"
-msgstr "คลิกภาพปกอัลบั้มสามครั้งเพื่อแสดงเนื้อเพลง"
+msgid "Click the album art %s to show lyrics"
+msgstr "คลิกอาร์ตเวิร์กอัลบั้ม %s เพื่อแสดงเนื้อเพลง"
 
-#: prefs.js:952
-msgid ""
-"Click the album art three times in quick succession. The cover image will be "
-"replaced by the lyrics panel, which scrolls automatically in time with the "
-"music."
-msgstr ""
-"คลิกภาพปกอัลบั้มสามครั้งอย่างรวดเร็ว ภาพปกจะถูกแทนที่ด้วยแผงเนื้อเพลง "
-"ซึ่งเลื่อนอัตโนมัติตามจังหวะดนตรี"
+msgid "Click the album art in quick succession. The cover image will be replaced by the lyrics panel, which scrolls automatically in time with the music."
+msgstr "คลิกอาร์ตเวิร์กอัลบั้มอย่างรวดเร็วต่อเนื่องกัน รูปปกจะถูกแทนที่ด้วยแผงเนื้อเพลงที่เลื่อนตามจังหวะเพลงโดยอัตโนมัติ"
 
-#: prefs.js:957
 msgid "Single-click the lyrics panel to go back"
-msgstr "คลิกแผงเนื้อเพลงหนึ่งครั้งเพื่อกลับ"
+msgstr "คลิกครั้งเดียวที่แผงเนื้อเพลงเพื่อกลับ"
 
-#: prefs.js:959
-msgid ""
-"Tap anywhere on the lyrics panel once to dismiss it and return to the album "
-"art — vinyl or normal cover, whichever that app uses."
-msgstr ""
-"แตะที่ใดก็ได้บนแผงเนื้อเพลงหนึ่งครั้งเพื่อปิดและกลับไปยังภาพปกอัลบั้ม "
-"— ไวนิลหรือปกปกติ แล้วแต่ว่าแอพนั้นใช้อะไร"
+msgid "Tap anywhere on the lyrics panel once to dismiss it and return to the album art — vinyl or normal cover, whichever that app uses."
+msgstr "แตะที่ใดก็ได้บนแผงเนื้อเพลงครั้งเดียวเพื่อปิดและกลับไปยังอาร์ตเวิร์กอัลบั้ม ไม่ว่าจะเป็นไวนิลหรือปกปกติ"
 
-#: prefs.js:964
-msgid "Triple-click again to re-open"
-msgstr "คลิกสามครั้งอีกครั้งเพื่อเปิดใหม่"
+msgid "Click again to re-open"
+msgstr "คลิกอีกครั้งเพื่อเปิดใหม่"
 
-#: prefs.js:966
-msgid ""
-"You can toggle the lyrics panel as many times as you like. Each player tab "
-"remembers independently whether lyrics are open."
-msgstr ""
-"คุณสามารถสลับแผงเนื้อเพลงได้กี่ครั้งก็ได้ตามต้องการ "
-"แต่ละแท็บเครื่องเล่นจะจำอย่างอิสระว่าเนื้อเพลงเปิดอยู่หรือไม่"
+msgid "You can toggle the lyrics panel as many times as you like. Each player tab remembers independently whether lyrics are open."
+msgstr "คุณสามารถสลับแผงเนื้อเพลงได้หลายครั้งตามต้องการ แต่ละแท็บเครื่องเล่นจะจำสถานะแยกกัน"
 
-#: prefs.js:986
 msgid "Lyrics Behaviour"
 msgstr "พฤติกรรมเนื้อเพลง"
 
-#: prefs.js:987
 msgid "What happens behind the scenes"
 msgstr "สิ่งที่เกิดขึ้นเบื้องหลัง"
 
-#: prefs.js:992
 msgid "Lyrics details & edge cases"
-msgstr "รายละเอียดเนื้อเพลงและกรณีขอบเขต"
+msgstr "รายละเอียดเนื้อเพลงและกรณีพิเศษ"
 
-#: prefs.js:993
 msgid "What to expect when the lyrics panel is open"
 msgstr "สิ่งที่คาดหวังเมื่อแผงเนื้อเพลงเปิดอยู่"
 
-#: prefs.js:999
-msgid ""
-"Source\n"
-"  • Lyrics are fetched from lrclib.net — a free, open public database\n"
-"  • No account or API key is required; the request is made silently in the "
-"background\n"
-"\n"
-"Display\n"
-"  • The active lyric line is shown larger and centred in the panel\n"
-"  • The line above and below are shown at medium size; all others fade out\n"
-"  • The panel scrolls smoothly so the active line is always in view\n"
-"\n"
-"Track changes\n"
-"  • When a new song starts while the lyrics panel is open, the view clears\n"
-"    and new lyrics are fetched automatically\n"
-"  • If no lyrics are found, a “No lyrics found” message is shown\n"
-"\n"
-"Multiple players\n"
-"  • Each player tab (Spotify, YouTube, VLC…) has its own independent\n"
-"    lyrics toggle — opening lyrics for one player does not affect any other\n"
-"  • Switching tabs restores the correct view (lyrics or album art) for\n"
-"    the player you switch to\n"
-"\n"
-"Seeking\n"
-"  • When you seek forward or backward, the highlighted line jumps\n"
-"    instantly to the correct position"
-msgstr ""
-"แหล่งที่มา\n"
-"  • เนื้อเพลงถูกดึงมาจาก lrclib.net — ฐานข้อมูลสาธารณะที่เปิดและฟรี\n"
-"  • ไม่ต้องใช้บัญชีหรือ API key คำขอจะดำเนินการในเบื้องหลังอย่างเงียบๆ\n"
-"\n"
-"การแสดงผล\n"
-"  • บรรทัดเนื้อเพลงที่ใช้งานอยู่จะแสดงขนาดใหญ่กว่าและอยู่ตรงกลางในแผง\n"
-"  • บรรทัดด้านบนและด้านล่างแสดงในขนาดกลาง ส่วนที่เหลือจะจางหายไป\n"
-"  • แผงเลื่อนอย่างนุ่มนวลเพื่อให้บรรทัดที่ใช้งานอยู่มองเห็นได้เสมอ\n"
-"\n"
-"การเปลี่ยนเพลง\n"
-"  • เมื่อเพลงใหม่เริ่มต้นในขณะที่แผงเนื้อเพลงเปิดอยู่ มุมมองจะถูกล้าง\n"
-"    และเนื้อเพลงใหม่จะถูกดึงมาโดยอัตโนมัติ\n"
-"  • หากไม่พบเนื้อเพลง จะแสดงข้อความ \"ไม่พบเนื้อเพลง\"\n"
-"\n"
-"หลายเครื่องเล่น\n"
-"  • แต่ละแท็บเครื่องเล่น (Spotify, YouTube, VLC…) มีการสลับเนื้อเพลง\n"
-"    ที่เป็นอิสระของตัวเอง — การเปิดเนื้อเพลงสำหรับเครื่องเล่นหนึ่งไม่กระทบกับอื่นๆ\n"
-"  • การสลับแท็บจะกู้คืนมุมมองที่ถูกต้อง (เนื้อเพลงหรือภาพปกอัลบั้ม)\n"
-"    สำหรับเครื่องเล่นที่คุณสลับไป\n"
-"\n"
-"การค้นหา\n"
-"  • เมื่อคุณค้นหาไปข้างหน้าหรือข้างหลัง บรรทัดที่ไฮไลต์จะกระโดด\n"
-"    ไปยังตำแหน่งที่ถูกต้องทันที"
-
-#: prefs.js:1039
 msgid "Album Art Click Actions"
-msgstr "การกระทำเมื่อคลิกภาพปกอัลบั้ม"
+msgstr "การกระทำการคลิกอาร์ตเวิร์กอัลบั้ม"
 
-#: prefs.js:1041
 msgid "Summary of what each click pattern does on the album art cover"
-msgstr "สรุปสิ่งที่รูปแบบการคลิกแต่ละแบบทำกับภาพปกอัลบั้ม"
+msgstr "สรุปสิ่งที่รูปแบบการคลิกแต่ละแบบทำบนอาร์ตเวิร์กอัลบั้ม"
 
-#: prefs.js:1049
 msgid "Single click"
-msgstr "คลิกหนึ่งครั้ง"
+msgstr "คลิกครั้งเดียว"
 
-#: prefs.js:1051
-msgid ""
-"When lyrics are showing: closes the lyrics panel and returns to the album art"
-msgstr "เมื่อแสดงเนื้อเพลง: ปิดแผงเนื้อเพลงและกลับไปยังภาพปกอัลบั้ม"
+msgid "When lyrics are showing: closes the lyrics panel and returns to the album art"
+msgstr "เมื่อแสดงเนื้อเพลง: ปิดแผงเนื้อเพลงและกลับไปยังอาร์ตเวิร์กอัลบั้ม"
 
-#: prefs.js:1056
 msgid "Double click"
 msgstr "ดับเบิลคลิก"
 
-#: prefs.js:1058
-msgid ""
-"Toggles the spinning vinyl record effect for that specific app (remembered "
-"independently per app)"
-msgstr ""
-"สลับเอฟเฟกต์แผ่นเสียงไวนิลหมุนสำหรับแอพนั้นๆ "
-"(จำไว้อย่างอิสระต่อแอพ)"
-
-#: prefs.js:1063
 msgid "Triple click"
 msgstr "คลิกสามครั้ง"
 
-#: prefs.js:1065
-msgid ""
-"Toggles the synced lyrics panel for the current player tab (remembered "
-"independently per player)"
-msgstr ""
-"สลับแผงเนื้อเพลงซิงค์สำหรับแท็บเครื่องเล่นปัจจุบัน "
-"(จำไว้อย่างอิสระต่อเครื่องเล่น)"
+msgid "%s — toggle vinyl effect"
+msgstr "%s — สลับเอฟเฟกต์ไวนิล"
 
-#: prefs.js:1084
+msgid "Toggles the spinning vinyl record effect for that specific app (remembered independently per app)"
+msgstr "สลับเอฟเฟกต์การหมุนของแผ่นเสียงไวนิลสำหรับแอปนั้น (จำแยกกันต่อแอป)"
+
+msgid "%s — toggle lyrics"
+msgstr "%s — สลับเนื้อเพลง"
+
+msgid "Toggles the synced lyrics panel for the current player tab (remembered independently per player)"
+msgstr "สลับแผงเนื้อเพลงซิงก์สำหรับแท็บเครื่องเล่นปัจจุบัน (จำแยกกันต่อเครื่องเล่น)"
+
 msgid "Data Source"
 msgstr "แหล่งข้อมูล"
 
-#: prefs.js:1085
 msgid "Where lyrics come from"
 msgstr "เนื้อเพลงมาจากไหน"
 
-#: prefs.js:1090
 msgid "lrclib.net"
 msgstr "lrclib.net"
 
-#: prefs.js:1092
-msgid ""
-"Free, open-source time-synced lyrics database — no sign-up, no tracking, no "
-"ads"
-msgstr ""
-"ฐานข้อมูลเนื้อเพลงซิงค์เวลาแบบโอเพนซอร์สฟรี — ไม่ต้องสมัคร ไม่ติดตาม ไม่มีโฆษณา"
+msgid "Free, open-source time-synced lyrics database — no sign-up, no tracking, no ads"
+msgstr "ฐานข้อมูลเนื้อเพลงซิงก์เวลาแบบโอเพนซอร์สฟรี — ไม่ต้องสมัคร ไม่ติดตาม ไม่มีโฆษณา"
 
-#: prefs.js:1120
 msgid "Privacy note"
 msgstr "หมายเหตุความเป็นส่วนตัว"
 
-#: prefs.js:1122
-msgid ""
-"A request containing the track title, artist, album and duration is sent to "
-"lrclib.net when you open the lyrics panel. No personal data or user "
-"identifiers are included."
-msgstr ""
-"คำขอที่มีชื่อเพลง ศิลปิน อัลบั้ม และระยะเวลาจะถูกส่งไปยัง lrclib.net "
-"เมื่อคุณเปิดแผงเนื้อเพลง ไม่มีข้อมูลส่วนบุคคลหรือตัวระบุผู้ใช้รวมอยู่"
+msgid "A request containing the track title, artist, album and duration is sent to lrclib.net when you open the lyrics panel. No personal data or user identifiers are included."
+msgstr "คำขอที่มีชื่อเพลง ศิลปิน อัลบั้ม และระยะเวลาจะถูกส่งไปยัง lrclib.net เมื่อคุณเปิดแผงเนื้อเพลง ไม่มีข้อมูลส่วนตัวหรือตัวระบุผู้ใช้รวมอยู่"
 
-#: prefs.js:1140
 msgid "How to Enable Vinyl Style for an App"
-msgstr "วิธีเปิดใช้งานสไตล์ไวนิลสำหรับแอพ"
+msgstr "วิธีเปิดใช้สไตล์ไวนิลสำหรับแอป"
 
-#: prefs.js:1147
 msgid "Start playing music"
 msgstr "เริ่มเล่นดนตรี"
 
-#: prefs.js:1149
-msgid ""
-"Open any media player or browser web app (YouTube, Spotify Web, SoundCloud, "
-"etc.) and play a track so it appears as a media source."
-msgstr ""
-"เปิดเครื่องเล่นสื่อหรือเว็บแอพเบราว์เซอร์ใดก็ได้ (YouTube, Spotify Web, SoundCloud "
-"ฯลฯ) และเล่นเพลงเพื่อให้ปรากฏเป็นแหล่งสื่อ"
+msgid "Open any media player or browser web app (YouTube, Spotify Web, SoundCloud, etc.) and play a track so it appears as a media source."
+msgstr "เปิดเครื่องเล่นสื่อหรือเว็บแอปเบราว์เซอร์ใดก็ได้ (YouTube, Spotify Web, SoundCloud ฯลฯ) แล้วเล่นเพลงเพื่อให้แสดงเป็นแหล่งสื่อ"
 
-#: prefs.js:1154
 msgid "Open the extension popup"
-msgstr "เปิดป๊อปอัพส่วนขยาย"
+msgstr "เปิดป๊อปอัปส่วนขยาย"
 
-#: prefs.js:1156
 msgid "Click the media controller in the top panel to open the popup player."
-msgstr "คลิกตัวควบคุมสื่อในแผงด้านบนเพื่อเปิดเครื่องเล่นป๊อปอัพ"
+msgstr "คลิกตัวควบคุมสื่อในแผงด้านบนเพื่อเปิดเครื่องเล่นป๊อปอัป"
 
-#: prefs.js:1161
 msgid "Double-click the album art"
-msgstr "ดับเบิลคลิกภาพปกอัลบั้ม"
+msgstr "ดับเบิลคลิกอาร์ตเวิร์กอัลบั้ม"
 
-#: prefs.js:1163
-msgid ""
-"Double-click the album art image in the popup to toggle the vinyl record "
-"style for that specific app or browser source. For browsers (Chrome, "
-"Firefox, etc.) each site (YouTube, YouTube Music, Spotify Web) is stored as "
-"its own separate entry."
-msgstr ""
-"ดับเบิลคลิกภาพปกอัลบั้มในป๊อปอัพเพื่อสลับสไตล์แผ่นเสียงไวนิล "
-"สำหรับแอพหรือแหล่งเบราว์เซอร์นั้นๆ สำหรับเบราว์เซอร์ (Chrome, Firefox ฯลฯ) "
-"แต่ละเว็บไซต์ (YouTube, YouTube Music, Spotify Web) จะถูกบันทึกเป็นรายการแยกกัน"
+msgid "Double-click the album art image in the popup to toggle the vinyl record style for that specific app or browser source. For browsers (Chrome, Firefox, etc.) each site (YouTube, YouTube Music, Spotify Web) is stored as its own separate entry."
+msgstr "ดับเบิลคลิกรูปอาร์ตเวิร์กอัลบั้มในป๊อปอัปเพื่อสลับสไตล์แผ่นเสียงไวนิลสำหรับแอปหรือแหล่งเบราว์เซอร์นั้น สำหรับเบราว์เซอร์ (Chrome, Firefox ฯลฯ) แต่ละเว็บไซต์จะถูกบันทึกแยกกัน"
 
-#: prefs.js:1169
 msgid "Manage saved instances below"
 msgstr "จัดการอินสแตนซ์ที่บันทึกด้านล่าง"
 
-#: prefs.js:1171
-msgid ""
-"All stored instances appear in the section below. Browser web-app sources "
-"appear as e.g. “YouTube Music (Chrome)” and are tracked independently. "
-"Toggle them on/off or remove them at any time."
-msgstr ""
-"อินสแตนซ์ที่บันทึกทั้งหมดปรากฏในส่วนด้านล่าง แหล่งเว็บแอพเบราว์เซอร์ "
-"ปรากฏเป็น เช่น \"YouTube Music (Chrome)\" และถูกติดตามอย่างอิสระ "
-"สลับเปิด/ปิดหรือลบออกได้ทุกเวลา"
+msgid "All stored instances appear in the section below. Browser web-app sources appear as e.g. “YouTube Music (Chrome)” and are tracked independently. Toggle them on/off or remove them at any time."
+msgstr "อินสแตนซ์ที่บันทึกทั้งหมดจะแสดงในส่วนด้านล่าง แหล่งเว็บแอปเบราว์เซอร์จะแสดงเป็น เช่น “YouTube Music (Chrome)” และถูกติดตามแยกกัน สลับเปิด/ปิดหรือลบได้ตลอดเวลา"
 
-#: prefs.js:1192
 msgid "Saved App Instances"
-msgstr "อินสแตนซ์แอพที่บันทึก"
+msgstr "อินสแตนซ์แอปที่บันทึก"
 
-#: prefs.js:1194
-msgid ""
-"Instances stored by double-clicking the album art in the popup. Icons are "
-"loaded from the system .desktop database. Toggle the vinyl effect on/off or "
-"remove any entry."
-msgstr ""
-"อินสแตนซ์ที่บันทึกโดยการดับเบิลคลิกภาพปกอัลบั้มในป๊อปอัพ "
-"ไอคอนถูกโหลดจากฐานข้อมูล .desktop ของระบบ "
-"สลับเอฟเฟกต์ไวนิลเปิด/ปิดหรือลบรายการใดก็ได้"
+msgid "Instances stored by double-clicking the album art in the popup. Icons are loaded from the system .desktop database. Toggle the vinyl effect on/off or remove any entry."
+msgstr "อินสแตนซ์ที่บันทึกโดยการดับเบิลคลิกอาร์ตเวิร์กอัลบั้มในป๊อปอัป ไอคอนโหลดจากฐานข้อมูล .desktop ของระบบ สลับเอฟเฟกต์ไวนิลเปิด/ปิดหรือลบรายการใดก็ได้"
 
-#: prefs.js:1208
 msgid "Add an App Manually"
-msgstr "เพิ่มแอพด้วยตนเอง"
+msgstr "เพิ่มแอปด้วยตนเอง"
 
-#: prefs.js:1210
-msgid ""
-"Search installed apps — including browsers — to manually add a vinyl entry. "
-"Useful for browser web apps whose instance hasn’t been captured yet via "
-"double-click."
-msgstr "ค้นหาแอพที่ติดตั้ง (รวมถึงเบราว์เซอร์) เพื่อเพิ่มรายการไวนิลด้วยตนเอง มีประโยชน์สำหรับเว็บแอพเบราว์เซอร์ที่อินสแตนซ์ยังไม่ถูกจับภาพผ่านการดับเบิลคลิก"
+msgid "Search installed apps — including browsers — to manually add a vinyl entry. Useful for browser web apps whose instance hasn’t been captured yet via double-click."
+msgstr "ค้นหาแอปที่ติดตั้ง รวมถึงเบราว์เซอร์ เพื่อเพิ่มรายการไวนิลด้วยตนเอง มีประโยชน์สำหรับเว็บแอปเบราว์เซอร์ที่ยังไม่ถูกจับภาพผ่านการดับเบิลคลิก"
 
-#: prefs.js:1218
-msgid ""
-"Browser sources tracked separately (YouTube, YouTube Music, Spotify Web)"
+msgid "Browser sources tracked separately (YouTube, YouTube Music, Spotify Web)"
 msgstr "แหล่งเบราว์เซอร์ถูกติดตามแยกกัน (YouTube, YouTube Music, Spotify Web)"
 
-#: prefs.js:1221
-msgid ""
-"For web apps, add the browser itself (e.g. Google Chrome, Firefox). Then "
-"double-click the album art when that browser is playing music — the "
-"extension will capture the exact instance automatically."
-msgstr ""
-"สำหรับเว็บแอพ ให้เพิ่มตัวเบราว์เซอร์เอง (เช่น Google Chrome, Firefox) "
-"จากนั้นดับเบิลคลิกภาพปกอัลบั้มเมื่อเบราว์เซอร์นั้นกำลังเล่นดนตรี — "
-"ส่วนขยายจะจับอินสแตนซ์ที่แน่นอนโดยอัตโนมัติ"
+msgid "For web apps, add the browser itself (e.g. Google Chrome, Firefox). Then double-click the album art when that browser is playing music — the extension will capture the exact instance automatically."
+msgstr "สำหรับเว็บแอป ให้เพิ่มเบราว์เซอร์เอง (เช่น Google Chrome, Firefox) จากนั้นดับเบิลคลิกอาร์ตเวิร์กอัลบั้มเมื่อเบราว์เซอร์นั้นเล่นดนตรี ส่วนขยายจะจับภาพอินสแตนซ์ที่แน่นอนโดยอัตโนมัติ"
 
-#: prefs.js:1237
 msgid "Search apps"
-msgstr "ค้นหาแอพ"
+msgstr "ค้นหาแอป"
 
-#: prefs.js:1241
 msgid "Type an app or browser name…"
-msgstr "พิมพ์ชื่อแอพหรือเบราว์เซอร์…"
+msgstr "พิมพ์ชื่อแอปหรือเบราว์เซอร์…"
 
-#: prefs.js:1310
 msgid "Running Players (Live Detection)"
-msgstr "เครื่องเล่นที่กำลังทำงาน (การตรวจจับสด)"
+msgstr "เครื่องเล่นที่ทำงานอยู่ (ตรวจจับแบบสด)"
 
-#: prefs.js:1312
-msgid ""
-"MPRIS players active right now. Click “Use This” to immediately add the "
-"player as a vinyl-enabled instance without waiting for a double-click."
-msgstr ""
-"เครื่องเล่น MPRIS ที่ใช้งานอยู่ตอนนี้ คลิก \"ใช้สิ่งนี้\" เพื่อเพิ่มเครื่องเล่น "
-"เป็นอินสแตนซ์ที่เปิดใช้งานไวนิลทันทีโดยไม่ต้องรอดับเบิลคลิก"
+msgid "MPRIS players active right now. Click “Use This” to immediately add the player as a vinyl-enabled instance without waiting for a double-click."
+msgstr "เครื่องเล่น MPRIS ที่ใช้งานอยู่ตอนนี้ คลิก “Use This” เพื่อเพิ่มเครื่องเล่นเป็นอินสแตนซ์ที่เปิดใช้ไวนิลทันทีโดยไม่ต้องรอการดับเบิลคลิก"
 
-#: prefs.js:1319
 msgid "Scan for active players"
 msgstr "สแกนหาเครื่องเล่นที่ใช้งานอยู่"
 
-#: prefs.js:1320
 msgid "Detects players currently broadcasting on the MPRIS D-Bus"
 msgstr "ตรวจจับเครื่องเล่นที่กำลังออกอากาศบน MPRIS D-Bus"
 
-#: prefs.js:1326
 msgid "Refresh"
 msgstr "รีเฟรช"
 
-#: prefs.js:1453
 msgid "Use This"
 msgstr "ใช้สิ่งนี้"
 
-#: prefs.js:1457
-#, javascript-format
 msgid "Add “%s” as a vinyl-enabled instance"
-msgstr "เพิ่ม \"%s\" เป็นอินสแตนซ์ที่เปิดใช้งานไวนิล"
+msgstr "เพิ่ม “%s” เป็นอินสแตนซ์ที่เปิดใช้ไวนิล"
 
-#: prefs.js:1501
 msgid "All running players are already saved"
-msgstr "เครื่องเล่นที่กำลังทำงานทั้งหมดถูกบันทึกแล้ว"
+msgstr "เครื่องเล่นที่ทำงานอยู่ทั้งหมดถูกบันทึกแล้ว"
 
-#: prefs.js:1502
 msgid "Manage them in the Saved App Instances section above"
-msgstr "จัดการในส่วนอินสแตนซ์แอพที่บันทึกด้านบน"
+msgstr "จัดการในส่วน Saved App Instances ด้านบน"
 
-#: prefs.js:1559
 msgid "No instances saved yet"
-msgstr "ยังไม่มีอินสแตนซ์ที่บันทึกไว้"
+msgstr "ยังไม่มีอินสแตนซ์ที่บันทึก"
 
-#: prefs.js:1561
-msgid ""
-"Double-click the album art in the popup while music is playing to save an "
-"instance here."
-msgstr ""
-"ดับเบิลคลิกภาพปกอัลบั้มในป๊อปอัพขณะที่ดนตรีกำลังเล่น "
-"เพื่อบันทึกอินสแตนซ์ที่นี่"
+msgid "Double-click the album art in the popup while music is playing to save an instance here."
+msgstr "ดับเบิลคลิกอาร์ตเวิร์กอัลบั้มในป๊อปอัปขณะที่เพลงกำลังเล่นเพื่อบันทึกอินสแตนซ์ที่นี่"
 
-#: prefs.js:1660
-#, javascript-format
 msgid "%s via %s"
 msgstr "%s ผ่าน %s"
 
-#: prefs.js:1669 prefs.js:2134
 msgid "renamed from"
 msgstr "เปลี่ยนชื่อจาก"
 
-#: prefs.js:1692
-#, javascript-format
 msgid "Rename “%s”"
-msgstr "เปลี่ยนชื่อ \"%s\""
+msgstr "เปลี่ยนชื่อ “%s”"
 
-#: prefs.js:1716
-#, javascript-format
 msgid "Remove %s from saved instances"
 msgstr "ลบ %s ออกจากอินสแตนซ์ที่บันทึก"
 
-#: prefs.js:1733
 msgid "Rename Instance"
 msgstr "เปลี่ยนชื่ออินสแตนซ์"
 
-#: prefs.js:1735
-#, javascript-format
-msgid ""
-"Enter a custom display name for \"%s\".\n"
-"Leave blank to reset to the default."
-msgstr ""
-"ป้อนชื่อแสดงผลที่กำหนดเองสำหรับ \"%s\"\n"
-"เว้นว่างเพื่อรีเซ็ตเป็นค่าเริ่มต้น"
+msgid "Enter a custom display name for \"%s\".\nLeave blank to reset to the default."
+msgstr "ป้อนชื่อที่แสดงแบบกำหนดเองสำหรับ \"%s\"\nเว้นว่างเพื่อรีเซ็ตเป็นค่าเริ่มต้น"
 
-#: prefs.js:1741
 msgid "Cancel"
 msgstr "ยกเลิก"
 
-#: prefs.js:1742
 msgid "Rename"
 msgstr "เปลี่ยนชื่อ"
 
-#: prefs.js:1760
 msgid "Display name"
 msgstr "ชื่อที่แสดง"
 
-#: prefs.js:2105
 msgid "Saved Instances"
 msgstr "อินสแตนซ์ที่บันทึก"
 
-#: prefs.js:2126
-#, javascript-format
 msgid "Browser: %s · Source: %s"
-msgstr "เบราว์เซอร์: %s · แหล่งที่มา: %s"
+msgstr "เบราว์เซอร์: %s · แหล่ง: %s"
 
-#: prefs.js:2177
 msgid "Other Apps"
-msgstr "แอพอื่นๆ"
+msgstr "แอปอื่น ๆ"
 
-#: prefs.js:2250
 msgid "No matching apps found"
-msgstr "ไม่พบแอพที่ตรงกัน"
+msgstr "ไม่พบแอปที่ตรงกัน"
 
-#: prefs.js:2349
 msgid "About"
 msgstr "เกี่ยวกับ"
 
-#: prefs.js:2356
 msgid "Beautiful and modern media controls with multi-instance support"
 msgstr "ตัวควบคุมสื่อที่สวยงามและทันสมัยพร้อมรองรับหลายอินสแตนซ์"
 
-#: prefs.js:2394
-msgid "Version 5.2"
-msgstr "เวอร์ชัน 5.2"
+msgid "Version 5.4"
+msgstr "เวอร์ชัน 5.4"
 
-#: prefs.js:2401
 msgid "Modern media controls with native GNOME design"
 msgstr "ตัวควบคุมสื่อทันสมัยพร้อมการออกแบบ GNOME ดั้งเดิม"
 
-#: prefs.js:2415
 msgid "Extension Links"
-msgstr "ลิงค์ส่วนขยาย"
+msgstr "ลิงก์ส่วนขยาย"
 
-#: prefs.js:2416 prefs.js:2421
 msgid "Source code, issues, and contributions"
 msgstr "ซอร์สโค้ด ปัญหา และการมีส่วนร่วม"
 
-#: prefs.js:2420
 msgid "View on GitHub"
 msgstr "ดูบน GitHub"
 
-#: prefs.js:2447
 msgid "☕ Buy Me a Coffee"
 msgstr "☕ ซื้อกาแฟให้ฉัน"
 
-#: prefs.js:2448
 msgid "Support development with a small donation"
 msgstr "สนับสนุนการพัฒนาด้วยการบริจาคเล็กน้อย"
 
-#: prefs.js:2452
 msgid "☕ Support by buying me a coffee – just scan the QR code!"
-msgstr "☕ สนับสนุนด้วยการซื้อกาแฟให้ฉัน — แค่สแกน QR code!"
+msgstr "☕ สนับสนุนโดยซื้อกาแฟให้ฉัน – แค่สแกน QR code!"
 
-#: prefs.js:2453
 msgid "Scan QR code to open Buy Me a Coffee"
 msgstr "สแกน QR code เพื่อเปิด Buy Me a Coffee"
 
-#: prefs.js:2456
 msgid "❤ GitHub Sponsors"
 msgstr "❤ ผู้สนับสนุน GitHub"
 
-#: prefs.js:2457
 msgid "Sponsor via GitHub — one-time or monthly"
 msgstr "สนับสนุนผ่าน GitHub — ครั้งเดียวหรือรายเดือน"
 
-#: prefs.js:2461
 msgid "❤ Support via GitHub Sponsors – just scan the QR code!"
-msgstr "❤ สนับสนุนผ่าน GitHub Sponsors — แค่สแกน QR code!"
+msgstr "❤ สนับสนุนผ่าน GitHub Sponsors – แค่สแกน QR code!"
 
-#: prefs.js:2462
 msgid "Scan QR code to open GitHub Sponsors"
 msgstr "สแกน QR code เพื่อเปิด GitHub Sponsors"
 
-#: prefs.js:2484
 msgid "Donation Platform"
-msgstr "แพลตฟอร์มการบริจาค"
+msgstr "แพลตฟอร์มบริจาค"
 
-#: prefs.js:2485
 msgid "Switch to see the QR code for each platform"
 msgstr "สลับเพื่อดู QR code ของแต่ละแพลตฟอร์ม"
 
-#: prefs.js:2523
 msgid "Donation Address"
 msgstr "ที่อยู่การบริจาค"
 
-#: prefs.js:2537
 msgid "Donation address"
 msgstr "ที่อยู่การบริจาค"
 
-#: prefs.js:2579
 msgid "Support Development"
 msgstr "สนับสนุนการพัฒนา"
 
-#: prefs.js:2580
 msgid "Choose your preferred donation platform"
-msgstr "เลือกแพลตฟอร์มการบริจาคที่คุณต้องการ"
+msgstr "เลือกแพลตฟอร์มบริจาคที่คุณต้องการ"
 
-#: prefs.js:2622
 msgid "License & Credits"
 msgstr "ใบอนุญาตและเครดิต"
 
-#: prefs.js:2623
 msgid "Open source software information"
 msgstr "ข้อมูลซอฟต์แวร์โอเพนซอร์ส"
 
-#: prefs.js:2626
 msgid "Open Source License"
 msgstr "ใบอนุญาตโอเพนซอร์ส"
 
-#: prefs.js:2627
 msgid "GPL-3.0 License - Free and open source software"
-msgstr "ใบอนุญาต GPL-3.0 - ซอฟต์แวร์ฟรีและโอเพนซอร์ส"
+msgstr "ใบอนุญาต GPL-3.0 - ซอฟต์แวร์โอเพนซอร์สฟรี"
 
-#: prefs.js:2634
 msgid "Media Data Sources"
 msgstr "แหล่งข้อมูลสื่อ"
 
-#: prefs.js:2636
 msgid "MPRIS D-Bus interface - Standard media player remote interfacing"
-msgstr "อินเทอร์เฟซ MPRIS D-Bus - อินเทอร์เฟซรีโมทเครื่องเล่นสื่อมาตรฐาน"
+msgstr "อินเทอร์เฟซ MPRIS D-Bus - อินเทอร์เฟซรีโมตเครื่องเล่นสื่อมาตรฐาน"
 
-#: prefs.js:2644
 msgid "Key Features"
 msgstr "คุณสมบัติหลัก"
 
-#: prefs.js:2646
-msgid ""
-"• Multi-instance browser support\n"
-"• Per-app rotating vinyl record album art\n"
-"• Animated tonearm\n"
-"• Smooth animations\n"
-"• Double-click to toggle vinyl per app\n"
-"• Triple-click album art to show synced lyrics\n"
-"• Single-click lyrics panel to return to album art\n"
-"• Lyrics synced to playback via lrclib.net\n"
-"• Per-player lyrics toggle (each tab independent)\n"
-"• All seen apps remembered — re-enable any time"
-msgstr ""
-"• รองรับเบราว์เซอร์หลายอินสแตนซ์\n"
-"• ภาพปกอัลบั้มแผ่นเสียงไวนิลหมุนตามแอพ\n"
-"• โทนอาร์มแบบแอนิเมชัน\n"
-"• แอนิเมชันนุ่มนวล\n"
-"• ดับเบิลคลิกเพื่อสลับไวนิลตามแอพ\n"
-"• คลิกสามครั้งที่ภาพปกเพื่อแสดงเนื้อเพลงซิงค์\n"
-"• คลิกหนึ่งครั้งที่แผงเนื้อเพลงเพื่อกลับไปภาพปก\n"
-"• เนื้อเพลงซิงค์กับการเล่นผ่าน lrclib.net\n"
-"• การสลับเนื้อเพลงตามเครื่องเล่น (แต่ละแท็บเป็นอิสระ)\n"
-"• จำแอพทั้งหมดที่เคยเห็น — เปิดใช้งานใหม่ได้ทุกเวลา"
-
-#: prefs.js:2710
 msgid "Copy to Clipboard"
 msgstr "คัดลอกไปยังคลิปบอร์ด"
 
-#: prefs.js:2712
-msgid ""
-"Unable to copy automatically. Select the address below and press Ctrl+C:"
-msgstr "ไม่สามารถคัดลอกอัตโนมัติ เลือกที่อยู่ด้านล่างและกด Ctrl+C:"
+msgid "Unable to copy automatically. Select the address below and press Ctrl+C:"
+msgstr "ไม่สามารถคัดลอกอัตโนมัติได้ เลือกที่อยู่ด้านล่างและกด Ctrl+C:"
 
-#: prefs.js:2715
 msgid "Close"
 msgstr "ปิด"
 
-#: utils/indicator.js:19
 msgid "Media Controls"
 msgstr "ตัวควบคุมสื่อ"
+
+msgid "once"
+msgstr "ครั้งเดียว"
+
+msgid "twice"
+msgstr "สองครั้ง"
+
+msgid "%d times"
+msgstr "%d ครั้ง"
+
+msgid "1 click"
+msgstr "1 คลิก"
+
+msgid "%d clicks"
+msgstr "%d คลิก"
+
+msgid "Report a Bug"
+msgstr "รายงานข้อบกพร่อง"
+
+msgid "Request a Feature"
+msgstr "ขอฟีเจอร์"
+
+msgid "Star on GitHub"
+msgstr "ให้ดาวบน GitHub"

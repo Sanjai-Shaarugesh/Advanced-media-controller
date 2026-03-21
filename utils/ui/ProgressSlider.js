@@ -31,7 +31,7 @@ export const ProgressSlider = GObject.registerClass(
       this._canSeek = true;
       this._isDestroyed = false;
 
-      // Per-player snapshot so switching tabs never causes a jump or flicker
+      // Per-player snapshot so switching tabs never causes a jump or flicker.
       this._playerCache = new Map();
 
       this._buildUI();

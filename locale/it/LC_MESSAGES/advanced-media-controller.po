@@ -1,4 +1,4 @@
-# Simplified Chinese translation for advanced-media-controller.
+# Italian translation for advanced-media-controller.
 # Copyright (C) 2026 Sanjai Shaarugesh
 # GPL-2.0-or-later
 #
@@ -9,122 +9,122 @@ msgstr ""
 "POT-Creation-Date: 2026-03-19 18:00+0530\n"
 "PO-Revision-Date: 2026-03-19 18:00+0530\n"
 "Last-Translator: Sanjai Shaarugesh\n"
-"Language-Team: Simplified Chinese\n"
-"Language: zh_CN\n"
+"Language-Team: Italian\n"
+"Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: prefs.js:91 prefs.js:2354 prefs.js:2387
 msgid "Advanced Media Controller"
-msgstr "高级媒体控制器"
+msgstr "Controller multimediale avanzato"
 
 #: prefs.js:97
 msgid "General"
-msgstr "常规"
+msgstr "Generale"
 
 #: prefs.js:103
 msgid "Panel Placement"
-msgstr "面板位置"
+msgstr "Posizione nel pannello"
 
 #: prefs.js:104
 msgid "Where the indicator sits in the top bar"
-msgstr "指示器在顶部栏的位置"
+msgstr "Dove si trova l'indicatore nella barra superiore"
 
 #: prefs.js:108
 msgid "Panel Position"
-msgstr "面板位置"
+msgstr "Posizione nel pannello"
 
 #: prefs.js:110
 msgid "Left"
-msgstr "左侧"
+msgstr "Sinistra"
 
 #: prefs.js:110
 msgid "Center"
-msgstr "中央"
+msgstr "Centro"
 
 #: prefs.js:110
 msgid "Right"
-msgstr "右侧"
+msgstr "Destra"
 
 #: prefs.js:125
 msgid "Panel Index"
-msgstr "面板索引"
+msgstr "Indice nel pannello"
 
 #: prefs.js:126
 msgid "Position within the panel area (-1 = automatic)"
-msgstr "面板区域内的位置（-1 = 自动）"
+msgstr "Posizione nell'area del pannello (-1 = automatico)"
 
 #: prefs.js:144
 msgid "Panel Label"
-msgstr "面板标签"
+msgstr "Etichetta pannello"
 
 #: prefs.js:145
 msgid "Track name shown in the top bar"
-msgstr "顶部栏中显示的曲目名称"
+msgstr "Nome traccia nella barra superiore"
 
 #: prefs.js:150
 msgid "Show Track Name"
-msgstr "显示曲目名称"
+msgstr "Mostra nome traccia"
 
 #: prefs.js:151
 msgid "Display the current track title in the panel"
-msgstr "在面板中显示当前曲目标题"
+msgstr "Mostra il titolo della traccia corrente nel pannello"
 
 #: prefs.js:162
 msgid "Show Artist Name"
-msgstr "显示艺术家名称"
+msgstr "Mostra nome artista"
 
 #: prefs.js:163
 msgid "Append the artist name to the track title"
-msgstr "在曲目标题中附加艺术家名称"
+msgstr "Aggiunge il nome dell'artista al titolo della traccia"
 
 #: prefs.js:174
 msgid "Title / Artist Separator"
-msgstr "标题 / 艺术家分隔符"
+msgstr "Separatore titolo / artista"
 
 #: prefs.js:184
 msgid "Panel Scrolling"
-msgstr "面板滚动"
+msgstr "Scorrimento pannello"
 
 #: prefs.js:185
 msgid "Marquee scroll of the track label in the top bar"
-msgstr "顶部栏中曲目标签的跑马灯滚动"
+msgstr "Scorrimento testo nella barra superiore"
 
 #: prefs.js:190
 msgid "Enable Panel Label Scrolling"
-msgstr "启用面板标签滚动"
+msgstr "Abilita scorrimento etichetta pannello"
 
 #: prefs.js:192
 msgid ""
 "Scroll the track/artist text one full loop then pause before repeating. When "
 "off, the text is truncated with an ellipsis."
-msgstr "将曲目/艺术家文字滚动一个完整循环后暂停，然后重复。关闭时以省略号截断。"
+msgstr "Scorre il testo un ciclo completo poi pausa. Disattivato: testo troncato con puntini."
 
 #: prefs.js:205
 msgid "Panel Scroll Speed"
-msgstr "面板滚动速度"
+msgstr "Velocità scorrimento pannello"
 
 #: prefs.js:206 prefs.js:314 prefs.js:354
 msgid "1 = slowest, 10 = fastest"
-msgstr "1 = 最慢，10 = 最快"
+msgstr "1 = più lento, 10 = più veloce"
 
 #: prefs.js:224
 msgid "System Integration"
-msgstr "系统集成"
+msgstr "Integrazione di sistema"
 
 #: prefs.js:226
 msgid "Controls how this extension interacts with other parts of GNOME Shell."
-msgstr "控制此扩展与 GNOME Shell 其他部分的交互方式。"
+msgstr "Controlla come questa estensione interagisce con le altre parti di GNOME Shell."
 
 #: prefs.js:237
 msgid "Hide Default GNOME Media Player"
-msgstr "隐藏默认 GNOME 媒体播放器"
+msgstr "Nascondi lettore multimediale GNOME predefinito"
 
 #: prefs.js:239
 msgid "Remove the built-in media controls from the system date/time menu"
-msgstr "从系统日期/时间菜单中删除内置媒体控件"
+msgstr "Rimuovi i controlli multimediali integrati dal menu data/ora"
 
 #: prefs.js:260
 msgid ""
@@ -139,63 +139,63 @@ msgstr ""
 
 #: prefs.js:286
 msgid "Popup Player"
-msgstr "弹出播放器"
+msgstr "Lettore popup"
 
 #: prefs.js:292
 msgid "Title Scrolling"
-msgstr "标题滚动"
+msgstr "Scorrimento titolo"
 
 #: prefs.js:293
 msgid "Marquee behaviour for the track title inside the popup"
-msgstr "弹出窗口中曲目标题的跑马灯行为"
+msgstr "Comportamento marquee per il titolo nel popup"
 
 #: prefs.js:298
 msgid "Enable Title Scrolling"
-msgstr "启用标题滚动"
+msgstr "Abilita scorrimento titolo"
 
 #: prefs.js:300
 msgid ""
 "Scroll long track titles from start to end, pause, then repeat. When off, "
 "the text is truncated with an ellipsis."
-msgstr "将长曲目标题从头到尾滚动，暂停后重复。关闭时以省略号截断。"
+msgstr "Scorre i titoli lunghi dall'inizio alla fine, pausa, poi ripete. Disattivato: testo troncato."
 
 #: prefs.js:313
 msgid "Title Scroll Speed"
-msgstr "标题滚动速度"
+msgstr "Velocità scorrimento titolo"
 
 #: prefs.js:332
 msgid "Artist Scrolling"
-msgstr "艺术家滚动"
+msgstr "Scorrimento artista"
 
 #: prefs.js:333
 msgid "Marquee behaviour for the artist name inside the popup"
-msgstr "弹出窗口中艺术家名称的跑马灯行为"
+msgstr "Comportamento marquee per il nome artista nel popup"
 
 #: prefs.js:338
 msgid "Enable Artist Scrolling"
-msgstr "启用艺术家滚动"
+msgstr "Abilita scorrimento artista"
 
 #: prefs.js:340
 msgid ""
 "Scroll long artist names from start to end, pause, then repeat. When off, "
 "the text is truncated with an ellipsis."
-msgstr "将长艺术家名称从头到尾滚动，暂停后重复。关闭时以省略号截断。"
+msgstr "Scorre i nomi artista lunghi, pausa, poi ripete. Disattivato: testo troncato."
 
 #: prefs.js:353
 msgid "Artist Scroll Speed"
-msgstr "艺术家滚动速度"
+msgstr "Velocità scorrimento artista"
 
 #: prefs.js:373
 msgid "Album Art"
-msgstr "专辑封面"
+msgstr "Copertina album"
 
 #: prefs.js:374
 msgid "Vinyl-record rotation animation"
-msgstr "黑胶唱片旋转动画"
+msgstr "Animazione rotazione disco in vinile"
 
 #: prefs.js:379
 msgid "Enable Vinyl Record Rotation (Global Default)"
-msgstr "启用黑胶唱片旋转（全局默认）"
+msgstr "Abilita rotazione disco vinile (predefinito globale)"
 
 #: prefs.js:381
 msgid ""
@@ -205,19 +205,19 @@ msgstr ""
 
 #: prefs.js:395
 msgid "Rotation Speed (seconds per revolution)"
-msgstr "旋转速度（每圈秒数）"
+msgstr "Velocità rotazione (secondi per giro)"
 
 #: prefs.js:396
 msgid "5 = fastest, 60 = slowest. Recommended: 20–30"
-msgstr "5 = 最快，60 = 最慢。推荐：20–30"
+msgstr "5 = più veloce, 60 = più lento. Consigliato: 20–30"
 
 #: prefs.js:414
 msgid "Vinyl Effect Details"
-msgstr "黑胶效果详情"
+msgstr "Dettagli effetto vinile"
 
 #: prefs.js:415
 msgid "How the animated vinyl record works"
-msgstr "动态黑胶唱片的工作原理"
+msgstr "Come funziona il disco in vinile animato"
 
 #: prefs.js:420
 msgid ""
@@ -234,19 +234,19 @@ msgstr ""
 
 #: prefs.js:445
 msgid "Vinyl Apps"
-msgstr "黑胶应用"
+msgstr "App vinile"
 
 #: prefs.js:453
 msgid "Player Filter"
-msgstr "播放器过滤器"
+msgstr "Filtro lettore"
 
 #: prefs.js:461
 msgid "Lyrics"
-msgstr "歌词"
+msgstr "Testi"
 
 #: prefs.js:519 prefs.js:546
 msgid "Filter Mode"
-msgstr "过滤模式"
+msgstr "Modalità filtro"
 
 #: prefs.js:521
 msgid ""
@@ -256,31 +256,31 @@ msgstr ""
 
 #: prefs.js:532
 msgid "Off"
-msgstr "关闭"
+msgstr "Disattivato"
 
 #: prefs.js:533
 msgid "Blacklist"
-msgstr "黑名单"
+msgstr "Lista nera"
 
 #: prefs.js:534
 msgid "Whitelist"
-msgstr "白名单"
+msgstr "Lista bianca"
 
 #: prefs.js:540
 msgid "Show all media players — filtering is disabled"
-msgstr "显示所有媒体播放器 — 过滤已禁用"
+msgstr "Mostra tutti i lettori — filtro disattivato"
 
 #: prefs.js:541
 msgid "Hide only the players you add to the list below"
-msgstr "仅隐藏添加到以下列表中的播放器"
+msgstr "Nascondi solo i lettori aggiunti alla lista"
 
 #: prefs.js:542
 msgid "Show only the players you add to the list below"
-msgstr "仅显示添加到以下列表中的播放器"
+msgstr "Mostra solo i lettori aggiunti alla lista"
 
 #: prefs.js:569
 msgid "Saved Players"
-msgstr "已保存的播放器"
+msgstr "Lettori salvati"
 
 #: prefs.js:571
 msgid ""
@@ -291,7 +291,7 @@ msgstr ""
 
 #: prefs.js:597
 msgid "No players saved yet"
-msgstr "尚未保存任何播放器"
+msgstr "Nessun lettore salvato"
 
 #: prefs.js:599
 msgid ""
@@ -301,21 +301,21 @@ msgstr ""
 #: prefs.js:653
 #, javascript-format
 msgid "Filter rule active for “%s” — click to disable"
-msgstr "「%s」的过滤规则已启用 — 点击停用"
+msgstr "Regola filtro attiva per “%s” — clicca per disattivare"
 
 #: prefs.js:654
 #, javascript-format
 msgid "Filter rule disabled for “%s” — click to enable"
-msgstr "「%s」的过滤规则已停用 — 点击启用"
+msgstr "Regola filtro disattivata per “%s” — clicca per attivare"
 
 #: prefs.js:676
 #, javascript-format
 msgid "Remove “%s” from the filter list"
-msgstr "从过滤器列表中移除「%s」"
+msgstr "Rimuovi “%s” dalla lista filtri"
 
 #: prefs.js:709
 msgid "Detected Players"
-msgstr "检测到的播放器"
+msgstr "Lettori rilevati"
 
 #: prefs.js:711
 msgid ""
@@ -325,66 +325,66 @@ msgstr ""
 
 #: prefs.js:718
 msgid "Scan for running players"
-msgstr "扫描正在运行的播放器"
+msgstr "Cerca lettori in esecuzione"
 
 #: prefs.js:719
 msgid "Detects players currently broadcasting on MPRIS"
-msgstr "检测当前通过 MPRIS 广播的播放器"
+msgstr "Rileva i lettori che trasmettono su MPRIS"
 
 #: prefs.js:725
 msgid "Refresh the detected player list"
-msgstr "刷新检测到的播放器列表"
+msgstr "Aggiorna l'elenco dei lettori rilevati"
 
 #: prefs.js:753
 msgid "Could not connect to the session bus"
-msgstr "无法连接到会话总线"
+msgstr "Impossibile connettersi al bus di sessione"
 
 #: prefs.js:783 prefs.js:1375
 msgid "No active players detected"
-msgstr "未检测到活动播放器"
+msgstr "Nessun lettore attivo rilevato"
 
 #: prefs.js:784 prefs.js:1376
 msgid "Open a music app and click Refresh"
-msgstr "打开音乐应用并点击刷新"
+msgstr "Apri un'app musicale e clicca Aggiorna"
 
 #: prefs.js:842 prefs.js:861 prefs.js:871
 msgid "Saved ✓"
-msgstr "已保存 ✓"
+msgstr "Salvato ✓"
 
 #: prefs.js:843 prefs.js:871
 msgid "Add to Filter"
-msgstr "添加到过滤器"
+msgstr "Aggiungi al filtro"
 
 #: prefs.js:849 prefs.js:864
 #, javascript-format
 msgid "“%s” is already in the filter list"
-msgstr "「%s」已在过滤器列表中"
+msgstr "“%s” è già nella lista filtri"
 
 #: prefs.js:850
 #, javascript-format
 msgid "Add “%s” to the filter list (enabled by default)"
-msgstr "将「%s」添加到过滤器列表（默认启用）"
+msgstr "Aggiungi “%s” alla lista filtri (abilitato di default)"
 
 #: prefs.js:899
 msgid "Synced Lyrics"
-msgstr "同步歌词"
+msgstr "Testi sincronizzati"
 
 #: prefs.js:901
 msgid "Time-synced lyrics fetched from lrclib.net — free, no account needed"
-msgstr "从 lrclib.net 获取的时间同步歌词 — 免费，无需账号"
+msgstr "Testi sincronizzati da lrclib.net — gratuito, senza account"
 
 #: prefs.js:907
 msgid "Enable Synced Lyrics"
-msgstr "启用同步歌词"
+msgstr "Abilita testi sincronizzati"
 
 #: prefs.js:909
 msgid ""
 "Fetch and display scrolling lyrics that follow the current playback position"
-msgstr "获取并显示跟随当前播放位置滚动的歌词"
+msgstr "Recupera e visualizza testi scorrevoli sincronizzati alla posizione di riproduzione"
 
 #: prefs.js:926
 msgid "How to Use Lyrics"
-msgstr "如何使用歌词"
+msgstr "Come usare i testi"
 
 #: prefs.js:928
 msgid ""
@@ -394,7 +394,7 @@ msgstr ""
 
 #: prefs.js:936
 msgid "Start playing a song"
-msgstr "开始播放歌曲"
+msgstr "Inizia a riprodurre un brano"
 
 #: prefs.js:938
 msgid ""
@@ -404,7 +404,7 @@ msgstr ""
 
 #: prefs.js:943
 msgid "Open the popup player"
-msgstr "打开弹出播放器"
+msgstr "Apri il lettore popup"
 
 #: prefs.js:945
 msgid ""
@@ -414,7 +414,7 @@ msgstr ""
 
 #: prefs.js:950
 msgid "Triple-click the album art to show lyrics"
-msgstr "三击专辑封面显示歌词"
+msgstr "Triplice clic sulla copertina per mostrare i testi"
 
 #: prefs.js:952
 msgid ""
@@ -425,7 +425,7 @@ msgstr ""
 
 #: prefs.js:957
 msgid "Single-click the lyrics panel to go back"
-msgstr "单击歌词面板返回"
+msgstr "Clicca una volta sul pannello testi per tornare indietro"
 
 #: prefs.js:959
 msgid ""
@@ -435,7 +435,7 @@ msgstr ""
 
 #: prefs.js:964
 msgid "Triple-click again to re-open"
-msgstr "再次三击重新打开"
+msgstr "Triplice clic di nuovo per riaprire"
 
 #: prefs.js:966
 msgid ""
@@ -445,19 +445,19 @@ msgstr ""
 
 #: prefs.js:986
 msgid "Lyrics Behaviour"
-msgstr "歌词行为"
+msgstr "Comportamento testi"
 
 #: prefs.js:987
 msgid "What happens behind the scenes"
-msgstr "后台发生的事情"
+msgstr "Cosa succede in background"
 
 #: prefs.js:992
 msgid "Lyrics details & edge cases"
-msgstr "歌词详情与边缘情况"
+msgstr "Dettagli testi e casi limite"
 
 #: prefs.js:993
 msgid "What to expect when the lyrics panel is open"
-msgstr "歌词面板打开时的预期效果"
+msgstr "Cosa aspettarsi quando il pannello testi è aperto"
 
 #: prefs.js:999
 msgid ""
@@ -489,24 +489,24 @@ msgstr ""
 
 #: prefs.js:1039
 msgid "Album Art Click Actions"
-msgstr "专辑封面点击操作"
+msgstr "Azioni clic sulla copertina"
 
 #: prefs.js:1041
 msgid "Summary of what each click pattern does on the album art cover"
-msgstr "各点击方式在专辑封面上的操作说明"
+msgstr "Riepilogo delle azioni di ogni modalità di clic sulla copertina"
 
 #: prefs.js:1049
 msgid "Single click"
-msgstr "单击"
+msgstr "Clic singolo"
 
 #: prefs.js:1051
 msgid ""
 "When lyrics are showing: closes the lyrics panel and returns to the album art"
-msgstr "显示歌词时：关闭歌词面板并返回专辑封面"
+msgstr "Con testi visibili: chiude il pannello e torna alla copertina"
 
 #: prefs.js:1056
 msgid "Double click"
-msgstr "双击"
+msgstr "Doppio clic"
 
 #: prefs.js:1058
 msgid ""
@@ -516,7 +516,7 @@ msgstr ""
 
 #: prefs.js:1063
 msgid "Triple click"
-msgstr "三击"
+msgstr "Triplo clic"
 
 #: prefs.js:1065
 msgid ""
@@ -526,11 +526,11 @@ msgstr ""
 
 #: prefs.js:1084
 msgid "Data Source"
-msgstr "数据来源"
+msgstr "Fonte dati"
 
 #: prefs.js:1085
 msgid "Where lyrics come from"
-msgstr "歌词来源"
+msgstr "Provenienza dei testi"
 
 #: prefs.js:1090
 msgid "lrclib.net"
@@ -540,11 +540,11 @@ msgstr "lrclib.net"
 msgid ""
 "Free, open-source time-synced lyrics database — no sign-up, no tracking, no "
 "ads"
-msgstr "免费开源时间同步歌词数据库 — 无需注册，无追踪，无广告"
+msgstr "Database di testi sincronizzati open source — senza registrazione, tracking o pubblicità"
 
 #: prefs.js:1120
 msgid "Privacy note"
-msgstr "隐私说明"
+msgstr "Nota sulla privacy"
 
 #: prefs.js:1122
 msgid ""
@@ -555,11 +555,11 @@ msgstr ""
 
 #: prefs.js:1140
 msgid "How to Enable Vinyl Style for an App"
-msgstr "如何为应用启用黑胶样式"
+msgstr "Come abilitare lo stile vinile per un'app"
 
 #: prefs.js:1147
 msgid "Start playing music"
-msgstr "开始播放音乐"
+msgstr "Inizia a riprodurre musica"
 
 #: prefs.js:1149
 msgid ""
@@ -569,15 +569,15 @@ msgstr ""
 
 #: prefs.js:1154
 msgid "Open the extension popup"
-msgstr "打开扩展弹出窗口"
+msgstr "Apri il popup dell'estensione"
 
 #: prefs.js:1156
 msgid "Click the media controller in the top panel to open the popup player."
-msgstr "点击顶部面板中的媒体控制器以打开弹出播放器。"
+msgstr "Clicca sul controller multimediale nel pannello superiore per aprire il lettore popup."
 
 #: prefs.js:1161
 msgid "Double-click the album art"
-msgstr "双击专辑封面"
+msgstr "Fai doppio clic sulla copertina"
 
 #: prefs.js:1163
 msgid ""
@@ -589,7 +589,7 @@ msgstr ""
 
 #: prefs.js:1169
 msgid "Manage saved instances below"
-msgstr "在下方管理已保存的实例"
+msgstr "Gestisci le istanze salvate di seguito"
 
 #: prefs.js:1171
 msgid ""
@@ -600,7 +600,7 @@ msgstr ""
 
 #: prefs.js:1192
 msgid "Saved App Instances"
-msgstr "已保存的应用实例"
+msgstr "Istanze app salvate"
 
 #: prefs.js:1194
 msgid ""
@@ -611,7 +611,7 @@ msgstr ""
 
 #: prefs.js:1208
 msgid "Add an App Manually"
-msgstr "手动添加应用"
+msgstr "Aggiungi un'app manualmente"
 
 #: prefs.js:1210
 msgid ""
@@ -634,15 +634,15 @@ msgstr ""
 
 #: prefs.js:1237
 msgid "Search apps"
-msgstr "搜索应用"
+msgstr "Cerca app"
 
 #: prefs.js:1241
 msgid "Type an app or browser name…"
-msgstr "输入应用或浏览器名称…"
+msgstr "Digita il nome di un'app o browser…"
 
 #: prefs.js:1310
 msgid "Running Players (Live Detection)"
-msgstr "正在运行的播放器（实时检测）"
+msgstr "Lettori in esecuzione (rilevamento live)"
 
 #: prefs.js:1312
 msgid ""
@@ -652,36 +652,36 @@ msgstr ""
 
 #: prefs.js:1319
 msgid "Scan for active players"
-msgstr "扫描活动播放器"
+msgstr "Cerca lettori attivi"
 
 #: prefs.js:1320
 msgid "Detects players currently broadcasting on the MPRIS D-Bus"
-msgstr "检测当前通过 MPRIS D-Bus 广播的播放器"
+msgstr "Rileva i lettori che trasmettono su MPRIS D-Bus"
 
 #: prefs.js:1326
 msgid "Refresh"
-msgstr "刷新"
+msgstr "Aggiorna"
 
 #: prefs.js:1453
 msgid "Use This"
-msgstr "使用此"
+msgstr "Usa questo"
 
 #: prefs.js:1457
 #, javascript-format
 msgid "Add “%s” as a vinyl-enabled instance"
-msgstr "将「%s」添加为已启用黑胶的实例"
+msgstr "Aggiungi “%s” come istanza con vinile abilitato"
 
 #: prefs.js:1501
 msgid "All running players are already saved"
-msgstr "所有正在运行的播放器均已保存"
+msgstr "Tutti i lettori in esecuzione sono già salvati"
 
 #: prefs.js:1502
 msgid "Manage them in the Saved App Instances section above"
-msgstr "在上方「已保存的应用实例」部分中管理"
+msgstr "Gestiscili nella sezione Istanze salvate sopra"
 
 #: prefs.js:1559
 msgid "No instances saved yet"
-msgstr "尚未保存任何实例"
+msgstr "Nessuna istanza salvata"
 
 #: prefs.js:1561
 msgid ""
@@ -692,25 +692,25 @@ msgstr ""
 #: prefs.js:1660
 #, javascript-format
 msgid "%s via %s"
-msgstr "%s（通过 %s）"
+msgstr "%s tramite %s"
 
 #: prefs.js:1669 prefs.js:2134
 msgid "renamed from"
-msgstr "从以下重命名"
+msgstr "rinominato da"
 
 #: prefs.js:1692
 #, javascript-format
 msgid "Rename “%s”"
-msgstr "重命名「%s」"
+msgstr "Rinomina “%s”"
 
 #: prefs.js:1716
 #, javascript-format
 msgid "Remove %s from saved instances"
-msgstr "从已保存的实例中删除 %s"
+msgstr "Rimuovi %s dalle istanze salvate"
 
 #: prefs.js:1733
 msgid "Rename Instance"
-msgstr "重命名实例"
+msgstr "Rinomina istanza"
 
 #: prefs.js:1735
 #, javascript-format
@@ -721,144 +721,144 @@ msgstr ""
 
 #: prefs.js:1741
 msgid "Cancel"
-msgstr "取消"
+msgstr "Annulla"
 
 #: prefs.js:1742
 msgid "Rename"
-msgstr "重命名"
+msgstr "Rinomina"
 
 #: prefs.js:1760
 msgid "Display name"
-msgstr "显示名称"
+msgstr "Nome visualizzato"
 
 #: prefs.js:2105
 msgid "Saved Instances"
-msgstr "已保存的实例"
+msgstr "Istanze salvate"
 
 #: prefs.js:2126
 #, javascript-format
 msgid "Browser: %s · Source: %s"
-msgstr "浏览器：%s · 来源：%s"
+msgstr "Browser: %s · Fonte: %s"
 
 #: prefs.js:2177
 msgid "Other Apps"
-msgstr "其他应用"
+msgstr "Altre app"
 
 #: prefs.js:2250
 msgid "No matching apps found"
-msgstr "未找到匹配的应用"
+msgstr "Nessuna app corrispondente trovata"
 
 #: prefs.js:2349
 msgid "About"
-msgstr "关于"
+msgstr "Informazioni"
 
 #: prefs.js:2356
 msgid "Beautiful and modern media controls with multi-instance support"
-msgstr "支持多实例的精美现代媒体控件"
+msgstr "Controlli multimediali moderni con supporto multi-istanza"
 
 #: prefs.js:2394
 msgid "Version 5.4"
-msgstr "版本 5.4"
+msgstr "Versione 5.4"
 
 #: prefs.js:2401
 msgid "Modern media controls with native GNOME design"
-msgstr "采用原生 GNOME 设计的现代媒体控件"
+msgstr "Controlli multimediali moderni con design GNOME nativo"
 
 #: prefs.js:2415
 msgid "Extension Links"
-msgstr "扩展链接"
+msgstr "Link estensione"
 
 #: prefs.js:2416 prefs.js:2421
 msgid "Source code, issues, and contributions"
-msgstr "源代码、问题和贡献"
+msgstr "Codice sorgente, segnalazioni e contributi"
 
 #: prefs.js:2420
 msgid "View on GitHub"
-msgstr "在 GitHub 上查看"
+msgstr "Visualizza su GitHub"
 
 #: prefs.js:2447
 msgid "☕ Buy Me a Coffee"
-msgstr "☕ 请我喝杯咖啡"
+msgstr "☕ Offrimi un caffè"
 
 #: prefs.js:2448
 msgid "Support development with a small donation"
-msgstr "通过小额捐款支持开发"
+msgstr "Supporta lo sviluppo con una piccola donazione"
 
 #: prefs.js:2452
 msgid "☕ Support by buying me a coffee – just scan the QR code!"
-msgstr "☕ 请我喝杯咖啡来支持 - 扫描二维码！"
+msgstr "☕ Supporta offrendomi un caffè – scansiona il QR code!"
 
 #: prefs.js:2453
 msgid "Scan QR code to open Buy Me a Coffee"
-msgstr "扫描二维码打开「请我喝咖啡」页面"
+msgstr "Scansiona il QR code per aprire Buy Me a Coffee"
 
 #: prefs.js:2456
 msgid "❤ GitHub Sponsors"
-msgstr "❤ GitHub 赞助者"
+msgstr "❤ Sponsor GitHub"
 
 #: prefs.js:2457
 msgid "Sponsor via GitHub — one-time or monthly"
-msgstr "通过 GitHub 赞助 — 一次性或每月"
+msgstr "Sponsor via GitHub — una tantum o mensile"
 
 #: prefs.js:2461
 msgid "❤ Support via GitHub Sponsors – just scan the QR code!"
-msgstr "❤ 通过 GitHub 赞助者支持 - 扫描二维码！"
+msgstr "❤ Supporta via GitHub Sponsors – scansiona il QR code!"
 
 #: prefs.js:2462
 msgid "Scan QR code to open GitHub Sponsors"
-msgstr "扫描二维码打开 GitHub 赞助者页面"
+msgstr "Scansiona il QR code per aprire GitHub Sponsors"
 
 #: prefs.js:2484
 msgid "Donation Platform"
-msgstr "捐款平台"
+msgstr "Piattaforma donazione"
 
 #: prefs.js:2485
 msgid "Switch to see the QR code for each platform"
-msgstr "切换以查看每个平台的二维码"
+msgstr "Cambia per vedere il QR code di ogni piattaforma"
 
 #: prefs.js:2523
 msgid "Donation Address"
-msgstr "捐款地址"
+msgstr "Indirizzo donazione"
 
 #: prefs.js:2537
 msgid "Donation address"
-msgstr "捐款地址"
+msgstr "Indirizzo donazione"
 
 #: prefs.js:2579
 msgid "Support Development"
-msgstr "支持开发"
+msgstr "Supporta lo sviluppo"
 
 #: prefs.js:2580
 msgid "Choose your preferred donation platform"
-msgstr "选择您首选的捐款平台"
+msgstr "Scegli la tua piattaforma di donazione preferita"
 
 #: prefs.js:2622
 msgid "License & Credits"
-msgstr "许可证与致谢"
+msgstr "Licenza e crediti"
 
 #: prefs.js:2623
 msgid "Open source software information"
-msgstr "开源软件信息"
+msgstr "Informazioni sul software open source"
 
 #: prefs.js:2626
 msgid "Open Source License"
-msgstr "开源许可证"
+msgstr "Licenza open source"
 
 #: prefs.js:2627
 msgid "GPL-3.0 License - Free and open source software"
-msgstr "GPL-3.0 许可证 - 自由开源软件"
+msgstr "Licenza GPL-3.0 - Software libero e open source"
 
 #: prefs.js:2634
 msgid "Media Data Sources"
-msgstr "媒体数据来源"
+msgstr "Fonti dati multimediali"
 
 #: prefs.js:2636
 msgid "MPRIS D-Bus interface - Standard media player remote interfacing"
-msgstr "MPRIS D-Bus 接口 - 标准媒体播放器远程接口"
+msgstr "Interfaccia MPRIS D-Bus - Interfaccia standard di controllo remoto del lettore"
 
 #: prefs.js:2644
 msgid "Key Features"
-msgstr "主要功能"
+msgstr "Funzionalità principali"
 
 #: prefs.js:2646
 msgid ""
@@ -876,140 +876,140 @@ msgstr ""
 
 #: prefs.js:2710
 msgid "Copy to Clipboard"
-msgstr "复制到剪贴板"
+msgstr "Copia negli appunti"
 
 #: prefs.js:2712
 msgid ""
 "Unable to copy automatically. Select the address below and press Ctrl+C:"
-msgstr "无法自动复制。请选择以下地址并按 Ctrl+C："
+msgstr "Impossibile copiare automaticamente. Seleziona l'indirizzo sotto e premi Ctrl+C:"
 
 #: prefs.js:2715
 msgid "Close"
-msgstr "关闭"
+msgstr "Chiudi"
 
 #: utils/indicator.js:19
 msgid "Media Controls"
-msgstr "媒体控件"
+msgstr "Controlli multimediali"
 
 #. ── New strings added in v5.3+ ─────────────────────────────────────────────
 
 #: ui/generalPage.js
 msgid "Panel Label Width"
-msgstr "面板标签宽度"
+msgstr "Larghezza etichetta pannello"
 
 #: ui/generalPage.js
 msgid "Visible pixel width of the track label in the top bar (60 – 400 px)"
-msgstr "顶部栏中曲目标签的可见像素宽度（60 – 400 像素）"
+msgstr "Larghezza in pixel dell'etichetta traccia nella barra superiore (60 – 400 px)"
 
 #: ui/popupPage.js
 msgid "Popup Size"
-msgstr "弹出窗口大小"
+msgstr "Dimensione popup"
 
 #: ui/popupPage.js
 msgid "Width of the popup media player panel (height scales with album art)"
-msgstr "弹出媒体播放器面板的宽度（高度随专辑封面缩放）"
+msgstr "Larghezza del pannello popup (l'altezza si adatta alla copertina)"
 
 #: ui/popupPage.js
 msgid "Popup Width"
-msgstr "弹出窗口宽度"
+msgstr "Larghezza popup"
 
 #: ui/popupPage.js
 msgid "Width in pixels — album art, labels and lyrics panel all scale with this value (280 – 600 px)"
-msgstr "像素宽度 — 专辑封面、标签和歌词面板均随此值缩放（280 – 600 像素）"
+msgstr "Larghezza in pixel — copertina, etichette e pannello testi si adattano a questo valore (280 – 600 px)"
 
 #: ui/popupPage.js
 msgid "Tonearm Angles"
-msgstr "唱臂角度"
+msgstr "Angoli del braccio"
 
 #: ui/popupPage.js
 msgid "Control how far the animated tonearm swings when playing or at rest"
-msgstr "控制动态唱臂在播放或静止时的摆动幅度"
+msgstr "Controlla quanto oscilla il braccio animato durante la riproduzione o a riposo"
 
 #: ui/popupPage.js
 msgid "Parked (resting) angle"
-msgstr "停驻（静止）角度"
+msgstr "Angolo a riposo"
 
 #: ui/popupPage.js
 msgid "Degrees from vertical when music is paused or stopped. Higher moves the arm further from the disc (10 – 60°)"
-msgstr "音乐暂停或停止时距垂直方向的角度。数值越大，唱臂离碟片越远（10 – 60°）"
+msgstr "Gradi dalla verticale quando la musica è in pausa o ferma. Maggiore allontana il braccio dal disco (10 – 60°)"
 
 #: ui/popupPage.js
 msgid "Playing angle"
-msgstr "播放角度"
+msgstr "Angolo di riproduzione"
 
 #: ui/popupPage.js
 msgid "Degrees from vertical when the stylus rests on the groove. Lower brings the arm closer to the disc centre (0 – 30°)"
-msgstr "唱针静置于沟槽时距垂直方向的角度。数值越小，唱臂越靠近碟片中心（0 – 30°）"
+msgstr "Gradi dalla verticale quando la puntina è nel solco. Minore avvicina il braccio al centro del disco (0 – 30°)"
 
 #: ui/popupPage.js
 msgid "Tip: parked angle must be greater than playing angle"
-msgstr "提示：停驻角度必须大于播放角度"
+msgstr "Suggerimento: l'angolo a riposo deve essere maggiore dell'angolo di riproduzione"
 
 #: ui/popupPage.js
 msgid "E.g. parked = 25°, playing = 8°. If they are equal or reversed the arm will animate incorrectly."
-msgstr "例如：停驻 = 25°，播放 = 8°。若相等或颠倒，唱臂动画将不正确。"
+msgstr "Es.: riposo = 25°, riproduzione = 8°. Se uguali o invertiti, il braccio si animerà in modo errato."
 
 #: ui/aboutPage.js
 msgid "Report a Bug"
-msgstr "报告错误"
+msgstr "Segnala un bug"
 
 #: ui/aboutPage.js
 msgid "Request a Feature"
-msgstr "请求新功能"
+msgstr "Richiedi una funzionalità"
 
 #: ui/aboutPage.js
 msgid "Star on GitHub"
-msgstr "在 GitHub 上加星"
+msgstr "Aggiungi stella su GitHub"
 
 #. ── New strings added in v5.4 (uploaded JS files) ─────────────────────────
 
 msgid "%d clicks"
-msgstr "%d 次点击"
+msgstr "%d clic"
 
 msgid "%d times"
-msgstr "%d 次"
+msgstr "%d volte"
 
 msgid "1 click"
-msgstr "1 次点击"
+msgstr "1 clic"
 
 msgid "once"
-msgstr "一次"
+msgstr "una volta"
 
 msgid "twice"
-msgstr "两次"
+msgstr "due volte"
 
 msgid "%s — toggle lyrics"
-msgstr "%s — 显示/隐藏歌词"
+msgstr "%s — mostra/nascondi testi"
 
 msgid "%s — toggle vinyl effect"
-msgstr "%s — 切换黑胶效果"
+msgstr "%s — attiva/disattiva effetto vinile"
 
 msgid "Click the album art %s to show lyrics"
-msgstr "点击专辑封面 %s 以显示歌词"
+msgstr "Cliccare %s sulla copertina per mostrare i testi"
 
 msgid "Click again to re-open"
-msgstr "再次点击重新打开"
+msgstr "Cliccare di nuovo per riaprire"
 
 msgid "Album Art Click Thresholds"
-msgstr "专辑封面点击阈值"
+msgstr "Soglie di clic sulla copertina"
 
 msgid "Set how many rapid clicks trigger each album art action"
-msgstr "设置触发每个专辑封面操作所需的快速点击次数"
+msgstr "Imposta quanti clic rapidi attivano ogni azione sulla copertina"
 
 msgid "Clicks to toggle vinyl effect"
-msgstr "切换黑胶效果的点击次数"
+msgstr "Clic per attivare/disattivare l'effetto vinile"
 
 msgid "Clicks to toggle lyrics view"
-msgstr "切换歌词视图的点击次数"
+msgstr "Clic per attivare/disattivare i testi"
 
 msgid "Note: thresholds must be different"
-msgstr "注意：阈值必须不同"
+msgstr "Nota: le soglie devono essere diverse"
 
 msgid "Rapidly click the album art this many times to enable or disable the vinyl record style for the current app"
-msgstr "快速点击专辑封面此次数以启用或禁用当前应用的黑胶唱片样式"
+msgstr "Cliccare rapidamente sulla copertina questo numero di volte per abilitare o disabilitare lo stile vinile per l'app corrente"
 
 msgid "Rapidly click the album art this many times to open or close the synced lyrics panel"
-msgstr "快速点击专辑封面此次数以打开或关闭同步歌词面板"
+msgstr "Cliccare rapidamente sulla copertina questo numero di volte per aprire o chiudere il pannello testi sincronizzati"
 
 msgid "If both thresholds are set to the same number the lyrics action takes priority. Use distinct values (e.g. 2 for vinyl, 3 for lyrics) to trigger both independently."
-msgstr "如果两个阈值相同，歌词操作优先。使用不同值（例如黑胶 2 次，歌词 3 次）以独立触发两者。"
+msgstr "Se entrambe le soglie sono uguali, l'azione testi ha la priorità. Usare valori distinti (es. 2 per vinile, 3 per testi) per attivarli indipendentemente."

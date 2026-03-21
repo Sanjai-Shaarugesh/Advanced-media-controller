@@ -1,6 +1,4 @@
 import GObject from "gi://GObject";
-import GLib from "gi://GLib";
-import * as Main from "resource:///org/gnome/shell/ui/main.js";
 import * as PanelMenu from "resource:///org/gnome/shell/ui/panelMenu.js";
 import * as PopupMenu from "resource:///org/gnome/shell/ui/popupMenu.js";
 import { MprisManager } from "./mpris/MprisManager.js";
@@ -45,7 +43,9 @@ export const MediaIndicator = GObject.registerClass(
             this._eventHandlers.setupWindowMonitoring();
           } else {
             this._controls.stopPositionUpdate();
-
+            // Notify controls the menu is closing so the lyrics sync timer
+            // is stopped cleanly (stopPositionUpdate alone no longer does
+            // this, to avoid killing the timer on every pause event).
             this._controls.onMenuClosed();
             this._eventHandlers.removeWindowMonitoring();
           }
@@ -56,23 +56,10 @@ export const MediaIndicator = GObject.registerClass(
         "changed",
         (_, key) => {
           this._state.safeExecute(() => {
-            if (key === "panel-position" || key === "panel-index") return;
-
-            // Hide / show the built-in GNOME media player section
-            if (key === "hide-default-player") {
-              this._applyHideDefaultPlayer();
-              return;
+            if (key !== "panel-position" && key !== "panel-index") {
+              this._uiUpdater.updateLabel();
+              this._uiUpdater.updateVisibility();
             }
-
-            // When filter settings change, reinitialize the manager so new
-            // inclusions/exclusions take effect immediately
-            if (key === "player-filter-mode" || key === "player-filter-list") {
-              this._reinitManager();
-              return;
-            }
-
-            this._uiUpdater.updateLabel();
-            this._uiUpdater.updateVisibility();
           });
         },
       );
@@ -81,103 +68,12 @@ export const MediaIndicator = GObject.registerClass(
 
       this.hide();
 
-      this._state.scheduleOperation(() => {
-        this._applyHideDefaultPlayer();
-      }, 0);
-
       this._state.scheduleOperation(() => this._initManager(), 200);
-    }
-
-    _applyHideDefaultPlayer() {
-      const hide = this._settings.get_boolean("hide-default-player");
-      try {
-        this._setDefaultPlayerVisible(!hide);
-      } catch (e) {
-        console.error("AMC: error applying hide-default-player:", e);
-      }
-    }
-
-    _setDefaultPlayerVisible(visible) {
-      const dateMenu = Main.panel.statusArea?.dateMenu;
-      if (!dateMenu) return;
-
-      try {
-        const ms = dateMenu._messageList?._mediaSection;
-        if (ms) ms.visible = visible;
-      } catch (_e) {}
-
-      try {
-        const ml = dateMenu._messageList?._mprisMediaPlayersList;
-        if (ml) ml.visible = visible;
-      } catch (_e) {}
-
-      try {
-        const ind = dateMenu._indicator;
-        if (ind) {
-          if (ind._primaryIndicator) ind._primaryIndicator.visible = visible;
-
-          const ml2 = ind._messageList?._mediaSection;
-          if (ml2) ml2.visible = visible;
-
-          const ml3 = ind._messageList?._mprisMediaPlayersList;
-          if (ml3) ml3.visible = visible;
-        }
-      } catch (_e) {}
-
-      try {
-        const cl = dateMenu._clock;
-        if (cl) {
-          const ms = cl._messageList?._mediaSection;
-          if (ms) ms.visible = visible;
-        }
-      } catch (_e) {}
-    }
-
-    _reinitManager() {
-      if (
-        this._state._sessionChanging ||
-        this._state._safetyLock ||
-        this._state._preventLogout
-      )
-        return;
-
-      // Pause so in-flight callbacks don't fire during teardown
-      if (this._manager) {
-        this._manager.pauseOperations();
-      }
-
-      // Delay slightly so the settings write has definitely committed
-      GLib.timeout_add(GLib.PRIORITY_DEFAULT_IDLE, 100, () => {
-        if (this._state._sessionChanging || this._state._safetyLock)
-          return GLib.SOURCE_REMOVE;
-
-        // Tear down current manager
-        if (this._manager) {
-          this._manager.destroy();
-          this._manager = null;
-        }
-
-        this._state._currentPlayer = null;
-        this._state._manuallySelected = false;
-        this._state._managerInitialized = false;
-
-        // Clear any stale UI
-        this._panelUI.stopScrolling();
-        this._panelUI.label.hide();
-        this.hide();
-
-        // Re-init with the new filter settings
-        this._state.scheduleOperation(() => this._initManager(), 50);
-        return GLib.SOURCE_REMOVE;
-      });
     }
 
     async _initManager() {
       try {
         this._manager = new MprisManager();
-
-        // Pass settings so the manager can apply the player filter
-        this._manager.setSettings(this._settings);
 
         await this._manager.init({
           added: (name) =>
@@ -227,11 +123,6 @@ export const MediaIndicator = GObject.registerClass(
     }
 
     destroy() {
-      // Restore the built-in GNOME media player section on disable
-      try {
-        this._setDefaultPlayerVisible(true);
-      } catch (_e) {}
-
       this._state._sessionChanging = true;
       this._state._safetyLock = true;
       this._state._preventLogout = true;

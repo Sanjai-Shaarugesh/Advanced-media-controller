@@ -17,14 +17,7 @@ import {
   labelForId,
 } from "./helper/vinylHelpers.js";
 
-/** @param {Gio.Settings} settings @returns {number} */
-function _artSize(settings) {
-  try {
-    return Math.max(180, settings.get_int("popup-width"));
-  } catch (_e) {
-    return 340;
-  }
-}
+// albumart
 
 export const AlbumArt = GObject.registerClass(
   {
@@ -53,7 +46,7 @@ export const AlbumArt = GObject.registerClass(
 
       this._vinylMode = this._isVinylEnabledForCurrentPlayer();
 
-      // Multi-click detection
+      // Multi-click detection (double = vinyl, triple = lyrics)
       this._clickCount = 0;
       this._lastClickTime = 0;
       this._clickTimeout = null;
@@ -66,23 +59,16 @@ export const AlbumArt = GObject.registerClass(
           if (!this._isDestroyed) this._onVinylAppsSettingChanged();
         },
       );
-
-      // Resize every UI element when the user changes popup-width
-      this._sizeChangedId = this._settings.connect(
-        "changed::popup-width",
-        () => {
-          if (!this._isDestroyed) this._applySize();
-        },
-      );
     }
 
+    // Update the active player (call when the tracked player changes)
     setPlayer(manager, playerName) {
       this._manager = manager;
       this._playerName = playerName;
       if (!this._isDestroyed) this._onVinylAppsSettingChanged();
     }
 
-    //  Per-app vinyl helpers
+    // Per-app vinyl helpers
 
     _isVinylEnabledForCurrentPlayer() {
       const ids = resolveCanonicalIds(this._playerName, this._manager);
@@ -131,52 +117,48 @@ export const AlbumArt = GObject.registerClass(
     }
 
     /**
-     * Universal app-info resolver
 
      * @returns {Gio.AppInfo|null}
      */
     _resolveAppInfo() {
       try {
-        const candidates = _buildCandidateTokens(
-          this._playerName,
-          this._manager,
-        );
+        // Collect the candidate IDs we might match against
+        const candidates = new Set();
 
-        const allApps = Gio.AppInfo.get_all();
-
-        for (const app of allApps) {
-          const rawId = app.get_id() ?? "";
-          const lower = rawId.toLowerCase();
-          const noSuffix = lower.endsWith(".desktop")
-            ? lower.slice(0, -8)
-            : lower;
-          if (candidates.exact.has(lower) || candidates.exact.has(noSuffix))
-            return app;
-        }
-
-        //  segment match (handles reverse-DNS like org.videolan.vlc)
-        for (const app of allApps) {
-          const rawId = app.get_id() ?? "";
-          const lower = rawId.toLowerCase();
-          const noSuffix = lower.endsWith(".desktop")
-            ? lower.slice(0, -8)
-            : lower;
-          for (const seg of noSuffix.split(".")) {
-            if (seg.length > 2 && candidates.segments.has(seg)) return app;
+        if (this._manager) {
+          const de = this._manager._desktopEntries?.get(this._playerName);
+          if (de) {
+            candidates.add(de.toLowerCase());
+            candidates.add(
+              (de.endsWith(".desktop") ? de : `${de}.desktop`).toLowerCase(),
+            );
           }
         }
 
-        // display-name / first-word match
+        if (this._playerName) {
+          const raw = this._playerName
+            .replace(/^org\.mpris\.MediaPlayer2\./, "")
+            .replace(/\.instance_\d+_\d+$/i, "")
+            .replace(/\.\d+$/, "");
+          candidates.add(raw.toLowerCase());
+          candidates.add(`${raw}.desktop`.toLowerCase());
+
+          const parts = raw.split(".");
+          if (parts.length > 1) {
+            candidates.add(parts[parts.length - 1].toLowerCase());
+            candidates.add(`${parts[parts.length - 1]}.desktop`.toLowerCase());
+          }
+        }
+
+        const allApps = Gio.AppInfo.get_all();
         for (const app of allApps) {
-          const name = (app.get_display_name() ?? "")
-            .toLowerCase()
-            .replace(/\s+/g, "");
-          if (name && candidates.segments.has(name)) return app;
-          const first = (app.get_display_name() ?? "")
-            .toLowerCase()
-            .split(/\s+/)[0];
-          if (first && first.length > 2 && candidates.segments.has(first))
-            return app;
+          const appId = (app.get_id() ?? "").toLowerCase();
+          if (candidates.has(appId)) return app;
+          // Also match without the .desktop suffix
+          const appIdNoSuffix = appId.endsWith(".desktop")
+            ? appId.slice(0, -8)
+            : appId;
+          if (candidates.has(appIdNoSuffix)) return app;
         }
       } catch (_e) {}
       return null;
@@ -194,6 +176,7 @@ export const AlbumArt = GObject.registerClass(
       }
 
       if (enabled) {
+        // Remove from list but keep the instance record (mark disabled)
         const filtered = list.filter((id) => !isVinylEnabledForIds(ids, [id]));
         setVinylApps(this._settings, filtered);
         this._markInstanceEnabled(ids, false);
@@ -212,10 +195,13 @@ export const AlbumArt = GObject.registerClass(
     _saveInstance(preferredId) {
       if (!preferredId) return;
 
-      const _parseBSI = (id) => {
-        if (!id || !id.includes("--")) return null;
-        const idx = id.indexOf("--");
-        return { browser: id.slice(0, idx), source: id.slice(idx + 2) };
+      const { parseBrowserSourceId: _parseBSI, labelForId: _labelForId } = {
+        parseBrowserSourceId: (id) => {
+          if (!id || !id.includes("--")) return null;
+          const idx = id.indexOf("--");
+          return { browser: id.slice(0, idx), source: id.slice(idx + 2) };
+        },
+        labelForId: labelForId,
       };
 
       const parsed = _parseBSI(preferredId);
@@ -224,13 +210,15 @@ export const AlbumArt = GObject.registerClass(
       const appInfo = this._resolveAppInfo();
 
       let canonicalId = preferredId;
+
       let desktopId = preferredId;
-      let displayName = isBrowser ? labelForId(preferredId) : preferredId;
+      let displayName = isBrowser ? _labelForId(preferredId) : preferredId;
 
       if (appInfo) {
         const rawId = appInfo.get_id() ?? "";
         const clean = rawId.endsWith(".desktop") ? rawId.slice(0, -8) : rawId;
         if (isBrowser) {
+          // Keep composite as canonicalId, but record the real browser desktopId
           desktopId = clean;
         } else {
           canonicalId = clean;
@@ -241,6 +229,7 @@ export const AlbumArt = GObject.registerClass(
       } else {
         if (this._manager) {
           const identity = this._manager._identities?.get(this._playerName);
+
           if (isBrowser) {
             const de = this._manager._desktopEntries?.get(this._playerName);
             if (de) desktopId = de.endsWith(".desktop") ? de.slice(0, -8) : de;
@@ -257,14 +246,16 @@ export const AlbumArt = GObject.registerClass(
       }
 
       const canonicalLower = canonicalId.toLowerCase();
+      // Short tail
       const canonicalTail = canonicalLower.split(".").pop();
 
       const record = JSON.stringify({
-        id: canonicalId,
+        id: canonicalId, // composite for browsers; desktop-id for native apps
         name: displayName,
-        desktopId,
+        desktopId, // always the browser/app .desktop id for icon lookup
         busName: this._playerName || "",
         enabled: true,
+
         ...(isBrowser && {
           browserSource: parsed.source,
           browserBase: parsed.browser,
@@ -299,10 +290,11 @@ export const AlbumArt = GObject.registerClass(
             }
 
             if (isMatch) {
+              // Preserve user customisations before removing the old record
               if (obj.customName) preservedCustomName = obj.customName;
               if (typeof obj.enabled === "boolean")
                 preservedEnabled = obj.enabled;
-              return false;
+              return false; // remove — will be replaced with updated record below
             }
             return true;
           } catch (_) {
@@ -310,6 +302,7 @@ export const AlbumArt = GObject.registerClass(
           }
         });
 
+        // Merge preserved fields back into the new record
         const finalRecord = JSON.parse(record);
         if (preservedCustomName) finalRecord.customName = preservedCustomName;
         finalRecord.enabled = preservedEnabled;
@@ -352,25 +345,21 @@ export const AlbumArt = GObject.registerClass(
       if (this._vinylMode && wasPlaying) this.startRotation(true);
     }
 
-    //  Build UI
     _buildUI() {
-      const sz = _artSize(this._settings);
-      const br = Math.round(sz * 0.047); // ~16 px at 340
-
-      // Normal mode
-
+      //  Normal mode
       this._normalContainer = new St.BoxLayout({
         x_align: Clutter.ActorAlign.CENTER,
         style: "margin-bottom: 24px;",
         reactive: true,
       });
 
+      // Wrap in a St.Button so every pixel is reliably hittable
       this._normalButton = new St.Button({
         style_class: "media-album-art",
         style: `
-          width: ${sz}px;
-          height: ${sz}px;
-          border-radius: ${br}px;
+          width: 340px;
+          height: 340px;
+          border-radius: 16px;
           box-shadow: 0 8px 24px rgba(0,0,0,0.4);
           background: linear-gradient(135deg,
             rgba(255,255,255,0.05) 0%,
@@ -384,51 +373,52 @@ export const AlbumArt = GObject.registerClass(
 
       this._normalCoverImage = new St.Widget({
         style_class: "cover-art-image",
-        width: sz,
-        height: sz,
+        width: 340,
+        height: 340,
         style: `
-          border-radius: ${br}px;
+          border-radius: 16px;
           background-size: cover;
           background-position: center;
           background-repeat: no-repeat;
         `,
+
         reactive: false,
       });
 
       this._normalButton.set_child(this._normalCoverImage);
       this._normalContainer.add_child(this._normalButton);
+
       this._normalButton.connectObject(
         "clicked",
         () => this._onAlbumArtClicked(),
         this,
       );
 
-      // Vinyl mode
-
+      // Vinyl  mode
       this._vinylContainer = new St.Widget({
-        style: `width: ${sz}px; height: ${sz}px;`,
+        style: "width: 340px; height: 340px;",
         layout_manager: new Clutter.FixedLayout(),
         reactive: true,
       });
 
+      // Rotating disc & cover image
       this._rotatingContainer = new St.Widget({
-        width: sz,
-        height: sz,
+        width: 340,
+        height: 340,
         x: 0,
         y: 0,
         pivot_point: new Graphene.Point({ x: 0.5, y: 0.5 }),
         layout_manager: new Clutter.FixedLayout(),
+
         reactive: false,
       });
 
-      const halfSz = Math.round(sz / 2);
-
       this._vinylLayer = new St.DrawingArea({
-        width: sz,
-        height: sz,
+        width: 340,
+        height: 340,
         x: 0,
         y: 0,
-        style: `border-radius: ${halfSz}px;`,
+        style: "border-radius: 170px;",
         reactive: false,
       });
       this._vinylLayer.connectObject(
@@ -442,19 +432,19 @@ export const AlbumArt = GObject.registerClass(
         x: 0,
         y: 0,
         style: `
-          width: ${sz}px;
-          height: ${sz}px;
-          border-radius: ${halfSz}px;
+          width: 340px;
+          height: 340px;
+          border-radius: 170px;
           box-shadow: 0 8px 24px rgba(0,0,0,0.6);
         `,
         reactive: false,
       });
       this._vinylCoverImage = new St.Widget({
         style_class: "cover-art-image",
-        width: sz,
-        height: sz,
+        width: 340,
+        height: 340,
         style: `
-          border-radius: ${halfSz}px;
+          border-radius: 170px;
           background-size: cover;
           background-position: center;
           background-repeat: no-repeat;
@@ -467,8 +457,8 @@ export const AlbumArt = GObject.registerClass(
       this._rotatingContainer.add_child(this._vinylCoverArt);
 
       this._vinylButton = new St.Button({
-        width: sz,
-        height: sz,
+        width: 340,
+        height: 340,
         x: 0,
         y: 0,
         style: "background: transparent; border: none; padding: 0;",
@@ -482,8 +472,7 @@ export const AlbumArt = GObject.registerClass(
         this,
       );
 
-      // Pass settings to Tonearm so it can read angle prefs live
-      this._tonearm = new Tonearm({ settings: this._settings });
+      this._tonearm = new Tonearm();
       this._vinylContainer.add_child(this._rotatingContainer);
       this._vinylContainer.add_child(this._vinylButton);
       this._vinylContainer.add_child(this._tonearm);
@@ -494,84 +483,15 @@ export const AlbumArt = GObject.registerClass(
       this._updateMode();
     }
 
-    // Size update
-
-    _applySize() {
-      const sz = _artSize(this._settings);
-      const br = Math.round(sz * 0.047);
-      const halfSz = Math.round(sz / 2);
-
-      //  Resize structural widgets
-
-      this._normalButton.style = `
-        width: ${sz}px; height: ${sz}px; border-radius: ${br}px;
-        box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-        background: linear-gradient(135deg,
-          rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
-        padding: 0; border: none;
-      `;
-      this._normalCoverImage.set_width(sz);
-      this._normalCoverImage.set_height(sz);
-
-      this._vinylContainer.style = `width: ${sz}px; height: ${sz}px;`;
-      this._rotatingContainer.set_width(sz);
-      this._rotatingContainer.set_height(sz);
-
-      this._vinylLayer.set_width(sz);
-      this._vinylLayer.set_height(sz);
-      this._vinylLayer.style = `border-radius: ${halfSz}px;`;
-      this._vinylLayer.queue_repaint();
-
-      this._vinylCoverArt.style = `
-        width: ${sz}px; height: ${sz}px;
-        border-radius: ${halfSz}px;
-        box-shadow: 0 8px 24px rgba(0,0,0,0.6);
-      `;
-      this._vinylCoverImage.set_width(sz);
-      this._vinylCoverImage.set_height(sz);
-
-      this._vinylButton.set_width(sz);
-      this._vinylButton.set_height(sz);
-
-      this._tonearm.set_width(sz);
-      this._tonearm.set_height(sz);
-      this._tonearm.queue_repaint();
-
-      // Invalidate cover cache
-
-      this._coverCache.clear();
-
-      // Reload cover at the new size
-
-      const pendingUrl = this._currentArtUrl;
-      this._currentArtUrl = null;
-      if (pendingUrl) {
-        this.loadCover(pendingUrl);
-      } else {
-        this.setDefaultCover();
-      }
-    }
-
-    //  Click handling
-
     _onAlbumArtClicked() {
       const MULTI_CLICK_MS = 400;
       const now = GLib.get_monotonic_time();
       const elapsedMs = (now - this._lastClickTime) / 1000;
 
-      let vinylClicks = 2;
-      let lyricsClicks = 3;
-      try {
-        vinylClicks = this._settings.get_int("vinyl-click-count");
-        lyricsClicks = this._settings.get_int("lyrics-click-count");
-      } catch (_e) {}
-
-      vinylClicks = Math.max(1, Math.min(5, vinylClicks));
-      lyricsClicks = Math.max(1, Math.min(5, lyricsClicks));
-
       if (this._lastClickTime > 0 && elapsedMs < MULTI_CLICK_MS) {
         this._clickCount++;
       } else {
+        // First click of a new sequence
         this._clickCount = 1;
       }
       this._lastClickTime = now;
@@ -582,15 +502,6 @@ export const AlbumArt = GObject.registerClass(
       }
 
       const count = this._clickCount;
-      const maxThreshold = Math.max(vinylClicks, lyricsClicks);
-
-      if (count >= maxThreshold) {
-        this._clickTimeout = null;
-        this._clickCount = 0;
-        this._lastClickTime = 0;
-        this._dispatchClickAction(count, vinylClicks, lyricsClicks);
-        return;
-      }
 
       this._clickTimeout = GLib.timeout_add(
         GLib.PRIORITY_DEFAULT,
@@ -599,18 +510,16 @@ export const AlbumArt = GObject.registerClass(
           this._clickTimeout = null;
           this._clickCount = 0;
           this._lastClickTime = 0;
-          this._dispatchClickAction(count, vinylClicks, lyricsClicks);
+
+          if (count === 2) {
+            this._toggleVinylForCurrentPlayer();
+          } else if (count >= 3) {
+            this.emit("triple-click");
+          }
+          // Single click (count === 1) intentionally does nothing.
           return GLib.SOURCE_REMOVE;
         },
       );
-    }
-
-    _dispatchClickAction(count, vinylClicks, lyricsClicks) {
-      if (count === lyricsClicks) {
-        this.emit("triple-click"); // signal name kept for backward-compat
-      } else if (count === vinylClicks) {
-        this._toggleVinylForCurrentPlayer();
-      }
     }
 
     _updateMode() {
@@ -623,7 +532,7 @@ export const AlbumArt = GObject.registerClass(
       }
     }
 
-    // Vinyl disc drawing
+    //Vinyl disc drawing
 
     _drawVinylLayer(area) {
       const cr = area.get_context();
@@ -684,7 +593,8 @@ export const AlbumArt = GObject.registerClass(
       cr.$dispose();
     }
 
-    //  Cover art loading
+    // cover art
+
     loadCover(url, forceRefresh = false) {
       if (!forceRefresh && this._currentArtUrl === url) return;
       this._currentArtUrl = url;
@@ -705,28 +615,24 @@ export const AlbumArt = GObject.registerClass(
     }
 
     _setCoverImage(imageUrl) {
-      const sz = _artSize(this._settings);
-      const br = Math.round(sz * 0.047);
-      const halfSz = Math.round(sz / 2);
-
       const normalStyle = `
-        width: ${sz}px;
-        height: ${sz}px;
-        border-radius: ${br}px;
-        background-image: url('${imageUrl}');
-        background-size: contain;
-        background-position: center;
-        background-repeat: no-repeat;
-      `;
+              width: 340px;
+              height: 340px;
+              border-radius: 16px;
+              background-image: url('${imageUrl}');
+              background-size: contain;
+              background-position: center;
+              background-repeat: no-repeat;
+            `;
       const vinylStyle = `
-        width: ${sz}px;
-        height: ${sz}px;
-        border-radius: ${halfSz}px;
-        background-image: url('${imageUrl}');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-      `;
+              width: 340px;
+              height: 340px;
+              border-radius: 170px;
+              background-image: url('${imageUrl}');
+              background-size: cover;
+              background-position: center;
+              background-repeat: no-repeat;
+            `;
 
       this._normalCoverImage.style = normalStyle;
       this._vinylCoverImage.style = vinylStyle;
@@ -782,26 +688,23 @@ export const AlbumArt = GObject.registerClass(
 
     setDefaultCover() {
       this._currentArtUrl = null;
-      const sz = _artSize(this._settings);
-      const br = Math.round(sz * 0.047);
-      const halfSz = Math.round(sz / 2);
       const ph = "url('resource:///org/gnome/shell/theme/process-working.svg')";
 
       this._normalCoverImage.style = `
-        width: ${sz}px; height: ${sz}px; border-radius: ${br}px;
-        background-size: contain; background-position: center;
-        background-repeat: no-repeat;
-        background-image: ${ph}; opacity: 0.3;
-      `;
+              width: 340px; height: 340px; border-radius: 16px;
+              background-size: contain; background-position: center;
+              background-repeat: no-repeat;
+              background-image: ${ph}; opacity: 0.3;
+            `;
       this._vinylCoverImage.style = `
-        width: ${sz}px; height: ${sz}px; border-radius: ${halfSz}px;
-        background-size: 100px; background-position: center;
-        background-repeat: no-repeat;
-        background-image: ${ph}; opacity: 0.3;
-      `;
+              width: 340px; height: 340px; border-radius: 170px;
+              background-size: 100px; background-position: center;
+              background-repeat: no-repeat;
+              background-image: ${ph}; opacity: 0.3;
+            `;
     }
 
-    //  Rotation
+    //rotation
 
     startRotation(isPlaying = true) {
       this._isPlaying = isPlaying;
@@ -816,13 +719,14 @@ export const AlbumArt = GObject.registerClass(
         return;
       }
 
+      // Move tonearm onto the groove (playing position)
       this._tonearm.moveToPlaying();
 
       if (this._isRotating) return;
 
       this._isRotating = true;
       const speed = this._settings.get_int("album-art-rotation-speed");
-      const interval = 50;
+      const interval = 50; // ms
       const degPerInterval = (360 / (speed * 1000)) * interval;
 
       this._rotationInterval = GLib.timeout_add(
@@ -830,9 +734,11 @@ export const AlbumArt = GObject.registerClass(
         interval,
         () => {
           if (this._isDestroyed || !this._isRotating) return GLib.SOURCE_REMOVE;
+
           this._rotationAngle = (this._rotationAngle + degPerInterval) % 360;
           if (this._rotatingContainer)
             this._rotatingContainer.rotation_angle_z = this._rotationAngle;
+
           return GLib.SOURCE_CONTINUE;
         },
       );
@@ -842,7 +748,10 @@ export const AlbumArt = GObject.registerClass(
       this._isPlaying = false;
       this._isRotating = false;
       this._stopRotationInterval();
+
       if (this._vinylMode) this._tonearm.moveToParked();
+
+      // Reset disc to home position
       this._rotationAngle = 0;
       if (this._rotatingContainer) this._rotatingContainer.rotation_angle_z = 0;
     }
@@ -851,6 +760,8 @@ export const AlbumArt = GObject.registerClass(
       this._isPlaying = false;
       this._isRotating = false;
       this._stopRotationInterval();
+
+      // Park the tonearm — disc angle preserved so resume feels natural
       if (this._vinylMode) this._tonearm.moveToParked();
     }
 
@@ -877,10 +788,6 @@ export const AlbumArt = GObject.registerClass(
         this._settings.disconnect(this._settingsChangedId);
         this._settingsChangedId = 0;
       }
-      if (this._sizeChangedId) {
-        this._settings.disconnect(this._sizeChangedId);
-        this._sizeChangedId = 0;
-      }
 
       this._normalButton?.disconnectObject(this);
       this._vinylButton?.disconnectObject(this);
@@ -897,86 +804,3 @@ export const AlbumArt = GObject.registerClass(
     }
   },
 );
-
-// Module-level helpers
-
-/**
-
- * @param {string|null}  playerName
- * @param {object|null}  manager
- * @returns {{ exact: Set<string>, segments: Set<string> }}
- */
-function _buildCandidateTokens(playerName, manager) {
-  const exact = new Set();
-  const segments = new Set();
-
-  const _add = (str) => {
-    if (!str) return;
-    const lower = str.toLowerCase();
-    exact.add(lower);
-    exact.add(lower.endsWith(".desktop") ? lower : `${lower}.desktop`);
-    exact.add(lower.endsWith(".desktop") ? lower.slice(0, -8) : lower);
-
-    // Meaningful reverse-DNS segments
-    const SKIP = new Set([
-      "org",
-      "com",
-      "net",
-      "io",
-      "app",
-      "application",
-      "browser",
-      "client",
-      "player",
-      "media",
-      "desktop",
-      "instance",
-      "snap",
-      "flatpak",
-      "gnome",
-      "kde",
-    ]);
-    for (const seg of lower.replace(/\.desktop$/, "").split(".")) {
-      if (seg.length > 2 && !SKIP.has(seg)) segments.add(seg);
-    }
-  };
-
-  if (manager) {
-    const de = manager._desktopEntries?.get(playerName);
-    if (de) _add(de);
-  }
-
-  if (!playerName) return { exact, segments };
-
-  // Clean MPRIS bus name
-  const raw = playerName.replace(/^org\.mpris\.MediaPlayer2\./, "");
-
-  // Strip instance / numeric suffixes
-  const clean = raw
-    .replace(/\.instance[_\-]?\d+(_\d+)?$/i, "")
-    .replace(/\.\d+$/, "")
-    .replace(/\.snap$/i, ""); // some snaps append .snap
-
-  _add(clean);
-
-  const snapBase = clean.split(".").pop();
-  if (snapBase && snapBase !== clean) {
-    _add(snapBase);
-    // Snap-style "appname_appname" variant
-    _add(`${snapBase}_${snapBase}`);
-  }
-
-  // MPRIS identity string
-  if (manager) {
-    const identity = manager._identities?.get(playerName);
-    if (identity && identity.trim()) {
-      const normalized = identity.trim().toLowerCase().replace(/\s+/g, "");
-      segments.add(normalized);
-      // First word only (handles "VLC media player" → "vlc")
-      const firstWord = identity.trim().toLowerCase().split(/\s+/)[0];
-      if (firstWord.length > 2) segments.add(firstWord);
-    }
-  }
-
-  return { exact, segments };
-}

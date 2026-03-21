@@ -14,7 +14,7 @@ export class LyricsClient {
    * @param {string} title
    * @param {string} artist
    * @param {string} album
-   * @param {number} durationSec
+   * @param {number} durationSec  seconds (0 = unknown)
    * @returns {Promise<{time:number, text:string}[]|null>}
    */
   async getLyrics(title, artist, album, durationSec) {

@@ -4,12 +4,11 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: advanced-media-controller 5.2\n"
-"Report-Msgid-Bugs-To: https://github.com/Sanjai-Shaarugesh/Advance-media-"
-"controller/issues\n"
-"POT-Creation-Date: 2026-03-12 20:33+0530\n"
-"PO-Revision-Date: 2026-03-13 00:00+0000\n"
-"Last-Translator: auto-generated\n"
+"Project-Id-Version: advanced-media-controller 5.3\n"
+"Report-Msgid-Bugs-To: https://github.com/Sanjai-Shaarugesh/Advance-media-controller/issues\n"
+"POT-Creation-Date: 2026-03-19 18:00+0530\n"
+"PO-Revision-Date: 2026-03-19 18:00+0530\n"
+"Last-Translator: Sanjai Shaarugesh\n"
 "Language-Team: Japanese\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
@@ -55,7 +54,7 @@ msgstr "パネルインデックス"
 
 #: prefs.js:126
 msgid "Position within the panel area (-1 = automatic)"
-msgstr "パネルエリア内の位置（-1 = 自動）"
+msgstr "パネル領域内の位置（-1 = 自動）"
 
 #: prefs.js:144
 msgid "Panel Label"
@@ -79,7 +78,7 @@ msgstr "アーティスト名を表示"
 
 #: prefs.js:163
 msgid "Append the artist name to the track title"
-msgstr "トラックタイトルにアーティスト名を追加する"
+msgstr "アーティスト名をトラックタイトルに追加する"
 
 #: prefs.js:174
 msgid "Title / Artist Separator"
@@ -87,7 +86,7 @@ msgstr "タイトル / アーティスト区切り文字"
 
 #: prefs.js:184
 msgid "Panel Scrolling"
-msgstr "パネルのスクロール"
+msgstr "パネルスクロール"
 
 #: prefs.js:185
 msgid "Marquee scroll of the track label in the top bar"
@@ -101,9 +100,7 @@ msgstr "パネルラベルのスクロールを有効にする"
 msgid ""
 "Scroll the track/artist text one full loop then pause before repeating. When "
 "off, the text is truncated with an ellipsis."
-msgstr ""
-"トラック/アーティストのテキストを一周スクロールして一時停止してから繰り返しま"
-"す。オフの場合、テキストは省略記号で切り捨てられます。"
+msgstr "テキストを一周スクロールして一時停止し繰り返します。オフの場合は省略記号で切り捨てられます。"
 
 #: prefs.js:205
 msgid "Panel Scroll Speed"
@@ -111,26 +108,23 @@ msgstr "パネルスクロール速度"
 
 #: prefs.js:206 prefs.js:314 prefs.js:354
 msgid "1 = slowest, 10 = fastest"
-msgstr "1 = 最も遅い、10 = 最も速い"
+msgstr "1 = 最遅、10 = 最速"
 
-# ── Additional strings from prefs.js ────────────────────────────────────
 #: prefs.js:224
 msgid "System Integration"
 msgstr "システム統合"
 
 #: prefs.js:226
 msgid "Controls how this extension interacts with other parts of GNOME Shell."
-msgstr ""
-"この拡張機能がGNOME Shellの他の部分とどのように連携するかを制御します。"
+msgstr "この拡張機能がGNOME Shellの他の部分とどのように連携するかを制御します。"
 
 #: prefs.js:237
 msgid "Hide Default GNOME Media Player"
-msgstr "デフォルトのGNOMEメディアプレーヤーを非表示にする"
+msgstr "デフォルトのGNOMEメディアプレーヤーを非表示"
 
 #: prefs.js:239
 msgid "Remove the built-in media controls from the system date/time menu"
-msgstr ""
-"システムの日付/時刻メニューからビルトインメディアコントロールを削除する"
+msgstr "システムの日付/時刻メニューから組み込みメディアコントロールを削除する"
 
 #: prefs.js:260
 msgid ""
@@ -149,7 +143,7 @@ msgstr "ポップアッププレーヤー"
 
 #: prefs.js:292
 msgid "Title Scrolling"
-msgstr "タイトルのスクロール"
+msgstr "タイトルスクロール"
 
 #: prefs.js:293
 msgid "Marquee behaviour for the track title inside the popup"
@@ -163,9 +157,7 @@ msgstr "タイトルスクロールを有効にする"
 msgid ""
 "Scroll long track titles from start to end, pause, then repeat. When off, "
 "the text is truncated with an ellipsis."
-msgstr ""
-"長いトラックタイトルを最初から最後までスクロールし、一時停止してから繰り返し"
-"ます。オフの場合、テキストは省略記号で切り捨てられます。"
+msgstr "長いトラックタイトルを先頭から末尾までスクロールし一時停止後に繰り返します。オフの場合は切り捨てられます。"
 
 #: prefs.js:313
 msgid "Title Scroll Speed"
@@ -173,7 +165,7 @@ msgstr "タイトルスクロール速度"
 
 #: prefs.js:332
 msgid "Artist Scrolling"
-msgstr "アーティストのスクロール"
+msgstr "アーティストスクロール"
 
 #: prefs.js:333
 msgid "Marquee behaviour for the artist name inside the popup"
@@ -187,9 +179,7 @@ msgstr "アーティストスクロールを有効にする"
 msgid ""
 "Scroll long artist names from start to end, pause, then repeat. When off, "
 "the text is truncated with an ellipsis."
-msgstr ""
-"長いアーティスト名を最初から最後までスクロールし、一時停止してから繰り返しま"
-"す。オフの場合、テキストは省略記号で切り捨てられます。"
+msgstr "長いアーティスト名をスクロールして一時停止後に繰り返します。オフの場合は切り捨てられます。"
 
 #: prefs.js:353
 msgid "Artist Scroll Speed"
@@ -201,20 +191,17 @@ msgstr "アルバムアート"
 
 #: prefs.js:374
 msgid "Vinyl-record rotation animation"
-msgstr "レコード回転アニメーション"
+msgstr "レコード盤回転アニメーション"
 
 #: prefs.js:379
 msgid "Enable Vinyl Record Rotation (Global Default)"
-msgstr "レコード回転を有効にする（グローバルデフォルト）"
+msgstr "レコード盤回転を有効にする（グローバルデフォルト）"
 
-# ── Global default key with curly quotes ──
 #: prefs.js:381
 msgid ""
 "Global default when no per-app setting exists. Per-app overrides in the "
 "‘Vinyl Apps’ section take priority."
 msgstr ""
-"アプリごとの設定がない場合のグローバルデフォルト。‘Vinylアプリ’セクションのア"
-"プリごとの上書きが優先されます。"
 
 #: prefs.js:395
 msgid "Rotation Speed (seconds per revolution)"
@@ -222,17 +209,16 @@ msgstr "回転速度（1回転あたりの秒数）"
 
 #: prefs.js:396
 msgid "5 = fastest, 60 = slowest. Recommended: 20–30"
-msgstr "5 = 最も速い、60 = 最も遅い。推奨：20〜30"
+msgstr "5 = 最速、60 = 最遅。推奨：20〜30"
 
 #: prefs.js:414
 msgid "Vinyl Effect Details"
-msgstr "レコードエフェクトの詳細"
+msgstr "ビニールエフェクトの詳細"
 
 #: prefs.js:415
 msgid "How the animated vinyl record works"
-msgstr "アニメーションされたレコードの仕組み"
+msgstr "アニメーションレコード盤の仕組み"
 
-# ── Multiline strings matched to exact POT keys ──
 #: prefs.js:420
 msgid ""
 "- Album cover appears on a spinning vinyl disc\n"
@@ -245,21 +231,10 @@ msgid ""
 "- Per-app settings override the global default above\n"
 "- All seen apps are stored; re-enable any time from Vinyl Apps page"
 msgstr ""
-"- アルバムカバーが回転するレコードに表示されます\n"
-"- 黒いレコードの溝が端に見えます\n"
-"- アニメーションのトーンアームが再生状態に合わせて動きます\n"
-"- 音楽が一時停止するとき回転がスムーズに一時停止します\n"
-"  (ディスクの角度が保持され、同じ位置から再開します)\n"
-"- ディスクは本物のストップ時にのみ0°にリセットされます\n"
-"- アルバムアートをダブルクリックしてそのプレーヤーのアプリのみのビニールを切"
-"り替えます\n"
-"- アプリごとの設定が上のグローバルデフォルトを上書きします\n"
-"- 見たすべてのアプリが保存されます。Vinylアプリページからいつでも再有効化でき"
-"ます"
 
 #: prefs.js:445
 msgid "Vinyl Apps"
-msgstr "Vinylアプリ"
+msgstr "ビニールアプリ"
 
 #: prefs.js:453
 msgid "Player Filter"
@@ -293,19 +268,19 @@ msgstr "ホワイトリスト"
 
 #: prefs.js:540
 msgid "Show all media players — filtering is disabled"
-msgstr "すべてのメディアプレーヤーを表示 — フィルタリングが無効"
+msgstr "すべてのメディアプレーヤーを表示 — フィルタリング無効"
 
 #: prefs.js:541
 msgid "Hide only the players you add to the list below"
-msgstr "下のリストに追加したプレーヤーのみを非表示にする"
+msgstr "以下のリストに追加したプレーヤーのみ非表示"
 
 #: prefs.js:542
 msgid "Show only the players you add to the list below"
-msgstr "下のリストに追加したプレーヤーのみを表示する"
+msgstr "以下のリストに追加したプレーヤーのみ表示"
 
 #: prefs.js:569
 msgid "Saved Players"
-msgstr "保存されたプレーヤー"
+msgstr "保存済みプレーヤー"
 
 #: prefs.js:571
 msgid ""
@@ -326,17 +301,17 @@ msgstr ""
 #: prefs.js:653
 #, javascript-format
 msgid "Filter rule active for “%s” — click to disable"
-msgstr ""
+msgstr "「%s」のフィルタールールが有効 — クリックして無効化"
 
 #: prefs.js:654
 #, javascript-format
 msgid "Filter rule disabled for “%s” — click to enable"
-msgstr ""
+msgstr "「%s」のフィルタールールが無効 — クリックして有効化"
 
 #: prefs.js:676
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "Remove “%s” from the filter list"
-msgstr "保存済みインスタンスから%sを削除"
+msgstr "「%s」をフィルターリストから削除"
 
 #: prefs.js:709
 msgid "Detected Players"
@@ -354,7 +329,7 @@ msgstr "実行中のプレーヤーをスキャン"
 
 #: prefs.js:719
 msgid "Detects players currently broadcasting on MPRIS"
-msgstr "現在MPRISでブロードキャスト中のプレーヤーを検出"
+msgstr "MPRISでブロードキャスト中のプレーヤーを検出します"
 
 #: prefs.js:725
 msgid "Refresh the detected player list"
@@ -362,7 +337,7 @@ msgstr "検出されたプレーヤーリストを更新"
 
 #: prefs.js:753
 msgid "Could not connect to the session bus"
-msgstr ""
+msgstr "セッションバスに接続できませんでした"
 
 #: prefs.js:783 prefs.js:1375
 msgid "No active players detected"
@@ -370,7 +345,7 @@ msgstr "アクティブなプレーヤーが検出されませんでした"
 
 #: prefs.js:784 prefs.js:1376
 msgid "Open a music app and click Refresh"
-msgstr "音楽アプリを開いて「更新」をクリックしてください"
+msgstr "音楽アプリを開いて更新をクリックしてください"
 
 #: prefs.js:842 prefs.js:861 prefs.js:871
 msgid "Saved ✓"
@@ -383,12 +358,12 @@ msgstr "フィルターに追加"
 #: prefs.js:849 prefs.js:864
 #, javascript-format
 msgid "“%s” is already in the filter list"
-msgstr ""
+msgstr "「%s」はすでにフィルターリストにあります"
 
 #: prefs.js:850
 #, javascript-format
 msgid "Add “%s” to the filter list (enabled by default)"
-msgstr ""
+msgstr "「%s」をフィルターリストに追加（デフォルトで有効）"
 
 #: prefs.js:899
 msgid "Synced Lyrics"
@@ -396,7 +371,7 @@ msgstr "同期歌詞"
 
 #: prefs.js:901
 msgid "Time-synced lyrics fetched from lrclib.net — free, no account needed"
-msgstr "lrclib.netから取得した時間同期歌詞 — 無料、アカウント不要"
+msgstr "lrclib.netから取得した時刻同期歌詞 — 無料、アカウント不要"
 
 #: prefs.js:907
 msgid "Enable Synced Lyrics"
@@ -405,7 +380,7 @@ msgstr "同期歌詞を有効にする"
 #: prefs.js:909
 msgid ""
 "Fetch and display scrolling lyrics that follow the current playback position"
-msgstr "現在の再生位置に従うスクロール歌詞を取得して表示する"
+msgstr "現在の再生位置に追従するスクロール歌詞を取得して表示する"
 
 #: prefs.js:926
 msgid "How to Use Lyrics"
@@ -416,37 +391,30 @@ msgid ""
 "Lyrics are tied to each player tab independently — Spotify and Firefox each "
 "remember their own setting"
 msgstr ""
-"歌詞はプレーヤータブごとに独立して関連付けられています — SpotifyとFirefoxはそ"
-"れぞれ独自の設定を記憶します"
 
 #: prefs.js:936
 msgid "Start playing a song"
-msgstr "曲の再生を開始する"
+msgstr "曲を再生開始する"
 
 #: prefs.js:938
 msgid ""
 "Open any media player or browser tab (Spotify, YouTube Music, VLC, "
 "Rhythmbox…) and play a track so it appears in the panel."
 msgstr ""
-"任意のメディアプレーヤーまたはブラウザタブ（Spotify、YouTube Music、VLC、"
-"Rhythmbox…）を開いてトラックを再生し、パネルに表示させます。"
 
 #: prefs.js:943
 msgid "Open the popup player"
 msgstr "ポップアッププレーヤーを開く"
 
 #: prefs.js:945
-#, fuzzy
 msgid ""
 "Click the media controller icon in the top panel to open the popup. You’ll "
 "see the album art, track title, and playback controls."
 msgstr ""
-"上部パネルのメディアコントローラーアイコンをクリックしてポップアップを開きま"
-"す。アルバムアート、トラックタイトル、再生コントロールが表示されます。"
 
 #: prefs.js:950
 msgid "Triple-click the album art to show lyrics"
-msgstr "アルバムアートをトリプルクリックして歌詞を表示する"
+msgstr "アルバムアートをトリプルクリックして歌詞を表示"
 
 #: prefs.js:952
 msgid ""
@@ -454,8 +422,6 @@ msgid ""
 "replaced by the lyrics panel, which scrolls automatically in time with the "
 "music."
 msgstr ""
-"アルバムアートを素早く3回クリックします。カバー画像が歌詞パネルに置き換えら"
-"れ、音楽に合わせて自動的にスクロールします。"
 
 #: prefs.js:957
 msgid "Single-click the lyrics panel to go back"
@@ -466,20 +432,16 @@ msgid ""
 "Tap anywhere on the lyrics panel once to dismiss it and return to the album "
 "art — vinyl or normal cover, whichever that app uses."
 msgstr ""
-"歌詞パネルの任意の場所を1回タップして閉じ、アルバムアートに戻ります — そのア"
-"プリが使用するレコードまたは通常のカバーのいずれか。"
 
 #: prefs.js:964
 msgid "Triple-click again to re-open"
-msgstr "再び開くには再度トリプルクリック"
+msgstr "再度トリプルクリックして再開"
 
 #: prefs.js:966
 msgid ""
 "You can toggle the lyrics panel as many times as you like. Each player tab "
 "remembers independently whether lyrics are open."
 msgstr ""
-"歌詞パネルは何度でも切り替えられます。各プレーヤータブは独立して歌詞が開いて"
-"いるかどうかを記憶します。"
 
 #: prefs.js:986
 msgid "Lyrics Behaviour"
@@ -487,7 +449,7 @@ msgstr "歌詞の動作"
 
 #: prefs.js:987
 msgid "What happens behind the scenes"
-msgstr "バックグラウンドで何が起こるか"
+msgstr "バックグラウンドで起きること"
 
 #: prefs.js:992
 msgid "Lyrics details & edge cases"
@@ -495,7 +457,7 @@ msgstr "歌詞の詳細とエッジケース"
 
 #: prefs.js:993
 msgid "What to expect when the lyrics panel is open"
-msgstr "歌詞パネルが開いているときに何を期待するか"
+msgstr "歌詞パネルが開いているときの動作"
 
 #: prefs.js:999
 msgid ""
@@ -524,41 +486,14 @@ msgid ""
 "  • When you seek forward or backward, the highlighted line jumps\n"
 "    instantly to the correct position"
 msgstr ""
-"出典\n"
-"  • 歌詞はlrclib.netから取得されます — 無料のオープンな公開データベース\n"
-"  • アカウントもAPIキーも不要です。リクエストはバックグラウンドで静かに行われ"
-"ます\n"
-"\n"
-"表示\n"
-"  • アクティブな歌詞行はパネルで大きく中央に表示されます\n"
-"  • 上下の行は中くらいのサイズで表示されます。他のすべての行はフェードアウト"
-"します\n"
-"  • パネルはアクティブな行が常に見えるようにスムーズにスクロールします\n"
-"\n"
-"トラックの変更\n"
-"  • 歌詞パネルが開いている間に新しい曲が始まると、ビューがクリアされ\n"
-"    新しい歌詞が自動的に取得されます\n"
-"  • 歌詞が見つからない場合、「歌詞が見つかりません」メッセージが表示されま"
-"す\n"
-"\n"
-"複数のプレーヤー\n"
-"  • 各プレーヤータブ（Spotify、YouTube、VLC…）はそれぞれ独立した\n"
-"    歌詞トグルを持っています — 1つのプレーヤーの歌詞を開いても他のプレーヤー"
-"には影響しません\n"
-"  • タブを切り替えると、切り替え先のプレーヤーに合った正しいビュー（歌詞また"
-"はアルバムアート）が復元されます\n"
-"\n"
-"シーク\n"
-"  • 前後にシークすると、ハイライトされた行が\n"
-"    瞬時に正しい位置にジャンプします"
 
 #: prefs.js:1039
 msgid "Album Art Click Actions"
-msgstr "アルバムアートのクリックアクション"
+msgstr "アルバムアートのクリック操作"
 
 #: prefs.js:1041
 msgid "Summary of what each click pattern does on the album art cover"
-msgstr "アルバムアートカバーの各クリックパターンの概要"
+msgstr "アルバムアートの各クリックパターンの操作説明"
 
 #: prefs.js:1049
 msgid "Single click"
@@ -578,8 +513,6 @@ msgid ""
 "Toggles the spinning vinyl record effect for that specific app (remembered "
 "independently per app)"
 msgstr ""
-"その特定のアプリのレコード回転エフェクトを切り替えます（アプリごとに独立して"
-"記憶）"
 
 #: prefs.js:1063
 msgid "Triple click"
@@ -590,8 +523,6 @@ msgid ""
 "Toggles the synced lyrics panel for the current player tab (remembered "
 "independently per player)"
 msgstr ""
-"現在のプレーヤータブの同期歌詞パネルを切り替えます（プレーヤーごとに独立して"
-"記憶）"
 
 #: prefs.js:1084
 msgid "Data Source"
@@ -599,7 +530,7 @@ msgstr "データソース"
 
 #: prefs.js:1085
 msgid "Where lyrics come from"
-msgstr "歌詞の出所"
+msgstr "歌詞の取得元"
 
 #: prefs.js:1090
 msgid "lrclib.net"
@@ -609,13 +540,11 @@ msgstr "lrclib.net"
 msgid ""
 "Free, open-source time-synced lyrics database — no sign-up, no tracking, no "
 "ads"
-msgstr ""
-"無料のオープンソース時間同期歌詞データベース — 登録不要、トラッキングなし、広"
-"告なし"
+msgstr "無料のオープンソース時刻同期歌詞データベース — 登録不要、追跡なし、広告なし"
 
 #: prefs.js:1120
 msgid "Privacy note"
-msgstr "プライバシーに関する注意"
+msgstr "プライバシーに関する注記"
 
 #: prefs.js:1122
 msgid ""
@@ -623,9 +552,6 @@ msgid ""
 "lrclib.net when you open the lyrics panel. No personal data or user "
 "identifiers are included."
 msgstr ""
-"歌詞パネルを開くと、トラックタイトル、アーティスト、アルバム、再生時間を含む"
-"リクエストがlrclib.netに送信されます。個人データやユーザー識別子は含まれませ"
-"ん。"
 
 #: prefs.js:1140
 msgid "How to Enable Vinyl Style for an App"
@@ -633,15 +559,13 @@ msgstr "アプリのビニールスタイルを有効にする方法"
 
 #: prefs.js:1147
 msgid "Start playing music"
-msgstr "音楽の再生を開始する"
+msgstr "音楽を再生開始する"
 
 #: prefs.js:1149
 msgid ""
 "Open any media player or browser web app (YouTube, Spotify Web, SoundCloud, "
 "etc.) and play a track so it appears as a media source."
 msgstr ""
-"任意のメディアプレーヤーまたはブラウザWebアプリ（YouTube、Spotify Web、"
-"SoundCloudなど）を開いてトラックを再生し、メディアソースとして表示させます。"
 
 #: prefs.js:1154
 msgid "Open the extension popup"
@@ -649,42 +573,34 @@ msgstr "拡張機能のポップアップを開く"
 
 #: prefs.js:1156
 msgid "Click the media controller in the top panel to open the popup player."
-msgstr ""
-"上部パネルのメディアコントローラーをクリックしてポップアッププレーヤーを開き"
-"ます。"
+msgstr "上部パネルのメディアコントローラーをクリックしてポップアッププレーヤーを開く。"
 
 #: prefs.js:1161
 msgid "Double-click the album art"
-msgstr "アルバムアートをダブルクリックする"
+msgstr "アルバムアートをダブルクリック"
 
 #: prefs.js:1163
-#, fuzzy
 msgid ""
 "Double-click the album art image in the popup to toggle the vinyl record "
 "style for that specific app or browser source. For browsers (Chrome, "
 "Firefox, etc.) each site (YouTube, YouTube Music, Spotify Web) is stored as "
 "its own separate entry."
 msgstr ""
-"ポップアップのアルバムアート画像をダブルクリックして、その特定のアプリインス"
-"タンスのレコードスタイルを切り替えます。インスタンスは自動的に保存されます。"
 
 #: prefs.js:1169
 msgid "Manage saved instances below"
-msgstr "下に保存されたインスタンスを管理する"
+msgstr "保存済みインスタンスを下で管理"
 
 #: prefs.js:1171
-#, fuzzy
 msgid ""
 "All stored instances appear in the section below. Browser web-app sources "
 "appear as e.g. “YouTube Music (Chrome)” and are tracked independently. "
 "Toggle them on/off or remove them at any time."
 msgstr ""
-"保存されたすべてのインスタンスが、アプリのアイコンと名前とともに以下のセク"
-"ションに表示されます。いつでもオン/オフの切り替えや削除ができます。"
 
 #: prefs.js:1192
 msgid "Saved App Instances"
-msgstr "保存されたアプリインスタンス"
+msgstr "保存済みアプリインスタンス"
 
 #: prefs.js:1194
 msgid ""
@@ -692,13 +608,10 @@ msgid ""
 "loaded from the system .desktop database. Toggle the vinyl effect on/off or "
 "remove any entry."
 msgstr ""
-"ポップアップでアルバムアートをダブルクリックして保存されたインスタンス。アイ"
-"コンはシステムの.desktopデータベースから読み込まれます。ビニールエフェクトを"
-"オン/オフにするかエントリーを削除します。"
 
 #: prefs.js:1208
 msgid "Add an App Manually"
-msgstr "アプリを手動で追加する"
+msgstr "アプリを手動で追加"
 
 #: prefs.js:1210
 msgid ""
@@ -706,15 +619,11 @@ msgid ""
 "Useful for browser web apps whose instance hasn’t been captured yet via "
 "double-click."
 msgstr ""
-"インストール済みアプリ（ブラウザを含む）を検索して手動でビニールエントリーを"
-"追加します。ダブルクリックでまだキャプチャされていないブラウザWebアプリに便利"
-"です。"
 
 #: prefs.js:1218
 msgid ""
 "Browser sources tracked separately (YouTube, YouTube Music, Spotify Web)"
 msgstr ""
-"ブラウザソースは別々に追跡されます（YouTube、YouTube Music、Spotify Web）"
 
 #: prefs.js:1221
 msgid ""
@@ -722,9 +631,6 @@ msgid ""
 "double-click the album art when that browser is playing music — the "
 "extension will capture the exact instance automatically."
 msgstr ""
-"Webアプリの場合、ブラウザ自体（例：Google Chrome、Firefox）を追加します。その"
-"ブラウザで音楽を再生しているときにアルバムアートをダブルクリックすると、拡張"
-"機能が正確なインスタンスを自動的にキャプチャします。"
 
 #: prefs.js:1237
 msgid "Search apps"
@@ -750,7 +656,7 @@ msgstr "アクティブなプレーヤーをスキャン"
 
 #: prefs.js:1320
 msgid "Detects players currently broadcasting on the MPRIS D-Bus"
-msgstr "現在MPRIS D-Busでブロードキャスト中のプレーヤーを検出"
+msgstr "MPRIS D-Busでブロードキャスト中のプレーヤーを検出します"
 
 #: prefs.js:1326
 msgid "Refresh"
@@ -763,15 +669,15 @@ msgstr "これを使用"
 #: prefs.js:1457
 #, javascript-format
 msgid "Add “%s” as a vinyl-enabled instance"
-msgstr ""
+msgstr "「%s」をビニール有効なインスタンスとして追加"
 
 #: prefs.js:1501
 msgid "All running players are already saved"
-msgstr "実行中のすべてのプレーヤーは既に保存されています"
+msgstr "実行中のすべてのプレーヤーはすでに保存済みです"
 
 #: prefs.js:1502
 msgid "Manage them in the Saved App Instances section above"
-msgstr "上の「保存されたアプリインスタンス」セクションで管理してください"
+msgstr "上の保存済みアプリインスタンスセクションで管理してください"
 
 #: prefs.js:1559
 msgid "No instances saved yet"
@@ -782,31 +688,29 @@ msgid ""
 "Double-click the album art in the popup while music is playing to save an "
 "instance here."
 msgstr ""
-"音楽を再生中にポップアップのアルバムアートをダブルクリックして、インスタンス"
-"をここに保存します。"
 
 #: prefs.js:1660
 #, javascript-format
 msgid "%s via %s"
-msgstr ""
+msgstr "%s (%s 経由)"
 
 #: prefs.js:1669 prefs.js:2134
 msgid "renamed from"
-msgstr "変更元："
+msgstr "次からの名前変更："
 
 #: prefs.js:1692
 #, javascript-format
 msgid "Rename “%s”"
-msgstr "“%s”の名前を変更"
+msgstr "「%s」の名前変更"
 
 #: prefs.js:1716
 #, javascript-format
 msgid "Remove %s from saved instances"
-msgstr "保存済みインスタンスから%sを削除"
+msgstr "%sを保存済みインスタンスから削除"
 
 #: prefs.js:1733
 msgid "Rename Instance"
-msgstr "インスタンスの名前を変更"
+msgstr "インスタンス名変更"
 
 #: prefs.js:1735
 #, javascript-format
@@ -814,8 +718,6 @@ msgid ""
 "Enter a custom display name for \"%s\".\n"
 "Leave blank to reset to the default."
 msgstr ""
-"\"%s\" のカスタム表示名を入力してください。\n"
-"デフォルトにリセットするには空白のままにしてください。"
 
 #: prefs.js:1741
 msgid "Cancel"
@@ -831,12 +733,12 @@ msgstr "表示名"
 
 #: prefs.js:2105
 msgid "Saved Instances"
-msgstr "保存されたインスタンス"
+msgstr "保存済みインスタンス"
 
 #: prefs.js:2126
 #, javascript-format
 msgid "Browser: %s · Source: %s"
-msgstr ""
+msgstr "ブラウザ: %s · ソース: %s"
 
 #: prefs.js:2177
 msgid "Other Apps"
@@ -852,15 +754,15 @@ msgstr "このアプリについて"
 
 #: prefs.js:2356
 msgid "Beautiful and modern media controls with multi-instance support"
-msgstr "マルチインスタンスをサポートする美しくモダンなメディアコントロール"
+msgstr "マルチインスタンス対応の美しい最新メディアコントロール"
 
 #: prefs.js:2394
-msgid "Version 5.2"
-msgstr "バージョン 5.2"
+msgid "Version 5.4"
+msgstr "バージョン 5.4"
 
 #: prefs.js:2401
 msgid "Modern media controls with native GNOME design"
-msgstr "ネイティブGNOMEデザインのモダンなメディアコントロール"
+msgstr "ネイティブGNOMEデザインの最新メディアコントロール"
 
 #: prefs.js:2415
 msgid "Extension Links"
@@ -868,44 +770,43 @@ msgstr "拡張機能リンク"
 
 #: prefs.js:2416 prefs.js:2421
 msgid "Source code, issues, and contributions"
-msgstr "ソースコード、問題、貢献"
+msgstr "ソースコード、問題報告、貢献"
 
 #: prefs.js:2420
 msgid "View on GitHub"
-msgstr "GitHubで表示"
+msgstr "GitHubで見る"
 
 #: prefs.js:2447
 msgid "☕ Buy Me a Coffee"
-msgstr "☕ コーヒーをおごる"
+msgstr "☕ コーヒーをご馳走してください"
 
 #: prefs.js:2448
 msgid "Support development with a small donation"
-msgstr "少額の寄付で開発をサポートする"
+msgstr "少額の寄付で開発を支援してください"
 
 #: prefs.js:2452
 msgid "☕ Support by buying me a coffee – just scan the QR code!"
-msgstr "☕ コーヒーを買ってサポートしてください – QRコードをスキャンするだけ！"
+msgstr "☕ コーヒーをご馳走して支援してください – QRコードをスキャンするだけ！"
 
 #: prefs.js:2453
 msgid "Scan QR code to open Buy Me a Coffee"
-msgstr ""
+msgstr "QRコードをスキャンしてBuy Me a Coffeeを開く"
 
 #: prefs.js:2456
 msgid "❤ GitHub Sponsors"
-msgstr ""
+msgstr "❤ GitHubスポンサー"
 
 #: prefs.js:2457
 msgid "Sponsor via GitHub — one-time or monthly"
-msgstr ""
+msgstr "GitHub経由でスポンサー — 一回または毎月"
 
 #: prefs.js:2461
-#, fuzzy
 msgid "❤ Support via GitHub Sponsors – just scan the QR code!"
-msgstr "☕ コーヒーを買ってサポートしてください – QRコードをスキャンするだけ！"
+msgstr "❤ GitHubスポンサーで支援 – QRコードをスキャン！"
 
 #: prefs.js:2462
 msgid "Scan QR code to open GitHub Sponsors"
-msgstr ""
+msgstr "QRコードをスキャンしてGitHubスポンサーを開く"
 
 #: prefs.js:2484
 msgid "Donation Platform"
@@ -913,7 +814,7 @@ msgstr "寄付プラットフォーム"
 
 #: prefs.js:2485
 msgid "Switch to see the QR code for each platform"
-msgstr "切り替えて各プラットフォームのQRコードを確認"
+msgstr "切り替えて各プラットフォームのQRコードを表示"
 
 #: prefs.js:2523
 msgid "Donation Address"
@@ -925,11 +826,11 @@ msgstr "寄付アドレス"
 
 #: prefs.js:2579
 msgid "Support Development"
-msgstr "開発をサポート"
+msgstr "開発を支援する"
 
 #: prefs.js:2580
 msgid "Choose your preferred donation platform"
-msgstr "お好みの寄付プラットフォームを選択してください"
+msgstr "希望の寄付プラットフォームを選択"
 
 #: prefs.js:2622
 msgid "License & Credits"
@@ -953,15 +854,13 @@ msgstr "メディアデータソース"
 
 #: prefs.js:2636
 msgid "MPRIS D-Bus interface - Standard media player remote interfacing"
-msgstr ""
-"MPRIS D-Busインターフェース - 標準メディアプレーヤーリモートインターフェース"
+msgstr "MPRIS D-Busインターフェース - 標準メディアプレーヤーリモートインターフェース"
 
 #: prefs.js:2644
 msgid "Key Features"
 msgstr "主な機能"
 
 #: prefs.js:2646
-#, fuzzy
 msgid ""
 "• Multi-instance browser support\n"
 "• Per-app rotating vinyl record album art\n"
@@ -974,12 +873,6 @@ msgid ""
 "• Per-player lyrics toggle (each tab independent)\n"
 "• All seen apps remembered — re-enable any time"
 msgstr ""
-"• マルチインスタンスブラウザサポート\n"
-"• アプリごとの回転レコードアルバムアート\n"
-"• アニメーションのトーンアーム\n"
-"• スムーズなアニメーション\n"
-"• ダブルクリックでアプリごとのビニールを切り替え\n"
-"• 見たすべてのアプリを記憩 — いつでも再有効化"
 
 #: prefs.js:2710
 msgid "Copy to Clipboard"
@@ -988,8 +881,7 @@ msgstr "クリップボードにコピー"
 #: prefs.js:2712
 msgid ""
 "Unable to copy automatically. Select the address below and press Ctrl+C:"
-msgstr ""
-"自動的にコピーできません。以下のアドレスを選択してCtrl+Cを押してください："
+msgstr "自動コピーできません。以下のアドレスを選択してCtrl+Cを押してください："
 
 #: prefs.js:2715
 msgid "Close"
@@ -999,162 +891,125 @@ msgstr "閉じる"
 msgid "Media Controls"
 msgstr "メディアコントロール"
 
-#~ msgid ""
-#~ "Global default when no per-app setting exists. Per-app overrides in the "
-#~ "'Vinyl Apps' section take priority."
-#~ msgstr ""
-#~ "アプリごとの設定がない場合のグローバルデフォルト。「Vinylアプリ」セクショ"
-#~ "ンのアプリごとの上書きが優先されます。"
+#. ── New strings added in v5.3+ ─────────────────────────────────────────────
 
-#~ msgid ""
-#~ "- Album cover appears on a spinning vinyl disc\n"
-#~ "- Black vinyl grooves are visible around the edges\n"
-#~ "- Animated tonearm moves in and out with playback state\n"
-#~ "- Rotation pauses smoothly when music pauses\n"
-#~ "  (disc angle is preserved and resumes from the same position)\n"
-#~ "- Disc resets to 0° only on a genuine Stop\n"
-#~ "- Double-click album art to toggle vinyl for THAT player's app only\n"
-#~ "- Per-app settings override the global default above\n"
-#~ "- All seen apps are stored; re-enable any time from Vinyl Apps page\n"
-#~ msgstr ""
-#~ "- アルバムカバーが回転するレコードに表示されます\n"
-#~ "- 黒いレコードの溝が端に見えます\n"
-#~ "- アニメーションのトーンアームが再生状態に合わせて動きます\n"
-#~ "- 音楽が一時停止するとき回転がスムーズに一時停止します\n"
-#~ "  （ディスクの角度が保持され、同じ位置から再開します）\n"
-#~ "- ディスクは本物のストップ時にのみ0°にリセットされます\n"
-#~ "- アルバムアートをダブルクリックして、そのプレーヤーのアプリのみのビニール"
-#~ "を切り替えます\n"
-#~ "- アプリごとの設定が上のグローバルデフォルトを上書きします\n"
-#~ "- 見たすべてのアプリが保存されます。Vinylアプリページからいつでも再有効化"
-#~ "できます"
+#: ui/generalPage.js
+msgid "Panel Label Width"
+msgstr "パネルラベルの幅"
 
-#~ msgid ""
-#~ "Search installed apps — including browsers — to manually add a vinyl "
-#~ "entry. Useful for browser web apps whose instance hasn't been captured "
-#~ "yet via double-click."
-#~ msgstr ""
-#~ "インストール済みアプリ（ブラウザを含む）を検索して手動でビニールエントリー"
-#~ "を追加します。ダブルクリックでまだキャプチャされていないブラウザWebアプリ"
-#~ "に便利です。"
+#: ui/generalPage.js
+msgid "Visible pixel width of the track label in the top bar (60 – 400 px)"
+msgstr "トップバーのトラックラベルの表示ピクセル幅（60 – 400 px）"
 
-#~ msgid "Browser web apps (YouTube, Spotify Web, etc.)"
-#~ msgstr "ブラウザWebアプリ（YouTube、Spotify Webなど）"
+#: ui/popupPage.js
+msgid "Popup Size"
+msgstr "ポップアップサイズ"
 
-#~ msgid ""
-#~ "Enter a custom display name for \"%s\".\n"
-#~ "Leave blank to reset to the default.\n"
-#~ msgstr ""
-#~ "\"%s\"のカスタム表示名を入力してください。\n"
-#~ "デフォルトにリセットするには空白のままにしてください。"
+#: ui/popupPage.js
+msgid "Width of the popup media player panel (height scales with album art)"
+msgstr "ポップアッププレーヤーパネルの幅（高さはアルバムアートに合わせて調整）"
 
-#~ msgid "Preferred Method - Scan QR code to support development"
-#~ msgstr "推奨方法 - QRコードをスキャンして開発をサポート"
+#: ui/popupPage.js
+msgid "Popup Width"
+msgstr "ポップアップの幅"
 
-#~ msgid ""
-#~ "• Multi-instance browser support\n"
-#~ "• Per-app rotating vinyl record album art\n"
-#~ "• Animated tonearm\n"
-#~ "• Smooth animations\n"
-#~ "• Double-click to toggle vinyl per app\n"
-#~ "• All seen apps remembered — re-enable any time\n"
-#~ msgstr ""
-#~ "• マルチインスタンスブラウザサポート\n"
-#~ "• アプリごとの回転レコードアルバムアート\n"
-#~ "• アニメーションのトーンアーム\n"
-#~ "• スムーズなアニメーション\n"
-#~ "• ダブルクリックでアプリごとのビニールを切り替え\n"
-#~ "• 見たすべてのアプリを記憶 — いつでも再有効化"
+#: ui/popupPage.js
+msgid "Width in pixels — album art, labels and lyrics panel all scale with this value (280 – 600 px)"
+msgstr "ピクセル幅 — アルバムアート、ラベル、歌詞パネルがこの値に合わせて調整されます（280 – 600 px）"
 
-#~ msgid "Panel Settings"
-#~ msgstr "パネル設定"
+#: ui/popupPage.js
+msgid "Tonearm Angles"
+msgstr "トーンアームの角度"
 
-#~ msgid "Configure the position and appearance in the top panel"
-#~ msgstr "上部パネルの位置と外観を設定する"
+#: ui/popupPage.js
+msgid "Control how far the animated tonearm swings when playing or at rest"
+msgstr "再生時または休止時にアニメーションのトーンアームがどれだけ揺れるかを制御します"
 
-#~ msgid "Display Settings"
-#~ msgstr "表示設定"
+#: ui/popupPage.js
+msgid "Parked (resting) angle"
+msgstr "駐車（休止）角度"
 
-#~ msgid "Configure what appears in the panel"
-#~ msgstr "パネルに表示するものを設定する"
+#: ui/popupPage.js
+msgid "Degrees from vertical when music is paused or stopped. Higher moves the arm further from the disc (10 – 60°)"
+msgstr "音楽が一時停止または停止しているときの垂直からの角度。大きいほどアームがディスクから遠ざかります（10 – 60°）"
 
-#~ msgid "Display track information in the panel"
-#~ msgstr "パネルにトラック情報を表示する"
+#: ui/popupPage.js
+msgid "Playing angle"
+msgstr "再生角度"
 
-#~ msgid "Include artist name with track title"
-#~ msgstr "トラックタイトルにアーティスト名を含める"
+#: ui/popupPage.js
+msgid "Degrees from vertical when the stylus rests on the groove. Lower brings the arm closer to the disc centre (0 – 30°)"
+msgstr "スタイラスが溝に乗っているときの垂直からの角度。小さいほどアームがディスク中心に近づきます（0 – 30°）"
 
-#~ msgid "Maximum Title Length"
-#~ msgstr "最大タイトル長"
+#: ui/popupPage.js
+msgid "Tip: parked angle must be greater than playing angle"
+msgstr "ヒント：駐車角度は再生角度より大きくなければなりません"
 
-#~ msgid "Characters to display before scrolling starts"
-#~ msgstr "スクロール開始前に表示する文字数"
+#: ui/popupPage.js
+msgid "E.g. parked = 25°, playing = 8°. If they are equal or reversed the arm will animate incorrectly."
+msgstr "例：駐車 = 25°、再生 = 8°。等しいか逆の場合、アームは正しくアニメーションしません。"
 
-#~ msgid "Scroll Speed"
-#~ msgstr "スクロール速度"
+#: ui/aboutPage.js
+msgid "Report a Bug"
+msgstr "バグを報告する"
 
-#~ msgid "Separator Text"
-#~ msgstr "区切り文字テキスト"
+#: ui/aboutPage.js
+msgid "Request a Feature"
+msgstr "機能をリクエストする"
 
-#~ msgid ""
-#~ "Source\n"
-#~ "  • Lyrics are fetched from lrclib.net — a free, open public database\n"
-#~ "  • No account or API key is required; the request is made silently in "
-#~ "the background\n"
-#~ "\n"
-#~ "Display\n"
-#~ "  • The active lyric line is shown larger and centred in the panel\n"
-#~ "  • The line above and below are shown at medium size; all others fade "
-#~ "out\n"
-#~ "  • The panel scrolls smoothly so the active line is always in view\n"
-#~ "\n"
-#~ "Track changes\n"
-#~ "  • When a new song starts while the lyrics panel is open, the view "
-#~ "clears\n"
-#~ "    and new lyrics are fetched automatically\n"
-#~ "  • If no lyrics are found, a “No lyrics found” message is shown\n"
-#~ "\n"
-#~ "Multiple players\n"
-#~ "  • Each player tab (Spotify, YouTube, VLC…) has its own independent\n"
-#~ "    lyrics toggle — opening lyrics for one player does not affect any "
-#~ "other\n"
-#~ "  • Switching tabs restores the correct view (lyrics or album art) for\n"
-#~ "    the player you switch to\n"
-#~ "\n"
-#~ "Seeking\n"
-#~ "  • When you seek forward or backward, the highlighted line jumps\n"
-#~ "    instantly to the correct position\n"
-#~ msgstr ""
-#~ "ソース\n"
-#~ "  • 歌詞はlrclib.netから取得されます — 無料のオープンな公開データベース\n"
-#~ "  • アカウントもAPIキーも不要です。リクエストはバックグラウンドで静かに行"
-#~ "われます\n"
-#~ "\n"
-#~ "表示\n"
-#~ "  • アクティブな歌詞行はパネルで大きく中央に表示されます\n"
-#~ "  • 上下の行は中くらいのサイズで表示されます。他のすべての行はフェードアウ"
-#~ "トします\n"
-#~ "  • パネルはアクティブな行が常に見えるようにスムーズにスクロールします\n"
-#~ "\n"
-#~ "トラックの変更\n"
-#~ "  • 歌詞パネルが開いている間に新しい曲が始まると、ビューがクリアされ\n"
-#~ "    新しい歌詞が自動的に取得されます\n"
-#~ "  • 歌詞が見つからない場合、「歌詞が見つかりません」メッセージが表示されま"
-#~ "す\n"
-#~ "\n"
-#~ "複数のプレーヤー\n"
-#~ "  • 各プレーヤータブ（Spotify、YouTube、VLC…）はそれぞれ独立した\n"
-#~ "    歌詞トグルを持っています — 1つのプレーヤーの歌詞を開いても他のプレー"
-#~ "ヤーには影響しません\n"
-#~ "  • タブを切り替えると、切り替え先のプレーヤーに合った正しいビュー（歌詞ま"
-#~ "たはアルバムアート）が復元されます\n"
-#~ "\n"
-#~ "シーク\n"
-#~ "  • 前後にシークすると、ハイライトされた行が\n"
-#~ "    瞬時に正しい位置にジャンプします"
+#: ui/aboutPage.js
+msgid "Star on GitHub"
+msgstr "GitHubでスターを付ける"
 
-#~ msgid "Fetching lyrics…"
-#~ msgstr "歌詞を取得中…"
+#. ── New strings added in v5.4 (uploaded JS files) ─────────────────────────
 
-#~ msgid "No lyrics found"
-#~ msgstr "歌詞が見つかりません"
+msgid "%d clicks"
+msgstr "%d回クリック"
+
+msgid "%d times"
+msgstr "%d回"
+
+msgid "1 click"
+msgstr "1回クリック"
+
+msgid "once"
+msgstr "1回"
+
+msgid "twice"
+msgstr "2回"
+
+msgid "%s — toggle lyrics"
+msgstr "%s — 歌詞の表示/非表示"
+
+msgid "%s — toggle vinyl effect"
+msgstr "%s — ビニール効果の切り替え"
+
+msgid "Click the album art %s to show lyrics"
+msgstr "アルバムアートを%sクリックして歌詞を表示"
+
+msgid "Click again to re-open"
+msgstr "再度クリックして再表示"
+
+msgid "Album Art Click Thresholds"
+msgstr "アルバムアートのクリック閾値"
+
+msgid "Set how many rapid clicks trigger each album art action"
+msgstr "各アルバムアートアクションに必要な連続クリック数を設定します"
+
+msgid "Clicks to toggle vinyl effect"
+msgstr "ビニール効果切り替えのクリック数"
+
+msgid "Clicks to toggle lyrics view"
+msgstr "歌詞表示切り替えのクリック数"
+
+msgid "Note: thresholds must be different"
+msgstr "注意：閾値は異なる値にしてください"
+
+msgid "Rapidly click the album art this many times to enable or disable the vinyl record style for the current app"
+msgstr "アルバムアートをこの回数だけ素早くクリックして、現在のアプリのビニールスタイルを有効/無効にします"
+
+msgid "Rapidly click the album art this many times to open or close the synced lyrics panel"
+msgstr "アルバムアートをこの回数だけ素早くクリックして、同期歌詞パネルを開閉します"
+
+msgid "If both thresholds are set to the same number the lyrics action takes priority. Use distinct values (e.g. 2 for vinyl, 3 for lyrics) to trigger both independently."
+msgstr "両方の閾値が同じ場合、歌詞アクションが優先されます。独立して動作させるには異なる値（例：ビニール2回、歌詞3回）を使用してください。"

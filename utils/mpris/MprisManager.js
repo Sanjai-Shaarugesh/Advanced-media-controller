@@ -28,67 +28,8 @@ export class MprisManager {
     this._pollingPlayers = new Set();
     this._positionPollingInterval = null;
 
-    // Settings reference for player filtering
-    this._settings = null;
-
     this._player = new MprisPlayer(this);
   }
-
-  /**
-   * @param {Gio.Settings} settings
-   */
-  setSettings(settings) {
-    this._settings = settings;
-  }
-
-  //  Player filter
-
-  /**
-   * @param {string} busName  full MPRIS bus name
-   * @returns {boolean}
-   */
-  _shouldIncludePlayer(busName) {
-    if (!this._settings) return true;
-
-    let mode;
-    try {
-      mode = this._settings.get_int("player-filter-mode");
-    } catch (_e) {
-      return true;
-    }
-
-    if (mode === 0) return true; // Off – allow everything
-
-    let listStr;
-    try {
-      listStr = this._settings.get_string("player-filter-list") || "";
-    } catch (_e) {
-      return true;
-    }
-
-    const listed = listStr
-      .split(",")
-      .map((s) => s.trim())
-      .filter(Boolean)
-      .filter((s) => !s.startsWith("~"))
-      .map((s) => s.toLowerCase());
-
-    if (listed.length === 0) return true;
-    const short = busName
-      .replace(`${MprisConstants.MPRIS_PREFIX}.`, "")
-      .replace(/\.instance[_\d]+$/i, "")
-      .replace(/\.\d+$/, "")
-      .toLowerCase();
-
-    const inList = listed.includes(short);
-
-    if (mode === 1) return !inList; // Blacklist – exclude if found in active list
-    if (mode === 2) return inList; // Whitelist – allow only if found in active list
-
-    return true;
-  }
-
-  // Position polling
 
   startPositionPolling(name) {
     if (!name || this._pollingPlayers.has(name)) return;
@@ -214,10 +155,8 @@ export class MprisManager {
           try {
             const reply = conn.call_finish(result);
             const [names] = reply.deep_unpack();
-            const players = names.filter(
-              (name) =>
-                name.startsWith(`${MprisConstants.MPRIS_PREFIX}.`) &&
-                this._shouldIncludePlayer(name),
+            const players = names.filter((name) =>
+              name.startsWith(`${MprisConstants.MPRIS_PREFIX}.`),
             );
 
             for (const name of players) {
@@ -239,10 +178,7 @@ export class MprisManager {
     const [name, oldOwner, newOwner] = params.deep_unpack();
     if (!name.startsWith(`${MprisConstants.MPRIS_PREFIX}.`)) return;
 
-    // Respect the player filter for newly-appearing players
     if (!oldOwner && newOwner) {
-      if (!this._shouldIncludePlayer(name)) return;
-
       // Remove existing timeout before creating new one
       if (this._addPlayerTimeout) {
         GLib.source_remove(this._addPlayerTimeout);
@@ -492,7 +428,6 @@ export class MprisManager {
     this._pendingProxies.clear();
     this._playerPositions.clear();
     this._proxyCleanupQueue = [];
-    this._settings = null;
     this._bus = null;
     this._onPlayerAdded = null;
     this._onPlayerRemoved = null;

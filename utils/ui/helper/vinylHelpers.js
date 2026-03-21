@@ -1,6 +1,6 @@
 import Gio from "gi://Gio";
 
-//  Browser detection
+// Browser detection helpers
 
 const BROWSER_FRAGMENTS = new Set([
   "google-chrome",
@@ -25,6 +25,7 @@ const BROWSER_FRAGMENTS = new Set([
 ]);
 
 /**
+
  * @param {string} appId
  * @returns {boolean}
  */
@@ -42,6 +43,7 @@ export function isBrowserId(appId) {
 // Slug / composite-ID helpers
 
 /**
+
  * @param {string} text
  * @returns {string}
  */
@@ -52,10 +54,11 @@ export function slugify(text) {
     .replace(/[^\w\s-]/g, " ")
     .trim()
     .replace(/[\s_]+/g, "-")
-    .replace(/-{2,}/g, "-");
+    .replace(/-{2,}/g, "-"); // collapse multiple hyphens
 }
 
 /**
+
  * @param {string} browserBaseId   canonical browser id
  * @param {string} mprisIdentity   MPRIS Identity string
  * @returns {string}
@@ -68,6 +71,7 @@ export function buildBrowserSourceId(browserBaseId, mprisIdentity) {
 }
 
 /**
+
  * @param {string} id
  * @returns {{ browser: string, source: string } | null}
  */
@@ -78,6 +82,7 @@ export function parseBrowserSourceId(id) {
 }
 
 /**
+
  * @param {string} id
  * @returns {string}
  */
@@ -85,10 +90,10 @@ export function labelForId(id) {
   const parsed = parseBrowserSourceId(id);
   if (!parsed) return id;
 
-  const sourceLabel = parsed.source
+  const sourceParts = parsed.source
     .split("-")
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(" ");
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1));
+  const sourceLabel = sourceParts.join(" ");
 
   const browserLabels = {
     "google-chrome": "Chrome",
@@ -114,148 +119,66 @@ export function labelForId(id) {
   return `${sourceLabel} (${browserLabel})`;
 }
 
-// Generic tokens used to skip unhelpful reverse-DNS segments
-
-const SKIP_SEGMENTS = new Set([
-  "org",
-  "com",
-  "net",
-  "io",
-  "app",
-  "application",
-  "browser",
-  "client",
-  "player",
-  "media",
-  "desktop",
-  "instance",
-  "snap",
-  "flatpak",
-  "gnome",
-  "kde",
-  "freedesktop",
-  "github",
-]);
-
-//  resolveCanonicalIds
-
 /**
+ * Resolve a Set of lowercase canonical IDs for a player
 
- * @param {string|null}  playerName  – MPRIS bus name
- * @param {object|null}  manager     – MprisManager instance
+ * @param {string|null}  playerName  - MPRIS bus name
+ * @param {object|null}  manager     - MprisManager
  * @returns {Set<string>}
  */
 export function resolveCanonicalIds(playerName, manager) {
   const ids = new Set();
   if (!playerName) return ids;
 
-  let resolvedBaseId = null;
+  let resolvedBaseId = null; // canonical desktop id WITHOUT .desktop
 
-  //Resolve against installed .desktop database
   try {
-    const candidates = _buildCandidateTokens(playerName, manager);
+    const candidates = _buildCandidateSet(playerName, manager);
     const allApps = Gio.AppInfo.get_all();
-
-    //  exact match on full app-id with or without .desktop
     for (const app of allApps) {
       const appId = (app.get_id() ?? "").toLowerCase();
-      const noSuffix = appId.endsWith(".desktop") ? appId.slice(0, -8) : appId;
-      if (candidates.exact.has(appId) || candidates.exact.has(noSuffix)) {
-        resolvedBaseId = noSuffix;
-        _addAppIdVariants(ids, noSuffix);
+      const appIdNoSuffix = appId.endsWith(".desktop")
+        ? appId.slice(0, -8)
+        : appId;
+      if (candidates.has(appId) || candidates.has(appIdNoSuffix)) {
+        resolvedBaseId = appIdNoSuffix;
+        ids.add(appIdNoSuffix);
+        const parts = appIdNoSuffix.split(".");
+        if (parts.length > 1) ids.add(parts[parts.length - 1]);
         break;
-      }
-    }
-
-    // meaningful segment match handles reverse-DNS & snap prefixes
-    if (!resolvedBaseId) {
-      outer: for (const app of allApps) {
-        const appId = (app.get_id() ?? "").toLowerCase();
-        const noSuffix = appId.endsWith(".desktop")
-          ? appId.slice(0, -8)
-          : appId;
-        for (const seg of noSuffix.split(".")) {
-          if (
-            seg.length > 2 &&
-            !SKIP_SEGMENTS.has(seg) &&
-            candidates.segments.has(seg)
-          ) {
-            resolvedBaseId = noSuffix;
-            _addAppIdVariants(ids, noSuffix);
-            break outer;
-          }
-        }
-      }
-    }
-
-    // display-name / first-word match last resort — covers AppImages
-    if (!resolvedBaseId) {
-      outer2: for (const app of allApps) {
-        const name = (app.get_display_name() ?? "")
-          .toLowerCase()
-          .replace(/\s+/g, "");
-        if (name && candidates.segments.has(name)) {
-          const appId = (app.get_id() ?? "").toLowerCase();
-          const noSuffix = appId.endsWith(".desktop")
-            ? appId.slice(0, -8)
-            : appId;
-          resolvedBaseId = noSuffix;
-          _addAppIdVariants(ids, noSuffix);
-          break outer2;
-        }
-        const first = (app.get_display_name() ?? "")
-          .toLowerCase()
-          .split(/\s+/)[0];
-        if (first && first.length > 2 && candidates.segments.has(first)) {
-          const appId = (app.get_id() ?? "").toLowerCase();
-          const noSuffix = appId.endsWith(".desktop")
-            ? appId.slice(0, -8)
-            : appId;
-          resolvedBaseId = noSuffix;
-          _addAppIdVariants(ids, noSuffix);
-          break outer2;
-        }
       }
     }
   } catch (_e) {}
 
-  //MprisManager desktopEntries map
+  // desktopEntries map
   if (manager) {
     const de = manager._desktopEntries?.get(playerName);
     if (de) {
       const normalized = de.endsWith(".desktop") ? de.slice(0, -8) : de;
       if (!resolvedBaseId) resolvedBaseId = normalized.toLowerCase();
-      _addAppIdVariants(ids, normalized);
+      ids.add(normalized.toLowerCase());
+      const parts = normalized.split(".");
+      if (parts.length > 1) ids.add(parts[parts.length - 1].toLowerCase());
     }
   }
 
-  //Bus-name derived IDs
   const raw = playerName.replace(/^org\.mpris\.MediaPlayer2\./, "");
   const clean = raw
     .replace(/\.instance[_\-]?\d+(_\d+)?$/i, "")
-    .replace(/\.\d+$/, "")
-    .replace(/\.snap$/i, ""); // snap suffix
+    .replace(/\.\d+$/, "");
   const cleanLower = clean.toLowerCase();
 
   ids.add(cleanLower);
+  const cleanParts = clean.split(".");
+  if (cleanParts.length > 1)
+    ids.add(cleanParts[cleanParts.length - 1].toLowerCase());
   ids.add(raw.toLowerCase());
-
-  const parts = clean.split(".");
-  if (parts.length > 1) {
-    const tail = parts[parts.length - 1].toLowerCase();
-    if (!SKIP_SEGMENTS.has(tail)) ids.add(tail);
-  }
-
-  const snapBase = cleanLower.split(".").pop();
-  if (snapBase && !SKIP_SEGMENTS.has(snapBase)) {
-    ids.add(snapBase);
-    ids.add(`${snapBase}_${snapBase}`); // snap double-name convention
-  }
 
   if (!resolvedBaseId) resolvedBaseId = cleanLower;
 
-  // Browser composite ID
-  let browserBase = resolvedBaseId
+  let browserBase = resolvedBaseId;
+
+  browserBase = browserBase
     .replace(/\.instance[_\-]?\d+(_\d+)?$/i, "")
     .replace(/\.\d+$/, "");
 
@@ -266,7 +189,7 @@ export function resolveCanonicalIds(playerName, manager) {
       ids.add(compositeId);
 
       const tail = browserBase.split(".").pop();
-      if (tail !== browserBase && !SKIP_SEGMENTS.has(tail)) {
+      if (tail !== browserBase) {
         ids.add(buildBrowserSourceId(tail, identity.trim()));
       }
     }
@@ -275,11 +198,48 @@ export function resolveCanonicalIds(playerName, manager) {
   return ids;
 }
 
-// Vinyl state helpers
+/**
+ * Build the set of candidate strings used to find the app in
+
+ * @param {string}      playerName
+ * @param {object|null} manager
+ * @returns {Set<string>}
+ */
+function _buildCandidateSet(playerName, manager) {
+  const candidates = new Set();
+
+  if (manager) {
+    const de = manager._desktopEntries?.get(playerName);
+    if (de) {
+      candidates.add(de.toLowerCase());
+      candidates.add(
+        (de.endsWith(".desktop") ? de : `${de}.desktop`).toLowerCase(),
+      );
+    }
+  }
+
+  const raw = playerName.replace(/^org\.mpris\.MediaPlayer2\./, "");
+
+  const clean = raw
+    .replace(/\.instance[_\-]?\d+(_\d+)?$/i, "")
+    .replace(/\.\d+$/, "");
+
+  candidates.add(clean.toLowerCase());
+  candidates.add(`${clean}.desktop`.toLowerCase());
+
+  const parts = clean.split(".");
+  if (parts.length > 1) {
+    const tail = parts[parts.length - 1].toLowerCase();
+    candidates.add(tail);
+    candidates.add(`${tail}.desktop`);
+  }
+
+  return candidates;
+}
 
 /**
  * Returns true if any entry in vinylApps matches any id in canonicalIds
- *
+
  * @param {Set<string>} canonicalIds
  * @param {string[]}    vinylApps
  * @returns {boolean}
@@ -291,7 +251,7 @@ export function isVinylEnabledForIds(canonicalIds, vinylApps) {
     if (canonicalIds.has(appLower)) return true;
 
     const base = appLower.split(".").pop();
-    if (base && !SKIP_SEGMENTS.has(base) && canonicalIds.has(base)) return true;
+    if (base && canonicalIds.has(base)) return true;
 
     const parsed = parseBrowserSourceId(appLower);
     if (parsed) {
@@ -314,8 +274,7 @@ export function isVinylEnabledForIds(canonicalIds, vinylApps) {
 
 /**
  * Read vinyl-app-ids from settings
- * @param {Gio.Settings} settings
- * @returns {string[]}
+
  */
 export function getVinylApps(settings) {
   try {
@@ -327,6 +286,7 @@ export function getVinylApps(settings) {
 
 /**
  * Write vinyl-app-ids to settings
+ *
  * @param {Gio.Settings} settings
  * @param {string[]}     ids
  */
@@ -334,71 +294,4 @@ export function setVinylApps(settings, ids) {
   try {
     settings.set_strv("vinyl-app-ids", ids);
   } catch (_e) {}
-}
-
-// Private helpers
-
-function _addAppIdVariants(ids, appId) {
-  const lower = appId.toLowerCase();
-  ids.add(lower);
-  const parts = lower.split(".");
-  if (parts.length > 1) {
-    const tail = parts[parts.length - 1];
-    if (!SKIP_SEGMENTS.has(tail)) ids.add(tail);
-  }
-}
-
-/**
- * Build token sets used for app-info resolution
- *
- * @param {string|null}  playerName
- * @param {object|null}  manager
- * @returns {{ exact: Set<string>, segments: Set<string> }}
- */
-function _buildCandidateTokens(playerName, manager) {
-  const exact = new Set();
-  const segments = new Set();
-
-  const _add = (str) => {
-    if (!str) return;
-    const lower = str.toLowerCase().replace(/\.desktop$/, "");
-    exact.add(lower);
-    exact.add(`${lower}.desktop`);
-    for (const seg of lower.split(".")) {
-      if (seg.length > 2 && !SKIP_SEGMENTS.has(seg)) segments.add(seg);
-    }
-  };
-
-  if (manager) {
-    const de = manager._desktopEntries?.get(playerName);
-    if (de) _add(de);
-  }
-
-  if (!playerName) return { exact, segments };
-
-  const raw = playerName.replace(/^org\.mpris\.MediaPlayer2\./, "");
-  const clean = raw
-    .replace(/\.instance[_\-]?\d+(_\d+)?$/i, "")
-    .replace(/\.\d+$/, "")
-    .replace(/\.snap$/i, "");
-
-  _add(clean);
-
-  const snapBase = clean.split(".").pop();
-  if (snapBase && snapBase !== clean) {
-    _add(snapBase);
-    _add(`${snapBase}_${snapBase}`);
-  }
-
-  if (manager) {
-    const identity = manager._identities?.get(playerName);
-    if (identity && identity.trim()) {
-      const normalized = identity.trim().toLowerCase().replace(/\s+/g, "");
-      segments.add(normalized);
-      const first = identity.trim().toLowerCase().split(/\s+/)[0];
-      if (first.length > 2) segments.add(first);
-    }
-  }
-
-  return { exact, segments };
 }

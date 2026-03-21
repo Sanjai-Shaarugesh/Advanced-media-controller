@@ -1,4 +1,4 @@
-# Simplified Chinese translation for advanced-media-controller.
+# Hindi translation for advanced-media-controller.
 # Copyright (C) 2026 Sanjai Shaarugesh
 # GPL-2.0-or-later
 #
@@ -9,122 +9,122 @@ msgstr ""
 "POT-Creation-Date: 2026-03-19 18:00+0530\n"
 "PO-Revision-Date: 2026-03-19 18:00+0530\n"
 "Last-Translator: Sanjai Shaarugesh\n"
-"Language-Team: Simplified Chinese\n"
-"Language: zh_CN\n"
+"Language-Team: Hindi\n"
+"Language: hi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: prefs.js:91 prefs.js:2354 prefs.js:2387
 msgid "Advanced Media Controller"
-msgstr "高级媒体控制器"
+msgstr "उन्नत मीडिया नियंत्रक"
 
 #: prefs.js:97
 msgid "General"
-msgstr "常规"
+msgstr "सामान्य"
 
 #: prefs.js:103
 msgid "Panel Placement"
-msgstr "面板位置"
+msgstr "पैनल स्थान"
 
 #: prefs.js:104
 msgid "Where the indicator sits in the top bar"
-msgstr "指示器在顶部栏的位置"
+msgstr "शीर्ष बार में संकेतक की स्थिति"
 
 #: prefs.js:108
 msgid "Panel Position"
-msgstr "面板位置"
+msgstr "पैनल स्थिति"
 
 #: prefs.js:110
 msgid "Left"
-msgstr "左侧"
+msgstr "बाएं"
 
 #: prefs.js:110
 msgid "Center"
-msgstr "中央"
+msgstr "मध्य"
 
 #: prefs.js:110
 msgid "Right"
-msgstr "右侧"
+msgstr "दाएं"
 
 #: prefs.js:125
 msgid "Panel Index"
-msgstr "面板索引"
+msgstr "पैनल अनुक्रमणिका"
 
 #: prefs.js:126
 msgid "Position within the panel area (-1 = automatic)"
-msgstr "面板区域内的位置（-1 = 自动）"
+msgstr "पैनल क्षेत्र में स्थिति (-1 = स्वचालित)"
 
 #: prefs.js:144
 msgid "Panel Label"
-msgstr "面板标签"
+msgstr "पैनल लेबल"
 
 #: prefs.js:145
 msgid "Track name shown in the top bar"
-msgstr "顶部栏中显示的曲目名称"
+msgstr "शीर्ष बार में दिखाया गया ट्रैक नाम"
 
 #: prefs.js:150
 msgid "Show Track Name"
-msgstr "显示曲目名称"
+msgstr "ट्रैक नाम दिखाएं"
 
 #: prefs.js:151
 msgid "Display the current track title in the panel"
-msgstr "在面板中显示当前曲目标题"
+msgstr "पैनल में वर्तमान ट्रैक शीर्षक दिखाएं"
 
 #: prefs.js:162
 msgid "Show Artist Name"
-msgstr "显示艺术家名称"
+msgstr "कलाकार का नाम दिखाएं"
 
 #: prefs.js:163
 msgid "Append the artist name to the track title"
-msgstr "在曲目标题中附加艺术家名称"
+msgstr "ट्रैक शीर्षक में कलाकार का नाम जोड़ें"
 
 #: prefs.js:174
 msgid "Title / Artist Separator"
-msgstr "标题 / 艺术家分隔符"
+msgstr "शीर्षक / कलाकार विभाजक"
 
 #: prefs.js:184
 msgid "Panel Scrolling"
-msgstr "面板滚动"
+msgstr "पैनल स्क्रॉलिंग"
 
 #: prefs.js:185
 msgid "Marquee scroll of the track label in the top bar"
-msgstr "顶部栏中曲目标签的跑马灯滚动"
+msgstr "शीर्ष बार में ट्रैक लेबल की मार्की स्क्रॉल"
 
 #: prefs.js:190
 msgid "Enable Panel Label Scrolling"
-msgstr "启用面板标签滚动"
+msgstr "पैनल लेबल स्क्रॉलिंग सक्षम करें"
 
 #: prefs.js:192
 msgid ""
 "Scroll the track/artist text one full loop then pause before repeating. When "
 "off, the text is truncated with an ellipsis."
-msgstr "将曲目/艺术家文字滚动一个完整循环后暂停，然后重复。关闭时以省略号截断。"
+msgstr "ट्रैक/कलाकार पाठ को एक पूरा लूप स्क्रॉल करें फिर रुकें। बंद होने पर दीर्घवृत्त से छोटा किया जाएगा।"
 
 #: prefs.js:205
 msgid "Panel Scroll Speed"
-msgstr "面板滚动速度"
+msgstr "पैनल स्क्रॉल गति"
 
 #: prefs.js:206 prefs.js:314 prefs.js:354
 msgid "1 = slowest, 10 = fastest"
-msgstr "1 = 最慢，10 = 最快"
+msgstr "1 = सबसे धीमा, 10 = सबसे तेज़"
 
 #: prefs.js:224
 msgid "System Integration"
-msgstr "系统集成"
+msgstr "सिस्टम एकीकरण"
 
 #: prefs.js:226
 msgid "Controls how this extension interacts with other parts of GNOME Shell."
-msgstr "控制此扩展与 GNOME Shell 其他部分的交互方式。"
+msgstr "यह एक्सटेंशन GNOME Shell के अन्य भागों के साथ कैसे इंटरैक्ट करता है, इसे नियंत्रित करता है।"
 
 #: prefs.js:237
 msgid "Hide Default GNOME Media Player"
-msgstr "隐藏默认 GNOME 媒体播放器"
+msgstr "डिफ़ॉल्ट GNOME मीडिया प्लेयर छुपाएं"
 
 #: prefs.js:239
 msgid "Remove the built-in media controls from the system date/time menu"
-msgstr "从系统日期/时间菜单中删除内置媒体控件"
+msgstr "सिस्टम दिनांक/समय मेनू से अंतर्निहित मीडिया नियंत्रण हटाएं"
 
 #: prefs.js:260
 msgid ""
@@ -139,63 +139,63 @@ msgstr ""
 
 #: prefs.js:286
 msgid "Popup Player"
-msgstr "弹出播放器"
+msgstr "पॉपअप प्लेयर"
 
 #: prefs.js:292
 msgid "Title Scrolling"
-msgstr "标题滚动"
+msgstr "शीर्षक स्क्रॉलिंग"
 
 #: prefs.js:293
 msgid "Marquee behaviour for the track title inside the popup"
-msgstr "弹出窗口中曲目标题的跑马灯行为"
+msgstr "पॉपअप में ट्रैक शीर्षक के लिए मार्की व्यवहार"
 
 #: prefs.js:298
 msgid "Enable Title Scrolling"
-msgstr "启用标题滚动"
+msgstr "शीर्षक स्क्रॉलिंग सक्षम करें"
 
 #: prefs.js:300
 msgid ""
 "Scroll long track titles from start to end, pause, then repeat. When off, "
 "the text is truncated with an ellipsis."
-msgstr "将长曲目标题从头到尾滚动，暂停后重复。关闭时以省略号截断。"
+msgstr "लंबे ट्रैक शीर्षकों को शुरू से अंत तक स्क्रॉल करें, रुकें, फिर दोहराएं। बंद होने पर छोटा किया जाएगा।"
 
 #: prefs.js:313
 msgid "Title Scroll Speed"
-msgstr "标题滚动速度"
+msgstr "शीर्षक स्क्रॉल गति"
 
 #: prefs.js:332
 msgid "Artist Scrolling"
-msgstr "艺术家滚动"
+msgstr "कलाकार स्क्रॉलिंग"
 
 #: prefs.js:333
 msgid "Marquee behaviour for the artist name inside the popup"
-msgstr "弹出窗口中艺术家名称的跑马灯行为"
+msgstr "पॉपअप में कलाकार के नाम के लिए मार्की व्यवहार"
 
 #: prefs.js:338
 msgid "Enable Artist Scrolling"
-msgstr "启用艺术家滚动"
+msgstr "कलाकार स्क्रॉलिंग सक्षम करें"
 
 #: prefs.js:340
 msgid ""
 "Scroll long artist names from start to end, pause, then repeat. When off, "
 "the text is truncated with an ellipsis."
-msgstr "将长艺术家名称从头到尾滚动，暂停后重复。关闭时以省略号截断。"
+msgstr "लंबे कलाकार नामों को स्क्रॉल करें, रुकें, फिर दोहराएं। बंद होने पर छोटा किया जाएगा।"
 
 #: prefs.js:353
 msgid "Artist Scroll Speed"
-msgstr "艺术家滚动速度"
+msgstr "कलाकार स्क्रॉल गति"
 
 #: prefs.js:373
 msgid "Album Art"
-msgstr "专辑封面"
+msgstr "एल्बम आर्ट"
 
 #: prefs.js:374
 msgid "Vinyl-record rotation animation"
-msgstr "黑胶唱片旋转动画"
+msgstr "विनाइल रिकॉर्ड रोटेशन एनिमेशन"
 
 #: prefs.js:379
 msgid "Enable Vinyl Record Rotation (Global Default)"
-msgstr "启用黑胶唱片旋转（全局默认）"
+msgstr "विनाइल रिकॉर्ड रोटेशन सक्षम करें (वैश्विक डिफ़ॉल्ट)"
 
 #: prefs.js:381
 msgid ""
@@ -205,19 +205,19 @@ msgstr ""
 
 #: prefs.js:395
 msgid "Rotation Speed (seconds per revolution)"
-msgstr "旋转速度（每圈秒数）"
+msgstr "रोटेशन गति (प्रति चक्कर सेकंड)"
 
 #: prefs.js:396
 msgid "5 = fastest, 60 = slowest. Recommended: 20–30"
-msgstr "5 = 最快，60 = 最慢。推荐：20–30"
+msgstr "5 = सबसे तेज़, 60 = सबसे धीमा। अनुशंसित: 20–30"
 
 #: prefs.js:414
 msgid "Vinyl Effect Details"
-msgstr "黑胶效果详情"
+msgstr "विनाइल प्रभाव विवरण"
 
 #: prefs.js:415
 msgid "How the animated vinyl record works"
-msgstr "动态黑胶唱片的工作原理"
+msgstr "एनिमेटेड विनाइल रिकॉर्ड कैसे काम करता है"
 
 #: prefs.js:420
 msgid ""
@@ -234,19 +234,19 @@ msgstr ""
 
 #: prefs.js:445
 msgid "Vinyl Apps"
-msgstr "黑胶应用"
+msgstr "विनाइल ऐप्स"
 
 #: prefs.js:453
 msgid "Player Filter"
-msgstr "播放器过滤器"
+msgstr "प्लेयर फ़िल्टर"
 
 #: prefs.js:461
 msgid "Lyrics"
-msgstr "歌词"
+msgstr "गीत के बोल"
 
 #: prefs.js:519 prefs.js:546
 msgid "Filter Mode"
-msgstr "过滤模式"
+msgstr "फ़िल्टर मोड"
 
 #: prefs.js:521
 msgid ""
@@ -256,31 +256,31 @@ msgstr ""
 
 #: prefs.js:532
 msgid "Off"
-msgstr "关闭"
+msgstr "बंद"
 
 #: prefs.js:533
 msgid "Blacklist"
-msgstr "黑名单"
+msgstr "ब्लैकलिस्ट"
 
 #: prefs.js:534
 msgid "Whitelist"
-msgstr "白名单"
+msgstr "व्हाइटलिस्ट"
 
 #: prefs.js:540
 msgid "Show all media players — filtering is disabled"
-msgstr "显示所有媒体播放器 — 过滤已禁用"
+msgstr "सभी मीडिया प्लेयर दिखाएं — फ़िल्टरिंग अक्षम"
 
 #: prefs.js:541
 msgid "Hide only the players you add to the list below"
-msgstr "仅隐藏添加到以下列表中的播放器"
+msgstr "केवल नीचे की सूची में जोड़े गए प्लेयर छुपाएं"
 
 #: prefs.js:542
 msgid "Show only the players you add to the list below"
-msgstr "仅显示添加到以下列表中的播放器"
+msgstr "केवल नीचे की सूची में जोड़े गए प्लेयर दिखाएं"
 
 #: prefs.js:569
 msgid "Saved Players"
-msgstr "已保存的播放器"
+msgstr "सहेजे गए प्लेयर"
 
 #: prefs.js:571
 msgid ""
@@ -291,7 +291,7 @@ msgstr ""
 
 #: prefs.js:597
 msgid "No players saved yet"
-msgstr "尚未保存任何播放器"
+msgstr "अभी तक कोई प्लेयर सहेजा नहीं गया"
 
 #: prefs.js:599
 msgid ""
@@ -301,21 +301,21 @@ msgstr ""
 #: prefs.js:653
 #, javascript-format
 msgid "Filter rule active for “%s” — click to disable"
-msgstr "「%s」的过滤规则已启用 — 点击停用"
+msgstr "“%s” के लिए फ़िल्टर नियम सक्रिय — अक्षम करने के लिए क्लिक करें"
 
 #: prefs.js:654
 #, javascript-format
 msgid "Filter rule disabled for “%s” — click to enable"
-msgstr "「%s」的过滤规则已停用 — 点击启用"
+msgstr "“%s” के लिए फ़िल्टर नियम अक्षम — सक्रिय करने के लिए क्लिक करें"
 
 #: prefs.js:676
 #, javascript-format
 msgid "Remove “%s” from the filter list"
-msgstr "从过滤器列表中移除「%s」"
+msgstr "फ़िल्टर सूची से “%s” हटाएं"
 
 #: prefs.js:709
 msgid "Detected Players"
-msgstr "检测到的播放器"
+msgstr "पहचाने गए प्लेयर"
 
 #: prefs.js:711
 msgid ""
@@ -325,66 +325,66 @@ msgstr ""
 
 #: prefs.js:718
 msgid "Scan for running players"
-msgstr "扫描正在运行的播放器"
+msgstr "चल रहे प्लेयर खोजें"
 
 #: prefs.js:719
 msgid "Detects players currently broadcasting on MPRIS"
-msgstr "检测当前通过 MPRIS 广播的播放器"
+msgstr "वर्तमान में MPRIS पर प्रसारण करने वाले प्लेयर पहचानता है"
 
 #: prefs.js:725
 msgid "Refresh the detected player list"
-msgstr "刷新检测到的播放器列表"
+msgstr "पहचाने गए प्लेयर सूची ताज़ा करें"
 
 #: prefs.js:753
 msgid "Could not connect to the session bus"
-msgstr "无法连接到会话总线"
+msgstr "सत्र बस से कनेक्ट नहीं हो सका"
 
 #: prefs.js:783 prefs.js:1375
 msgid "No active players detected"
-msgstr "未检测到活动播放器"
+msgstr "कोई सक्रिय प्लेयर नहीं पाया गया"
 
 #: prefs.js:784 prefs.js:1376
 msgid "Open a music app and click Refresh"
-msgstr "打开音乐应用并点击刷新"
+msgstr "एक संगीत ऐप खोलें और ताज़ा करें पर क्लिक करें"
 
 #: prefs.js:842 prefs.js:861 prefs.js:871
 msgid "Saved ✓"
-msgstr "已保存 ✓"
+msgstr "सहेजा ✓"
 
 #: prefs.js:843 prefs.js:871
 msgid "Add to Filter"
-msgstr "添加到过滤器"
+msgstr "फ़िल्टर में जोड़ें"
 
 #: prefs.js:849 prefs.js:864
 #, javascript-format
 msgid "“%s” is already in the filter list"
-msgstr "「%s」已在过滤器列表中"
+msgstr "“%s” पहले से फ़िल्टर सूची में है"
 
 #: prefs.js:850
 #, javascript-format
 msgid "Add “%s” to the filter list (enabled by default)"
-msgstr "将「%s」添加到过滤器列表（默认启用）"
+msgstr "“%s” को फ़िल्टर सूची में जोड़ें (डिफ़ॉल्ट रूप से सक्षम)"
 
 #: prefs.js:899
 msgid "Synced Lyrics"
-msgstr "同步歌词"
+msgstr "सिंक्ड गीत बोल"
 
 #: prefs.js:901
 msgid "Time-synced lyrics fetched from lrclib.net — free, no account needed"
-msgstr "从 lrclib.net 获取的时间同步歌词 — 免费，无需账号"
+msgstr "lrclib.net से प्राप्त समय-सिंक्ड गीत बोल — मुफ़्त, खाता आवश्यक नहीं"
 
 #: prefs.js:907
 msgid "Enable Synced Lyrics"
-msgstr "启用同步歌词"
+msgstr "सिंक्ड गीत बोल सक्षम करें"
 
 #: prefs.js:909
 msgid ""
 "Fetch and display scrolling lyrics that follow the current playback position"
-msgstr "获取并显示跟随当前播放位置滚动的歌词"
+msgstr "वर्तमान प्लेबैक स्थिति के अनुसार स्क्रॉलिंग गीत बोल प्राप्त और प्रदर्शित करें"
 
 #: prefs.js:926
 msgid "How to Use Lyrics"
-msgstr "如何使用歌词"
+msgstr "गीत बोल कैसे उपयोग करें"
 
 #: prefs.js:928
 msgid ""
@@ -394,7 +394,7 @@ msgstr ""
 
 #: prefs.js:936
 msgid "Start playing a song"
-msgstr "开始播放歌曲"
+msgstr "एक गीत बजाना शुरू करें"
 
 #: prefs.js:938
 msgid ""
@@ -404,7 +404,7 @@ msgstr ""
 
 #: prefs.js:943
 msgid "Open the popup player"
-msgstr "打开弹出播放器"
+msgstr "पॉपअप प्लेयर खोलें"
 
 #: prefs.js:945
 msgid ""
@@ -414,7 +414,7 @@ msgstr ""
 
 #: prefs.js:950
 msgid "Triple-click the album art to show lyrics"
-msgstr "三击专辑封面显示歌词"
+msgstr "गीत बोल दिखाने के लिए एल्बम आर्ट पर तिन बार क्लिक करें"
 
 #: prefs.js:952
 msgid ""
@@ -425,7 +425,7 @@ msgstr ""
 
 #: prefs.js:957
 msgid "Single-click the lyrics panel to go back"
-msgstr "单击歌词面板返回"
+msgstr "वापस जाने के लिए गीत बोल पैनल पर एक बार क्लिक करें"
 
 #: prefs.js:959
 msgid ""
@@ -435,7 +435,7 @@ msgstr ""
 
 #: prefs.js:964
 msgid "Triple-click again to re-open"
-msgstr "再次三击重新打开"
+msgstr "पुनः खोलने के लिए फिर से तिन बार क्लिक करें"
 
 #: prefs.js:966
 msgid ""
@@ -445,19 +445,19 @@ msgstr ""
 
 #: prefs.js:986
 msgid "Lyrics Behaviour"
-msgstr "歌词行为"
+msgstr "गीत बोल व्यवहार"
 
 #: prefs.js:987
 msgid "What happens behind the scenes"
-msgstr "后台发生的事情"
+msgstr "पर्दे के पीछे क्या होता है"
 
 #: prefs.js:992
 msgid "Lyrics details & edge cases"
-msgstr "歌词详情与边缘情况"
+msgstr "गीत बोल विवरण और एज केस"
 
 #: prefs.js:993
 msgid "What to expect when the lyrics panel is open"
-msgstr "歌词面板打开时的预期效果"
+msgstr "गीत बोल पैनल खुला होने पर क्या उम्मीद करें"
 
 #: prefs.js:999
 msgid ""
@@ -489,24 +489,24 @@ msgstr ""
 
 #: prefs.js:1039
 msgid "Album Art Click Actions"
-msgstr "专辑封面点击操作"
+msgstr "एल्बम आर्ट क्लिक क्रियाएं"
 
 #: prefs.js:1041
 msgid "Summary of what each click pattern does on the album art cover"
-msgstr "各点击方式在专辑封面上的操作说明"
+msgstr "एल्बम आर्ट पर प्रत्येक क्लिक पैटर्न का सारांश"
 
 #: prefs.js:1049
 msgid "Single click"
-msgstr "单击"
+msgstr "एकल क्लिक"
 
 #: prefs.js:1051
 msgid ""
 "When lyrics are showing: closes the lyrics panel and returns to the album art"
-msgstr "显示歌词时：关闭歌词面板并返回专辑封面"
+msgstr "गीत बोल दिखते समय: पैनल बंद करें और एल्बम आर्ट पर वापस जाएं"
 
 #: prefs.js:1056
 msgid "Double click"
-msgstr "双击"
+msgstr "दोहरा क्लिक"
 
 #: prefs.js:1058
 msgid ""
@@ -516,7 +516,7 @@ msgstr ""
 
 #: prefs.js:1063
 msgid "Triple click"
-msgstr "三击"
+msgstr "तिहरा क्लिक"
 
 #: prefs.js:1065
 msgid ""
@@ -526,11 +526,11 @@ msgstr ""
 
 #: prefs.js:1084
 msgid "Data Source"
-msgstr "数据来源"
+msgstr "डेटा स्रोत"
 
 #: prefs.js:1085
 msgid "Where lyrics come from"
-msgstr "歌词来源"
+msgstr "गीत बोल कहाँ से आते हैं"
 
 #: prefs.js:1090
 msgid "lrclib.net"
@@ -540,11 +540,11 @@ msgstr "lrclib.net"
 msgid ""
 "Free, open-source time-synced lyrics database — no sign-up, no tracking, no "
 "ads"
-msgstr "免费开源时间同步歌词数据库 — 无需注册，无追踪，无广告"
+msgstr "मुफ़्त ओपन-सोर्स समय-सिंक्ड गीत बोल डेटाबेस — साइन-अप नहीं, ट्रैकिंग नहीं, विज्ञापन नहीं"
 
 #: prefs.js:1120
 msgid "Privacy note"
-msgstr "隐私说明"
+msgstr "गोपनीयता नोट"
 
 #: prefs.js:1122
 msgid ""
@@ -555,11 +555,11 @@ msgstr ""
 
 #: prefs.js:1140
 msgid "How to Enable Vinyl Style for an App"
-msgstr "如何为应用启用黑胶样式"
+msgstr "किसी ऐप के लिए विनाइल स्टाइल कैसे सक्षम करें"
 
 #: prefs.js:1147
 msgid "Start playing music"
-msgstr "开始播放音乐"
+msgstr "संगीत बजाना शुरू करें"
 
 #: prefs.js:1149
 msgid ""
@@ -569,15 +569,15 @@ msgstr ""
 
 #: prefs.js:1154
 msgid "Open the extension popup"
-msgstr "打开扩展弹出窗口"
+msgstr "एक्सटेंशन पॉपअप खोलें"
 
 #: prefs.js:1156
 msgid "Click the media controller in the top panel to open the popup player."
-msgstr "点击顶部面板中的媒体控制器以打开弹出播放器。"
+msgstr "पॉपअप प्लेयर खोलने के लिए शीर्ष पैनल में मीडिया नियंत्रक पर क्लिक करें।"
 
 #: prefs.js:1161
 msgid "Double-click the album art"
-msgstr "双击专辑封面"
+msgstr "एल्बम आर्ट पर दोहरा क्लिक करें"
 
 #: prefs.js:1163
 msgid ""
@@ -589,7 +589,7 @@ msgstr ""
 
 #: prefs.js:1169
 msgid "Manage saved instances below"
-msgstr "在下方管理已保存的实例"
+msgstr "नीचे सहेजे गए इंस्टेंस प्रबंधित करें"
 
 #: prefs.js:1171
 msgid ""
@@ -600,7 +600,7 @@ msgstr ""
 
 #: prefs.js:1192
 msgid "Saved App Instances"
-msgstr "已保存的应用实例"
+msgstr "सहेजे गए ऐप इंस्टेंस"
 
 #: prefs.js:1194
 msgid ""
@@ -611,7 +611,7 @@ msgstr ""
 
 #: prefs.js:1208
 msgid "Add an App Manually"
-msgstr "手动添加应用"
+msgstr "एक ऐप मैन्युअल रूप से जोड़ें"
 
 #: prefs.js:1210
 msgid ""
@@ -634,15 +634,15 @@ msgstr ""
 
 #: prefs.js:1237
 msgid "Search apps"
-msgstr "搜索应用"
+msgstr "ऐप खोजें"
 
 #: prefs.js:1241
 msgid "Type an app or browser name…"
-msgstr "输入应用或浏览器名称…"
+msgstr "ऐप या ब्राउज़र का नाम टाइप करें…"
 
 #: prefs.js:1310
 msgid "Running Players (Live Detection)"
-msgstr "正在运行的播放器（实时检测）"
+msgstr "चल रहे प्लेयर (लाइव डिटेक्शन)"
 
 #: prefs.js:1312
 msgid ""
@@ -652,36 +652,36 @@ msgstr ""
 
 #: prefs.js:1319
 msgid "Scan for active players"
-msgstr "扫描活动播放器"
+msgstr "सक्रिय प्लेयर खोजें"
 
 #: prefs.js:1320
 msgid "Detects players currently broadcasting on the MPRIS D-Bus"
-msgstr "检测当前通过 MPRIS D-Bus 广播的播放器"
+msgstr "वर्तमान में MPRIS D-Bus पर प्रसारण करने वाले प्लेयर पहचानता है"
 
 #: prefs.js:1326
 msgid "Refresh"
-msgstr "刷新"
+msgstr "ताज़ा करें"
 
 #: prefs.js:1453
 msgid "Use This"
-msgstr "使用此"
+msgstr "इसका उपयोग करें"
 
 #: prefs.js:1457
 #, javascript-format
 msgid "Add “%s” as a vinyl-enabled instance"
-msgstr "将「%s」添加为已启用黑胶的实例"
+msgstr "“%s” को विनाइल-सक्षम इंस्टेंस के रूप में जोड़ें"
 
 #: prefs.js:1501
 msgid "All running players are already saved"
-msgstr "所有正在运行的播放器均已保存"
+msgstr "सभी चल रहे प्लेयर पहले से सहेजे गए हैं"
 
 #: prefs.js:1502
 msgid "Manage them in the Saved App Instances section above"
-msgstr "在上方「已保存的应用实例」部分中管理"
+msgstr "ऊपर सहेजे गए ऐप इंस्टेंस अनुभाग में प्रबंधित करें"
 
 #: prefs.js:1559
 msgid "No instances saved yet"
-msgstr "尚未保存任何实例"
+msgstr "अभी तक कोई इंस्टेंस सहेजा नहीं गया"
 
 #: prefs.js:1561
 msgid ""
@@ -692,25 +692,25 @@ msgstr ""
 #: prefs.js:1660
 #, javascript-format
 msgid "%s via %s"
-msgstr "%s（通过 %s）"
+msgstr "%s (%s के माध्यम से)"
 
 #: prefs.js:1669 prefs.js:2134
 msgid "renamed from"
-msgstr "从以下重命名"
+msgstr "से नाम बदला गया:"
 
 #: prefs.js:1692
 #, javascript-format
 msgid "Rename “%s”"
-msgstr "重命名「%s」"
+msgstr "“%s” का नाम बदलें"
 
 #: prefs.js:1716
 #, javascript-format
 msgid "Remove %s from saved instances"
-msgstr "从已保存的实例中删除 %s"
+msgstr "सहेजे गए इंस्टेंस से %s हटाएं"
 
 #: prefs.js:1733
 msgid "Rename Instance"
-msgstr "重命名实例"
+msgstr "इंस्टेंस का नाम बदलें"
 
 #: prefs.js:1735
 #, javascript-format
@@ -721,144 +721,144 @@ msgstr ""
 
 #: prefs.js:1741
 msgid "Cancel"
-msgstr "取消"
+msgstr "रद्द करें"
 
 #: prefs.js:1742
 msgid "Rename"
-msgstr "重命名"
+msgstr "नाम बदलें"
 
 #: prefs.js:1760
 msgid "Display name"
-msgstr "显示名称"
+msgstr "प्रदर्शन नाम"
 
 #: prefs.js:2105
 msgid "Saved Instances"
-msgstr "已保存的实例"
+msgstr "सहेजे गए इंस्टेंस"
 
 #: prefs.js:2126
 #, javascript-format
 msgid "Browser: %s · Source: %s"
-msgstr "浏览器：%s · 来源：%s"
+msgstr "ब्राउज़र: %s · स्रोत: %s"
 
 #: prefs.js:2177
 msgid "Other Apps"
-msgstr "其他应用"
+msgstr "अन्य ऐप्स"
 
 #: prefs.js:2250
 msgid "No matching apps found"
-msgstr "未找到匹配的应用"
+msgstr "कोई मेल खाने वाला ऐप नहीं मिला"
 
 #: prefs.js:2349
 msgid "About"
-msgstr "关于"
+msgstr "के बारे में"
 
 #: prefs.js:2356
 msgid "Beautiful and modern media controls with multi-instance support"
-msgstr "支持多实例的精美现代媒体控件"
+msgstr "मल्टी-इंस्टेंस सपोर्ट के साथ सुंदर और आधुनिक मीडिया नियंत्रण"
 
 #: prefs.js:2394
 msgid "Version 5.4"
-msgstr "版本 5.4"
+msgstr "संस्करण 5.4"
 
 #: prefs.js:2401
 msgid "Modern media controls with native GNOME design"
-msgstr "采用原生 GNOME 设计的现代媒体控件"
+msgstr "नेटिव GNOME डिज़ाइन के साथ आधुनिक मीडिया नियंत्रण"
 
 #: prefs.js:2415
 msgid "Extension Links"
-msgstr "扩展链接"
+msgstr "एक्सटेंशन लिंक"
 
 #: prefs.js:2416 prefs.js:2421
 msgid "Source code, issues, and contributions"
-msgstr "源代码、问题和贡献"
+msgstr "स्रोत कोड, समस्याएं और योगदान"
 
 #: prefs.js:2420
 msgid "View on GitHub"
-msgstr "在 GitHub 上查看"
+msgstr "GitHub पर देखें"
 
 #: prefs.js:2447
 msgid "☕ Buy Me a Coffee"
-msgstr "☕ 请我喝杯咖啡"
+msgstr "☕ मुझे एक कॉफ़ी खरीदें"
 
 #: prefs.js:2448
 msgid "Support development with a small donation"
-msgstr "通过小额捐款支持开发"
+msgstr "एक छोटे दान के साथ विकास का समर्थन करें"
 
 #: prefs.js:2452
 msgid "☕ Support by buying me a coffee – just scan the QR code!"
-msgstr "☕ 请我喝杯咖啡来支持 - 扫描二维码！"
+msgstr "☕ कॉफ़ी खरीदकर समर्थन करें – बस QR कोड स्कैन करें!"
 
 #: prefs.js:2453
 msgid "Scan QR code to open Buy Me a Coffee"
-msgstr "扫描二维码打开「请我喝咖啡」页面"
+msgstr "Buy Me a Coffee खोलने के लिए QR कोड स्कैन करें"
 
 #: prefs.js:2456
 msgid "❤ GitHub Sponsors"
-msgstr "❤ GitHub 赞助者"
+msgstr "❤ GitHub प्रायोजक"
 
 #: prefs.js:2457
 msgid "Sponsor via GitHub — one-time or monthly"
-msgstr "通过 GitHub 赞助 — 一次性或每月"
+msgstr "GitHub के माध्यम से प्रायोजित करें — एकबारगी या मासिक"
 
 #: prefs.js:2461
 msgid "❤ Support via GitHub Sponsors – just scan the QR code!"
-msgstr "❤ 通过 GitHub 赞助者支持 - 扫描二维码！"
+msgstr "❤ GitHub Sponsors के माध्यम से समर्थन – QR कोड स्कैन करें!"
 
 #: prefs.js:2462
 msgid "Scan QR code to open GitHub Sponsors"
-msgstr "扫描二维码打开 GitHub 赞助者页面"
+msgstr "GitHub Sponsors खोलने के लिए QR कोड स्कैन करें"
 
 #: prefs.js:2484
 msgid "Donation Platform"
-msgstr "捐款平台"
+msgstr "दान प्लेटफ़ॉर्म"
 
 #: prefs.js:2485
 msgid "Switch to see the QR code for each platform"
-msgstr "切换以查看每个平台的二维码"
+msgstr "प्रत्येक प्लेटफ़ॉर्म का QR कोड देखने के लिए स्विच करें"
 
 #: prefs.js:2523
 msgid "Donation Address"
-msgstr "捐款地址"
+msgstr "दान पता"
 
 #: prefs.js:2537
 msgid "Donation address"
-msgstr "捐款地址"
+msgstr "दान पता"
 
 #: prefs.js:2579
 msgid "Support Development"
-msgstr "支持开发"
+msgstr "विकास का समर्थन करें"
 
 #: prefs.js:2580
 msgid "Choose your preferred donation platform"
-msgstr "选择您首选的捐款平台"
+msgstr "अपना पसंदीदा दान प्लेटफ़ॉर्म चुनें"
 
 #: prefs.js:2622
 msgid "License & Credits"
-msgstr "许可证与致谢"
+msgstr "लाइसेंस और श्रेय"
 
 #: prefs.js:2623
 msgid "Open source software information"
-msgstr "开源软件信息"
+msgstr "ओपन सोर्स सॉफ़्टवेयर जानकारी"
 
 #: prefs.js:2626
 msgid "Open Source License"
-msgstr "开源许可证"
+msgstr "ओपन सोर्स लाइसेंस"
 
 #: prefs.js:2627
 msgid "GPL-3.0 License - Free and open source software"
-msgstr "GPL-3.0 许可证 - 自由开源软件"
+msgstr "GPL-3.0 लाइसेंस - मुफ़्त और ओपन सोर्स सॉफ़्टवेयर"
 
 #: prefs.js:2634
 msgid "Media Data Sources"
-msgstr "媒体数据来源"
+msgstr "मीडिया डेटा स्रोत"
 
 #: prefs.js:2636
 msgid "MPRIS D-Bus interface - Standard media player remote interfacing"
-msgstr "MPRIS D-Bus 接口 - 标准媒体播放器远程接口"
+msgstr "MPRIS D-Bus इंटरफ़ेस - मानक मीडिया प्लेयर रिमोट इंटरफ़ेसिंग"
 
 #: prefs.js:2644
 msgid "Key Features"
-msgstr "主要功能"
+msgstr "मुख्य विशेषताएं"
 
 #: prefs.js:2646
 msgid ""
@@ -876,140 +876,140 @@ msgstr ""
 
 #: prefs.js:2710
 msgid "Copy to Clipboard"
-msgstr "复制到剪贴板"
+msgstr "क्लिपबोर्ड पर कॉपी करें"
 
 #: prefs.js:2712
 msgid ""
 "Unable to copy automatically. Select the address below and press Ctrl+C:"
-msgstr "无法自动复制。请选择以下地址并按 Ctrl+C："
+msgstr "स्वचालित रूप से कॉपी करने में असमर्थ। नीचे दिया गया पता चुनें और Ctrl+C दबाएं:"
 
 #: prefs.js:2715
 msgid "Close"
-msgstr "关闭"
+msgstr "बंद करें"
 
 #: utils/indicator.js:19
 msgid "Media Controls"
-msgstr "媒体控件"
+msgstr "मीडिया नियंत्रण"
 
 #. ── New strings added in v5.3+ ─────────────────────────────────────────────
 
 #: ui/generalPage.js
 msgid "Panel Label Width"
-msgstr "面板标签宽度"
+msgstr "पैनल लेबल चौड़ाई"
 
 #: ui/generalPage.js
 msgid "Visible pixel width of the track label in the top bar (60 – 400 px)"
-msgstr "顶部栏中曲目标签的可见像素宽度（60 – 400 像素）"
+msgstr "शीर्ष बार में ट्रैक लेबल की दृश्यमान पिक्सेल चौड़ाई (60 – 400 px)"
 
 #: ui/popupPage.js
 msgid "Popup Size"
-msgstr "弹出窗口大小"
+msgstr "पॉपअप आकार"
 
 #: ui/popupPage.js
 msgid "Width of the popup media player panel (height scales with album art)"
-msgstr "弹出媒体播放器面板的宽度（高度随专辑封面缩放）"
+msgstr "पॉपअप मीडिया प्लेयर पैनल की चौड़ाई (ऊंचाई एल्बम आर्ट के साथ स्केल होती है)"
 
 #: ui/popupPage.js
 msgid "Popup Width"
-msgstr "弹出窗口宽度"
+msgstr "पॉपअप चौड़ाई"
 
 #: ui/popupPage.js
 msgid "Width in pixels — album art, labels and lyrics panel all scale with this value (280 – 600 px)"
-msgstr "像素宽度 — 专辑封面、标签和歌词面板均随此值缩放（280 – 600 像素）"
+msgstr "पिक्सेल चौड़ाई — एल्बम आर्ट, लेबल और गीत बोल पैनल सभी इस मान के साथ स्केल होते हैं (280 – 600 px)"
 
 #: ui/popupPage.js
 msgid "Tonearm Angles"
-msgstr "唱臂角度"
+msgstr "टोनआर्म कोण"
 
 #: ui/popupPage.js
 msgid "Control how far the animated tonearm swings when playing or at rest"
-msgstr "控制动态唱臂在播放或静止时的摆动幅度"
+msgstr "बजाते समय या आराम में एनिमेटेड टोनआर्म कितनी दूर झूलता है, इसे नियंत्रित करें"
 
 #: ui/popupPage.js
 msgid "Parked (resting) angle"
-msgstr "停驻（静止）角度"
+msgstr "पार्क किया (आराम) कोण"
 
 #: ui/popupPage.js
 msgid "Degrees from vertical when music is paused or stopped. Higher moves the arm further from the disc (10 – 60°)"
-msgstr "音乐暂停或停止时距垂直方向的角度。数值越大，唱臂离碟片越远（10 – 60°）"
+msgstr "जब संगीत रुका या बंद हो तो ऊर्ध्वाधर से डिग्री। अधिक डिस्क से हाथ दूर ले जाता है (10 – 60°)"
 
 #: ui/popupPage.js
 msgid "Playing angle"
-msgstr "播放角度"
+msgstr "बजाने का कोण"
 
 #: ui/popupPage.js
 msgid "Degrees from vertical when the stylus rests on the groove. Lower brings the arm closer to the disc centre (0 – 30°)"
-msgstr "唱针静置于沟槽时距垂直方向的角度。数值越小，唱臂越靠近碟片中心（0 – 30°）"
+msgstr "जब स्टाइलस ग्रूव पर हो तो ऊर्ध्वाधर से डिग्री। कम हाथ को डिस्क केंद्र के करीब लाता है (0 – 30°)"
 
 #: ui/popupPage.js
 msgid "Tip: parked angle must be greater than playing angle"
-msgstr "提示：停驻角度必须大于播放角度"
+msgstr "युक्ति: पार्क कोण बजाने के कोण से अधिक होना चाहिए"
 
 #: ui/popupPage.js
 msgid "E.g. parked = 25°, playing = 8°. If they are equal or reversed the arm will animate incorrectly."
-msgstr "例如：停驻 = 25°，播放 = 8°。若相等或颠倒，唱臂动画将不正确。"
+msgstr "उदा.: पार्क = 25°, बजाना = 8°। समान या उल्टा होने पर हाथ गलत तरीके से एनिमेट होगा।"
 
 #: ui/aboutPage.js
 msgid "Report a Bug"
-msgstr "报告错误"
+msgstr "बग रिपोर्ट करें"
 
 #: ui/aboutPage.js
 msgid "Request a Feature"
-msgstr "请求新功能"
+msgstr "सुविधा अनुरोध करें"
 
 #: ui/aboutPage.js
 msgid "Star on GitHub"
-msgstr "在 GitHub 上加星"
+msgstr "GitHub पर स्टार दें"
 
 #. ── New strings added in v5.4 (uploaded JS files) ─────────────────────────
 
 msgid "%d clicks"
-msgstr "%d 次点击"
+msgstr "%d क्लिक"
 
 msgid "%d times"
-msgstr "%d 次"
+msgstr "%d बार"
 
 msgid "1 click"
-msgstr "1 次点击"
+msgstr "1 क्लिक"
 
 msgid "once"
-msgstr "一次"
+msgstr "एक बार"
 
 msgid "twice"
-msgstr "两次"
+msgstr "दो बार"
 
 msgid "%s — toggle lyrics"
-msgstr "%s — 显示/隐藏歌词"
+msgstr "%s — गीत बोल दिखाएं/छुपाएं"
 
 msgid "%s — toggle vinyl effect"
-msgstr "%s — 切换黑胶效果"
+msgstr "%s — विनाइल प्रभाव टॉगल करें"
 
 msgid "Click the album art %s to show lyrics"
-msgstr "点击专辑封面 %s 以显示歌词"
+msgstr "गीत बोल दिखाने के लिए एल्बम आर्ट पर %s क्लिक करें"
 
 msgid "Click again to re-open"
-msgstr "再次点击重新打开"
+msgstr "फिर से खोलने के लिए दोबारा क्लिक करें"
 
 msgid "Album Art Click Thresholds"
-msgstr "专辑封面点击阈值"
+msgstr "एल्बम आर्ट क्लिक सीमाएं"
 
 msgid "Set how many rapid clicks trigger each album art action"
-msgstr "设置触发每个专辑封面操作所需的快速点击次数"
+msgstr "प्रत्येक एल्बम आर्ट क्रिया को सक्रिय करने के लिए कितने तेज़ क्लिक चाहिए यह निर्धारित करें"
 
 msgid "Clicks to toggle vinyl effect"
-msgstr "切换黑胶效果的点击次数"
+msgstr "विनाइल प्रभाव टॉगल करने के लिए क्लिक"
 
 msgid "Clicks to toggle lyrics view"
-msgstr "切换歌词视图的点击次数"
+msgstr "गीत बोल दृश्य टॉगल करने के लिए क्लिक"
 
 msgid "Note: thresholds must be different"
-msgstr "注意：阈值必须不同"
+msgstr "नोट: सीमाएं अलग-अलग होनी चाहिए"
 
 msgid "Rapidly click the album art this many times to enable or disable the vinyl record style for the current app"
-msgstr "快速点击专辑封面此次数以启用或禁用当前应用的黑胶唱片样式"
+msgstr "वर्तमान ऐप के लिए विनाइल रिकॉर्ड शैली सक्षम या अक्षम करने के लिए एल्बम आर्ट पर इतनी बार तेज़ी से क्लिक करें"
 
 msgid "Rapidly click the album art this many times to open or close the synced lyrics panel"
-msgstr "快速点击专辑封面此次数以打开或关闭同步歌词面板"
+msgstr "सिंक्ड गीत बोल पैनल खोलने या बंद करने के लिए एल्बम आर्ट पर इतनी बार तेज़ी से क्लिक करें"
 
 msgid "If both thresholds are set to the same number the lyrics action takes priority. Use distinct values (e.g. 2 for vinyl, 3 for lyrics) to trigger both independently."
-msgstr "如果两个阈值相同，歌词操作优先。使用不同值（例如黑胶 2 次，歌词 3 次）以独立触发两者。"
+msgstr "यदि दोनों सीमाएं समान हैं तो गीत बोल क्रिया को प्राथमिकता मिलती है। दोनों को स्वतंत्र रूप से ट्रिगर करने के लिए अलग मान उपयोग करें (जैसे विनाइल 2, गीत बोल 3)।"

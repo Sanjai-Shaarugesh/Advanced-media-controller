@@ -8,8 +8,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://github.com/Sanjai-Shaarugesh/Advance-media-"
 "controller/issues\n"
 "POT-Creation-Date: 2026-03-12 20:33+0530\n"
-"PO-Revision-Date: 2026-03-13 00:00+0000\n"
-"Last-Translator: auto-generated\n"
+"PO-Revision-Date: 2026-03-19 00:00+0000\n"
+"Last-Translator: Sanjai Shaarugesh <sanjai.shaarugesh@gmail.com>\n"
 "Language-Team: Traditional Chinese\n"
 "Language: zh_TW\n"
 "MIME-Version: 1.0\n"
@@ -138,6 +138,12 @@ msgid ""
 "  • Turn this switch off, or\n"
 "  • Disable or uninstall this extension."
 msgstr ""
+"開啟時，擴充功能會隱藏通常顯示在日曆/通知面板（日期時間選單）中的\n"
+"預設 GNOME 媒體控制項，避免出現重複的「正在播放」小工具。\n"
+"\n"
+"內建控制項將在以下時刻完全還原：\n"
+"  • 關閉此開關，或\n"
+"  • 停用或解除安裝此擴充功能。"
 
 #: prefs.js:286
 msgid "Popup Player"
@@ -268,6 +274,8 @@ msgid ""
 "Choose whether the list below acts as a blacklist (block listed apps) or a "
 "whitelist (allow only listed apps). Set to Off to disable filtering entirely."
 msgstr ""
+"選擇下方清單作為黑名單（封鎖列出的應用程式）或白名單（僅允許列出的應用程式）。"
+"設定為「關閉」可完全停用篩選。"
 
 #: prefs.js:532
 msgid "Off"
@@ -303,6 +311,8 @@ msgid ""
 "without removing it. The toggle controls whether the filter rule is active "
 "for that app. Use the trash button to remove it from the list entirely."
 msgstr ""
+"每個已儲存的播放器可在篩選器中個別啟用或停用，而無需移除。開關控制該應用程式的"
+"篩選規則是否啟用。使用垃圾桶按鈕可從清單中完全移除。"
 
 #: prefs.js:597
 msgid "No players saved yet"
@@ -311,22 +321,22 @@ msgstr "尚未儲存任何播放器"
 #: prefs.js:599
 msgid ""
 "Detect running players below and click “Add to Filter” to add them here."
-msgstr ""
+msgstr "在下方偵測執行中的播放器，然後點擊「添加到篩選器」將其添加到此處。"
 
 #: prefs.js:653
 #, javascript-format
 msgid "Filter rule active for “%s” — click to disable"
-msgstr ""
+msgstr "「%s」的篩選規則已啟用 — 點擊停用"
 
 #: prefs.js:654
 #, javascript-format
 msgid "Filter rule disabled for “%s” — click to enable"
-msgstr ""
+msgstr "「%s」的篩選規則已停用 — 點擊啟用"
 
 #: prefs.js:676
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "Remove “%s” from the filter list"
-msgstr "從已儲存實例中移除%s"
+msgstr "從篩選器清單中移除「%s」"
 
 #: prefs.js:709
 msgid "Detected Players"
@@ -336,7 +346,7 @@ msgstr "偵測到的播放器"
 msgid ""
 "Active MPRIS players found on the session D-Bus. Click “Add to Filter” to "
 "save a player to the list above."
-msgstr ""
+msgstr "在工作階段 D-Bus 上發現的活躍 MPRIS 播放器。點擊「添加到篩選器」將播放器儲存到上方清單。"
 
 #: prefs.js:718
 msgid "Scan for running players"
@@ -352,7 +362,7 @@ msgstr "重新整理偵測到的播放器清單"
 
 #: prefs.js:753
 msgid "Could not connect to the session bus"
-msgstr ""
+msgstr "無法連接到工作階段匯排"
 
 #: prefs.js:783 prefs.js:1375
 msgid "No active players detected"
@@ -373,12 +383,12 @@ msgstr "添加到篩選器"
 #: prefs.js:849 prefs.js:864
 #, javascript-format
 msgid "“%s” is already in the filter list"
-msgstr ""
+msgstr "「%s」已在篩選器清單中"
 
 #: prefs.js:850
 #, javascript-format
 msgid "Add “%s” to the filter list (enabled by default)"
-msgstr ""
+msgstr "將「%s」添加到篩選器清單（預設啟用）"
 
 #: prefs.js:899
 msgid "Synced Lyrics"
@@ -424,7 +434,6 @@ msgid "Open the popup player"
 msgstr "開啟彈出播放器"
 
 #: prefs.js:945
-#, fuzzy
 msgid ""
 "Click the media controller icon in the top panel to open the popup. You’ll "
 "see the album art, track title, and playback controls."
@@ -631,7 +640,6 @@ msgid "Double-click the album art"
 msgstr "雙擊專輯封面"
 
 #: prefs.js:1163
-#, fuzzy
 msgid ""
 "Double-click the album art image in the popup to toggle the vinyl record "
 "style for that specific app or browser source. For browsers (Chrome, "
@@ -646,7 +654,6 @@ msgid "Manage saved instances below"
 msgstr "在下方管理已儲存的實例"
 
 #: prefs.js:1171
-#, fuzzy
 msgid ""
 "All stored instances appear in the section below. Browser web-app sources "
 "appear as e.g. “YouTube Music (Chrome)” and are tracked independently. "
@@ -709,7 +716,7 @@ msgstr "執行中的播放器（即時偵測）"
 msgid ""
 "MPRIS players active right now. Click “Use This” to immediately add the "
 "player as a vinyl-enabled instance without waiting for a double-click."
-msgstr ""
+msgstr "目前活躍的 MPRIS 播放器。點擊「使用此」即可立即將播放器新增為已啟用黑膠的實例，無須等待雙擊。"
 
 #: prefs.js:1319
 msgid "Scan for active players"
@@ -730,7 +737,7 @@ msgstr "使用此"
 #: prefs.js:1457
 #, javascript-format
 msgid "Add “%s” as a vinyl-enabled instance"
-msgstr ""
+msgstr "將「%s」新增為已啟用黑膠的實例"
 
 #: prefs.js:1501
 msgid "All running players are already saved"
@@ -753,7 +760,7 @@ msgstr "在播放音樂時雙擊彈出視窗的專輯封面，在此儲存一個
 #: prefs.js:1660
 #, javascript-format
 msgid "%s via %s"
-msgstr ""
+msgstr "%s 透過 %s"
 
 #: prefs.js:1669 prefs.js:2134
 msgid "renamed from"
@@ -801,7 +808,7 @@ msgstr "已儲存的實例"
 #: prefs.js:2126
 #, javascript-format
 msgid "Browser: %s · Source: %s"
-msgstr ""
+msgstr "瀏覽器：%s · 來源：%s"
 
 #: prefs.js:2177
 msgid "Other Apps"
@@ -820,8 +827,8 @@ msgid "Beautiful and modern media controls with multi-instance support"
 msgstr "支援多重實例的美觀現代媒體控制"
 
 #: prefs.js:2394
-msgid "Version 5.2"
-msgstr "版本 5.2"
+msgid "Version 5.4"
+msgstr "版本 5.4"
 
 #: prefs.js:2401
 msgid "Modern media controls with native GNOME design"
@@ -841,7 +848,7 @@ msgstr "在GitHub上檢視"
 
 #: prefs.js:2447
 msgid "☕ Buy Me a Coffee"
-msgstr "☕ 請我喝咋啊"
+msgstr "☕ 請我喝一杯咋咖啡"
 
 #: prefs.js:2448
 msgid "Support development with a small donation"
@@ -849,28 +856,27 @@ msgstr "透過小額捐贈支援開發"
 
 #: prefs.js:2452
 msgid "☕ Support by buying me a coffee – just scan the QR code!"
-msgstr "☕ 請我喝杯咋啊來支持 - 揃描QR碼！"
+msgstr "☕ 請我喝杯咖啡來支持 - 掃描 QR 碼！"
 
 #: prefs.js:2453
 msgid "Scan QR code to open Buy Me a Coffee"
-msgstr ""
+msgstr "援描 QR 碼開啟「請我喝和咖啡」頁面"
 
 #: prefs.js:2456
 msgid "❤ GitHub Sponsors"
-msgstr ""
+msgstr "❤ GitHub 贊助者"
 
 #: prefs.js:2457
 msgid "Sponsor via GitHub — one-time or monthly"
-msgstr ""
+msgstr "透過 GitHub 贊助 — 單次或每月"
 
 #: prefs.js:2461
-#, fuzzy
 msgid "❤ Support via GitHub Sponsors – just scan the QR code!"
-msgstr "☕ 請我喝杯咋啊來支持 - 揃描QR碼！"
+msgstr "❤ 透過 GitHub 贊助者支持 - 掃描 QR 碼！"
 
 #: prefs.js:2462
 msgid "Scan QR code to open GitHub Sponsors"
-msgstr ""
+msgstr "援描 QR 碼開啟 GitHub 贊助者頁面"
 
 #: prefs.js:2484
 msgid "Donation Platform"
@@ -925,7 +931,6 @@ msgid "Key Features"
 msgstr "主要功能"
 
 #: prefs.js:2646
-#, fuzzy
 msgid ""
 "• Multi-instance browser support\n"
 "• Per-app rotating vinyl record album art\n"
@@ -940,10 +945,14 @@ msgid ""
 msgstr ""
 "• 多重實例瀏覽器支援\n"
 "• 每個應用程式的旋轉黑膠專輯封面\n"
-"• 動態唱蟀\n"
-"• 流畅動畫\n"
+"• 動態唱臂\n"
+"• 流暢動畫\n"
 "• 雙擊可切換每個應用程式的黑膠\n"
-"• 所有已見應用程式均被記惰 — 隨時重新啟用"
+"• 三擊專輯封面顯示同步歌詞\n"
+"• 單擊歌詞面板返回專輯封面\n"
+"• 歌詞透過 lrclib.net 與播放同步\n"
+"• 每個播放器獨立的歌詞開關（每個分頁各自獨立）\n"
+"• 所有已見應用程式均被記住 — 隨時重新啟用"
 
 #: prefs.js:2710
 msgid "Copy to Clipboard"
@@ -961,6 +970,133 @@ msgstr "關閉"
 #: utils/indicator.js:19
 msgid "Media Controls"
 msgstr "媒體控制"
+
+#. ── New strings added in v5.3+ ──────────────────────────────────────────────
+
+#: ui/generalPage.js ui/popupPage.js
+msgid "Panel Label Width"
+msgstr "面板標籤寬度"
+
+#: ui/generalPage.js
+msgid "Visible pixel width of the track label in the top bar (60 – 400 px)"
+msgstr "頂部列中曲目標籤的可見像素寬度（60 – 400 像素）"
+
+#: ui/popupPage.js
+msgid "Popup Size"
+msgstr "彈出視窗大小"
+
+#: ui/popupPage.js
+msgid "Width of the popup media player panel (height scales with album art)"
+msgstr "彈出媒體播放器面板的寬度（高度隨專輯封面縮放）"
+
+#: ui/popupPage.js
+msgid "Popup Width"
+msgstr "彈出視窗寬度"
+
+#: ui/popupPage.js
+msgid "Width in pixels — album art, labels and lyrics panel all scale with this value (280 – 600 px)"
+msgstr "像素寬度 — 專輯封面、標籤和歌詞面板均隨此值縮放（280 – 600 像素）"
+
+#: ui/popupPage.js
+msgid "Tonearm Angles"
+msgstr "唱臂角度"
+
+#: ui/popupPage.js
+msgid "Control how far the animated tonearm swings when playing or at rest"
+msgstr "控制動態唱臂在播放或靜止時的擺動幅度"
+
+#: ui/popupPage.js
+msgid "Parked (resting) angle"
+msgstr "停駐（靜止）角度"
+
+#: ui/popupPage.js
+msgid "Degrees from vertical when music is paused or stopped. Higher moves the arm further from the disc (10 – 60°)"
+msgstr "音樂暫停或停止時距垂直方向的角度。數值越大，唱臂離碟片越遠（10 – 60°）"
+
+#: ui/popupPage.js
+msgid "Playing angle"
+msgstr "播放角度"
+
+#: ui/popupPage.js
+msgid "Degrees from vertical when the stylus rests on the groove. Lower brings the arm closer to the disc centre (0 – 30°)"
+msgstr "唱針靜置於溝槽時距垂直方向的角度。數值越小，唱臂越靠近碟片中心（0 – 30°）"
+
+#: ui/popupPage.js
+msgid "Tip: parked angle must be greater than playing angle"
+msgstr "提示：停駐角度必須大於播放角度"
+
+#: ui/popupPage.js
+msgid "E.g. parked = 25°, playing = 8°. If they are equal or reversed the arm will animate incorrectly."
+msgstr "例如：停駐 = 25°，播放 = 8°。若相等或顛倒，唱臂動畫將不正確。"
+
+#. ── About page — GitHub section ──────────────────────────────────────────────
+
+#: ui/aboutPage.js
+msgid "Report a Bug"
+msgstr "回報錯誤"
+
+#: ui/aboutPage.js
+msgid "Request a Feature"
+msgstr "請求新功能"
+
+#: ui/aboutPage.js
+msgid "Star on GitHub"
+msgstr "在 GitHub 上標星"
+
+#. ── About page — Donation section ────────────────────────────────────────────
+
+#. ── New strings added in v5.4 (uploaded JS files) ─────────────────────────
+
+msgid "%d clicks"
+msgstr "%d 次點擊"
+
+msgid "%d times"
+msgstr "%d 次"
+
+msgid "1 click"
+msgstr "1 次點擊"
+
+msgid "once"
+msgstr "一次"
+
+msgid "twice"
+msgstr "兩次"
+
+msgid "%s — toggle lyrics"
+msgstr "%s — 顯示/隱藏歌詞"
+
+msgid "%s — toggle vinyl effect"
+msgstr "%s — 切換黑膠效果"
+
+msgid "Click the album art %s to show lyrics"
+msgstr "點擊專輯封面 %s 以顯示歌詞"
+
+msgid "Click again to re-open"
+msgstr "再次點擊重新開啟"
+
+msgid "Album Art Click Thresholds"
+msgstr "專輯封面點擊閾值"
+
+msgid "Set how many rapid clicks trigger each album art action"
+msgstr "設定觸發每個專輯封面操作所需的快速點擊次數"
+
+msgid "Clicks to toggle vinyl effect"
+msgstr "切換黑膠效果的點擊次數"
+
+msgid "Clicks to toggle lyrics view"
+msgstr "切換歌詞檢視的點擊次數"
+
+msgid "Note: thresholds must be different"
+msgstr "注意：閾值必須不同"
+
+msgid "Rapidly click the album art this many times to enable or disable the vinyl record style for the current app"
+msgstr "快速點擊專輯封面此次數以啟用或停用目前應用程式的黑膠唱片樣式"
+
+msgid "Rapidly click the album art this many times to open or close the synced lyrics panel"
+msgstr "快速點擊專輯封面此次數以開啟或關閉同步歌詞面板"
+
+msgid "If both thresholds are set to the same number the lyrics action takes priority. Use distinct values (e.g. 2 for vinyl, 3 for lyrics) to trigger both independently."
+msgstr "若兩個閾值相同，歌詞操作優先。使用不同值（例如黑膠 2 次，歌詞 3 次）以獨立觸發兩者。"
 
 #~ msgid ""
 #~ "Global default when no per-app setting exists. Per-app overrides in the "
