@@ -1,0 +1,257 @@
+/* Theme-aware Media Controls Stylesheet */
+
+.colored-icon {
+    -st-icon-style: requested;
+}
+
+.symbolic-icon {
+    -st-icon-style: symbolic;
+}
+
+.no-margin {
+    margin: 0;
+}
+
+.no-padding {
+    padding: 0;
+}
+
+.panel-button {
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+.panel-button-box > * {
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+.panel-controls-box {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.panel-controls-box > * {
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+.panel-label-clip {
+    overflow: hidden;
+    padding: 0;
+}
+
+.panel-scroll-label {
+    margin-left: 6px;
+    font-size: 13px;
+}
+
+.popup-menu-container {
+    padding: 8px;
+    min-width: 256px;
+    max-width: 256px;
+}
+
+.popup-menu-box {
+    border-width: 0px;
+}
+
+.popup-menu-box > * {
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+/* Theme-aware tabs */
+.media-tab-modern {
+    padding: 8px 12px;
+    border-radius: 12px;
+    background-color: rgba(0, 0, 0, 0.1);
+    opacity: 0.6;
+    transition-property: background-color, opacity;
+    transition-duration: 200ms;
+}
+
+.media-tab-modern:hover {
+    background-color: rgba(0, 0, 0, 0.15);
+    opacity: 1;
+}
+
+.media-tab-modern:active {
+    background-color: rgba(0, 0, 0, 0.18);
+}
+
+.media-tab-modern.active {
+    background-color: rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    opacity: 1;
+}
+
+/* Album art */
+.media-album-art {
+    width: 340px;
+    height: 340px;
+    border-radius: 16px;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.media-album-art-image {
+    border-radius: 16px;
+}
+
+.cover-art-image {
+    width: 340px;
+    height: 340px;
+}
+
+/* Text labels */
+.media-title-label {
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.media-artist-label {
+    font-size: 13px;
+    font-weight: 500;
+    opacity: 0.7;
+}
+
+.media-time-label {
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.media-time-label-end {
+    font-size: 12px;
+    font-weight: 600;
+    opacity: 0.7;
+}
+
+/* Control buttons */
+.media-button-modern {
+    padding: 12px;
+    border-radius: 12px;
+    background-color: rgba(0, 0, 0, 0.08);
+    transition-property: background-color, transform;
+    transition-duration: 200ms;
+}
+
+.media-button-modern:hover {
+    background-color: rgba(0, 0, 0, 0.12);
+}
+
+.media-button-modern:active {
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+/* Active shuffle / repeat â€” Spotify green accent */
+.media-button-modern.shuffle-active,
+.media-button-modern.repeat-active {
+    background-color: rgba(29, 185, 84, 0.2);
+}
+
+.media-button-modern.shuffle-active StIcon,
+.media-button-modern.repeat-active StIcon {
+    color: #1db954;
+}
+
+/* Play button */
+.media-play-button-modern {
+    padding: 16px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.12);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    transition-property: background-color, transform, box-shadow;
+    transition-duration: 200ms;
+}
+
+.media-play-button-modern:hover {
+    background-color: rgba(0, 0, 0, 0.18);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.media-play-button-modern:active {
+    background-color: rgba(0, 0, 0, 0.22);
+}
+
+/* Panel media buttons */
+.panel-media-button {
+    padding: 2px 4px;
+    border-radius: 3px;
+    transition-property: background-color;
+    transition-duration: 150ms;
+}
+
+.panel-media-button:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.panel-media-button:active {
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+/* Popup menu controls */
+.popup-menu-control-icon {
+    padding: 4px;
+    border-radius: 99px;
+    transition-property: background-color;
+    transition-duration: 150ms;
+}
+
+.popup-menu-control-icon:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.popup-menu-control-icon:active {
+    background-color: rgba(0, 0, 0, 0.14);
+}
+
+/* Player tab icons */
+.popup-menu-player-icons {
+    margin-top: 4px;
+    border-radius: 6px;
+}
+
+.popup-menu-player-icons-icon {
+    padding: 4px;
+    background-color: rgba(0, 0, 0, 0.08);
+    transition-property: background-color;
+    transition-duration: 150ms;
+}
+
+.popup-menu-player-icons-icon-last {
+    border-radius: 0px 6px 6px 0px;
+}
+
+.popup-menu-player-icons-icon-first {
+    border-radius: 6px 0px 0px 6px;
+}
+
+.popup-menu-player-icons-icon:hover {
+    background-color: rgba(0, 0, 0, 0.12);
+}
+
+.popup-menu-player-icons-icon:active {
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+.popup-menu-player-icons-icon-active {
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+/* Labels */
+.popup-menu-player-label {
+    font-size: small;
+    margin-right: 4px;
+    margin-left: 4px;
+}
+
+.popup-menu-label-title {
+    font-size: large;
+}
+
+.popup-menu-album-art {
+    border-radius: 6px;
+    margin-left: auto;
+    margin-right: auto;
+}
