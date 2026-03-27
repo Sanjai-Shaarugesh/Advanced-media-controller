@@ -31,7 +31,8 @@ export const ProgressSlider = GObject.registerClass(
       this._canSeek = true;
       this._isDestroyed = false;
 
-      // Per-player snapshot so switching tabs never causes a jump or flicker
+      // Per-player snapshot: switching tabs never causes jump or flicker
+      // Keyed by playerName → { position, length, sliderValue, currentTimeText, totalTimeText }
       this._playerCache = new Map();
 
       this._buildUI();
@@ -65,17 +66,17 @@ export const ProgressSlider = GObject.registerClass(
         this._saveCacheForCurrentPlayer();
 
         if (this._resumeTimeout) {
-          GLib.Source.remove(this._resumeTimeout);
+          GLib.source_remove(this._resumeTimeout);
           this._resumeTimeout = null;
         }
-        // One-shot: resume position updates shortly after drag ends
-        this._resumeTimeout = GLib.timeout_add_once(
+        this._resumeTimeout = GLib.timeout_add(
           GLib.PRIORITY_DEFAULT,
           200,
           () => {
             this._resumeTimeout = null;
             if (!this._isDestroyed && this._isPlaying)
               this.startPositionUpdate();
+            return GLib.SOURCE_REMOVE;
           },
         );
       });
@@ -103,28 +104,78 @@ export const ProgressSlider = GObject.registerClass(
       this.add_child(timeBox);
     }
 
+    /**
+     * Switch to a different player.  Saves current state, then restores the
+     * cached state for the new player (or hard-resets if no cache exists).
+     * This is the main entry point called by MediaControls on tab switch.
+     *
+     * @param {string} name  MPRIS bus name of the player
+     */
     setPlayerName(name) {
       if (this._playerName === name) return;
+
+      // Persist the current player's slider state before switching
       this._saveCacheForCurrentPlayer();
+
+      // Stop any live polling for the old player
+      this.stopPositionUpdate();
+
       this._playerName = name;
+
+      // Restore or reset for the new player
       this._restoreCacheForCurrentPlayer();
+
+      // If the new player is playing, restart the update ticker
+      if (this._isPlaying && this._trackLength > 0) {
+        this.startPositionUpdate();
+      }
     }
 
+    /**
+     * Hard-reset this slider for the current player — used when the video/track
+     * changes (e.g. switching YouTube videos or YouTube Shorts).
+     */
+    resetForNewTrack() {
+      if (this._isDestroyed) return;
+      // Invalidate the cache entry for this player so we start fresh
+      if (this._playerName) this._playerCache.delete(this._playerName);
+      this._hardReset();
+    }
+
+    /**
+     * Called when playback state or metadata changes.
+     * Updates the total-time label, seek capability, and starts/stops polling.
+     *
+     * @param {boolean} isPlaying
+     * @param {object|null} metadata  raw MPRIS metadata dict
+     * @param {string} _status
+     */
     updatePlaybackState(isPlaying, metadata, _status) {
       if (this._isDestroyed) return;
+
+      const wasPlaying = this._isPlaying;
       this._isPlaying = isPlaying;
 
       if (metadata) {
-        this._trackLength = metadata["mpris:length"] || 0;
-        this._trackId = metadata["mpris:trackid"] || null;
-        this._totalTimeLabel.text = this._formatTime(
-          this._trackLength / 1_000_000,
-        );
+        const newLength = metadata["mpris:length"] || 0;
+        const newTrackId = metadata["mpris:trackid"] || null;
+
+        // If length changed meaningfully, update the total-time label and cache
+        if (newLength !== this._trackLength) {
+          this._trackLength = newLength;
+          this._totalTimeLabel.text = this._formatTime(
+            this._trackLength / 1_000_000,
+          );
+          this._saveCacheForCurrentPlayer();
+        }
+
+        this._trackId = newTrackId;
 
         if (!this._trackId || !this._trackLength) {
           this._canSeek = false;
           this._positionSlider.reactive = false;
           this.visible = false;
+          this.stopPositionUpdate();
           return;
         }
         this._canSeek = true;
@@ -132,8 +183,13 @@ export const ProgressSlider = GObject.registerClass(
         this.visible = true;
       }
 
-      if (isPlaying) this.startPositionUpdate();
-      else this.stopPositionUpdate();
+      if (isPlaying && !wasPlaying) {
+        this.startPositionUpdate();
+      } else if (!isPlaying && wasPlaying) {
+        this.stopPositionUpdate();
+        // Persist the paused position so tab switches restore it accurately
+        this._saveCacheForCurrentPlayer();
+      }
     }
 
     startPositionUpdate() {
@@ -155,11 +211,15 @@ export const ProgressSlider = GObject.registerClass(
 
     stopPositionUpdate() {
       if (this._updateInterval) {
-        GLib.Source.remove(this._updateInterval);
+        GLib.source_remove(this._updateInterval);
         this._updateInterval = null;
       }
     }
 
+    /**
+     * Called when an MPRIS Seeked signal arrives.
+     * @param {number} position  position in microseconds
+     */
     onSeeked(position) {
       if (this._isDestroyed) return;
       this._currentPosition = position;
@@ -172,6 +232,7 @@ export const ProgressSlider = GObject.registerClass(
     _hardReset() {
       this.stopPositionUpdate();
       this._currentPosition = 0;
+      this._trackLength = 0;
       this._sliderDragging = false;
 
       this._positionSlider.block_signal_handler(this._sliderChangedId);
@@ -195,7 +256,7 @@ export const ProgressSlider = GObject.registerClass(
       return this._positionSlider.value;
     }
 
-    // private helpers
+    
 
     _saveCacheForCurrentPlayer() {
       if (!this._playerName) return;
@@ -205,6 +266,7 @@ export const ProgressSlider = GObject.registerClass(
         sliderValue: this._positionSlider.value,
         currentTimeText: this._currentTimeLabel.text,
         totalTimeText: this._totalTimeLabel.text,
+        isPlaying: this._isPlaying,
       });
     }
 
@@ -213,21 +275,24 @@ export const ProgressSlider = GObject.registerClass(
       if (c) {
         this._currentPosition = c.position;
         this._trackLength = c.length;
+        this._isPlaying = c.isPlaying ?? false;
+
+        // Apply slider value without triggering the notify::value handler
         this._positionSlider.block_signal_handler(this._sliderChangedId);
         this._positionSlider.value = c.sliderValue;
         this._positionSlider.unblock_signal_handler(this._sliderChangedId);
+
         this._currentTimeLabel.text = c.currentTimeText;
         this._totalTimeLabel.text = c.totalTimeText;
+
+        // Show/hide based on whether the cached player had valid seek info
+        const hasTrack = this._trackLength > 0;
+        this._canSeek = hasTrack;
+        this._positionSlider.reactive = hasTrack;
+        this.visible = hasTrack;
       } else {
-        // No cache — show zero until updatePlaybackState() sets real values.
         this._hardReset();
       }
-    }
-
-    _syncGetProperty(_busName, _property) {
-      // Retained as a no-op stub; position is now fetched asynchronously
-      // via _updateSliderPosition() to avoid blocking the main thread.
-      return null;
     }
 
     _updateSliderPosition() {
@@ -239,7 +304,6 @@ export const ProgressSlider = GObject.registerClass(
       )
         return;
 
-      // Async D-Bus property read — never blocks the main thread
       Gio.DBus.session.call(
         this._playerName,
         "/org/mpris/MediaPlayer2",
@@ -255,9 +319,7 @@ export const ProgressSlider = GObject.registerClass(
           let pos = null;
           try {
             pos = conn.call_finish(result).recursiveUnpack()[0];
-          } catch (_e) {
-            // Player may have disappeared; fall back to last known position
-          }
+          } catch (_e) {}
           if (pos === null || pos === 0) pos = this._currentPosition;
           else this._currentPosition = pos;
           this._applyPosition(pos);
@@ -298,7 +360,7 @@ export const ProgressSlider = GObject.registerClass(
       this.stopPositionUpdate();
 
       if (this._resumeTimeout) {
-        GLib.Source.remove(this._resumeTimeout);
+        GLib.source_remove(this._resumeTimeout);
         this._resumeTimeout = null;
       }
       if (this._sliderChangedId) {
