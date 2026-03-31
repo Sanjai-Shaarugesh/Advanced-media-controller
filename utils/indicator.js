@@ -38,19 +38,21 @@ export const MediaIndicator = GObject.registerClass(
 
       this._eventHandlers.connectControlSignals();
 
-      this.menu.connect("open-state-changed", (menu, open) => {
-        this._state.safeExecute(() => {
-          if (open) {
-            this._controls.startPositionUpdate();
-            this._eventHandlers.setupWindowMonitoring();
-          } else {
-            this._controls.stopPositionUpdate();
-
-            this._controls.onMenuClosed();
-            this._eventHandlers.removeWindowMonitoring();
-          }
-        });
-      });
+      this._menuStateChangedId = this.menu.connect(
+        "open-state-changed",
+        (menu, open) => {
+          this._state.safeExecute(() => {
+            if (open) {
+              this._controls.startPositionUpdate();
+              this._eventHandlers.setupWindowMonitoring();
+            } else {
+              this._controls.stopPositionUpdate();
+              this._controls.onMenuClosed();
+              this._eventHandlers.removeWindowMonitoring();
+            }
+          });
+        },
+      );
 
       this._state._settingsChangedId = this._settings.connect(
         "changed",
@@ -81,11 +83,18 @@ export const MediaIndicator = GObject.registerClass(
 
       this.hide();
 
-      this._state.scheduleOperation(() => {
+      // Apply hide-default-player setting after shell is fully initialized
+      this._applyHideSourceId = GLib.idle_add(GLib.PRIORITY_DEFAULT_IDLE, () => {
+        this._applyHideSourceId = null;
         this._applyHideDefaultPlayer();
-      }, 0);
+        return GLib.SOURCE_REMOVE;
+      });
 
-      this._state.scheduleOperation(() => this._initManager(), 200);
+      this._initSourceId = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 200, () => {
+        this._initSourceId = null;
+        this._state.safeExecute(() => this._initManager());
+        return GLib.SOURCE_REMOVE;
+      });
     }
 
     _applyHideDefaultPlayer() {
@@ -147,29 +156,44 @@ export const MediaIndicator = GObject.registerClass(
       }
 
       // Delay slightly so the settings write has definitely committed
-      GLib.timeout_add(GLib.PRIORITY_DEFAULT_IDLE, 100, () => {
-        if (this._state._sessionChanging || this._state._safetyLock)
+      this._reinitSourceId = GLib.timeout_add(
+        GLib.PRIORITY_DEFAULT_IDLE,
+        100,
+        () => {
+          this._reinitSourceId = null;
+
+          if (this._state._sessionChanging || this._state._safetyLock)
+            return GLib.SOURCE_REMOVE;
+
+          // Tear down current manager
+          if (this._manager) {
+            this._manager.destroy();
+            this._manager = null;
+          }
+
+          this._state._currentPlayer = null;
+          this._state._manuallySelected = false;
+          this._state._managerInitialized = false;
+
+          // Clear any stale UI
+          this._panelUI.stopScrolling();
+          this._panelUI.label.hide();
+          this.hide();
+
+          // Re-init with the new filter settings
+          this._reinitDelaySourceId = GLib.timeout_add(
+            GLib.PRIORITY_DEFAULT,
+            50,
+            () => {
+              this._reinitDelaySourceId = null;
+              this._state.safeExecute(() => this._initManager());
+              return GLib.SOURCE_REMOVE;
+            },
+          );
+
           return GLib.SOURCE_REMOVE;
-
-        // Tear down current manager
-        if (this._manager) {
-          this._manager.destroy();
-          this._manager = null;
-        }
-
-        this._state._currentPlayer = null;
-        this._state._manuallySelected = false;
-        this._state._managerInitialized = false;
-
-        // Clear any stale UI
-        this._panelUI.stopScrolling();
-        this._panelUI.label.hide();
-        this.hide();
-
-        // Re-init with the new filter settings
-        this._state.scheduleOperation(() => this._initManager(), 50);
-        return GLib.SOURCE_REMOVE;
-      });
+        },
+      );
     }
 
     async _initManager() {
@@ -220,7 +244,7 @@ export const MediaIndicator = GObject.registerClass(
 
         this._state._isInitializing = false;
       } catch (e) {
-        console.error("Failed to initialize MPRIS:", e);
+        console.error("AMC: failed to initialize MPRIS:", e);
         this._state._isInitializing = false;
         this._state._managerInitialized = false;
       }
@@ -235,6 +259,32 @@ export const MediaIndicator = GObject.registerClass(
       this._state._sessionChanging = true;
       this._state._safetyLock = true;
       this._state._preventLogout = true;
+
+      // Remove all pending main loop sources
+      if (this._applyHideSourceId) {
+        GLib.Source.remove(this._applyHideSourceId);
+        this._applyHideSourceId = null;
+      }
+
+      if (this._initSourceId) {
+        GLib.Source.remove(this._initSourceId);
+        this._initSourceId = null;
+      }
+
+      if (this._reinitSourceId) {
+        GLib.Source.remove(this._reinitSourceId);
+        this._reinitSourceId = null;
+      }
+
+      if (this._reinitDelaySourceId) {
+        GLib.Source.remove(this._reinitDelaySourceId);
+        this._reinitDelaySourceId = null;
+      }
+
+      if (this._menuStateChangedId) {
+        this.menu.disconnect(this._menuStateChangedId);
+        this._menuStateChangedId = null;
+      }
 
       if (this._state._settingsChangedId) {
         this._settings.disconnect(this._state._settingsChangedId);

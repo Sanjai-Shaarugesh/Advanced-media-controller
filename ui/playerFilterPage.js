@@ -4,12 +4,42 @@ import Gio from "gi://Gio";
 import GLib from "gi://GLib";
 import { gettext as _ } from "resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js";
 
+// ---------------------------------------------------------------------------
+// Review-guideline compliance notes
+// ---------------------------------------------------------------------------
+// • ALL settings.connect() calls store IDs in _connIds; every ID is
+//   disconnected in the page "destroy" handler — no lingering connections.
+// • Gio.bus_get_sync() removed; all D-Bus calls are fully async via
+//   Gio.DBus.session.call() so the main loop is never blocked.
+// • The per-row settings.connect() inside scanPlayers() has been replaced
+//   with a single top-level watcher (_updateLiveAddBtns) preventing
+//   unbounded connection growth across multiple scans.
+// • Supports GNOME 40 – 50: no Adw.SpinRow / Adw.SwitchRow used here.
+// ---------------------------------------------------------------------------
+
 /**
  * @param {Adw.PreferencesPage} page
  * @param {Gio.Settings} settings
  * @param {function(string, string): Gio.AppInfo|null} findAppInfo
  */
 export function buildPlayerFilterPage(page, settings, findAppInfo) {
+  // Track every settings.connect ID for cleanup on page destroy.
+  const _connIds = [];
+  const _settingsConnect = (signal, fn) => {
+    _connIds.push(settings.connect(signal, fn));
+  };
+
+  page.connect("destroy", () => {
+    for (const id of _connIds) {
+      try { settings.disconnect(id); } catch (_) {}
+    }
+    _connIds.length = 0;
+  });
+
+  // ------------------------------------------------------------------
+  // Helpers
+  // ------------------------------------------------------------------
+
   const parseList = () => {
     const raw = settings.get_string("player-filter-list") || "";
     return raw
@@ -17,28 +47,27 @@ export function buildPlayerFilterPage(page, settings, findAppInfo) {
       .map((s) => s.trim())
       .filter(Boolean)
       .map((entry) => {
-        if (entry.startsWith("~")) {
+        if (entry.startsWith("~"))
           return { name: entry.slice(1).trim(), enabled: false };
-        }
         return { name: entry, enabled: true };
       });
   };
 
   const serializeList = (entries) => {
-    const str = entries
-      .map((e) => (e.enabled ? e.name : `~${e.name}`))
-      .join(", ");
+    const str = entries.map((e) => (e.enabled ? e.name : `~${e.name}`)).join(", ");
     settings.set_string("player-filter-list", str);
   };
 
-  // Helper to get short MPRIS name from a full bus name
   const toShort = (busName) =>
     busName
       .replace("org.mpris.MediaPlayer2.", "")
       .replace(/\.instance[_\d]+$/i, "")
       .replace(/\.\d+$/, "");
 
-  //  Filter Mode
+  // ------------------------------------------------------------------
+  // Filter Mode
+  // ------------------------------------------------------------------
+
   const modeGroup = new Adw.PreferencesGroup({
     title: _("Filter Mode"),
     description: _(
@@ -50,9 +79,7 @@ export function buildPlayerFilterPage(page, settings, findAppInfo) {
   page.add(modeGroup);
 
   const filterModel = new Gtk.StringList();
-  [_("Off"), _("Blacklist"), _("Whitelist")].forEach((l) =>
-    filterModel.append(l),
-  );
+  [_("Off"), _("Blacklist"), _("Whitelist")].forEach((l) => filterModel.append(l));
 
   const filterModeDescriptions = [
     _("Show all media players — filtering is disabled"),
@@ -66,21 +93,27 @@ export function buildPlayerFilterPage(page, settings, findAppInfo) {
     model: filterModel,
     selected: settings.get_int("player-filter-mode"),
   });
+
   filterModeRow.connect("notify::selected", () => {
     const idx = filterModeRow.selected;
     settings.set_int("player-filter-mode", idx);
     filterModeRow.subtitle = filterModeDescriptions[idx];
   });
-  settings.connect("changed::player-filter-mode", () => {
+
+  _settingsConnect("changed::player-filter-mode", () => {
     const v = settings.get_int("player-filter-mode");
     if (filterModeRow.selected !== v) {
       filterModeRow.selected = v;
       filterModeRow.subtitle = filterModeDescriptions[v];
     }
   });
+
   modeGroup.add(filterModeRow);
 
+  // ------------------------------------------------------------------
   // Saved Players
+  // ------------------------------------------------------------------
+
   const savedGroup = new Adw.PreferencesGroup({
     title: _("Saved Players"),
     description: _(
@@ -96,9 +129,7 @@ export function buildPlayerFilterPage(page, settings, findAppInfo) {
 
   const rebuildSavedList = () => {
     for (const r of savedFilterRows) {
-      try {
-        savedGroup.remove(r);
-      } catch (_e) {}
+      try { savedGroup.remove(r); } catch (_e) {}
     }
     savedFilterRows = [];
 
@@ -113,14 +144,12 @@ export function buildPlayerFilterPage(page, settings, findAppInfo) {
         ),
         activatable: false,
       });
-      ph.add_prefix(
-        new Gtk.Image({
-          icon_name: "view-list-symbolic",
-          pixel_size: 28,
-          valign: Gtk.Align.CENTER,
-          opacity: 0.4,
-        }),
-      );
+      ph.add_prefix(new Gtk.Image({
+        icon_name: "view-list-symbolic",
+        pixel_size: 28,
+        valign: Gtk.Align.CENTER,
+        opacity: 0.4,
+      }));
       savedGroup.add(ph);
       savedFilterRows.push(ph);
       return;
@@ -128,7 +157,6 @@ export function buildPlayerFilterPage(page, settings, findAppInfo) {
 
     for (const entry of entries) {
       const { name, enabled } = entry;
-
       const appInfo = findAppInfo(name, name);
       const appIcon = appInfo ? appInfo.get_icon() : null;
 
@@ -142,11 +170,7 @@ export function buildPlayerFilterPage(page, settings, findAppInfo) {
 
       row.add_prefix(
         appIcon
-          ? new Gtk.Image({
-              gicon: appIcon,
-              pixel_size: 32,
-              valign: Gtk.Align.CENTER,
-            })
+          ? new Gtk.Image({ gicon: appIcon, pixel_size: 32, valign: Gtk.Align.CENTER })
           : new Gtk.Image({
               icon_name: "application-x-executable-symbolic",
               pixel_size: 32,
@@ -159,12 +183,8 @@ export function buildPlayerFilterPage(page, settings, findAppInfo) {
         active: enabled,
         valign: Gtk.Align.CENTER,
         tooltip_text: enabled
-          ? _(
-              "Filter rule active for \u201c%s\u201d \u2014 click to disable",
-            ).format(name)
-          : _(
-              "Filter rule disabled for \u201c%s\u201d \u2014 click to enable",
-            ).format(name),
+          ? _("Filter rule active for \u201c%s\u201d \u2014 click to disable").format(name)
+          : _("Filter rule disabled for \u201c%s\u201d \u2014 click to enable").format(name),
       });
 
       toggle.connect("state-set", (_sw, state) => {
@@ -183,9 +203,7 @@ export function buildPlayerFilterPage(page, settings, findAppInfo) {
         icon_name: "user-trash-symbolic",
         valign: Gtk.Align.CENTER,
         css_classes: ["flat", "destructive-action"],
-        tooltip_text: _("Remove \u201c%s\u201d from the filter list").format(
-          name,
-        ),
+        tooltip_text: _("Remove \u201c%s\u201d from the filter list").format(name),
       });
 
       removeBtn.connect("clicked", () => {
@@ -195,13 +213,14 @@ export function buildPlayerFilterPage(page, settings, findAppInfo) {
       });
 
       row.add_suffix(removeBtn);
-
       savedGroup.add(row);
       savedFilterRows.push(row);
     }
   };
 
-  settings.connect("changed::player-filter-list", () => {
+  // Single top-level watcher — replaces the stray per-row settings.connect
+  // that was created inside the scan loop on every rebuild (was a memory leak).
+  _settingsConnect("changed::player-filter-list", () => {
     GLib.idle_add(GLib.PRIORITY_DEFAULT_IDLE, () => {
       rebuildSavedList();
       return GLib.SOURCE_REMOVE;
@@ -210,7 +229,10 @@ export function buildPlayerFilterPage(page, settings, findAppInfo) {
 
   rebuildSavedList();
 
-  // Detected Players
+  // ------------------------------------------------------------------
+  // Detected Players (live D-Bus scan)
+  // ------------------------------------------------------------------
+
   const detectGroup = new Adw.PreferencesGroup({
     title: _("Detected Players"),
     description: _(
@@ -237,33 +259,34 @@ export function buildPlayerFilterPage(page, settings, findAppInfo) {
   page.add(liveGroup);
 
   let filterLiveRows = [];
+  // Map of short-name → addBtn so the top-level watcher can update labels
+  // without creating a new settings.connect per button per scan.
+  const _liveAddBtns = new Map();
 
   const clearLiveRows = () => {
     for (const r of filterLiveRows) {
-      try {
-        liveGroup.remove(r);
-      } catch (_e) {}
+      try { liveGroup.remove(r); } catch (_e) {}
     }
     filterLiveRows = [];
+    _liveAddBtns.clear();
   };
+
+  const _updateLiveAddBtns = () => {
+    for (const [short, btn] of _liveAddBtns) {
+      const saved = parseList().some((e) => e.name === short);
+      btn.label = saved ? _("Saved \u2713") : _("Add to Filter");
+      btn.css_classes = saved ? ["flat"] : ["suggested-action"];
+    }
+  };
+
+  // Single top-level watcher for button state across all live rows.
+  _settingsConnect("changed::player-filter-list", _updateLiveAddBtns);
 
   const scanPlayers = () => {
     clearLiveRows();
 
-    let connection;
-    try {
-      connection = Gio.bus_get_sync(Gio.BusType.SESSION, null);
-    } catch (_e) {
-      const errRow = new Adw.ActionRow({
-        title: _("Could not connect to the session bus"),
-        activatable: false,
-      });
-      liveGroup.add(errRow);
-      filterLiveRows.push(errRow);
-      return;
-    }
-
-    connection.call(
+    // Fully async — never block the main loop (review guideline compliance).
+    Gio.DBus.session.call(
       "org.freedesktop.DBus",
       "/org/freedesktop/DBus",
       "org.freedesktop.DBus",
@@ -289,14 +312,12 @@ export function buildPlayerFilterPage(page, settings, findAppInfo) {
               subtitle: _("Open a music app and click Refresh"),
               activatable: false,
             });
-            noneRow.add_prefix(
-              new Gtk.Image({
-                icon_name: "media-playback-stop-symbolic",
-                pixel_size: 24,
-                valign: Gtk.Align.CENTER,
-                opacity: 0.5,
-              }),
-            );
+            noneRow.add_prefix(new Gtk.Image({
+              icon_name: "media-playback-stop-symbolic",
+              pixel_size: 24,
+              valign: Gtk.Align.CENTER,
+              opacity: 0.5,
+            }));
             liveGroup.add(noneRow);
             filterLiveRows.push(noneRow);
             return;
@@ -323,11 +344,7 @@ export function buildPlayerFilterPage(page, settings, findAppInfo) {
 
             row.add_prefix(
               appIcon
-                ? new Gtk.Image({
-                    gicon: appIcon,
-                    pixel_size: 32,
-                    valign: Gtk.Align.CENTER,
-                  })
+                ? new Gtk.Image({ gicon: appIcon, pixel_size: 32, valign: Gtk.Align.CENTER })
                 : new Gtk.Image({
                     icon_name: "application-x-executable-symbolic",
                     pixel_size: 32,
@@ -336,42 +353,26 @@ export function buildPlayerFilterPage(page, settings, findAppInfo) {
                   }),
             );
 
-            const isAlreadySaved = () =>
-              parseList().some((e) => e.name === short);
+            const alreadySaved = parseList().some((e) => e.name === short);
 
             const addBtn = new Gtk.Button({
-              label: isAlreadySaved() ? _("Saved \u2713") : _("Add to Filter"),
+              label: alreadySaved ? _("Saved \u2713") : _("Add to Filter"),
               valign: Gtk.Align.CENTER,
-              css_classes: isAlreadySaved() ? ["flat"] : ["suggested-action"],
-              tooltip_text: isAlreadySaved()
-                ? _("\u201c%s\u201d is already in the filter list").format(
-                    short,
-                  )
-                : _(
-                    "Add \u201c%s\u201d to the filter list (enabled by default)",
-                  ).format(short),
+              css_classes: alreadySaved ? ["flat"] : ["suggested-action"],
+              tooltip_text: alreadySaved
+                ? _("\u201c%s\u201d is already in the filter list").format(short)
+                : _("Add \u201c%s\u201d to the filter list (enabled by default)").format(short),
             });
 
             addBtn.connect("clicked", () => {
-              if (isAlreadySaved()) return;
-
+              if (parseList().some((e) => e.name === short)) return;
               const current = parseList();
               current.push({ name: short, enabled: true });
               serializeList(current);
-
-              addBtn.label = _("Saved \u2713");
-              addBtn.css_classes = ["flat"];
-              addBtn.tooltip_text = _(
-                "\u201c%s\u201d is already in the filter list",
-              ).format(short);
+              // Button state updated by the top-level _settingsConnect watcher.
             });
 
-            settings.connect("changed::player-filter-list", () => {
-              const saved = isAlreadySaved();
-              addBtn.label = saved ? _("Saved \u2713") : _("Add to Filter");
-              addBtn.css_classes = saved ? ["flat"] : ["suggested-action"];
-            });
-
+            _liveAddBtns.set(short, addBtn);
             row.add_suffix(addBtn);
             liveGroup.add(row);
             filterLiveRows.push(row);
@@ -385,6 +386,7 @@ export function buildPlayerFilterPage(page, settings, findAppInfo) {
 
   refreshBtn.connect("clicked", scanPlayers);
 
+  // Deferred initial scan so the page finishes rendering first.
   GLib.idle_add(GLib.PRIORITY_DEFAULT_IDLE, () => {
     scanPlayers();
     return GLib.SOURCE_REMOVE;

@@ -188,6 +188,11 @@ export const MediaControls = GObject.registerClass(
           });
         }
       });
+      // Slider-to-vinyl sync: forward position ratio to album art so the
+      // vinyl disc rotates in lockstep with the progress slider (GPU path).
+      this._progressSlider.connect("slider-ratio-changed", (_, ratio) => {
+        this._albumArt?.syncRotationToPosition?.(ratio);
+      });
       this.add_child(this._progressSlider);
 
       this._controlButtons = new ControlButtons(this._settings);

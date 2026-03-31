@@ -3,14 +3,22 @@ import GLib from "gi://GLib";
 
 const decode = (data) => new TextDecoder().decode(data);
 
+// LRU cache cap — keeps memory bounded
+const CACHE_MAX = 60;
+
 export class LyricsClient {
   constructor() {
     this._session = new Soup.Session();
-    this._session.timeout = 15;
+    this._session.timeout = 8; // 8 s hard timeout per request
+
+    // In-memory LRU cache
+    this._cache = new Map();
   }
 
   /**
-
+   * Fetch synced lyrics, returning as fast as possible
+   * Fires exact + search requests in parallel; returns whichever wins
+   *
    * @param {string} title
    * @param {string} artist
    * @param {string} album
@@ -21,10 +29,38 @@ export class LyricsClient {
     if (!this._session) return null;
     if (!title && !artist) return null;
 
+    const cacheKey = `${title}||${artist}||${album}||${Math.round(durationSec)}`;
+    if (this._cache.has(cacheKey)) {
+      // Refresh LRU order
+      const v = this._cache.get(cacheKey);
+      this._cache.delete(cacheKey);
+      this._cache.set(cacheKey, v);
+      return v;
+    }
+
     try {
-      const exact = await this._getExact(title, artist, album, durationSec);
-      if (exact) return exact;
-      return await this._search(title, artist, durationSec);
+      
+      const [exactP, searchP] = [
+        this._getExact(title, artist, album, durationSec),
+        this._search(title, artist, durationSec),
+      ];
+
+      
+      const firstOf = (p) => new Promise((res) => p.then((v) => { if (v) res(v); }).catch(() => {}));
+
+      
+      let result = null;
+      try {
+        result = await Promise.race([firstOf(exactP), firstOf(searchP)]);
+      } catch (_) {}
+
+      if (!result) {
+        
+        result = (await exactP) ?? (await searchP) ?? null;
+      }
+
+      this._setCache(cacheKey, result);
+      return result;
     } catch (_e) {
       return null;
     }
@@ -35,6 +71,18 @@ export class LyricsClient {
       this._session.abort();
       this._session = null;
     }
+    this._cache.clear();
+  }
+
+  
+
+  _setCache(key, value) {
+    // Evict oldest entry if over cap
+    if (this._cache.size >= CACHE_MAX) {
+      const firstKey = this._cache.keys().next().value;
+      this._cache.delete(firstKey);
+    }
+    this._cache.set(key, value);
   }
 
   async _getExact(title, artist, album, durationSec) {
@@ -46,22 +94,11 @@ export class LyricsClient {
       if (album) p.set("album_name", album);
       if (durationSec > 0) p.set("duration", String(Math.round(durationSec)));
 
-      const msg = Soup.Message.new(
-        "GET",
-        `https://lrclib.net/api/get?${p.toString()}`,
-      );
+      const msg = Soup.Message.new("GET", `https://lrclib.net/api/get?${p.toString()}`);
       if (!msg) return null;
+      msg.request_headers.append("User-Agent", "AdvancedMediaController/5 (https://github.com)");
 
-      msg.request_headers.append(
-        "User-Agent",
-        "AdvancedMediaController/5 (https://github.com)",
-      );
-
-      const bytes = await this._session.send_and_read_async(
-        msg,
-        GLib.PRIORITY_DEFAULT,
-        null,
-      );
+      const bytes = await this._session.send_and_read_async(msg, GLib.PRIORITY_DEFAULT, null);
       if (msg.status_code !== 200) return null;
 
       const raw = bytes?.get_data();
@@ -78,22 +115,11 @@ export class LyricsClient {
     if (!this._session) return null;
     try {
       const q = encodeURIComponent(`${title} ${artist}`.trim());
-      const msg = Soup.Message.new(
-        "GET",
-        `https://lrclib.net/api/search?q=${q}`,
-      );
+      const msg = Soup.Message.new("GET", `https://lrclib.net/api/search?q=${q}`);
       if (!msg) return null;
+      msg.request_headers.append("User-Agent", "AdvancedMediaController/5 (https://github.com)");
 
-      msg.request_headers.append(
-        "User-Agent",
-        "AdvancedMediaController/5 (https://github.com)",
-      );
-
-      const bytes = await this._session.send_and_read_async(
-        msg,
-        GLib.PRIORITY_DEFAULT,
-        null,
-      );
+      const bytes = await this._session.send_and_read_async(msg, GLib.PRIORITY_DEFAULT, null);
       if (msg.status_code !== 200) return null;
 
       const raw = bytes?.get_data();
@@ -102,23 +128,15 @@ export class LyricsClient {
       const data = JSON.parse(decode(raw));
       if (!Array.isArray(data) || data.length === 0) return null;
 
-      // Only consider results that have synced lyrics
       const withSynced = data.filter((r) => r.syncedLyrics);
       if (withSynced.length === 0) return null;
 
-      // Pick best duration match
-      let best = null;
-      let bestDiff = Infinity;
+      let best = null, bestDiff = Infinity;
       for (const r of withSynced) {
-        const diff =
-          durationSec > 0 ? Math.abs((r.duration ?? 0) - durationSec) : 0;
-        if (diff < bestDiff) {
-          bestDiff = diff;
-          best = r;
-        }
+        const diff = durationSec > 0 ? Math.abs((r.duration ?? 0) - durationSec) : 0;
+        if (diff < bestDiff) { bestDiff = diff; best = r; }
       }
       if (!best) return null;
-      // Reject if duration mismatch is too large
       if (durationSec > 0 && bestDiff > 5) return null;
 
       return this._parseLRC(best.syncedLyrics);
@@ -131,7 +149,6 @@ export class LyricsClient {
     if (!lrcText) return null;
     const lines = [];
     const RE = /\[(\d{2}):(\d{2})\.(\d{2,3})\](.*)/;
-
     for (const raw of lrcText.split("\n")) {
       const m = raw.match(RE);
       if (!m) continue;
@@ -142,7 +159,6 @@ export class LyricsClient {
       const text = m[4].trim();
       if (text) lines.push({ time: ms, text });
     }
-
     return lines.length > 0 ? lines : null;
   }
 }

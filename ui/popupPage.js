@@ -3,6 +3,33 @@ import Gtk from "gi://Gtk";
 import Gio from "gi://Gio";
 import { gettext as _ } from "resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js";
 
+// ---------------------------------------------------------------------------
+// libadwaita compat shims — see generalPage.js for full explanation
+// Adw.SpinRow / Adw.SwitchRow require libadwaita 1.4 (GNOME 45+)
+// ---------------------------------------------------------------------------
+
+function _makeSpinRow(opts) {
+  if (typeof Adw.SpinRow !== "undefined") return new Adw.SpinRow(opts);
+  const row = new Adw.ActionRow({ title: opts.title, subtitle: opts.subtitle ?? "" });
+  const spin = new Gtk.SpinButton({ adjustment: opts.adjustment, valign: Gtk.Align.CENTER, digits: 0 });
+  row.add_suffix(spin);
+  row.activatable_widget = spin;
+  Object.defineProperty(row, "value", { get: () => spin.value, set: (v) => { spin.value = v; } });
+  spin.connect("value-changed", () => row.notify("value"));
+  return row;
+}
+
+function _makeSwitchRow(opts) {
+  if (typeof Adw.SwitchRow !== "undefined") return new Adw.SwitchRow(opts);
+  const row = new Adw.ActionRow({ title: opts.title, subtitle: opts.subtitle ?? "" });
+  const sw = new Gtk.Switch({ valign: Gtk.Align.CENTER, active: false });
+  row.add_suffix(sw);
+  row.activatable_widget = sw;
+  Object.defineProperty(row, "active", { get: () => sw.active, set: (v) => { sw.active = v; } });
+  sw.connect("notify::active", () => row.notify("active"));
+  return row;
+}
+
 /**
  * Builds and returns the Popup Player preferences page
  *
@@ -22,7 +49,7 @@ export function buildPopupPage(settings) {
   });
   popupPage.add(sizeGroup);
 
-  const popupWidthRow = new Adw.SpinRow({
+  const popupWidthRow = _makeSpinRow({
     title: _("Popup Width"),
     subtitle: _("Width in pixels — album art, labels and lyrics panel all scale with this value (280 – 600 px)"),
     adjustment: new Gtk.Adjustment({
@@ -48,7 +75,7 @@ export function buildPopupPage(settings) {
   });
   popupPage.add(titleScrollGroup);
 
-  const enableTitleScrollRow = new Adw.SwitchRow({
+  const enableTitleScrollRow = _makeSwitchRow({
     title: _("Enable Title Scrolling"),
     subtitle: _(
       "Scroll long track titles from start to end, pause, then repeat. " +
@@ -63,7 +90,7 @@ export function buildPopupPage(settings) {
   );
   titleScrollGroup.add(enableTitleScrollRow);
 
-  const titleScrollSpeedRow = new Adw.SpinRow({
+  const titleScrollSpeedRow = _makeSpinRow({
     title: _("Title Scroll Speed"),
     subtitle: _("1 = slowest, 10 = fastest"),
     adjustment: new Gtk.Adjustment({
@@ -89,7 +116,7 @@ export function buildPopupPage(settings) {
   });
   popupPage.add(artistScrollGroup);
 
-  const enableArtistScrollRow = new Adw.SwitchRow({
+  const enableArtistScrollRow = _makeSwitchRow({
     title: _("Enable Artist Scrolling"),
     subtitle: _(
       "Scroll long artist names from start to end, pause, then repeat. " +
@@ -104,7 +131,7 @@ export function buildPopupPage(settings) {
   );
   artistScrollGroup.add(enableArtistScrollRow);
 
-  const artistScrollSpeedRow = new Adw.SpinRow({
+  const artistScrollSpeedRow = _makeSpinRow({
     title: _("Artist Scroll Speed"),
     subtitle: _("1 = slowest, 10 = fastest"),
     adjustment: new Gtk.Adjustment({
@@ -130,7 +157,7 @@ export function buildPopupPage(settings) {
   });
   popupPage.add(albumArtGroup);
 
-  const enableRotationRow = new Adw.SwitchRow({
+  const enableRotationRow = _makeSwitchRow({
     title: _("Enable Vinyl Record Rotation (Global Default)"),
     subtitle: _(
       "Global default when no per-app setting exists. " +
@@ -146,7 +173,7 @@ export function buildPopupPage(settings) {
   );
   albumArtGroup.add(enableRotationRow);
 
-  const rotationSpeedRow = new Adw.SpinRow({
+  const rotationSpeedRow = _makeSpinRow({
     title: _("Rotation Speed (seconds per revolution)"),
     subtitle: _("5 = fastest, 60 = slowest. Recommended: 20\u201330"),
     adjustment: new Gtk.Adjustment({
@@ -202,7 +229,7 @@ export function buildPopupPage(settings) {
   });
   popupPage.add(tonearmGroup);
 
-  const parkedAngleRow = new Adw.SpinRow({
+  const parkedAngleRow = _makeSpinRow({
     title: _("Parked (resting) angle"),
     subtitle: _("Degrees from vertical when music is paused or stopped. Higher moves the arm further from the disc (10 – 60°)"),
     adjustment: new Gtk.Adjustment({
@@ -221,7 +248,7 @@ export function buildPopupPage(settings) {
   );
   tonearmGroup.add(parkedAngleRow);
 
-  const playingAngleRow = new Adw.SpinRow({
+  const playingAngleRow = _makeSpinRow({
     title: _("Playing angle"),
     subtitle: _("Degrees from vertical when the stylus rests on the groove. Lower brings the arm closer to the disc centre (0 – 30°)"),
     adjustment: new Gtk.Adjustment({
@@ -261,7 +288,7 @@ export function buildPopupPage(settings) {
   });
   popupPage.add(clickGroup);
 
-  const vinylClickRow = new Adw.SpinRow({
+  const vinylClickRow = _makeSpinRow({
     title: _("Clicks to toggle vinyl effect"),
     subtitle: _(
       "Rapidly click the album art this many times to enable or disable the vinyl record style for the current app",
@@ -282,7 +309,7 @@ export function buildPopupPage(settings) {
   );
   clickGroup.add(vinylClickRow);
 
-  const lyricsClickRow = new Adw.SpinRow({
+  const lyricsClickRow = _makeSpinRow({
     title: _("Clicks to toggle lyrics view"),
     subtitle: _(
       "Rapidly click the album art this many times to open or close the synced lyrics panel",

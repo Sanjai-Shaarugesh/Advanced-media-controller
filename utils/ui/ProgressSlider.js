@@ -11,6 +11,9 @@ export const ProgressSlider = GObject.registerClass(
       seek: { param_types: [GObject.TYPE_DOUBLE] },
       "drag-begin": {},
       "drag-end": {},
+      // Fired on every position update so the vinyl art can stay in sync.
+      // param: ratio (0.0-1.0) = currentPosition / trackLength
+      "slider-ratio-changed": { param_types: [GObject.TYPE_DOUBLE] },
     },
   },
   class ProgressSlider extends St.BoxLayout {
@@ -264,16 +267,21 @@ export const ProgressSlider = GObject.registerClass(
     _applyPosition(position) {
       position = Math.max(0, Math.min(position, this._trackLength));
       this._positionSlider.block_signal_handler(this._sliderChangedId);
-      this._positionSlider.value =
-        this._trackLength > 0 ? position / this._trackLength : 0;
+      const ratio = this._trackLength > 0 ? position / this._trackLength : 0;
+      this._positionSlider.value = ratio;
       this._positionSlider.unblock_signal_handler(this._sliderChangedId);
       this._currentTimeLabel.text = this._formatTime(position / 1_000_000);
+      // Notify listeners (e.g. AlbumArt) so the vinyl disc stays in sync
+      try { this.emit("slider-ratio-changed", ratio); } catch (_) {}
     }
 
     _updateTimeLabel() {
       if (this._trackLength > 0) {
-        const pos = this._positionSlider.value * this._trackLength;
+        const ratio = this._positionSlider.value;
+        const pos = ratio * this._trackLength;
         this._currentTimeLabel.text = this._formatTime(pos / 1_000_000);
+        // Keep album art in sync while the user scrubs
+        try { this.emit("slider-ratio-changed", ratio); } catch (_) {}
       }
     }
 

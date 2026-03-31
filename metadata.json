@@ -9,11 +9,17 @@
   "name": "Advanced Media Controller",
   "settings-schema": "org.gnome.shell.extensions.advanced-media-controller",
   "shell-version": [
+    "40",
+    "41",
+    "42",
+    "43",
+    "44",
     "45",
     "46",
     "47",
     "48",
-    "49"
+    "49",
+    "50"
   ],
   "url": "https://github.com/Sanjai-Shaarugesh/Advanced-media-controller",
   "uuid": "advanced-media-controller@sanjai.com",

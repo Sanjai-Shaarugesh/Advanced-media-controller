@@ -577,7 +577,7 @@ export const AlbumArt = GObject.registerClass(
       this._lastClickTime = now;
 
       if (this._clickTimeout) {
-        GLib.source_remove(this._clickTimeout);
+        GLib.Source.remove(this._clickTimeout);
         this._clickTimeout = null;
       }
 
@@ -856,7 +856,7 @@ export const AlbumArt = GObject.registerClass(
 
     _stopRotationInterval() {
       if (this._rotationInterval) {
-        GLib.source_remove(this._rotationInterval);
+        GLib.Source.remove(this._rotationInterval);
         this._rotationInterval = null;
       }
     }
@@ -867,7 +867,7 @@ export const AlbumArt = GObject.registerClass(
       this.stopRotation();
 
       if (this._clickTimeout) {
-        GLib.source_remove(this._clickTimeout);
+        GLib.Source.remove(this._clickTimeout);
         this._clickTimeout = null;
       }
       this._clickCount = 0;

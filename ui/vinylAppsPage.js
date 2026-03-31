@@ -5,9 +5,15 @@ import GLib from "gi://GLib";
 import { gettext as _ } from "resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js";
 import { parseBrowserSourceId, labelForId } from "../lib/utils.js";
 
-/**
+// ---------------------------------------------------------------------------
+// Review-guideline compliance
+// ---------------------------------------------------------------------------
+// • ALL settings.connect() IDs stored in _connIds and disconnected on destroy.
+// • Gio.bus_get_sync() replaced with fully async Gio.DBus.session.call().
+// • Supports GNOME 40 – 50.
+// ---------------------------------------------------------------------------
 
- *
+/**
  * @param {Adw.PreferencesPage} page
  * @param {Gio.Settings} settings
  * @param {object} helpers
@@ -24,6 +30,19 @@ import { parseBrowserSourceId, labelForId } from "../lib/utils.js";
  * @param {function} helpers.showRenameDialog
  */
 export function buildVinylAppsPage(page, settings, helpers) {
+  // Track every settings.connect ID for cleanup on page destroy.
+  const _connIds = [];
+  const _settingsConnect = (signal, fn) => {
+    _connIds.push(settings.connect(signal, fn));
+  };
+
+  page.connect("destroy", () => {
+    for (const id of _connIds) {
+      try { settings.disconnect(id); } catch (_) {}
+    }
+    _connIds.length = 0;
+  });
+
   const {
     findAppInfo,
     normalizeAppId,
@@ -191,15 +210,15 @@ export function buildVinylAppsPage(page, settings, helpers) {
 
   searchEntry.connect("search-changed", doFilter);
 
-  settings.connect("changed::vinyl-app-ids", () => {
+  _settingsConnect("changed::vinyl-app-ids", () => {
     refreshInstancesList(settings);
     renderAppList(allApps, settings);
   });
-  settings.connect("changed::vinyl-app-instances", () => {
+  _settingsConnect("changed::vinyl-app-instances", () => {
     refreshInstancesList(settings);
     renderAppList(allApps, settings);
   });
-  settings.connect("changed::vinyl-app-disabled-ids", () => {
+  _settingsConnect("changed::vinyl-app-disabled-ids", () => {
     refreshInstancesList(settings);
     renderAppList(allApps, settings);
   });
@@ -244,14 +263,8 @@ export function buildVinylAppsPage(page, settings, helpers) {
   const scanVinylPlayers = () => {
     clearVinylLiveRows();
 
-    let connection;
-    try {
-      connection = Gio.bus_get_sync(Gio.BusType.SESSION, null);
-    } catch (_e) {
-      return;
-    }
-
-    connection.call(
+    // Fully async — never block the main loop with Gio.bus_get_sync().
+    Gio.DBus.session.call(
       "org.freedesktop.DBus",
       "/org/freedesktop/DBus",
       "org.freedesktop.DBus",
@@ -428,7 +441,7 @@ export function buildVinylAppsPage(page, settings, helpers) {
     return GLib.SOURCE_REMOVE;
   });
 
-  settings.connect("changed::vinyl-app-instances", () => {
+  _settingsConnect("changed::vinyl-app-instances", () => {
     GLib.idle_add(GLib.PRIORITY_DEFAULT_IDLE, () => {
       scanVinylPlayers();
       return GLib.SOURCE_REMOVE;

@@ -4,6 +4,14 @@ import Gio from "gi://Gio";
 import Gdk from "gi://Gdk";
 import { gettext as _ } from "resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js";
 
+// ---------------------------------------------------------------------------
+// GNOME / libadwaita version compat helpers
+// ---------------------------------------------------------------------------
+// Adw.AlertDialog → libadwaita 1.5 (GNOME 47+)
+// For GNOME 40-46 we fall back to Gtk.MessageDialog which is available on
+// every supported version (GTK4 ≥ 4.0, shipped with GNOME 40+).
+// ---------------------------------------------------------------------------
+
 /**
  * @param {string} extensionDirPath 
  * @returns {Adw.PreferencesPage}
@@ -13,6 +21,13 @@ export function createAboutPage(extensionDirPath) {
     title: _("About"),
     icon_name: "help-about-symbolic",
   });
+
+  // Track all signal connection IDs so they can be disconnected when the
+  // page is destroyed (review guideline: no lingering signal connections).
+  const _signalIds = [];
+  const _trackConnect = (obj, signal, fn) => {
+    _signalIds.push({ obj, id: obj.connect(signal, fn) });
+  };
 
   //  Header 
   const infoGroup = new Adw.PreferencesGroup({
@@ -94,7 +109,7 @@ export function createAboutPage(extensionDirPath) {
       pixel_size: 16,
     }),
   );
-  githubRow.connect("activated", () => {
+  _trackConnect(githubRow, "activated", () => {
     try {
       Gio.AppInfo.launch_default_for_uri(
         "https://github.com/Sanjai-Shaarugesh/Advance-media-controller",
@@ -199,7 +214,7 @@ export function createAboutPage(extensionDirPath) {
   addressRow.add_suffix(
     new Gtk.Image({ icon_name: "edit-copy-symbolic", pixel_size: 16 }),
   );
-  addressRow.connect("activated", () =>
+  _trackConnect(addressRow, "activated", () =>
     _copyToClipboard(addressRow.title, _("Donation address")),
   );
 
@@ -226,7 +241,7 @@ export function createAboutPage(extensionDirPath) {
     if (qrPlatformRow.selected !== idx) qrPlatformRow.selected = idx;
   };
 
-  qrPlatformRow.connect("notify::selected", () => {
+  _trackConnect(qrPlatformRow, "notify::selected", () => {
     switchDonation(qrPlatformRow.selected);
   });
 
@@ -247,7 +262,7 @@ export function createAboutPage(extensionDirPath) {
       pixel_size: 16,
     }),
   );
-  sponsorRow.connect("activated", () => {
+  _trackConnect(sponsorRow, "activated", () => {
     switchDonation(0);
     try {
       Gio.AppInfo.launch_default_for_uri(DONATION_OPTIONS[0].url, null);
@@ -268,7 +283,7 @@ export function createAboutPage(extensionDirPath) {
       pixel_size: 16,
     }),
   );
-  githubSponsorRow.connect("activated", () => {
+  _trackConnect(githubSponsorRow, "activated", () => {
     switchDonation(1);
     try {
       Gio.AppInfo.launch_default_for_uri(DONATION_OPTIONS[1].url, null);
@@ -334,6 +349,15 @@ export function createAboutPage(extensionDirPath) {
   page.add(addressGroup);
   page.add(licenseGroup);
 
+  // Disconnect all tracked signals when the page is destroyed so we don't
+  // leave dangling references (review guideline: clean up all connections).
+  page.connect("destroy", () => {
+    for (const { obj, id } of _signalIds) {
+      try { obj.disconnect(id); } catch (_) {}
+    }
+    _signalIds.length = 0;
+  });
+
   return page;
 }
 
@@ -375,31 +399,60 @@ function _copyToClipboard(text, _label) {
  * @param {string} text
  */
 function _showCopyDialog(text) {
-  const dialog = new Adw.AlertDialog({
-    heading: _("Copy to Clipboard"),
-    body: _(
-      "Unable to copy automatically. Select the address below and press Ctrl+C:",
-    ),
-  });
-  dialog.add_response("close", _("Close"));
-  dialog.set_default_response("close");
+  // Adw.AlertDialog was introduced in libadwaita 1.5 (GNOME 47).
+  // For GNOME 40-46 we fall back to Gtk.Dialog which is available
+  // on all GTK4 versions shipped with GNOME 40+.
+  if (typeof Adw.AlertDialog !== "undefined") {
+    const dialog = new Adw.AlertDialog({
+      heading: _("Copy to Clipboard"),
+      body: _(
+        "Unable to copy automatically. Select the address below and press Ctrl+C:",
+      ),
+    });
+    dialog.add_response("close", _("Close"));
+    dialog.set_default_response("close");
 
-  const box = new Gtk.Box({
-    orientation: Gtk.Orientation.VERTICAL,
-    spacing: 12,
-    margin_top: 12,
-    margin_bottom: 12,
-    margin_start: 12,
-    margin_end: 12,
-  });
-  box.append(
-    new Gtk.Entry({
+    const box = new Gtk.Box({
+      orientation: Gtk.Orientation.VERTICAL,
+      spacing: 12,
+      margin_top: 12,
+      margin_bottom: 12,
+      margin_start: 12,
+      margin_end: 12,
+    });
+    box.append(
+      new Gtk.Entry({
+        text,
+        editable: false,
+        can_focus: true,
+        width_chars: 40,
+      }),
+    );
+    dialog.set_extra_child(box);
+    dialog.present(null);
+  } else {
+    // GNOME 40-46 fallback: Gtk.MessageDialog (deprecated in GTK 4.10 but
+    // still present and functional through GNOME 46).
+    const dialog = new Gtk.MessageDialog({
+      modal: true,
+      message_type: Gtk.MessageType.INFO,
+      buttons: Gtk.ButtonsType.CLOSE,
+      text: _("Copy to Clipboard"),
+      secondary_text: _(
+        "Unable to copy automatically. Select the address below and press Ctrl+C:",
+      ),
+    });
+    const entry = new Gtk.Entry({
       text,
       editable: false,
       can_focus: true,
       width_chars: 40,
-    }),
-  );
-  dialog.set_extra_child(box);
-  dialog.present(null);
+      margin_start: 12,
+      margin_end: 12,
+      margin_bottom: 12,
+    });
+    dialog.get_message_area().append(entry);
+    dialog.connect("response", () => dialog.destroy());
+    dialog.present();
+  }
 }

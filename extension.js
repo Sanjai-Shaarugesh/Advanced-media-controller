@@ -140,15 +140,24 @@ export default class MediaExtension extends Extension {
       const dateMenu = Main.panel.statusArea?.dateMenu;
       if (!dateMenu) return;
 
+      // GNOME 45+ path (mediaSection under _messageList)
       const mediaSection = dateMenu._messageList?._mediaSection;
       if (mediaSection) {
         mediaSection.visible = !hide;
         return;
       }
 
+      // GNOME 40-44 path (_mprisMediaPlayersList)
+      const legacyList = dateMenu._messageList?._mprisMediaPlayersList;
+      if (legacyList) {
+        legacyList.visible = !hide;
+        return;
+      }
+
       const messageList = dateMenu._messageList;
       if (!messageList) return;
 
+      // Walk children looking for known class names across GNOME 40-50
       let found = false;
       let child = messageList.get_first_child?.();
       while (child) {
@@ -156,7 +165,8 @@ export default class MediaExtension extends Extension {
         if (
           ctorName === "MediaSection" ||
           ctorName === "MprisSection" ||
-          ctorName === "MprisSource"
+          ctorName === "MprisSource" ||
+          ctorName === "MprisMediaPlayersList" // GNOME 40-41
         ) {
           child.visible = !hide;
           found = true;
@@ -181,14 +191,26 @@ export default class MediaExtension extends Extension {
     if (!this._settings) return;
     const hide = this._settings.get_boolean("hide-default-player");
 
+    // Resolve MprisSource / MediaSection — the class name changed across versions:
+    //   GNOME 40-44  → Mpris.MediaSection
+    //   GNOME 45-48  → Mpris.MprisSource
+    //   GNOME 49-50  → Mpris.MprisSource (same) but quick-settings media path differs
     const MprisSource = Mpris.MprisSource ?? Mpris.MediaSection;
+
+    // Collect all known media section locations across GNOME 40-50
+    const dateMenu = Main.panel.statusArea?.dateMenu;
     const mediaSection =
-      Main.panel.statusArea.dateMenu?._messageList?._messageView
-        ?._mediaSource ??
-      Main.panel.statusArea.dateMenu?._messageList?._mediaSection;
+      dateMenu?._messageList?._messageView?._mediaSource ??
+      dateMenu?._messageList?._mediaSection ??
+      dateMenu?._messageList?._mprisMediaPlayersList ?? // GNOME 40-42
+      null;
+
+    // GNOME 43+ quick settings media widget (also present in GNOME 49/50)
     const qsMedia =
-      Main.panel.statusArea.quickSettings?._media ||
-      Main.panel.statusArea.quickSettings?._mediaSection;
+      Main.panel.statusArea?.quickSettings?._media ??
+      Main.panel.statusArea?.quickSettings?._mediaSection ??
+      Main.panel.statusArea?.quickSettings?._mprisSection ?? // GNOME 50 candidate
+      null;
 
     if (shouldReset || hide === false) {
       if (this._injectionManager) {
@@ -196,25 +218,36 @@ export default class MediaExtension extends Extension {
         this._injectionManager = null;
       }
 
+      // Restore native proxy callbacks
       if (mediaSection && mediaSection._onProxyReady)
         mediaSection._onProxyReady();
       if (qsMedia && qsMedia._onProxyReady) qsMedia._onProxyReady();
-    } else if (!this._injectionManager && hide === true) {
-      this._injectionManager = new InjectionManager();
-      this._injectionManager.overrideMethod(
-        MprisSource.prototype,
-        "_addPlayer",
-        () => {
-          return function () {};
-        },
-      );
+    } else if (!this._injectionManager && hide === true && MprisSource) {
+      try {
+        this._injectionManager = new InjectionManager();
+        this._injectionManager.overrideMethod(
+          MprisSource.prototype,
+          "_addPlayer",
+          () => {
+            return function () {};
+          },
+        );
+      } catch (e) {
+        // MprisSource.prototype may not be writable on some GNOME versions;
+        // silently skip — the indicator still works, just the native player
+        // widget may remain visible.
+        console.warn("[advanced-media-controller] InjectionManager failed:", e);
+        this._injectionManager = null;
+      }
 
       [mediaSection, qsMedia].forEach((section) => {
         if (section && section._players) {
           for (const player of section._players.values()) {
             const busName = player._busName || player.busName;
-            if (section._onNameOwnerChanged) {
-              section._onNameOwnerChanged(null, null, [busName, busName, ""]);
+            if (section._onNameOwnerChanged && busName) {
+              try {
+                section._onNameOwnerChanged(null, null, [busName, busName, ""]);
+              } catch (_) {}
             }
           }
         }

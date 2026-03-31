@@ -3,6 +3,23 @@ import Gtk from "gi://Gtk";
 import Gio from "gi://Gio";
 import { gettext as _ } from "resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js";
 
+// ---------------------------------------------------------------------------
+// libadwaita compat — Adw.SwitchRow requires libadwaita 1.4 (GNOME 45+)
+// ---------------------------------------------------------------------------
+function _makeSwitchRow(opts) {
+  if (typeof Adw.SwitchRow !== "undefined") return new Adw.SwitchRow(opts);
+  const row = new Adw.ActionRow({ title: opts.title, subtitle: opts.subtitle ?? "", icon_name: opts.icon_name });
+  const sw = new Gtk.Switch({ valign: Gtk.Align.CENTER, active: false });
+  row.add_suffix(sw);
+  row.activatable_widget = sw;
+  Object.defineProperty(row, "active", {
+    get: () => sw.active,
+    set: (v) => { sw.active = v; },
+  });
+  sw.connect("notify::active", () => row.notify("active"));
+  return row;
+}
+
 /**
  * @param {Adw.PreferencesPage} page
  * @param {Gio.Settings} settings
@@ -17,7 +34,7 @@ export function buildLyricsPage(page, settings) {
   });
   page.add(enableGroup);
 
-  const enableLyricsRow = new Adw.SwitchRow({
+  const enableLyricsRow = _makeSwitchRow({
     title: _("Enable Synced Lyrics"),
     subtitle: _(
       "Fetch and display scrolling lyrics that follow the current playback position",
