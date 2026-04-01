@@ -1,5 +1,6 @@
 import St from "gi://St";
 import Gio from "gi://Gio";
+import GLib from "gi://GLib";
 import GObject from "gi://GObject";
 import Clutter from "gi://Clutter";
 import {
@@ -8,57 +9,35 @@ import {
   clearIconCache,
 } from "../icon/IconResolver.js";
 
-// Animation
-const ANIM_DURATION_MS = 160;
+const ANIM_DURATION_MS = 100;
 const ANIM_MODE = Clutter.AnimationMode.EASE_OUT_QUAD;
-const TAB_ICON_SIZE = 22; // px — inside switcher tabs
-const SINGLE_ICON_SIZE = 32; // px — single-player centred icon
-
-// Pin-active red
+const TAB_ICON_SIZE = 22;
+const SINGLE_ICON_SIZE = 32;
+const DOUBLE_CLICK_MS = 300;
 const PIN_ACTIVE_RED = "#e01b24";
-
-//  GSettings schema for detecting light/dark preference
+const PULSE_SCALE_UP = 1.22;
+const PULSE_UP_MS = 90;
+const PULSE_DOWN_MS = 110;
 const INTERFACE_SCHEMA = "org.gnome.desktop.interface";
-const INTERFACE_KEY = "color-scheme"; // "prefer-dark" | "default"
-const GTK_THEME_KEY = "gtk-theme"; // legacy (GNOME ≤ 42)
+const INTERFACE_KEY = "color-scheme";
+const GTK_THEME_KEY = "gtk-theme";
 
-// Theme detection helpers
-
-/**
- * Return true when the desktop is currently running a dark colour scheme
-
- * @returns {boolean}
- */
 function _isDarkTheme() {
   try {
-    const settings = new Gio.Settings({ schema_id: INTERFACE_SCHEMA });
-    // GNOME 42+ has color-scheme key
-    const keys = settings.list_keys();
-    if (keys.indexOf(INTERFACE_KEY) !== -1) {
-      return settings.get_string(INTERFACE_KEY) === "prefer-dark";
-    }
-    // GNOME 40-41 fallback
-    if (keys.indexOf(GTK_THEME_KEY) !== -1) {
-      return settings.get_string(GTK_THEME_KEY).toLowerCase().includes("dark");
-    }
+    const s = new Gio.Settings({ schema_id: INTERFACE_SCHEMA });
+    const keys = s.list_keys();
+    if (keys.indexOf(INTERFACE_KEY) !== -1)
+      return s.get_string(INTERFACE_KEY) === "prefer-dark";
+    if (keys.indexOf(GTK_THEME_KEY) !== -1)
+      return s.get_string(GTK_THEME_KEY).toLowerCase().includes("dark");
   } catch (_) {}
   return true;
 }
 
-// PlayerTabs widget
-
 export const PlayerTabs = GObject.registerClass(
   {
     Signals: {
-      /**
-       * Emitted when a tab is clicked
-       * @param {string} playerName  MPRIS bus name
-       */
       "player-changed": { param_types: [GObject.TYPE_STRING] },
-      /**
-       * Emitted when the pin button is toggled.
-       * @param {boolean} pinned  New state
-       */
       "pin-toggled": { param_types: [GObject.TYPE_BOOLEAN] },
     },
   },
@@ -75,17 +54,21 @@ export const PlayerTabs = GObject.registerClass(
       this._currentActivePlayer = null;
       this._pinned = false;
       this._dark = _isDarkTheme();
-
       this._buttonEntries = [];
       this._pinClickId = 0;
       this._pinEnterId = 0;
       this._pinLeaveId = 0;
-
-      // Theme-change listener
-      this._themeSettingsId = 0;
+      this._clickTimers = new Map();
+      this._pulseTimers = new Set();
       this._themeSettings = null;
-      this._watchTheme();
+      this._themeSettingsId = 0;
+      this._singleIconLastPressUs = 0;
+      this._singleIconButton = null;
+      this._singleIconPressId = 0;
+      this._singleHoverEnterId = 0;
+      this._singleHoverLeaveId = 0;
 
+      this._watchTheme();
       this._buildPinButton();
       this._buildSingleRow();
       this._buildSwitcherRow();
@@ -96,17 +79,12 @@ export const PlayerTabs = GObject.registerClass(
       this._switcherRow.hide();
     }
 
-    // Theme-change watcher
-
     _watchTheme() {
       try {
         this._themeSettings = new Gio.Settings({ schema_id: INTERFACE_SCHEMA });
-
-        // Listen on color-scheme if available (GNOME 42+)
         const keys = this._themeSettings.list_keys();
         const key =
           keys.indexOf(INTERFACE_KEY) !== -1 ? INTERFACE_KEY : GTK_THEME_KEY;
-
         this._themeSettingsId = this._themeSettings.connect(
           `changed::${key}`,
           () => {
@@ -120,28 +98,19 @@ export const PlayerTabs = GObject.registerClass(
       }
     }
 
-    // Refresh all dynamic styles when the theme changes without rebuilding
-
     _refreshStyles() {
-      // Re-apply the switcher frame background
-      if (this._tabRow) {
-        this._tabRow.style = _switcherFrameStyle(this._dark);
-      }
+      if (this._tabRow) this._tabRow.style = _switcherFrameStyle(this._dark);
 
-      // Re-apply active/idle styles for each tab
       for (const entry of this._buttonEntries) {
-        const isActive = entry.playerName === this._currentActivePlayer;
-        entry.button.style = isActive
+        const active = entry.playerName === this._currentActivePlayer;
+        entry.button.style = active
           ? _tabActiveStyle(this._dark)
           : _tabIdleStyle(this._dark);
-        entry.icon.opacity = isActive ? 255 : 128;
+        entry.icon.opacity = active ? 255 : 128;
       }
 
-      // Re-apply pin styles
       this._applyPinStyle();
     }
-
-    // Pin button
 
     _buildPinButton() {
       this._pinIcon = new St.Icon({
@@ -163,16 +132,14 @@ export const PlayerTabs = GObject.registerClass(
       this._pinButton.set_pivot_point(0.5, 0.5);
 
       this._pinClickId = this._pinButton.connect("clicked", () => {
-        this._pinned = !this._pinned;
-        this._applyPinStyle();
-        this.emit("pin-toggled", this._pinned);
+        this._togglePin();
       });
 
       this._pinEnterId = this._pinButton.connect("enter-event", () => {
         if (!this._pinned) {
           this._pinButton.style = _pinHoverStyle(this._dark);
           this._easeOpacity(this._pinIcon, 210, ANIM_DURATION_MS);
-          this._easeScale(this._pinButton, 1.12, 100);
+          this._easeScale(this._pinButton, 1.12, 80);
         }
       });
 
@@ -180,25 +147,41 @@ export const PlayerTabs = GObject.registerClass(
         if (!this._pinned) {
           this._pinButton.style = _pinIdleStyle(this._dark);
           this._easeOpacity(this._pinIcon, 130, ANIM_DURATION_MS);
-          this._easeScale(this._pinButton, 1.0, 100);
+          this._easeScale(this._pinButton, 1.0, 80);
         }
       });
     }
 
+    _togglePin() {
+      this._pinned = !this._pinned;
+      this._applyPinStyle();
+      this._pulsePinButton();
+      this.emit("pin-toggled", this._pinned);
+    }
+
     _applyPinStyle() {
       if (!this._pinButton) return;
-
       if (this._pinned) {
         this._pinButton.style = _pinActiveStyle(this._dark);
-        this._pinIcon.style = _pinIconStyle(true, this._dark); // red
+        this._pinIcon.style = _pinIconStyle(true, this._dark);
         this._easeOpacity(this._pinIcon, 255, ANIM_DURATION_MS);
-        this._easeScale(this._pinButton, 1.0, 100);
       } else {
         this._pinButton.style = _pinIdleStyle(this._dark);
-        this._pinIcon.style = _pinIconStyle(false, this._dark); // muted
+        this._pinIcon.style = _pinIconStyle(false, this._dark);
         this._easeOpacity(this._pinIcon, 130, ANIM_DURATION_MS);
-        this._easeScale(this._pinButton, 1.0, 100);
+        this._easeScale(this._pinButton, 1.0, 80);
       }
+    }
+
+    _pulsePinButton() {
+      if (!this._pinButton) return;
+      this._easeScale(this._pinButton, PULSE_SCALE_UP, PULSE_UP_MS);
+      const tid = GLib.timeout_add(GLib.PRIORITY_DEFAULT, PULSE_UP_MS, () => {
+        this._pulseTimers.delete(tid);
+        this._easeScale(this._pinButton, 1.0, PULSE_DOWN_MS);
+        return GLib.SOURCE_REMOVE;
+      });
+      this._pulseTimers.add(tid);
     }
 
     _buildSingleRow() {
@@ -208,22 +191,79 @@ export const PlayerTabs = GObject.registerClass(
         style: "spacing: 0px;",
       });
 
-      this._singleRow.add_child(new St.Bin({ x_expand: true }));
+      this._singleIconButton = new St.Button({
+        style_class: "media-single-icon-button",
+        
+        reactive: true,
+        can_focus: false,
+        track_hover: true,
+        x_align: Clutter.ActorAlign.CENTER,
+      });
+      this._singleIconButton.set_pivot_point(0.5, 0.5);
 
       this._singleIcon = new St.Icon({
         icon_size: SINGLE_ICON_SIZE,
         gicon: Gio.ThemedIcon.new("audio-x-generic-symbolic"),
         y_align: Clutter.ActorAlign.CENTER,
+        x_align: Clutter.ActorAlign.CENTER,
         style: "margin: 2px 0px;",
       });
-      this._singleRow.add_child(this._singleIcon);
+      this._singleIconButton.set_child(this._singleIcon);
 
-      this._singleRow.add_child(new St.Bin({ x_expand: true }));
-      // Pin appended in _activateSingleMode()
+      this._singleHoverEnterId = this._singleIconButton.connect(
+        "enter-event",
+        () => {
+          this._singleIconButton.style = _singleIconHoverStyle(this._dark);
+          this._easeScale(this._singleIconButton, 1.06, 80);
+        },
+      );
+      this._singleHoverLeaveId = this._singleIconButton.connect(
+        "leave-event",
+        () => {
+          
+          this._easeScale(this._singleIconButton, 1.0, 80);
+        },
+      );
+
+      this._singleIconPressId = this._singleIconButton.connect(
+        "button-press-event",
+        (_actor, _event) => {
+          const nowUs = GLib.get_monotonic_time();
+          const deltaMs = (nowUs - this._singleIconLastPressUs) / 1000;
+          this._singleIconLastPressUs = nowUs;
+
+          if (deltaMs > 0 && deltaMs <= DOUBLE_CLICK_MS) {
+            this._singleIconLastPressUs = 0;
+
+            this._easeScale(this._singleIconButton, 0.82, 60);
+            const squishTid = GLib.timeout_add(
+              GLib.PRIORITY_DEFAULT,
+              60,
+              () => {
+                this._pulseTimers.delete(squishTid);
+                this._easeScale(this._singleIconButton, 1.0, 100);
+                return GLib.SOURCE_REMOVE;
+              },
+            );
+            this._pulseTimers.add(squishTid);
+
+            this._togglePin();
+          }
+
+          return Clutter.EVENT_PROPAGATE;
+        },
+      );
+
+      const centerBin = new St.Bin({
+        x_expand: true,
+        x_align: Clutter.ActorAlign.CENTER,
+        y_align: Clutter.ActorAlign.CENTER,
+      });
+      centerBin.set_child(this._singleIconButton);
+      this._singleRow.add_child(centerBin);
 
       this.add_child(this._singleRow);
     }
-
     _buildSwitcherRow() {
       this._switcherRow = new St.BoxLayout({
         x_expand: true,
@@ -236,24 +276,19 @@ export const PlayerTabs = GObject.registerClass(
         style: _switcherFrameStyle(this._dark),
       });
 
-      // Centre the tab row
-      const tabSpacer1 = new St.Bin({ x_expand: true });
-      const tabSpacer2 = new St.Bin({ x_expand: true });
-      this._switcherRow.add_child(tabSpacer1);
+      this._switcherRow.add_child(new St.Bin({ x_expand: true }));
       this._switcherRow.add_child(this._tabRow);
-      this._switcherRow.add_child(tabSpacer2);
+      this._switcherRow.add_child(new St.Bin({ x_expand: true }));
 
       this.add_child(this._switcherRow);
     }
-
-    // Mode activation
 
     _activateSingleMode() {
       this._reparentPin(this._singleRow);
       this._switcherRow.hide();
       this._switcherRow.opacity = 0;
       this._singleRow.show();
-      this._easeOpacity(this._singleRow, 255, ANIM_DURATION_MS * 2);
+      this._easeOpacity(this._singleRow, 255, ANIM_DURATION_MS);
     }
 
     _activateMultiMode() {
@@ -261,13 +296,9 @@ export const PlayerTabs = GObject.registerClass(
       this._singleRow.hide();
       this._singleRow.opacity = 0;
       this._switcherRow.show();
-      this._easeOpacity(this._switcherRow, 255, ANIM_DURATION_MS * 2);
+      this._easeOpacity(this._switcherRow, 255, ANIM_DURATION_MS);
     }
 
-    /**
-     * Safely move the pin button to a new parent container
-     * @param {St.BoxLayout} target
-     */
     _reparentPin(target) {
       if (!this._pinButton) return;
       const current = this._pinButton.get_parent();
@@ -280,28 +311,26 @@ export const PlayerTabs = GObject.registerClass(
       target.add_child(this._pinButton);
     }
 
-    // Animation helpers
-
-    _easeOpacity(actor, targetOpacity, durationMs) {
+    _easeOpacity(actor, target, ms) {
       if (!actor) return;
       try {
         actor.save_easing_state();
-        actor.set_easing_duration(durationMs);
+        actor.set_easing_duration(ms);
         actor.set_easing_mode(ANIM_MODE);
-        actor.opacity = targetOpacity;
+        actor.opacity = target;
         actor.restore_easing_state();
       } catch (_) {
         try {
-          actor.opacity = targetOpacity;
+          actor.opacity = target;
         } catch (__) {}
       }
     }
 
-    _easeScale(actor, scale, durationMs) {
+    _easeScale(actor, scale, ms) {
       if (!actor) return;
       try {
         actor.save_easing_state();
-        actor.set_easing_duration(durationMs);
+        actor.set_easing_duration(ms);
         actor.set_easing_mode(ANIM_MODE);
         actor.scale_x = scale;
         actor.scale_y = scale;
@@ -314,15 +343,10 @@ export const PlayerTabs = GObject.registerClass(
       }
     }
 
-    /** @returns {boolean} */
     get isPinned() {
       return this._pinned;
     }
 
-    /**
-     * Restore pin state from GSettings without emitting "pin-toggled"
-     * @param {boolean} value
-     */
     setPinned(value) {
       this._pinned = !!value;
       this._applyPinStyle();
@@ -338,23 +362,21 @@ export const PlayerTabs = GObject.registerClass(
 
       this._currentPlayers = players.slice();
       this._currentActivePlayer = currentPlayer;
-
-      // Refresh dark/light state on every update
       this._dark = _isDarkTheme();
 
       if (players.length <= 1) {
-        //  Single-player
         this._singleIcon.gicon = currentPlayer
           ? resolveGicon(currentPlayer, manager)
           : Gio.ThemedIcon.new("audio-x-generic-symbolic");
 
         this._activateSingleMode();
+        this._cancelAllClickTimers();
         this._destroyTabButtons();
         this._tabRow.destroy_all_children();
       } else {
-        //  Multi-player
         this._tabRow.style = _switcherFrameStyle(this._dark);
         this._activateMultiMode();
+        this._cancelAllClickTimers();
         this._destroyTabButtons();
         this._tabRow.destroy_all_children();
 
@@ -366,14 +388,11 @@ export const PlayerTabs = GObject.registerClass(
       }
     }
 
-    // Tab creation
-
     _createTab(playerName, currentPlayer, manager) {
       const isActive = playerName === currentPlayer;
       const gicon = resolveGicon(playerName, manager);
       const name = resolveDisplayName(playerName, manager);
 
-      //  Button shell
       const button = new St.Button({
         style_class: "media-switcher-tab",
         style: isActive
@@ -387,7 +406,6 @@ export const PlayerTabs = GObject.registerClass(
       });
       button.set_pivot_point(0.5, 0.5);
 
-      //  Icon
       const icon = new St.Icon({
         gicon,
         icon_size: TAB_ICON_SIZE,
@@ -396,14 +414,74 @@ export const PlayerTabs = GObject.registerClass(
       });
       icon.set_pivot_point(0.5, 0.5);
       icon.opacity = isActive ? 255 : 128;
-
       button.set_child(icon);
 
       const handlers = [];
+      let lastPressUs = 0;
+
+      handlers.push(
+        button.connect("button-press-event", (_a, _e) => {
+          const nowUs = GLib.get_monotonic_time();
+          const deltaMs = (nowUs - lastPressUs) / 1000;
+          lastPressUs = nowUs;
+
+          if (deltaMs > 0 && deltaMs <= DOUBLE_CLICK_MS) {
+            lastPressUs = 0;
+
+            const pending = this._clickTimers.get(button);
+            if (pending !== undefined) {
+              GLib.source_remove(pending);
+              this._clickTimers.delete(button);
+            }
+
+            this._easeScale(button, 0.82, 60);
+            const squishTid = GLib.timeout_add(
+              GLib.PRIORITY_DEFAULT,
+              60,
+              () => {
+                this._pulseTimers.delete(squishTid);
+                this._easeScale(button, 1.0, 110);
+                return GLib.SOURCE_REMOVE;
+              },
+            );
+            this._pulseTimers.add(squishTid);
+
+            this._togglePin();
+          } else {
+            this._easeScale(button, 0.88, 60);
+          }
+
+          return Clutter.EVENT_PROPAGATE;
+        }),
+      );
+
+      handlers.push(
+        button.connect("button-release-event", () => {
+          this._easeScale(button, 1.0, 90);
+          return Clutter.EVENT_PROPAGATE;
+        }),
+      );
 
       handlers.push(
         button.connect("clicked", () => {
-          this.emit("player-changed", playerName);
+          const existing = this._clickTimers.get(button);
+          if (existing !== undefined) {
+            GLib.source_remove(existing);
+            this._clickTimers.delete(button);
+          }
+
+          const tid = GLib.timeout_add(
+            GLib.PRIORITY_DEFAULT,
+            DOUBLE_CLICK_MS,
+            () => {
+              this._clickTimers.delete(button);
+              if (!this._currentPlayers || this._currentPlayers.length === 0)
+                return GLib.SOURCE_REMOVE;
+              this.emit("player-changed", playerName);
+              return GLib.SOURCE_REMOVE;
+            },
+          );
+          this._clickTimers.set(button, tid);
         }),
       );
 
@@ -412,7 +490,7 @@ export const PlayerTabs = GObject.registerClass(
           if (!isActive) {
             button.style = _tabHoverStyle(this._dark);
             this._easeOpacity(icon, 215, ANIM_DURATION_MS);
-            this._easeScale(button, 1.06, 100);
+            this._easeScale(button, 1.06, 80);
           }
         }),
       );
@@ -422,26 +500,30 @@ export const PlayerTabs = GObject.registerClass(
           if (!isActive) {
             button.style = _tabIdleStyle(this._dark);
             this._easeOpacity(icon, 128, ANIM_DURATION_MS);
-            this._easeScale(button, 1.0, 100);
+            this._easeScale(button, 1.0, 80);
           }
         }),
       );
 
-      handlers.push(
-        button.connect("button-press-event", () => {
-          this._easeScale(button, 0.88, 80);
-          return Clutter.EVENT_PROPAGATE;
-        }),
-      );
-
-      handlers.push(
-        button.connect("button-release-event", () => {
-          this._easeScale(button, 1.0, 120);
-          return Clutter.EVENT_PROPAGATE;
-        }),
-      );
-
       return { button, icon, playerName, handlers };
+    }
+
+    _cancelAllClickTimers() {
+      for (const [, id] of this._clickTimers) {
+        try {
+          GLib.source_remove(id);
+        } catch (_) {}
+      }
+      this._clickTimers.clear();
+    }
+
+    _cancelAllPulseTimers() {
+      for (const id of this._pulseTimers) {
+        try {
+          GLib.source_remove(id);
+        } catch (_) {}
+      }
+      this._pulseTimers.clear();
     }
 
     _destroyTabButtons() {
@@ -468,10 +550,29 @@ export const PlayerTabs = GObject.registerClass(
         this._themeSettings = null;
       }
 
+      this._cancelAllClickTimers();
+      this._cancelAllPulseTimers();
+
+      if (this._singleIconButton) {
+        const ids = [
+          ["_singleIconPressId", "_singleIconButton"],
+          ["_singleHoverEnterId", "_singleIconButton"],
+          ["_singleHoverLeaveId", "_singleIconButton"],
+        ];
+        for (const [idProp, btnProp] of ids) {
+          if (this[idProp] && this[btnProp]) {
+            try {
+              this[btnProp].disconnect(this[idProp]);
+            } catch (_) {}
+            this[idProp] = 0;
+          }
+        }
+      }
+
       this._destroyTabButtons();
 
       if (this._pinButton) {
-        const pairs = [
+        for (const [prop, clear] of [
           [
             "_pinClickId",
             () => {
@@ -490,8 +591,7 @@ export const PlayerTabs = GObject.registerClass(
               this._pinLeaveId = 0;
             },
           ],
-        ];
-        for (const [prop, clear] of pairs) {
+        ]) {
           if (this[prop]) {
             try {
               this._pinButton.disconnect(this[prop]);
@@ -505,6 +605,7 @@ export const PlayerTabs = GObject.registerClass(
       this._currentActivePlayer = null;
       this._singleRow = null;
       this._singleIcon = null;
+      this._singleIconButton = null;
       this._switcherRow = null;
       this._tabRow = null;
       this._pinButton = null;
@@ -573,15 +674,10 @@ function _pinHoverStyle(dark) {
   const bg = dark ? "rgba(255,255,255,0.10)" : "rgba(0,0,0,0.08)";
   return [
     "padding: 5px;",
-    "border-radius: 8px;",
-    "margin-left: 6px;",
-    `background-color: ${bg};`,
   ].join(" ");
 }
 
 function _pinActiveStyle(dark) {
-  const bg = dark ? "rgba(224,27,36,0.18)" : "rgba(224,27,36,0.12)";
-  const border = dark ? "rgba(224,27,36,0.35)" : "rgba(224,27,36,0.25)";
   return [].join(" ");
 }
 
