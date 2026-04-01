@@ -3,29 +3,44 @@ import Gtk from "gi://Gtk";
 import Gio from "gi://Gio";
 import { gettext as _ } from "resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js";
 
-// ---------------------------------------------------------------------------
-// libadwaita compat shims — see generalPage.js for full explanation
-// Adw.SpinRow / Adw.SwitchRow require libadwaita 1.4 (GNOME 45+)
-// ---------------------------------------------------------------------------
-
 function _makeSpinRow(opts) {
   if (typeof Adw.SpinRow !== "undefined") return new Adw.SpinRow(opts);
-  const row = new Adw.ActionRow({ title: opts.title, subtitle: opts.subtitle ?? "" });
-  const spin = new Gtk.SpinButton({ adjustment: opts.adjustment, valign: Gtk.Align.CENTER, digits: 0 });
+  const row = new Adw.ActionRow({
+    title: opts.title,
+    subtitle: opts.subtitle ?? "",
+  });
+  const spin = new Gtk.SpinButton({
+    adjustment: opts.adjustment,
+    valign: Gtk.Align.CENTER,
+    digits: 0,
+  });
   row.add_suffix(spin);
   row.activatable_widget = spin;
-  Object.defineProperty(row, "value", { get: () => spin.value, set: (v) => { spin.value = v; } });
+  Object.defineProperty(row, "value", {
+    get: () => spin.value,
+    set: (v) => {
+      spin.value = v;
+    },
+  });
   spin.connect("value-changed", () => row.notify("value"));
   return row;
 }
 
 function _makeSwitchRow(opts) {
   if (typeof Adw.SwitchRow !== "undefined") return new Adw.SwitchRow(opts);
-  const row = new Adw.ActionRow({ title: opts.title, subtitle: opts.subtitle ?? "" });
+  const row = new Adw.ActionRow({
+    title: opts.title,
+    subtitle: opts.subtitle ?? "",
+  });
   const sw = new Gtk.Switch({ valign: Gtk.Align.CENTER, active: false });
   row.add_suffix(sw);
   row.activatable_widget = sw;
-  Object.defineProperty(row, "active", { get: () => sw.active, set: (v) => { sw.active = v; } });
+  Object.defineProperty(row, "active", {
+    get: () => sw.active,
+    set: (v) => {
+      sw.active = v;
+    },
+  });
   sw.connect("notify::active", () => row.notify("active"));
   return row;
 }
@@ -45,13 +60,17 @@ export function buildPopupPage(settings) {
   // Popup Size
   const sizeGroup = new Adw.PreferencesGroup({
     title: _("Popup Size"),
-    description: _("Width of the popup media player panel (height scales with album art)"),
+    description: _(
+      "Width of the popup media player panel (height scales with album art)",
+    ),
   });
   popupPage.add(sizeGroup);
 
   const popupWidthRow = _makeSpinRow({
     title: _("Popup Width"),
-    subtitle: _("Width in pixels — album art, labels and lyrics panel all scale with this value (280 – 600 px)"),
+    subtitle: _(
+      "Width in pixels — album art, labels and lyrics panel all scale with this value (280 – 600 px)",
+    ),
     adjustment: new Gtk.Adjustment({
       lower: 280,
       upper: 600,
@@ -68,7 +87,7 @@ export function buildPopupPage(settings) {
   );
   sizeGroup.add(popupWidthRow);
 
-  //  Title Scrolling 
+  //  Title Scrolling
   const titleScrollGroup = new Adw.PreferencesGroup({
     title: _("Title Scrolling"),
     description: _("Marquee behaviour for the track title inside the popup"),
@@ -109,7 +128,7 @@ export function buildPopupPage(settings) {
   );
   titleScrollGroup.add(titleScrollSpeedRow);
 
-  //  Artist Scrolling 
+  //  Artist Scrolling
   const artistScrollGroup = new Adw.PreferencesGroup({
     title: _("Artist Scrolling"),
     description: _("Marquee behaviour for the artist name inside the popup"),
@@ -150,7 +169,7 @@ export function buildPopupPage(settings) {
   );
   artistScrollGroup.add(artistScrollSpeedRow);
 
-  // ── Album Art & Vinyl ────────────────────────────────────────────────────
+  //  Album Art & Vinyl
   const albumArtGroup = new Adw.PreferencesGroup({
     title: _("Album Art"),
     description: _("Vinyl-record rotation animation"),
@@ -222,16 +241,20 @@ export function buildPopupPage(settings) {
   rotationInfoRow.add_row(infoBox);
   albumArtGroup.add(rotationInfoRow);
 
-  //  Tonearm Angles 
+  //  Tonearm Angles
   const tonearmGroup = new Adw.PreferencesGroup({
     title: _("Tonearm Angles"),
-    description: _("Control how far the animated tonearm swings when playing or at rest"),
+    description: _(
+      "Control how far the animated tonearm swings when playing or at rest",
+    ),
   });
   popupPage.add(tonearmGroup);
 
   const parkedAngleRow = _makeSpinRow({
     title: _("Parked (resting) angle"),
-    subtitle: _("Degrees from vertical when music is paused or stopped. Higher moves the arm further from the disc (10 – 60°)"),
+    subtitle: _(
+      "Degrees from vertical when music is paused or stopped. Higher moves the arm further from the disc (10 – 60°)",
+    ),
     adjustment: new Gtk.Adjustment({
       lower: 10,
       upper: 60,
@@ -250,7 +273,9 @@ export function buildPopupPage(settings) {
 
   const playingAngleRow = _makeSpinRow({
     title: _("Playing angle"),
-    subtitle: _("Degrees from vertical when the stylus rests on the groove. Lower brings the arm closer to the disc centre (0 – 30°)"),
+    subtitle: _(
+      "Degrees from vertical when the stylus rests on the groove. Lower brings the arm closer to the disc centre (0 – 30°)",
+    ),
     adjustment: new Gtk.Adjustment({
       lower: 0,
       upper: 30,
@@ -269,7 +294,9 @@ export function buildPopupPage(settings) {
 
   const tonearmNote = new Adw.ActionRow({
     title: _("Tip: parked angle must be greater than playing angle"),
-    subtitle: _("E.g. parked = 25°, playing = 8°. If they are equal or reversed the arm will animate incorrectly."),
+    subtitle: _(
+      "E.g. parked = 25°, playing = 8°. If they are equal or reversed the arm will animate incorrectly.",
+    ),
     activatable: false,
   });
   tonearmNote.add_prefix(

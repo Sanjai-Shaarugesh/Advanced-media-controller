@@ -810,12 +810,7 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     }
   }
 
-  // ── App Info lookup ────────────────────────────────────────────────────
-
   /**
-   * Find Gio.AppInfo for a stored instance id.
-   * Instance / numeric suffixes are stripped before matching.
-   *
    * @param {string} desktopId   stored desktopId field
    * @param {string} fallbackId  stored id field
    * @returns {Gio.AppInfo|null}

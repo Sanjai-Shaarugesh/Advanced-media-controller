@@ -32,13 +32,6 @@ export class IndicatorEventHandlers {
         this._indicator._state.safeExecute(() => this._onSeek(position)),
       "player-changed",
       (_, name) => {
-        // This is the tab-switch handler.  We must:
-        //   1. Verify the name is still a known player (guards against a race
-        //      where the player disappeared between the click and the signal).
-        //   2. Set _manuallySelected BEFORE updating UI so updateVisibility()
-        //      never auto-switches us back to the previous player mid-render.
-        //   3. NOT gate on _sessionChanging here — the user deliberately
-        //      clicked a tab and we should honour it.
         this._indicator._state.safeExecute(() => {
           if (!this._indicator._manager) return;
 
@@ -374,8 +367,7 @@ export class IndicatorEventHandlers {
             this._indicator._state._sessionChanging
           )
             return;
-          if (layoutManager.modalCount > 0)
-            this._indicator.menu.close(false);
+          if (layoutManager.modalCount > 0) this._indicator.menu.close(false);
         },
         this,
       );

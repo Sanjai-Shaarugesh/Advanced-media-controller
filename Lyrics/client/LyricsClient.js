@@ -3,7 +3,7 @@ import GLib from "gi://GLib";
 
 const decode = (data) => new TextDecoder().decode(data);
 
-// LRU cache cap — keeps memory bounded
+// LRU cache cap
 const CACHE_MAX = 60;
 
 export class LyricsClient {
@@ -16,9 +16,6 @@ export class LyricsClient {
   }
 
   /**
-   * Fetch synced lyrics, returning as fast as possible
-   * Fires exact + search requests in parallel; returns whichever wins
-   *
    * @param {string} title
    * @param {string} artist
    * @param {string} album
@@ -39,23 +36,26 @@ export class LyricsClient {
     }
 
     try {
-      
       const [exactP, searchP] = [
         this._getExact(title, artist, album, durationSec),
         this._search(title, artist, durationSec),
       ];
 
-      
-      const firstOf = (p) => new Promise((res) => p.then((v) => { if (v) res(v); }).catch(() => {}));
+      const firstOf = (p) =>
+        new Promise((res) =>
+          p
+            .then((v) => {
+              if (v) res(v);
+            })
+            .catch(() => {}),
+        );
 
-      
       let result = null;
       try {
         result = await Promise.race([firstOf(exactP), firstOf(searchP)]);
       } catch (_) {}
 
       if (!result) {
-        
         result = (await exactP) ?? (await searchP) ?? null;
       }
 
@@ -73,8 +73,6 @@ export class LyricsClient {
     }
     this._cache.clear();
   }
-
-  
 
   _setCache(key, value) {
     // Evict oldest entry if over cap
@@ -94,11 +92,21 @@ export class LyricsClient {
       if (album) p.set("album_name", album);
       if (durationSec > 0) p.set("duration", String(Math.round(durationSec)));
 
-      const msg = Soup.Message.new("GET", `https://lrclib.net/api/get?${p.toString()}`);
+      const msg = Soup.Message.new(
+        "GET",
+        `https://lrclib.net/api/get?${p.toString()}`,
+      );
       if (!msg) return null;
-      msg.request_headers.append("User-Agent", "AdvancedMediaController/5 (https://github.com)");
+      msg.request_headers.append(
+        "User-Agent",
+        "AdvancedMediaController/5 (https://github.com)",
+      );
 
-      const bytes = await this._session.send_and_read_async(msg, GLib.PRIORITY_DEFAULT, null);
+      const bytes = await this._session.send_and_read_async(
+        msg,
+        GLib.PRIORITY_DEFAULT,
+        null,
+      );
       if (msg.status_code !== 200) return null;
 
       const raw = bytes?.get_data();
@@ -115,11 +123,21 @@ export class LyricsClient {
     if (!this._session) return null;
     try {
       const q = encodeURIComponent(`${title} ${artist}`.trim());
-      const msg = Soup.Message.new("GET", `https://lrclib.net/api/search?q=${q}`);
+      const msg = Soup.Message.new(
+        "GET",
+        `https://lrclib.net/api/search?q=${q}`,
+      );
       if (!msg) return null;
-      msg.request_headers.append("User-Agent", "AdvancedMediaController/5 (https://github.com)");
+      msg.request_headers.append(
+        "User-Agent",
+        "AdvancedMediaController/5 (https://github.com)",
+      );
 
-      const bytes = await this._session.send_and_read_async(msg, GLib.PRIORITY_DEFAULT, null);
+      const bytes = await this._session.send_and_read_async(
+        msg,
+        GLib.PRIORITY_DEFAULT,
+        null,
+      );
       if (msg.status_code !== 200) return null;
 
       const raw = bytes?.get_data();
@@ -131,10 +149,15 @@ export class LyricsClient {
       const withSynced = data.filter((r) => r.syncedLyrics);
       if (withSynced.length === 0) return null;
 
-      let best = null, bestDiff = Infinity;
+      let best = null,
+        bestDiff = Infinity;
       for (const r of withSynced) {
-        const diff = durationSec > 0 ? Math.abs((r.duration ?? 0) - durationSec) : 0;
-        if (diff < bestDiff) { bestDiff = diff; best = r; }
+        const diff =
+          durationSec > 0 ? Math.abs((r.duration ?? 0) - durationSec) : 0;
+        if (diff < bestDiff) {
+          bestDiff = diff;
+          best = r;
+        }
       }
       if (!best) return null;
       if (durationSec > 0 && bestDiff > 5) return null;

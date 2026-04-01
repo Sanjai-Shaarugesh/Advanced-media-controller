@@ -862,30 +862,15 @@ export const AlbumArt = GObject.registerClass(
     }
 
     /**
-     * Called by ProgressSlider on every scrub tick (slider-ratio-changed).
-     *
-     * While the user is dragging the progress bar the autonomous rotation
-     * timer is paused (ProgressSlider emits drag-begin → stopPositionUpdate →
-     * AlbumArt.pauseRotation).  This method takes over: it maps the slider
-     * ratio (0.0–1.0) directly to a rotation angle so the vinyl disc appears
-     * to spin in perfect sync with the scrub handle.
-     *
-     * When the slider is NOT being dragged (i.e. normal timed position
-     * updates) we skip the override so the autonomous timer keeps running
-     * uninterrupted — no jitter from two competing writers.
-     *
      * @param {number} ratio  0.0–1.0  currentPosition / trackLength
      */
     syncRotationToPosition(ratio) {
       if (this._isDestroyed || !this._vinylMode || !this._rotatingContainer)
         return;
 
-      // Only override the angle while the user is actively scrubbing.
-      // The autonomous interval sets _isRotating=true; while dragging it is
-      // false (pauseRotation was called), so that flag doubles as our guard.
+      // Only override the angle while the user is actively scrubbing
       if (this._isRotating) return;
 
-      // Map ratio → [0, 360) and apply directly — no timer involved.
       const angle = (ratio * 360) % 360;
       this._rotationAngle = angle;
       this._rotatingContainer.rotation_angle_z = angle;
@@ -927,8 +912,6 @@ export const AlbumArt = GObject.registerClass(
     }
   },
 );
-
-// Module-level helpers
 
 /**
 
@@ -985,14 +968,14 @@ function _buildCandidateTokens(playerName, manager) {
   const clean = raw
     .replace(/\.instance[_\-]?\d+(_\d+)?$/i, "")
     .replace(/\.\d+$/, "")
-    .replace(/\.snap$/i, ""); // some snaps append .snap
+    .replace(/\.snap$/i, "");
 
   _add(clean);
 
   const snapBase = clean.split(".").pop();
   if (snapBase && snapBase !== clean) {
     _add(snapBase);
-    // Snap-style "appname_appname" variant
+
     _add(`${snapBase}_${snapBase}`);
   }
 
@@ -1002,7 +985,7 @@ function _buildCandidateTokens(playerName, manager) {
     if (identity && identity.trim()) {
       const normalized = identity.trim().toLowerCase().replace(/\s+/g, "");
       segments.add(normalized);
-      // First word only (handles "VLC media player" → "vlc")
+
       const firstWord = identity.trim().toLowerCase().split(/\s+/)[0];
       if (firstWord.length > 2) segments.add(firstWord);
     }

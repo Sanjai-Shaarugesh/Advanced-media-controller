@@ -3,18 +3,21 @@ import Gtk from "gi://Gtk";
 import Gio from "gi://Gio";
 import { gettext as _ } from "resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js";
 
-// ---------------------------------------------------------------------------
-// libadwaita compat — Adw.SwitchRow requires libadwaita 1.4 (GNOME 45+)
-// ---------------------------------------------------------------------------
 function _makeSwitchRow(opts) {
   if (typeof Adw.SwitchRow !== "undefined") return new Adw.SwitchRow(opts);
-  const row = new Adw.ActionRow({ title: opts.title, subtitle: opts.subtitle ?? "", icon_name: opts.icon_name });
+  const row = new Adw.ActionRow({
+    title: opts.title,
+    subtitle: opts.subtitle ?? "",
+    icon_name: opts.icon_name,
+  });
   const sw = new Gtk.Switch({ valign: Gtk.Align.CENTER, active: false });
   row.add_suffix(sw);
   row.activatable_widget = sw;
   Object.defineProperty(row, "active", {
     get: () => sw.active,
-    set: (v) => { sw.active = v; },
+    set: (v) => {
+      sw.active = v;
+    },
   });
   sw.connect("notify::active", () => row.notify("active"));
   return row;
@@ -25,7 +28,7 @@ function _makeSwitchRow(opts) {
  * @param {Gio.Settings} settings
  */
 export function buildLyricsPage(page, settings) {
-  //  Synced Lyrics 
+  //  Synced Lyrics
   const enableGroup = new Adw.PreferencesGroup({
     title: _("Synced Lyrics"),
     description: _(
@@ -49,7 +52,7 @@ export function buildLyricsPage(page, settings) {
   );
   enableGroup.add(enableLyricsRow);
 
-  //  How to Use Lyrics 
+  //  How to Use Lyrics
   const howtoGroup = new Adw.PreferencesGroup({
     title: _("How to Use Lyrics"),
     description: _(
@@ -83,7 +86,7 @@ export function buildLyricsPage(page, settings) {
     },
     {
       icon: "go-jump-symbolic",
-      
+
       title: _("Click the album art %s to show lyrics").format(
         clickWord(lyricsN),
       ),
@@ -120,7 +123,7 @@ export function buildLyricsPage(page, settings) {
     howtoGroup.add(row);
   });
 
-  // Lyrics Behaviour 
+  // Lyrics Behaviour
   const detailsGroup = new Adw.PreferencesGroup({
     title: _("Lyrics Behaviour"),
     description: _("What happens behind the scenes"),
@@ -173,7 +176,7 @@ export function buildLyricsPage(page, settings) {
   detailsRow.add_row(detailsBox);
   detailsGroup.add(detailsRow);
 
-  //  Album Art Click Actions cheat-sheet 
+  //  Album Art Click Actions cheat-sheet
   const cheatGroup = new Adw.PreferencesGroup({
     title: _("Album Art Click Actions"),
     description: _(
@@ -238,22 +241,19 @@ export function buildLyricsPage(page, settings) {
       settings.get_int("lyrics-click-count"),
     );
   });
-  const cheatLyricsId = settings.connect(
-    "changed::lyrics-click-count",
-    () => {
-      renderCheatRows(
-        settings.get_int("vinyl-click-count"),
-        settings.get_int("lyrics-click-count"),
-      );
-    },
-  );
+  const cheatLyricsId = settings.connect("changed::lyrics-click-count", () => {
+    renderCheatRows(
+      settings.get_int("vinyl-click-count"),
+      settings.get_int("lyrics-click-count"),
+    );
+  });
 
   page.connect("destroy", () => {
     settings.disconnect(cheatVinylId);
     settings.disconnect(cheatLyricsId);
   });
 
-  // Data Source 
+  // Data Source
   const sourceGroup = new Adw.PreferencesGroup({
     title: _("Data Source"),
     description: _("Where lyrics come from"),

@@ -4,26 +4,12 @@ import Gio from "gi://Gio";
 import GLib from "gi://GLib";
 import { gettext as _ } from "resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js";
 
-// ---------------------------------------------------------------------------
-// Review-guideline compliance notes
-// ---------------------------------------------------------------------------
-// • ALL settings.connect() calls store IDs in _connIds; every ID is
-//   disconnected in the page "destroy" handler — no lingering connections.
-// • Gio.bus_get_sync() removed; all D-Bus calls are fully async via
-//   Gio.DBus.session.call() so the main loop is never blocked.
-// • The per-row settings.connect() inside scanPlayers() has been replaced
-//   with a single top-level watcher (_updateLiveAddBtns) preventing
-//   unbounded connection growth across multiple scans.
-// • Supports GNOME 40 – 50: no Adw.SpinRow / Adw.SwitchRow used here.
-// ---------------------------------------------------------------------------
-
 /**
  * @param {Adw.PreferencesPage} page
  * @param {Gio.Settings} settings
  * @param {function(string, string): Gio.AppInfo|null} findAppInfo
  */
 export function buildPlayerFilterPage(page, settings, findAppInfo) {
-  // Track every settings.connect ID for cleanup on page destroy.
   const _connIds = [];
   const _settingsConnect = (signal, fn) => {
     _connIds.push(settings.connect(signal, fn));
@@ -31,14 +17,12 @@ export function buildPlayerFilterPage(page, settings, findAppInfo) {
 
   page.connect("destroy", () => {
     for (const id of _connIds) {
-      try { settings.disconnect(id); } catch (_) {}
+      try {
+        settings.disconnect(id);
+      } catch (_) {}
     }
     _connIds.length = 0;
   });
-
-  // ------------------------------------------------------------------
-  // Helpers
-  // ------------------------------------------------------------------
 
   const parseList = () => {
     const raw = settings.get_string("player-filter-list") || "";
@@ -54,7 +38,9 @@ export function buildPlayerFilterPage(page, settings, findAppInfo) {
   };
 
   const serializeList = (entries) => {
-    const str = entries.map((e) => (e.enabled ? e.name : `~${e.name}`)).join(", ");
+    const str = entries
+      .map((e) => (e.enabled ? e.name : `~${e.name}`))
+      .join(", ");
     settings.set_string("player-filter-list", str);
   };
 
@@ -64,9 +50,7 @@ export function buildPlayerFilterPage(page, settings, findAppInfo) {
       .replace(/\.instance[_\d]+$/i, "")
       .replace(/\.\d+$/, "");
 
-  // ------------------------------------------------------------------
   // Filter Mode
-  // ------------------------------------------------------------------
 
   const modeGroup = new Adw.PreferencesGroup({
     title: _("Filter Mode"),
@@ -79,7 +63,9 @@ export function buildPlayerFilterPage(page, settings, findAppInfo) {
   page.add(modeGroup);
 
   const filterModel = new Gtk.StringList();
-  [_("Off"), _("Blacklist"), _("Whitelist")].forEach((l) => filterModel.append(l));
+  [_("Off"), _("Blacklist"), _("Whitelist")].forEach((l) =>
+    filterModel.append(l),
+  );
 
   const filterModeDescriptions = [
     _("Show all media players — filtering is disabled"),
@@ -110,9 +96,7 @@ export function buildPlayerFilterPage(page, settings, findAppInfo) {
 
   modeGroup.add(filterModeRow);
 
-  // ------------------------------------------------------------------
   // Saved Players
-  // ------------------------------------------------------------------
 
   const savedGroup = new Adw.PreferencesGroup({
     title: _("Saved Players"),
@@ -129,7 +113,9 @@ export function buildPlayerFilterPage(page, settings, findAppInfo) {
 
   const rebuildSavedList = () => {
     for (const r of savedFilterRows) {
-      try { savedGroup.remove(r); } catch (_e) {}
+      try {
+        savedGroup.remove(r);
+      } catch (_e) {}
     }
     savedFilterRows = [];
 
@@ -144,12 +130,14 @@ export function buildPlayerFilterPage(page, settings, findAppInfo) {
         ),
         activatable: false,
       });
-      ph.add_prefix(new Gtk.Image({
-        icon_name: "view-list-symbolic",
-        pixel_size: 28,
-        valign: Gtk.Align.CENTER,
-        opacity: 0.4,
-      }));
+      ph.add_prefix(
+        new Gtk.Image({
+          icon_name: "view-list-symbolic",
+          pixel_size: 28,
+          valign: Gtk.Align.CENTER,
+          opacity: 0.4,
+        }),
+      );
       savedGroup.add(ph);
       savedFilterRows.push(ph);
       return;
@@ -170,7 +158,11 @@ export function buildPlayerFilterPage(page, settings, findAppInfo) {
 
       row.add_prefix(
         appIcon
-          ? new Gtk.Image({ gicon: appIcon, pixel_size: 32, valign: Gtk.Align.CENTER })
+          ? new Gtk.Image({
+              gicon: appIcon,
+              pixel_size: 32,
+              valign: Gtk.Align.CENTER,
+            })
           : new Gtk.Image({
               icon_name: "application-x-executable-symbolic",
               pixel_size: 32,
@@ -183,8 +175,12 @@ export function buildPlayerFilterPage(page, settings, findAppInfo) {
         active: enabled,
         valign: Gtk.Align.CENTER,
         tooltip_text: enabled
-          ? _("Filter rule active for \u201c%s\u201d \u2014 click to disable").format(name)
-          : _("Filter rule disabled for \u201c%s\u201d \u2014 click to enable").format(name),
+          ? _(
+              "Filter rule active for \u201c%s\u201d \u2014 click to disable",
+            ).format(name)
+          : _(
+              "Filter rule disabled for \u201c%s\u201d \u2014 click to enable",
+            ).format(name),
       });
 
       toggle.connect("state-set", (_sw, state) => {
@@ -203,7 +199,9 @@ export function buildPlayerFilterPage(page, settings, findAppInfo) {
         icon_name: "user-trash-symbolic",
         valign: Gtk.Align.CENTER,
         css_classes: ["flat", "destructive-action"],
-        tooltip_text: _("Remove \u201c%s\u201d from the filter list").format(name),
+        tooltip_text: _("Remove \u201c%s\u201d from the filter list").format(
+          name,
+        ),
       });
 
       removeBtn.connect("clicked", () => {
@@ -218,8 +216,6 @@ export function buildPlayerFilterPage(page, settings, findAppInfo) {
     }
   };
 
-  // Single top-level watcher — replaces the stray per-row settings.connect
-  // that was created inside the scan loop on every rebuild (was a memory leak).
   _settingsConnect("changed::player-filter-list", () => {
     GLib.idle_add(GLib.PRIORITY_DEFAULT_IDLE, () => {
       rebuildSavedList();
@@ -229,9 +225,7 @@ export function buildPlayerFilterPage(page, settings, findAppInfo) {
 
   rebuildSavedList();
 
-  // ------------------------------------------------------------------
-  // Detected Players (live D-Bus scan)
-  // ------------------------------------------------------------------
+  // Detected Players
 
   const detectGroup = new Adw.PreferencesGroup({
     title: _("Detected Players"),
@@ -259,13 +253,14 @@ export function buildPlayerFilterPage(page, settings, findAppInfo) {
   page.add(liveGroup);
 
   let filterLiveRows = [];
-  // Map of short-name → addBtn so the top-level watcher can update labels
-  // without creating a new settings.connect per button per scan.
+
   const _liveAddBtns = new Map();
 
   const clearLiveRows = () => {
     for (const r of filterLiveRows) {
-      try { liveGroup.remove(r); } catch (_e) {}
+      try {
+        liveGroup.remove(r);
+      } catch (_e) {}
     }
     filterLiveRows = [];
     _liveAddBtns.clear();
@@ -279,13 +274,11 @@ export function buildPlayerFilterPage(page, settings, findAppInfo) {
     }
   };
 
-  // Single top-level watcher for button state across all live rows.
   _settingsConnect("changed::player-filter-list", _updateLiveAddBtns);
 
   const scanPlayers = () => {
     clearLiveRows();
 
-    // Fully async — never block the main loop (review guideline compliance).
     Gio.DBus.session.call(
       "org.freedesktop.DBus",
       "/org/freedesktop/DBus",
@@ -312,12 +305,14 @@ export function buildPlayerFilterPage(page, settings, findAppInfo) {
               subtitle: _("Open a music app and click Refresh"),
               activatable: false,
             });
-            noneRow.add_prefix(new Gtk.Image({
-              icon_name: "media-playback-stop-symbolic",
-              pixel_size: 24,
-              valign: Gtk.Align.CENTER,
-              opacity: 0.5,
-            }));
+            noneRow.add_prefix(
+              new Gtk.Image({
+                icon_name: "media-playback-stop-symbolic",
+                pixel_size: 24,
+                valign: Gtk.Align.CENTER,
+                opacity: 0.5,
+              }),
+            );
             liveGroup.add(noneRow);
             filterLiveRows.push(noneRow);
             return;
@@ -344,7 +339,11 @@ export function buildPlayerFilterPage(page, settings, findAppInfo) {
 
             row.add_prefix(
               appIcon
-                ? new Gtk.Image({ gicon: appIcon, pixel_size: 32, valign: Gtk.Align.CENTER })
+                ? new Gtk.Image({
+                    gicon: appIcon,
+                    pixel_size: 32,
+                    valign: Gtk.Align.CENTER,
+                  })
                 : new Gtk.Image({
                     icon_name: "application-x-executable-symbolic",
                     pixel_size: 32,
@@ -360,8 +359,12 @@ export function buildPlayerFilterPage(page, settings, findAppInfo) {
               valign: Gtk.Align.CENTER,
               css_classes: alreadySaved ? ["flat"] : ["suggested-action"],
               tooltip_text: alreadySaved
-                ? _("\u201c%s\u201d is already in the filter list").format(short)
-                : _("Add \u201c%s\u201d to the filter list (enabled by default)").format(short),
+                ? _("\u201c%s\u201d is already in the filter list").format(
+                    short,
+                  )
+                : _(
+                    "Add \u201c%s\u201d to the filter list (enabled by default)",
+                  ).format(short),
             });
 
             addBtn.connect("clicked", () => {
@@ -369,7 +372,6 @@ export function buildPlayerFilterPage(page, settings, findAppInfo) {
               const current = parseList();
               current.push({ name: short, enabled: true });
               serializeList(current);
-              // Button state updated by the top-level _settingsConnect watcher.
             });
 
             _liveAddBtns.set(short, addBtn);
@@ -386,7 +388,6 @@ export function buildPlayerFilterPage(page, settings, findAppInfo) {
 
   refreshBtn.connect("clicked", scanPlayers);
 
-  // Deferred initial scan so the page finishes rendering first.
   GLib.idle_add(GLib.PRIORITY_DEFAULT_IDLE, () => {
     scanPlayers();
     return GLib.SOURCE_REMOVE;

@@ -45,8 +45,8 @@ export class IndicatorUIUpdater {
         return;
       }
 
-      // Current player has no active media — scan for any active player.
-      // Only auto-switch if the user has not manually selected a tab.
+      // Current player has no active media — scan for any active player
+      // Only auto-switch if the user has not manually selected a tab
       for (const name of players) {
         const pInfo = manager.getPlayerInfo(name);
         if (pInfo && (pInfo.status === "Playing" || pInfo.status === "Paused")) {

@@ -4,16 +4,8 @@ import Gio from "gi://Gio";
 import Gdk from "gi://Gdk";
 import { gettext as _ } from "resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js";
 
-// ---------------------------------------------------------------------------
-// GNOME / libadwaita version compat helpers
-// ---------------------------------------------------------------------------
-// Adw.AlertDialog → libadwaita 1.5 (GNOME 47+)
-// For GNOME 40-46 we fall back to Gtk.MessageDialog which is available on
-// every supported version (GTK4 ≥ 4.0, shipped with GNOME 40+).
-// ---------------------------------------------------------------------------
-
 /**
- * @param {string} extensionDirPath 
+ * @param {string} extensionDirPath
  * @returns {Adw.PreferencesPage}
  */
 export function createAboutPage(extensionDirPath) {
@@ -22,14 +14,12 @@ export function createAboutPage(extensionDirPath) {
     icon_name: "help-about-symbolic",
   });
 
-  // Track all signal connection IDs so they can be disconnected when the
-  // page is destroyed (review guideline: no lingering signal connections).
   const _signalIds = [];
   const _trackConnect = (obj, signal, fn) => {
     _signalIds.push({ obj, id: obj.connect(signal, fn) });
   };
 
-  //  Header 
+  //  Header
   const infoGroup = new Adw.PreferencesGroup({
     title: _("Advanced Media Controller"),
     description: _(
@@ -91,7 +81,7 @@ export function createAboutPage(extensionDirPath) {
   const headerRow = new Adw.ActionRow({ title: "", activatable: false });
   headerRow.add_suffix(headerBox);
 
-  //  Extension Links 
+  //  Extension Links
   const linksGroup = new Adw.PreferencesGroup({
     title: _("Extension Links"),
     description: _("Source code, issues, and contributions"),
@@ -120,7 +110,7 @@ export function createAboutPage(extensionDirPath) {
     }
   });
 
-  //  Donation options 
+  //  Donation options
   const DONATION_OPTIONS = [
     {
       label: _("\u2615 Buy Me a Coffee"),
@@ -199,7 +189,7 @@ export function createAboutPage(extensionDirPath) {
   const qrRow = new Adw.ActionRow({ title: "", activatable: false });
   qrRow.set_child(qrContainer);
 
-  //  Address group 
+  //  Address group
   const addressGroup = new Adw.PreferencesGroup({
     title: _("Donation Address"),
   });
@@ -292,7 +282,7 @@ export function createAboutPage(extensionDirPath) {
     }
   });
 
-  //  License & Credits 
+  //  License & Credits
   const licenseGroup = new Adw.PreferencesGroup({
     title: _("License & Credits"),
     description: _("Open source software information"),
@@ -349,19 +339,17 @@ export function createAboutPage(extensionDirPath) {
   page.add(addressGroup);
   page.add(licenseGroup);
 
-  // Disconnect all tracked signals when the page is destroyed so we don't
-  // leave dangling references (review guideline: clean up all connections).
   page.connect("destroy", () => {
     for (const { obj, id } of _signalIds) {
-      try { obj.disconnect(id); } catch (_) {}
+      try {
+        obj.disconnect(id);
+      } catch (_) {}
     }
     _signalIds.length = 0;
   });
 
   return page;
 }
-
-//  Private helpers 
 
 /**
  * @param {string} extensionDirPath
@@ -399,9 +387,6 @@ function _copyToClipboard(text, _label) {
  * @param {string} text
  */
 function _showCopyDialog(text) {
-  // Adw.AlertDialog was introduced in libadwaita 1.5 (GNOME 47).
-  // For GNOME 40-46 we fall back to Gtk.Dialog which is available
-  // on all GTK4 versions shipped with GNOME 40+.
   if (typeof Adw.AlertDialog !== "undefined") {
     const dialog = new Adw.AlertDialog({
       heading: _("Copy to Clipboard"),
@@ -431,8 +416,6 @@ function _showCopyDialog(text) {
     dialog.set_extra_child(box);
     dialog.present(null);
   } else {
-    // GNOME 40-46 fallback: Gtk.MessageDialog (deprecated in GTK 4.10 but
-    // still present and functional through GNOME 46).
     const dialog = new Gtk.MessageDialog({
       modal: true,
       message_type: Gtk.MessageType.INFO,

@@ -5,14 +5,6 @@ import GLib from "gi://GLib";
 import { gettext as _ } from "resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js";
 import { parseBrowserSourceId, labelForId } from "../lib/utils.js";
 
-// ---------------------------------------------------------------------------
-// Review-guideline compliance
-// ---------------------------------------------------------------------------
-// • ALL settings.connect() IDs stored in _connIds and disconnected on destroy.
-// • Gio.bus_get_sync() replaced with fully async Gio.DBus.session.call().
-// • Supports GNOME 40 – 50.
-// ---------------------------------------------------------------------------
-
 /**
  * @param {Adw.PreferencesPage} page
  * @param {Gio.Settings} settings
@@ -30,7 +22,6 @@ import { parseBrowserSourceId, labelForId } from "../lib/utils.js";
  * @param {function} helpers.showRenameDialog
  */
 export function buildVinylAppsPage(page, settings, helpers) {
-  // Track every settings.connect ID for cleanup on page destroy.
   const _connIds = [];
   const _settingsConnect = (signal, fn) => {
     _connIds.push(settings.connect(signal, fn));
@@ -38,7 +29,9 @@ export function buildVinylAppsPage(page, settings, helpers) {
 
   page.connect("destroy", () => {
     for (const id of _connIds) {
-      try { settings.disconnect(id); } catch (_) {}
+      try {
+        settings.disconnect(id);
+      } catch (_) {}
     }
     _connIds.length = 0;
   });
@@ -263,7 +256,6 @@ export function buildVinylAppsPage(page, settings, helpers) {
   const scanVinylPlayers = () => {
     clearVinylLiveRows();
 
-    // Fully async — never block the main loop with Gio.bus_get_sync().
     Gio.DBus.session.call(
       "org.freedesktop.DBus",
       "/org/freedesktop/DBus",

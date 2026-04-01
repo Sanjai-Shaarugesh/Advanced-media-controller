@@ -7,7 +7,7 @@ import Gio from "gi://Gio";
 import Clutter from "gi://Clutter";
 import Cairo from "cairo";
 
-// Smooth-scroll duration (ms) 
+// Smooth-scroll duration (ms)
 const SCROLL_EASING_MS = 380;
 
 const NEIGHBOR_RANGE = 1;
@@ -18,11 +18,11 @@ const COLOR_SCHEME_KEY = "color-scheme";
 function _metricsForWidth(w) {
   const scale = Math.max(0.7, w / 340);
   return {
-    activeSize:   Math.round(20 * scale),
+    activeSize: Math.round(20 * scale),
     neighborSize: Math.round(14 * scale),
     inactiveSize: Math.round(12 * scale),
-    lineSpacing:  Math.round(16 * scale),
-    paddingX:     Math.round(24 * scale),
+    lineSpacing: Math.round(16 * scale),
+    paddingX: Math.round(24 * scale),
   };
 }
 
@@ -37,22 +37,27 @@ export const LyricsWidget = GObject.registerClass(
         style_class: "lyrics-widget",
         reactive: false,
         can_focus: false,
-        width, height,
+        width,
+        height,
         layout_manager: new Clutter.FixedLayout(),
-        // Promote the whole widget to its own GPU layer
+
         offscreen_redirect: Clutter.OffscreenRedirect.AUTOMATIC_FOR_OPACITY,
       });
 
-      this._width    = width;
-      this._height   = height;
+      this._width = width;
+      this._height = height;
       this._settings = settings;
       this._widthChangedId = 0;
 
-      // Canvas — one DrawingArea, composited by GPU via parent offscreen layer
+      // Canvas
       this._canvas = new St.DrawingArea({
         style: "padding:0;margin:0;",
-        reactive: false, can_focus: false,
-        x: 0, y: 0, width, height,
+        reactive: false,
+        can_focus: false,
+        x: 0,
+        y: 0,
+        width,
+        height,
       });
       this._canvas.connectObject("repaint", (_a) => this._onRepaint(_a), this);
       this.add_child(this._canvas);
@@ -60,28 +65,37 @@ export const LyricsWidget = GObject.registerClass(
       // Dismiss button overlay
       this._dismissBtn = new St.Button({
         style: "background:transparent;border:none;padding:0;",
-        reactive: true, can_focus: false, track_hover: false,
-        x: 0, y: 0, width, height,
+        reactive: true,
+        can_focus: false,
+        track_hover: false,
+        x: 0,
+        y: 0,
+        width,
+        height,
       });
-      this._dismissBtn.connectObject("clicked", () => this.emit("dismiss"), this);
+      this._dismissBtn.connectObject(
+        "clicked",
+        () => this.emit("dismiss"),
+        this,
+      );
       this.add_child(this._dismissBtn);
 
       // Lyrics state
-      this._lyrics         = [];
+      this._lyrics = [];
       this._lineGeometries = [];
-      this._totalHeight    = 0;
-      this._dirtyGeometry  = false;
+      this._totalHeight = 0;
+      this._dirtyGeometry = false;
 
       this._activeIndex = -1;
       this._currentTime = 0; // ms
 
-      // Scroll offset — written by Clutter.ease, read during repaint
+      // Scroll offset
       this._scrollOffset = 0;
 
-      this._state   = "loading";
+      this._state = "loading";
       this._palette = this._buildDefaultPalette();
 
-      this._fontConfig         = _metricsForWidth(width);
+      this._fontConfig = _metricsForWidth(width);
       this._fontConfigOverride = {};
 
       // Theme tracking
@@ -92,25 +106,34 @@ export const LyricsWidget = GObject.registerClass(
       try {
         const src = Gio.SettingsSchemaSource.get_default();
         if (src.lookup(DESKTOP_INTERFACE_SCHEMA, true)) {
-          this._interfaceSettings = new Gio.Settings({ schema_id: DESKTOP_INTERFACE_SCHEMA });
+          this._interfaceSettings = new Gio.Settings({
+            schema_id: DESKTOP_INTERFACE_SCHEMA,
+          });
           this._interfaceSettings.connectObject(
-            `changed::${COLOR_SCHEME_KEY}`, () => this._onThemeChanged(), this,
+            `changed::${COLOR_SCHEME_KEY}`,
+            () => this._onThemeChanged(),
+            this,
           );
         }
       } catch (_e) {}
 
-      this.connectObject("notify::mapped", () => {
-        if (this.mapped) this._refreshThemeColors();
-      }, this);
+      this.connectObject(
+        "notify::mapped",
+        () => {
+          if (this.mapped) this._refreshThemeColors();
+        },
+        this,
+      );
 
       if (this._settings) {
         this._widthChangedId = this._settings.connect(
-          "changed::popup-width", () => this._onPopupWidthChanged(),
+          "changed::popup-width",
+          () => this._onPopupWidthChanged(),
         );
       }
     }
 
-    // Size 
+    // Size
 
     _onPopupWidthChanged() {
       if (!this._settings) return;
@@ -122,10 +145,14 @@ export const LyricsWidget = GObject.registerClass(
 
     setSize(width, height) {
       if (this._width === width && this._height === height) return;
-      this._width = width; this._height = height;
-      this.set_width(width); this.set_height(height);
-      this._canvas.set_width(width); this._canvas.set_height(height);
-      this._dismissBtn.set_width(width); this._dismissBtn.set_height(height);
+      this._width = width;
+      this._height = height;
+      this.set_width(width);
+      this.set_height(height);
+      this._canvas.set_width(width);
+      this._canvas.set_height(height);
+      this._dismissBtn.set_width(width);
+      this._dismissBtn.set_height(height);
       this._fontConfig = this._buildFontConfig(width);
       this._invalidateGeometry();
       this._canvas.queue_repaint();
@@ -135,11 +162,11 @@ export const LyricsWidget = GObject.registerClass(
       return Object.assign(_metricsForWidth(w), this._fontConfigOverride);
     }
 
-    //  Theme 
+    //  Theme
 
     _buildDefaultPalette() {
       return {
-        activeColor:   { r: 1.0, g: 1.0, b: 1.0, a: 1.0  },
+        activeColor: { r: 1.0, g: 1.0, b: 1.0, a: 1.0 },
         neighborColor: { r: 1.0, g: 1.0, b: 1.0, a: 0.55 },
         inactiveColor: { r: 1.0, g: 1.0, b: 1.0, a: 0.22 },
       };
@@ -148,14 +175,19 @@ export const LyricsWidget = GObject.registerClass(
     _refreshThemeColors() {
       if (!this.mapped) return;
       let fg;
-      try { fg = this.get_theme_node().get_foreground_color(); }
-      catch (_e) { return; }
-      const r = fg.red / 255, g = fg.green / 255, b = fg.blue / 255;
+      try {
+        fg = this.get_theme_node().get_foreground_color();
+      } catch (_e) {
+        return;
+      }
+      const r = fg.red / 255,
+        g = fg.green / 255,
+        b = fg.blue / 255;
       const isDark = this._isDarkMode();
       this._palette = {
-        activeColor:   { r, g, b, a: isDark ? 1.0  : 0.92 },
-        neighborColor: { r, g, b, a: isDark ? 0.55 : 0.5  },
-        inactiveColor: { r, g, b, a: isDark ? 0.22 : 0.2  },
+        activeColor: { r, g, b, a: isDark ? 1.0 : 0.92 },
+        neighborColor: { r, g, b, a: isDark ? 0.55 : 0.5 },
+        inactiveColor: { r, g, b, a: isDark ? 0.22 : 0.2 },
       };
       this._canvas.queue_repaint();
     }
@@ -163,54 +195,68 @@ export const LyricsWidget = GObject.registerClass(
     _isDarkMode() {
       if (this._interfaceSettings) {
         const s = this._interfaceSettings.get_string(COLOR_SCHEME_KEY);
-        if (s === "prefer-dark")  return true;
+        if (s === "prefer-dark") return true;
         if (s === "prefer-light") return false;
       }
       try {
         const fg = this.get_theme_node().get_foreground_color();
-        return (fg.red * 299 + fg.green * 587 + fg.blue * 114) / (255 * 1000) > 0.5;
-      } catch (_e) { return true; }
+        return (
+          (fg.red * 299 + fg.green * 587 + fg.blue * 114) / (255 * 1000) > 0.5
+        );
+      } catch (_e) {
+        return true;
+      }
     }
 
-    _onThemeChanged() { this._refreshThemeColors(); }
+    _onThemeChanged() {
+      this._refreshThemeColors();
+    }
 
     updateAppearance(config) {
-      if (config.activeSize   !== undefined) this._fontConfigOverride.activeSize   = config.activeSize;
-      if (config.neighborSize !== undefined) this._fontConfigOverride.neighborSize = config.neighborSize;
-      if (config.inactiveSize !== undefined) this._fontConfigOverride.inactiveSize = config.inactiveSize;
-      if (config.spacing      !== undefined) this._fontConfigOverride.lineSpacing  = config.spacing;
+      if (config.activeSize !== undefined)
+        this._fontConfigOverride.activeSize = config.activeSize;
+      if (config.neighborSize !== undefined)
+        this._fontConfigOverride.neighborSize = config.neighborSize;
+      if (config.inactiveSize !== undefined)
+        this._fontConfigOverride.inactiveSize = config.inactiveSize;
+      if (config.spacing !== undefined)
+        this._fontConfigOverride.lineSpacing = config.spacing;
       this._fontConfig = this._buildFontConfig(this._width);
       this._invalidateGeometry();
       this._canvas.queue_repaint();
     }
 
-    // ─── State ────────────────────────────────────────────────────────────────
-
     showLoading() {
       this._state = "loading";
-      this._lyrics = []; this._lineGeometries = []; this._dirtyGeometry = false;
+      this._lyrics = [];
+      this._lineGeometries = [];
+      this._dirtyGeometry = false;
       this._canvas.queue_repaint();
     }
 
     showEmpty() {
       this._state = "empty";
-      this._lyrics = []; this._lineGeometries = []; this._dirtyGeometry = false;
+      this._lyrics = [];
+      this._lineGeometries = [];
+      this._dirtyGeometry = false;
       this._canvas.queue_repaint();
     }
 
     setLyrics(lyrics) {
-      if (!lyrics || lyrics.length === 0) { this.showEmpty(); return; }
-      this._state        = "lyrics";
-      this._lyrics       = lyrics;
-      this._activeIndex  = -1;
-      this._currentTime  = 0;
+      if (!lyrics || lyrics.length === 0) {
+        this.showEmpty();
+        return;
+      }
+      this._state = "lyrics";
+      this._lyrics = lyrics;
+      this._activeIndex = -1;
+      this._currentTime = 0;
       this._scrollOffset = 0;
       this._invalidateGeometry();
       this._canvas.queue_repaint();
     }
 
     /**
-     * Update playback position — called from MediaControls at ~100 ms intervals
      * @param {number} timeInMs
      */
     updatePosition(timeInMs) {
@@ -230,32 +276,31 @@ export const LyricsWidget = GObject.registerClass(
       }
     }
 
-    // Backward-compat aliases
-    setPosition(ms) { this.updatePosition(ms); }
-    clear()         { this.showLoading(); }
+    setPosition(ms) {
+      this.updatePosition(ms);
+    }
+    clear() {
+      this.showLoading();
+    }
 
-    //  Geometry 
+    //  Geometry
 
     _invalidateGeometry() {
       this._lineGeometries = [];
-      this._totalHeight    = 0;
-      this._dirtyGeometry  = true;
+      this._totalHeight = 0;
+      this._dirtyGeometry = true;
     }
 
-   
-
-  
     _smoothScrollTo(target) {
       if (Math.abs(target - this._scrollOffset) < 1) return;
 
-      
       if (this._scrollEaseId) {
         GLib.source_remove(this._scrollEaseId);
         this._scrollEaseId = 0;
       }
 
-      const from  = this._scrollOffset;
-      const diff  = target - from;
+      const from = this._scrollOffset;
+      const diff = target - from;
       const start = GLib.get_monotonic_time();
 
       this._scrollEaseId = GLib.timeout_add(GLib.PRIORITY_HIGH_IDLE, 8, () => {
@@ -282,26 +327,34 @@ export const LyricsWidget = GObject.registerClass(
       });
     }
 
-    // Cairo repaint 
+    // Cairo repaint
 
     _onRepaint(area) {
       const cr = area.get_context();
       const [width, height] = area.get_surface_size();
 
-      if (!width || !height) { cr.$dispose(); return; }
+      if (!width || !height) {
+        cr.$dispose();
+        return;
+      }
 
       // Clear
       cr.save();
-      cr.setOperator(Cairo.Operator.CLEAR); cr.paint();
+      cr.setOperator(Cairo.Operator.CLEAR);
+      cr.paint();
       cr.restore();
 
       const layout = PangoCairo.create_layout(cr);
       const { activeColor, neighborColor, inactiveColor } = this._palette;
-      const { activeSize, neighborSize, inactiveSize, lineSpacing, paddingX } = this._fontConfig;
+      const { activeSize, neighborSize, inactiveSize, lineSpacing, paddingX } =
+        this._fontConfig;
 
       if (this._state !== "lyrics") {
-        const msg = this._state === "loading" ? "Fetching lyrics…" : "No lyrics found";
-        const font = Pango.FontDescription.from_string(`Sans Bold ${activeSize}`);
+        const msg =
+          this._state === "loading" ? "Fetching lyrics…" : "No lyrics found";
+        const font = Pango.FontDescription.from_string(
+          `Sans Bold ${activeSize}`,
+        );
         layout.set_font_description(font);
         layout.set_text(msg, -1);
         layout.set_alignment(Pango.Alignment.CENTER);
@@ -329,12 +382,18 @@ export const LyricsWidget = GObject.registerClass(
         let cursorY = 0;
 
         for (let i = 0; i < this._lyrics.length; i++) {
-          const dist     = Math.abs(i - this._activeIndex);
-          const active   = dist === 0;
+          const dist = Math.abs(i - this._activeIndex);
+          const active = dist === 0;
           const neighbor = dist <= NEIGHBOR_RANGE && dist > 0;
-          const fontSize = active ? activeSize : neighbor ? neighborSize : inactiveSize;
+          const fontSize = active
+            ? activeSize
+            : neighbor
+              ? neighborSize
+              : inactiveSize;
 
-          const font = Pango.FontDescription.from_string(`Sans Bold ${fontSize}`);
+          const font = Pango.FontDescription.from_string(
+            `Sans Bold ${fontSize}`,
+          );
           layout.set_font_description(font);
           layout.set_text(this._lyrics[i].text, -1);
 
@@ -342,9 +401,12 @@ export const LyricsWidget = GObject.registerClass(
           const lineH = logical.height / Pango.SCALE;
 
           this._lineGeometries.push({
-            y: cursorY, height: lineH,
+            y: cursorY,
+            height: lineH,
             text: this._lyrics[i].text,
-            font, active, neighbor,
+            font,
+            active,
+            neighbor,
           });
           cursorY += lineH + lineSpacing;
         }
@@ -374,7 +436,11 @@ export const LyricsWidget = GObject.registerClass(
         layout.set_font_description(geo.font);
         layout.set_text(geo.text, -1);
 
-        const c = geo.active ? activeColor : geo.neighbor ? neighborColor : inactiveColor;
+        const c = geo.active
+          ? activeColor
+          : geo.neighbor
+            ? neighborColor
+            : inactiveColor;
         cr.setSourceRGBA(c.r, c.g, c.b, c.a);
         cr.moveTo(paddingX, y);
         PangoCairo.show_layout(cr, layout);
@@ -382,8 +448,6 @@ export const LyricsWidget = GObject.registerClass(
 
       cr.$dispose();
     }
-
-  
 
     destroy() {
       if (this._scrollEaseId) {
@@ -397,7 +461,10 @@ export const LyricsWidget = GObject.registerClass(
       }
 
       St.ThemeContext.get_for_stage(global.stage).disconnectObject(this);
-      if (this._interfaceSettings) { this._interfaceSettings.disconnectObject(this); this._interfaceSettings = null; }
+      if (this._interfaceSettings) {
+        this._interfaceSettings.disconnectObject(this);
+        this._interfaceSettings = null;
+      }
       if (this._canvas) this._canvas.disconnectObject(this);
       if (this._dismissBtn) this._dismissBtn.disconnectObject(this);
       this.disconnectObject(this);

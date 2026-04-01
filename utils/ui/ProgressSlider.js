@@ -11,9 +11,7 @@ export const ProgressSlider = GObject.registerClass(
       seek: { param_types: [GObject.TYPE_DOUBLE] },
       "drag-begin": {},
       "drag-end": {},
-      // Fired on every position update AND on every scrub tick so that the
-      // vinyl album-art rotation stays in sync with the slider handle.
-      // param: ratio (0.0–1.0) = currentPosition / trackLength
+
       "slider-ratio-changed": { param_types: [GObject.TYPE_DOUBLE] },
     },
   },
@@ -47,10 +45,6 @@ export const ProgressSlider = GObject.registerClass(
       this._positionSlider = new Slider.Slider(0);
       this._positionSlider.accessible_name = "Position";
 
-      // notify::value fires for BOTH user drags AND programmatic sets.
-      // We only want to drive the vinyl sync and time-label update when the
-      // user is actively dragging — programmatic updates go through
-      // _applyPosition() which calls _emitRatio() directly.
       this._sliderChangedId = this._positionSlider.connect(
         "notify::value",
         () => {
@@ -203,13 +197,6 @@ export const ProgressSlider = GObject.registerClass(
       return this._positionSlider.value;
     }
 
-    // ── private helpers ──────────────────────────────────────────────────────
-
-    /**
-     * Called on every notify::value while the user is dragging.
-     * Updates the time label AND fires slider-ratio-changed so the vinyl
-     * album-art disc rotates in perfect sync with the scrub handle.
-     */
     _onDragMove() {
       if (!this._trackLength) return;
       const ratio = this._positionSlider.value;
@@ -219,7 +206,7 @@ export const ProgressSlider = GObject.registerClass(
       this._emitRatio(ratio);
     }
 
-    /** Emit slider-ratio-changed, guarded so a destroyed widget never throws. */
+    // Emit slider-ratio-changed, guarded so a destroyed widget never throws
     _emitRatio(ratio) {
       if (this._isDestroyed) return;
       try {

@@ -164,7 +164,6 @@ export class MprisManager {
   }
 
   resumeOperations() {
-    // Remove existing timeout before creating new one
     if (this._resumeTimeout) {
       GLib.source_remove(this._resumeTimeout);
       this._resumeTimeout = null;
@@ -435,20 +434,17 @@ export class MprisManager {
   destroy() {
     this._operationsPaused = true;
 
-    // Remove position polling
     if (this._positionPollingInterval) {
       GLib.source_remove(this._positionPollingInterval);
       this._positionPollingInterval = null;
     }
     this._pollingPlayers.clear();
 
-    // Remove all cleanup timers
     for (const timerId of this._cleanupTimers.values()) {
       GLib.source_remove(timerId);
     }
     this._cleanupTimers.clear();
 
-    // Remove other timeouts
     if (this._resumeTimeout) {
       GLib.source_remove(this._resumeTimeout);
       this._resumeTimeout = null;
@@ -472,7 +468,6 @@ export class MprisManager {
       this._player.removePlayerSafe(name);
     }
 
-    // Destroy the player helper
     if (this._player) {
       this._player.destroy();
       this._player = null;
