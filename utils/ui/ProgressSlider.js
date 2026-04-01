@@ -11,8 +11,9 @@ export const ProgressSlider = GObject.registerClass(
       seek: { param_types: [GObject.TYPE_DOUBLE] },
       "drag-begin": {},
       "drag-end": {},
-      // Fired on every position update so the vinyl art can stay in sync.
-      // param: ratio (0.0-1.0) = currentPosition / trackLength
+      // Fired on every position update AND on every scrub tick so that the
+      // vinyl album-art rotation stays in sync with the slider handle.
+      // param: ratio (0.0–1.0) = currentPosition / trackLength
       "slider-ratio-changed": { param_types: [GObject.TYPE_DOUBLE] },
     },
   },
@@ -46,10 +47,14 @@ export const ProgressSlider = GObject.registerClass(
       this._positionSlider = new Slider.Slider(0);
       this._positionSlider.accessible_name = "Position";
 
+      // notify::value fires for BOTH user drags AND programmatic sets.
+      // We only want to drive the vinyl sync and time-label update when the
+      // user is actively dragging — programmatic updates go through
+      // _applyPosition() which calls _emitRatio() directly.
       this._sliderChangedId = this._positionSlider.connect(
         "notify::value",
         () => {
-          if (this._sliderDragging) this._updateTimeLabel();
+          if (this._sliderDragging) this._onDragMove();
         },
       );
 
@@ -198,7 +203,29 @@ export const ProgressSlider = GObject.registerClass(
       return this._positionSlider.value;
     }
 
-    // private helpers
+    // ── private helpers ──────────────────────────────────────────────────────
+
+    /**
+     * Called on every notify::value while the user is dragging.
+     * Updates the time label AND fires slider-ratio-changed so the vinyl
+     * album-art disc rotates in perfect sync with the scrub handle.
+     */
+    _onDragMove() {
+      if (!this._trackLength) return;
+      const ratio = this._positionSlider.value;
+      this._currentTimeLabel.text = this._formatTime(
+        (ratio * this._trackLength) / 1_000_000,
+      );
+      this._emitRatio(ratio);
+    }
+
+    /** Emit slider-ratio-changed, guarded so a destroyed widget never throws. */
+    _emitRatio(ratio) {
+      if (this._isDestroyed) return;
+      try {
+        this.emit("slider-ratio-changed", ratio);
+      } catch (_) {}
+    }
 
     _saveCacheForCurrentPlayer() {
       if (!this._playerName) return;
@@ -221,8 +248,9 @@ export const ProgressSlider = GObject.registerClass(
         this._positionSlider.unblock_signal_handler(this._sliderChangedId);
         this._currentTimeLabel.text = c.currentTimeText;
         this._totalTimeLabel.text = c.totalTimeText;
+        // Sync vinyl rotation to restored position immediately
+        this._emitRatio(c.sliderValue);
       } else {
-        // No cache — show zero until updatePlaybackState() sets real values.
         this._hardReset();
       }
     }
@@ -266,35 +294,28 @@ export const ProgressSlider = GObject.registerClass(
 
     _applyPosition(position) {
       position = Math.max(0, Math.min(position, this._trackLength));
-      this._positionSlider.block_signal_handler(this._sliderChangedId);
       const ratio = this._trackLength > 0 ? position / this._trackLength : 0;
+
+      this._positionSlider.block_signal_handler(this._sliderChangedId);
       this._positionSlider.value = ratio;
       this._positionSlider.unblock_signal_handler(this._sliderChangedId);
-      this._currentTimeLabel.text = this._formatTime(position / 1_000_000);
-      // Notify listeners (e.g. AlbumArt) so the vinyl disc stays in sync
-      try { this.emit("slider-ratio-changed", ratio); } catch (_) {}
-    }
 
-    _updateTimeLabel() {
-      if (this._trackLength > 0) {
-        const ratio = this._positionSlider.value;
-        const pos = ratio * this._trackLength;
-        this._currentTimeLabel.text = this._formatTime(pos / 1_000_000);
-        // Keep album art in sync while the user scrubs
-        try { this.emit("slider-ratio-changed", ratio); } catch (_) {}
-      }
+      this._currentTimeLabel.text = this._formatTime(position / 1_000_000);
+
+      // Always notify so vinyl art stays locked to playback position
+      this._emitRatio(ratio);
     }
 
     _formatTime(seconds) {
-          if (!seconds || isNaN(seconds) || seconds < 0) return "0:00";
-          seconds = Math.floor(seconds);
-          const h = Math.floor(seconds / 3600);
-          const m = Math.floor((seconds % 3600) / 60);
-          const s = seconds % 60;
-          if (h > 0)
-            return `${h}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
-          return `${m}:${String(s).padStart(2, "0")}`;
-        }
+      if (!seconds || isNaN(seconds) || seconds < 0) return "0:00";
+      seconds = Math.floor(seconds);
+      const h = Math.floor(seconds / 3600);
+      const m = Math.floor((seconds % 3600) / 60);
+      const s = seconds % 60;
+      if (h > 0)
+        return `${h}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+      return `${m}:${String(s).padStart(2, "0")}`;
+    }
 
     destroy() {
       this._isDestroyed = true;

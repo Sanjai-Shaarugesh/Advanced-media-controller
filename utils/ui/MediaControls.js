@@ -613,6 +613,13 @@ export const MediaControls = GObject.registerClass(
 
       this._albumArt?.destroy();
       this._albumArt = null;
+
+      // Clear the module-level icon cache in PlayerTabs so stale Gio.Icon
+      // references don't persist across extension disable/re-enable cycles.
+      try {
+        PlayerTabs.clearIconCache();
+      } catch (_) {}
+
       super.destroy();
     }
   },
