@@ -32,10 +32,28 @@ export class IndicatorEventHandlers {
         this._indicator._state.safeExecute(() => this._onSeek(position)),
       "player-changed",
       (_, name) => {
+        // This is the tab-switch handler.  We must:
+        //   1. Verify the name is still a known player (guards against a race
+        //      where the player disappeared between the click and the signal).
+        //   2. Set _manuallySelected BEFORE updating UI so updateVisibility()
+        //      never auto-switches us back to the previous player mid-render.
+        //   3. NOT gate on _sessionChanging here — the user deliberately
+        //      clicked a tab and we should honour it.
         this._indicator._state.safeExecute(() => {
+          if (!this._indicator._manager) return;
+
+          const players = this._indicator._manager.getPlayers();
+          if (!players.includes(name)) {
+            // Player vanished — pick the best remaining one gracefully
+            this._indicator._playerHandlers._selectNextPlayer();
+            return;
+          }
+
           this._indicator._state._currentPlayer = name;
           this._indicator._state._manuallySelected = true;
           this._indicator._uiUpdater.updateUI();
+          this._indicator._uiUpdater.updateTabs();
+          this._indicator._uiUpdater.updateVisibility();
         });
       },
       this,
@@ -156,17 +174,14 @@ export class IndicatorEventHandlers {
     this._outsideClickId = global.stage.connect(
       "captured-event",
       (actor, event) => {
-        if (event.type() !== Clutter.EventType.BUTTON_PRESS) {
+        if (event.type() !== Clutter.EventType.BUTTON_PRESS)
           return Clutter.EVENT_PROPAGATE;
-        }
 
-        if (!this._indicator.menu || !this._indicator.menu.isOpen) {
+        if (!this._indicator.menu || !this._indicator.menu.isOpen)
           return Clutter.EVENT_PROPAGATE;
-        }
 
-        if (this._indicator._state._sessionChanging || this._menuJustOpened) {
+        if (this._indicator._state._sessionChanging || this._menuJustOpened)
           return Clutter.EVENT_PROPAGATE;
-        }
 
         const [stageX, stageY] = event.get_coords();
 
@@ -174,30 +189,26 @@ export class IndicatorEventHandlers {
         if (panelButton && panelButton.get_stage() && panelButton.visible) {
           const [buttonX, buttonY] = panelButton.get_transformed_position();
           const [buttonWidth, buttonHeight] = panelButton.get_size();
-
           if (
             stageX >= buttonX &&
             stageX <= buttonX + buttonWidth &&
             stageY >= buttonY &&
             stageY <= buttonY + buttonHeight
-          ) {
+          )
             return Clutter.EVENT_PROPAGATE;
-          }
         }
 
         const menuActor = this._indicator.menu.actor;
         if (menuActor && menuActor.get_stage() && menuActor.visible) {
           const [menuX, menuY] = menuActor.get_transformed_position();
           const [menuWidth, menuHeight] = menuActor.get_size();
-
           if (
             stageX >= menuX &&
             stageX <= menuX + menuWidth &&
             stageY >= menuY &&
             stageY <= menuY + menuHeight
-          ) {
+          )
             return Clutter.EVENT_PROPAGATE;
-          }
         }
 
         if (this._closeMenuTimeout) {
@@ -206,9 +217,8 @@ export class IndicatorEventHandlers {
         }
 
         this._closeMenuTimeout = GLib.timeout_add(GLib.PRIORITY_HIGH, 1, () => {
-          if (this._indicator.menu && this._indicator.menu.isOpen) {
+          if (this._indicator.menu && this._indicator.menu.isOpen)
             this._indicator.menu.close(true);
-          }
           this._closeMenuTimeout = null;
           return GLib.SOURCE_REMOVE;
         });
@@ -240,9 +250,8 @@ export class IndicatorEventHandlers {
               this._indicator.menu &&
               this._indicator.menu.isOpen &&
               !this._indicator._state._sessionChanging
-            ) {
+            )
               this._indicator.menu.close(false);
-            }
             this._delayedCloseTimeout1 = null;
             return GLib.SOURCE_REMOVE;
           },
@@ -274,9 +283,8 @@ export class IndicatorEventHandlers {
               this._indicator.menu &&
               this._indicator.menu.isOpen &&
               !this._indicator._state._sessionChanging
-            ) {
+            )
               this._indicator.menu.close(false);
-            }
             this._delayedCloseTimeout2 = null;
             return GLib.SOURCE_REMOVE;
           },
@@ -294,7 +302,6 @@ export class IndicatorEventHandlers {
           this._menuJustOpened
         )
           return;
-
         this._indicator.menu.close(false);
       },
       this,
@@ -302,47 +309,43 @@ export class IndicatorEventHandlers {
 
     global.window_manager.connectObject(
       "size-change",
-      (wm, actor) => {
+      () => {
         if (
           !this._indicator.menu.isOpen ||
           this._indicator._state._sessionChanging ||
           this._menuJustOpened
         )
           return;
-
         this._indicator.menu.close(false);
       },
       "minimize",
-      (wm, actor) => {
+      () => {
         if (
           !this._indicator.menu.isOpen ||
           this._indicator._state._sessionChanging ||
           this._menuJustOpened
         )
           return;
-
         this._indicator.menu.close(false);
       },
       "unminimize",
-      (wm, actor) => {
+      () => {
         if (
           !this._indicator.menu.isOpen ||
           this._indicator._state._sessionChanging ||
           this._menuJustOpened
         )
           return;
-
         this._indicator.menu.close(false);
       },
       "map",
-      (wm, actor) => {
+      () => {
         if (
           !this._indicator.menu.isOpen ||
           this._indicator._state._sessionChanging ||
           this._menuJustOpened
         )
           return;
-
         this._indicator.menu.close(false);
       },
       this,
@@ -371,15 +374,13 @@ export class IndicatorEventHandlers {
             this._indicator._state._sessionChanging
           )
             return;
-          if (layoutManager.modalCount > 0) {
+          if (layoutManager.modalCount > 0)
             this._indicator.menu.close(false);
-          }
         },
         this,
       );
     }
 
-    // Monitor workspace switches
     const workspaceManager = global.workspace_manager;
     if (workspaceManager) {
       workspaceManager.connectObject(
@@ -429,14 +430,10 @@ export class IndicatorEventHandlers {
     Main.overview.disconnectObject(this);
 
     const layoutManager = Main.layoutManager;
-    if (layoutManager) {
-      layoutManager.disconnectObject(this);
-    }
+    if (layoutManager) layoutManager.disconnectObject(this);
 
     const workspaceManager = global.workspace_manager;
-    if (workspaceManager) {
-      workspaceManager.disconnectObject(this);
-    }
+    if (workspaceManager) workspaceManager.disconnectObject(this);
   }
 
   _onPlayPause() {
@@ -448,9 +445,7 @@ export class IndicatorEventHandlers {
 
     this._indicator._manager
       .playPause(this._indicator._state._currentPlayer)
-      .catch((e) => {
-        console.error("Failed to toggle play/pause:", e);
-      });
+      .catch((e) => console.error("Failed to toggle play/pause:", e));
   }
 
   _onNext() {
@@ -462,9 +457,7 @@ export class IndicatorEventHandlers {
 
     this._indicator._manager
       .next(this._indicator._state._currentPlayer)
-      .catch((e) => {
-        console.error("Failed to skip next:", e);
-      });
+      .catch((e) => console.error("Failed to skip next:", e));
   }
 
   _onPrevious() {
@@ -476,9 +469,7 @@ export class IndicatorEventHandlers {
 
     this._indicator._manager
       .previous(this._indicator._state._currentPlayer)
-      .catch((e) => {
-        console.error("Failed to skip previous:", e);
-      });
+      .catch((e) => console.error("Failed to skip previous:", e));
   }
 
   _onShuffle() {
@@ -490,9 +481,7 @@ export class IndicatorEventHandlers {
 
     this._indicator._manager
       .toggleShuffle(this._indicator._state._currentPlayer)
-      .catch((e) => {
-        console.error("Failed to toggle shuffle:", e);
-      });
+      .catch((e) => console.error("Failed to toggle shuffle:", e));
   }
 
   _onRepeat() {
@@ -504,9 +493,7 @@ export class IndicatorEventHandlers {
 
     this._indicator._manager
       .cycleLoopStatus(this._indicator._state._currentPlayer)
-      .catch((e) => {
-        console.error("Failed to cycle repeat:", e);
-      });
+      .catch((e) => console.error("Failed to cycle repeat:", e));
   }
 
   _onSeek(position) {
@@ -516,7 +503,7 @@ export class IndicatorEventHandlers {
     )
       return;
 
-    const proxy = this._indicator._manager._proxies.get(
+    const proxy = this._indicator._manager._proxies?.get(
       this._indicator._state._currentPlayer,
     );
     if (!proxy) return;
@@ -542,9 +529,7 @@ export class IndicatorEventHandlers {
 
     this._indicator._manager
       .setPosition(this._indicator._state._currentPlayer, trackId, position)
-      .catch((e) => {
-        console.error("Failed to seek:", e);
-      });
+      .catch((e) => console.error("Failed to seek:", e));
   }
 
   destroy() {

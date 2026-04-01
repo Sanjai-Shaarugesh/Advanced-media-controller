@@ -35,10 +35,8 @@ export class IndicatorUIUpdater {
         return;
       }
 
-      // Check whether the current player has active media.
-      const info = this._indicator._state._currentPlayer
-        ? manager.getPlayerInfo(this._indicator._state._currentPlayer)
-        : null;
+      const currentPlayer = this._indicator._state._currentPlayer;
+      const info = currentPlayer ? manager.getPlayerInfo(currentPlayer) : null;
       const currentHasMedia =
         info && (info.status === "Playing" || info.status === "Paused");
 
@@ -47,15 +45,11 @@ export class IndicatorUIUpdater {
         return;
       }
 
-      // Current player has no active media — scan remaining players so the
-      // indicator stays visible as long as ANY player is playing/paused.
+      // Current player has no active media — scan for any active player.
+      // Only auto-switch if the user has not manually selected a tab.
       for (const name of players) {
         const pInfo = manager.getPlayerInfo(name);
-        if (
-          pInfo &&
-          (pInfo.status === "Playing" || pInfo.status === "Paused")
-        ) {
-          // Switch current player to this active one automatically.
+        if (pInfo && (pInfo.status === "Playing" || pInfo.status === "Paused")) {
           if (!this._indicator._state._manuallySelected) {
             this._indicator._state._currentPlayer = name;
             this.updateUI();
@@ -65,7 +59,6 @@ export class IndicatorUIUpdater {
         }
       }
 
-      // No player with active media found — hide the indicator.
       this._indicator.hide();
     } catch (e) {
       console.error("Error in updateVisibility:", e);
@@ -155,9 +148,8 @@ export class IndicatorUIUpdater {
       const separator = this._indicator._settings.get_string("separator-text");
 
       let text = info.title || "Unknown";
-      if (showArtist && info.artists && info.artists.length > 0) {
+      if (showArtist && info.artists && info.artists.length > 0)
         text += separator + info.artists.join(", ");
-      }
 
       this._indicator._panelUI.startScrolling(
         text,

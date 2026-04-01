@@ -18,6 +18,7 @@ export class IndicatorPlayerHandlers {
     this._indicator._manager.startPositionPolling(name);
 
     if (info && info.status === "Playing") {
+      // Only auto-switch to the new player if the user hasn't manually chosen
       if (
         !this._indicator._state._currentPlayer ||
         !this._indicator._state._manuallySelected
@@ -41,9 +42,11 @@ export class IndicatorPlayerHandlers {
     this._indicator._manager.stopPositionPolling(name);
 
     if (this._indicator._state._currentPlayer === name) {
+      // Only clear _manuallySelected when the player the user chose goes away
       this._indicator._state._manuallySelected = false;
       this._selectNextPlayer();
     }
+
     this._indicator._uiUpdater.updateTabs();
     this._indicator._uiUpdater.updateVisibility();
   }
@@ -64,9 +67,8 @@ export class IndicatorPlayerHandlers {
       }
 
       this._updateThrottle = GLib.timeout_add(GLib.PRIORITY_LOW, 50, () => {
-        if (!this._indicator._state._sessionChanging) {
+        if (!this._indicator._state._sessionChanging)
           this._performUpdate(name);
-        }
         this._updateThrottle = null;
         return GLib.SOURCE_REMOVE;
       });
@@ -98,11 +100,14 @@ export class IndicatorPlayerHandlers {
       info.status === "Playing" &&
       !this._indicator._state._manuallySelected
     ) {
+      // A different player started playing and the user hasn't pinned a choice
       this._indicator._state._currentPlayer = name;
       this._indicator._uiUpdater.updateUI();
       this._indicator._uiUpdater.updateTabs();
       this._indicator._uiUpdater.updateVisibility();
     }
+    // If _manuallySelected is true and this isn't the current player,
+    // we intentionally do nothing — the user's tab choice wins.
   }
 
   onSeeked(name, position) {
@@ -119,8 +124,6 @@ export class IndicatorPlayerHandlers {
     if (this._indicator._state._sessionChanging) return;
 
     const players = this._indicator._manager.getPlayers();
-
-    // Prefer a Playing player first, then a Paused one, then any player.
     let paused = null;
 
     for (const name of players) {
@@ -132,9 +135,7 @@ export class IndicatorPlayerHandlers {
         this._indicator._uiUpdater.updateVisibility();
         return;
       }
-      if (info && info.status === "Paused" && !paused) {
-        paused = name;
-      }
+      if (info && info.status === "Paused" && !paused) paused = name;
     }
 
     if (paused) {
@@ -150,7 +151,6 @@ export class IndicatorPlayerHandlers {
       this._indicator._uiUpdater.updateTabs();
       this._indicator._uiUpdater.updateVisibility();
     } else {
-      // Truly no players left.
       this._indicator._state._currentPlayer = null;
       this._indicator._panelUI.stopScrolling();
       this._indicator._panelUI.label.hide();
