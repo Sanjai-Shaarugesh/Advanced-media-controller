@@ -1,26 +1,19 @@
 import St from "gi://St";
 import Gio from "gi://Gio";
+import GLib from "gi://GLib";
 import Clutter from "gi://Clutter";
 import { ScrollingLabel } from "../ui/ScrollingLabel.js";
 import { resolveGicon } from "../icon/IconResolver.js";
 
-// Base px/sec scrolling speed; scaled by the "scroll-speed" setting (1-10)
 const BASE_SCROLL_PX_PER_SEC = 50;
-// Pause between scroll loop iterations (ms)
 const LOOP_PAUSE_MS = 1200;
+// Crossfade duration when the panel icon switches apps
+const ICON_FADE_MS = 120;
 
-//  GSettings for theme detection
 const INTERFACE_SCHEMA = "org.gnome.desktop.interface";
 const INTERFACE_KEY = "color-scheme";
 const GTK_THEME_KEY = "gtk-theme";
 
-// Theme detection
-
-/**
- * Return true when the shell is running a dark colour scheme
- * Supports GNOME 40-50
- * @returns {boolean}
- */
 function _isDarkTheme() {
   try {
     const s = new Gio.Settings({ schema_id: INTERFACE_SCHEMA });
@@ -33,11 +26,10 @@ function _isDarkTheme() {
   return true;
 }
 
-/** @param {Gio.Settings} settings @returns {number} */
 function _labelWidth(settings) {
   try {
     return Math.max(60, settings.get_int("panel-label-width"));
-  } catch (_e) {
+  } catch (_) {
     return 160;
   }
 }
@@ -49,16 +41,20 @@ export class PanelUI {
     this._settings = null;
     this._status = "Stopped";
 
-    // Theme state
     this._dark = _isDarkTheme();
     this._themeSettings = null;
     this._themeSettingsId = 0;
 
+    this._playingPlayer = null;
+    this._currentPlayer = null;
+    this._manager = null;
+
+    this._lastIconSource = null;
+    this._iconFadeTid = 0;
+
     this._buildUI();
     this._watchTheme();
   }
-
-  //  Theme watcher
 
   _watchTheme() {
     try {
@@ -66,7 +62,6 @@ export class PanelUI {
       const keys = this._themeSettings.list_keys();
       const key =
         keys.indexOf(INTERFACE_KEY) !== -1 ? INTERFACE_KEY : GTK_THEME_KEY;
-
       this._themeSettingsId = this._themeSettings.connect(
         `changed::${key}`,
         () => {
@@ -80,7 +75,6 @@ export class PanelUI {
     }
   }
 
-  // Re-apply button styles after theme switch
   _applyButtonTheme() {
     if (this._panelPrevBtn)
       this._panelPrevBtn.style = _panelButtonStyle(this._dark);
@@ -97,14 +91,13 @@ export class PanelUI {
     });
     this._indicator.add_child(this._box);
 
-    // icon_size 18 px → 36 px physical on HiDPI; GNOME Shell handles scaling
     this._icon = new St.Icon({
       gicon: Gio.ThemedIcon.new("audio-x-generic-symbolic"),
       icon_size: 18,
       y_align: Clutter.ActorAlign.CENTER,
-      // Prefer scalable (SVG) icons at any DPI via the themed-icon pipeline
       style: "icon-style: requested;",
     });
+    this._icon.set_pivot_point(0.5, 0.5);
     this._box.add_child(this._icon);
 
     this._panelControlsBox = new St.BoxLayout({
@@ -142,7 +135,7 @@ export class PanelUI {
     return btn;
   }
 
-  //  Accessors
+  // Accessors
 
   get box() {
     return this._box;
@@ -163,9 +156,7 @@ export class PanelUI {
   get label() {
     if (!this._labelShim) {
       this._labelShim = {
-        show: () => {
-          this._labelContainer.show();
-        },
+        show: () => this._labelContainer.show(),
         hide: () => {
           this._labelContainer.hide();
           this.stopScrolling();
@@ -175,13 +166,8 @@ export class PanelUI {
     return this._labelShim;
   }
 
-  //  Track label / scrolling
+  // Track label / scrolling
 
-  /**
-   * @param {string}       fullText   "Title • Artist" combined string
-   * @param {Gio.Settings} settings   GSettings instance
-   * @param {string}       status     "Playing" | "Paused" | "Stopped"
-   */
   startScrolling(fullText, settings, status = "Playing") {
     if (!fullText) {
       this.stopScrolling();
@@ -196,7 +182,6 @@ export class PanelUI {
     const enabled = settings.get_boolean("enable-panel-scroll");
 
     if (!isPlaying || !enabled) {
-      // Static label
       if (this._scrollLabel) {
         this._scrollLabel.destroy();
         this._scrollLabel = null;
@@ -215,7 +200,6 @@ export class PanelUI {
       return;
     }
 
-    // Scrolling label
     const speed = this._calcSpeed(settings);
 
     if (this._scrollLabel) {
@@ -260,26 +244,79 @@ export class PanelUI {
     this._settings = null;
   }
 
-  //  App icon panel bar
+  // App icon updaters
 
   /**
-   * @param {object}      manager        MprisManager instance
-   * @param {string|null} currentPlayer  MPRIS bus name
+   * @param {string|null} playerName  MPRIS bus name of the playing app, or null
+   * @param {object}      manager     MprisManager instance
    */
-
-  updateAppIcon(manager, currentPlayer) {
+  setPlayingPlayer(playerName, manager) {
     if (this._indicator._state._sessionChanging) return;
 
-    if (!currentPlayer) {
-      this._icon.gicon = Gio.ThemedIcon.new("audio-x-generic-symbolic");
-      return;
+    const next = playerName || null;
+    this._playingPlayer = next;
+    this._manager = manager;
+
+    this._lastIconSource = undefined;
+    this._refreshIcon();
+  }
+
+  /**
+   * @param {string|null} playerName  MPRIS bus name the popup is focused on
+   * @param {object}      manager     MprisManager instance
+   */
+  setCurrentPlayer(playerName, manager) {
+    if (this._indicator._state._sessionChanging) return;
+    this._currentPlayer = playerName || null;
+    this._manager = manager;
+    // Only re-render when nothing is playing
+    if (!this._playingPlayer) this._refreshIcon();
+  }
+
+  // Back-compat shim
+  updateAppIcon(manager, currentPlayer) {
+    this.setCurrentPlayer(currentPlayer, manager);
+  }
+
+  _refreshIcon() {
+    if (!this._icon) return;
+
+    const source = this._playingPlayer || this._currentPlayer;
+
+    if (source === this._lastIconSource) return;
+    this._lastIconSource = source;
+
+    const newGicon = source
+      ? resolveGicon(source, this._manager)
+      : Gio.ThemedIcon.new("audio-x-generic-symbolic");
+
+    this._crossfadeIcon(newGicon);
+  }
+
+  _crossfadeIcon(newGicon) {
+    if (!this._icon) return;
+
+    if (this._iconFadeTid) {
+      GLib.source_remove(this._iconFadeTid);
+      this._iconFadeTid = 0;
     }
 
-    this._icon.gicon = resolveGicon(currentPlayer, manager);
+    _easeOpacity(this._icon, 0, ICON_FADE_MS);
+
+    this._iconFadeTid = GLib.timeout_add(
+      GLib.PRIORITY_DEFAULT,
+      ICON_FADE_MS,
+      () => {
+        this._iconFadeTid = 0;
+        if (!this._icon) return GLib.SOURCE_REMOVE;
+        this._icon.gicon = newGicon;
+        _easeOpacity(this._icon, 255, ICON_FADE_MS);
+        return GLib.SOURCE_REMOVE;
+      },
+    );
   }
 
   destroy() {
-    // Disconnect theme watcher
     if (this._themeSettings && this._themeSettingsId) {
       try {
         this._themeSettings.disconnect(this._themeSettingsId);
@@ -288,16 +325,36 @@ export class PanelUI {
       this._themeSettings = null;
     }
 
+    if (this._iconFadeTid) {
+      GLib.source_remove(this._iconFadeTid);
+      this._iconFadeTid = 0;
+    }
+
     this.stopScrolling();
+    this._playingPlayer = null;
+    this._currentPlayer = null;
+    this._lastIconSource = null;
+    this._manager = null;
     this._labelShim = null;
     this._indicator = null;
   }
 }
 
-/**
- * @param {boolean} dark
- * @returns {string}
- */
-function _panelButtonStyle(dark) {
+function _panelButtonStyle(_dark) {
   return "padding: 2px 4px; border-radius: 5px;";
+}
+
+function _easeOpacity(actor, target, ms) {
+  if (!actor) return;
+  try {
+    actor.save_easing_state();
+    actor.set_easing_duration(ms);
+    actor.set_easing_mode(Clutter.AnimationMode.EASE_OUT_QUAD);
+    actor.opacity = target;
+    actor.restore_easing_state();
+  } catch (_) {
+    try {
+      actor.opacity = target;
+    } catch (__) {}
+  }
 }

@@ -38,7 +38,10 @@ export const PlayerTabs = GObject.registerClass(
   {
     Signals: {
       "player-changed": { param_types: [GObject.TYPE_STRING] },
-      "pin-toggled": { param_types: [GObject.TYPE_BOOLEAN] },
+
+      "pin-toggled": {
+        param_types: [GObject.TYPE_BOOLEAN, GObject.TYPE_STRING],
+      },
     },
   },
   class PlayerTabs extends St.BoxLayout {
@@ -67,6 +70,8 @@ export const PlayerTabs = GObject.registerClass(
       this._singleIconPressId = 0;
       this._singleHoverEnterId = 0;
       this._singleHoverLeaveId = 0;
+
+      this._playingPlayer = null;
 
       this._watchTheme();
       this._buildPinButton();
@@ -156,7 +161,7 @@ export const PlayerTabs = GObject.registerClass(
       this._pinned = !this._pinned;
       this._applyPinStyle();
       this._pulsePinButton();
-      this.emit("pin-toggled", this._pinned);
+      this.emit("pin-toggled", this._pinned, this._currentActivePlayer || "");
     }
 
     _applyPinStyle() {
@@ -193,7 +198,6 @@ export const PlayerTabs = GObject.registerClass(
 
       this._singleIconButton = new St.Button({
         style_class: "media-single-icon-button",
-        
         reactive: true,
         can_focus: false,
         track_hover: true,
@@ -213,14 +217,12 @@ export const PlayerTabs = GObject.registerClass(
       this._singleHoverEnterId = this._singleIconButton.connect(
         "enter-event",
         () => {
-          this._singleIconButton.style = _singleIconHoverStyle(this._dark);
           this._easeScale(this._singleIconButton, 1.06, 80);
         },
       );
       this._singleHoverLeaveId = this._singleIconButton.connect(
         "leave-event",
         () => {
-          
           this._easeScale(this._singleIconButton, 1.0, 80);
         },
       );
@@ -264,6 +266,7 @@ export const PlayerTabs = GObject.registerClass(
 
       this.add_child(this._singleRow);
     }
+
     _buildSwitcherRow() {
       this._switcherRow = new St.BoxLayout({
         x_expand: true,
@@ -350,6 +353,14 @@ export const PlayerTabs = GObject.registerClass(
     setPinned(value) {
       this._pinned = !!value;
       this._applyPinStyle();
+    }
+
+    // Called by the host whenever PlaybackStatus "Playing" moves to a different
+    // player. We store it separately so the tab highlight can follow the actual
+    // playing app without overwriting the user's manual tab selection in
+    // _currentActivePlayer (which controls what the popup shows).
+    notifyPlayingPlayer(playerName) {
+      this._playingPlayer = playerName || null;
     }
 
     updateTabs(players, currentPlayer, manager) {
@@ -485,6 +496,7 @@ export const PlayerTabs = GObject.registerClass(
         }),
       );
 
+      // Hover styles only apply when the tab is not the active one
       handlers.push(
         button.connect("enter-event", () => {
           if (!isActive) {
@@ -554,12 +566,11 @@ export const PlayerTabs = GObject.registerClass(
       this._cancelAllPulseTimers();
 
       if (this._singleIconButton) {
-        const ids = [
+        for (const [idProp, btnProp] of [
           ["_singleIconPressId", "_singleIconButton"],
           ["_singleHoverEnterId", "_singleIconButton"],
           ["_singleHoverLeaveId", "_singleIconButton"],
-        ];
-        for (const [idProp, btnProp] of ids) {
+        ]) {
           if (this[idProp] && this[btnProp]) {
             try {
               this[btnProp].disconnect(this[idProp]);
@@ -603,6 +614,7 @@ export const PlayerTabs = GObject.registerClass(
 
       this._currentPlayers = [];
       this._currentActivePlayer = null;
+      this._playingPlayer = null;
       this._singleRow = null;
       this._singleIcon = null;
       this._singleIconButton = null;
@@ -616,7 +628,6 @@ export const PlayerTabs = GObject.registerClass(
   },
 );
 
-//  Libadwaita StackSwitcher outer frame
 function _switcherFrameStyle(dark) {
   const bg = dark ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.07)";
   const border = dark ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.12)";
@@ -629,10 +640,7 @@ function _switcherFrameStyle(dark) {
   ].join(" ");
 }
 
-// Tab active selected page
-
 function _tabActiveStyle(dark) {
-  // Dark
   const bg = dark ? "rgba(255,255,255,0.22)" : "rgba(0,0,0,0.15)";
   const border = dark ? "rgba(255,255,255,0.20)" : "rgba(0,0,0,0.18)";
   const shadow = dark
@@ -647,12 +655,10 @@ function _tabActiveStyle(dark) {
   ].join(" ");
 }
 
-// Tab idle unselected
 function _tabIdleStyle(_dark) {
   return "padding: 6px 10px; border-radius: 9px;";
 }
 
-// Tab hovered unselected
 function _tabHoverStyle(dark) {
   const bg = dark ? "rgba(255,255,255,0.11)" : "rgba(0,0,0,0.08)";
   const border = dark ? "rgba(255,255,255,0.09)" : "rgba(0,0,0,0.09)";
@@ -664,26 +670,20 @@ function _tabHoverStyle(dark) {
   ].join(" ");
 }
 
-//  Pin button states
-
-function _pinIdleStyle(dark) {
-  return "padding: 5px; border-radius: 8px; margin-left: 6px;";
+function _pinIdleStyle(_dark) {
+  return "padding: 5px;";
 }
 
 function _pinHoverStyle(dark) {
-  const bg = dark ? "rgba(255,255,255,0.10)" : "rgba(0,0,0,0.08)";
-  return [
-    "padding: 5px;",
-  ].join(" ");
+  return `padding: 5px;`;
 }
 
-function _pinActiveStyle(dark) {
-  return [].join(" ");
+function _pinActiveStyle(_dark) {
+  return "";
 }
 
 function _pinIconStyle(pinned, dark) {
   if (pinned) return `color: ${PIN_ACTIVE_RED};`;
-
   const alpha = dark ? "rgba(255,255,255,0.45)" : "rgba(0,0,0,0.40)";
   return `color: ${alpha};`;
 }
