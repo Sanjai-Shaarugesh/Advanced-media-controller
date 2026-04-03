@@ -6,13 +6,13 @@ import GLib from "gi://GLib";
 import Gio from "gi://Gio";
 import Clutter from "gi://Clutter";
 import Cairo from "cairo";
+import { playerConstant } from "../../utils/ui/playerConstant.js";
 
 // Smooth-scroll duration (ms)
 const SCROLL_EASING_MS = 380;
 
 const NEIGHBOR_RANGE = 1;
 
-const DESKTOP_INTERFACE_SCHEMA = "org.gnome.desktop.interface";
 const COLOR_SCHEME_KEY = "color-scheme";
 
 function _metricsForWidth(w) {
@@ -105,9 +105,9 @@ export const LyricsWidget = GObject.registerClass(
       this._interfaceSettings = null;
       try {
         const src = Gio.SettingsSchemaSource.get_default();
-        if (src.lookup(DESKTOP_INTERFACE_SCHEMA, true)) {
+        if (src.lookup(playerConstant.INTERFACE_SCHEMA, true)) {
           this._interfaceSettings = new Gio.Settings({
-            schema_id: DESKTOP_INTERFACE_SCHEMA,
+            schema_id: playerConstant.INTERFACE_SCHEMA,
           });
           this._interfaceSettings.connectObject(
             `changed::${COLOR_SCHEME_KEY}`,

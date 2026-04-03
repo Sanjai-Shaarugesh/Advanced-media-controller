@@ -4,24 +4,24 @@ import GLib from "gi://GLib";
 import Clutter from "gi://Clutter";
 import { ScrollingLabel } from "../ui/ScrollingLabel.js";
 import { resolveGicon } from "../icon/IconResolver.js";
+import { playerConstant } from "../ui/playerConstant.js";
 
 const BASE_SCROLL_PX_PER_SEC = 50;
 const LOOP_PAUSE_MS = 1200;
 // Crossfade duration when the panel icon switches apps
 const ICON_FADE_MS = 120;
 
-const INTERFACE_SCHEMA = "org.gnome.desktop.interface";
-const INTERFACE_KEY = "color-scheme";
-const GTK_THEME_KEY = "gtk-theme";
-
 function _isDarkTheme() {
   try {
-    const s = new Gio.Settings({ schema_id: INTERFACE_SCHEMA });
+    const s = new Gio.Settings({ schema_id: playerConstant.INTERFACE_SCHEMA });
     const keys = s.list_keys();
-    if (keys.indexOf(INTERFACE_KEY) !== -1)
-      return s.get_string(INTERFACE_KEY) === "prefer-dark";
-    if (keys.indexOf(GTK_THEME_KEY) !== -1)
-      return s.get_string(GTK_THEME_KEY).toLowerCase().includes("dark");
+    if (keys.indexOf(playerConstant.INTERFACE_KEY) !== -1)
+      return s.get_string(playerConstant.INTERFACE_KEY) === "prefer-dark";
+    if (keys.indexOf(playerConstant.GTK_THEME_KEY) !== -1)
+      return s
+        .get_string(playerConstant.GTK_THEME_KEY)
+        .toLowerCase()
+        .includes("dark");
   } catch (_) {}
   return true;
 }
@@ -58,10 +58,14 @@ export class PanelUI {
 
   _watchTheme() {
     try {
-      this._themeSettings = new Gio.Settings({ schema_id: INTERFACE_SCHEMA });
+      this._themeSettings = new Gio.Settings({
+        schema_id: playerConstant.INTERFACE_SCHEMA,
+      });
       const keys = this._themeSettings.list_keys();
       const key =
-        keys.indexOf(INTERFACE_KEY) !== -1 ? INTERFACE_KEY : GTK_THEME_KEY;
+        keys.indexOf(playerConstant.INTERFACE_KEY) !== -1
+          ? playerConstant.INTERFACE_KEY
+          : playerConstant.GTK_THEME_KEY;
       this._themeSettingsId = this._themeSettings.connect(
         `changed::${key}`,
         () => {

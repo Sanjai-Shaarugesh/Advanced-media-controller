@@ -8,28 +8,19 @@ import {
   resolveDisplayName,
   clearIconCache,
 } from "../icon/IconResolver.js";
-
-const ANIM_DURATION_MS = 100;
-const ANIM_MODE = Clutter.AnimationMode.EASE_OUT_QUAD;
-const TAB_ICON_SIZE = 22;
-const SINGLE_ICON_SIZE = 32;
-const DOUBLE_CLICK_MS = 300;
-const PIN_ACTIVE_RED = "#e01b24";
-const PULSE_SCALE_UP = 1.22;
-const PULSE_UP_MS = 90;
-const PULSE_DOWN_MS = 110;
-const INTERFACE_SCHEMA = "org.gnome.desktop.interface";
-const INTERFACE_KEY = "color-scheme";
-const GTK_THEME_KEY = "gtk-theme";
+import { playerConstant } from "./playerConstant.js";
 
 function _isDarkTheme() {
   try {
-    const s = new Gio.Settings({ schema_id: INTERFACE_SCHEMA });
+    const s = new Gio.Settings({ schema_id: playerConstant.INTERFACE_SCHEMA });
     const keys = s.list_keys();
-    if (keys.indexOf(INTERFACE_KEY) !== -1)
-      return s.get_string(INTERFACE_KEY) === "prefer-dark";
-    if (keys.indexOf(GTK_THEME_KEY) !== -1)
-      return s.get_string(GTK_THEME_KEY).toLowerCase().includes("dark");
+    if (keys.indexOf(playerConstant.INTERFACE_KEY) !== -1)
+      return s.get_string(playerConstant.INTERFACE_KEY) === "prefer-dark";
+    if (keys.indexOf(playerConstant.GTK_THEME_KEY) !== -1)
+      return s
+        .get_string(playerConstant.GTK_THEME_KEY)
+        .toLowerCase()
+        .includes("dark");
   } catch (_) {}
   return true;
 }
@@ -85,10 +76,14 @@ export const PlayerTabs = GObject.registerClass(
 
     _watchTheme() {
       try {
-        this._themeSettings = new Gio.Settings({ schema_id: INTERFACE_SCHEMA });
+        this._themeSettings = new Gio.Settings({
+          schema_id: playerConstant.INTERFACE_SCHEMA,
+        });
         const keys = this._themeSettings.list_keys();
         const key =
-          keys.indexOf(INTERFACE_KEY) !== -1 ? INTERFACE_KEY : GTK_THEME_KEY;
+          keys.indexOf(playerConstant.INTERFACE_KEY) !== -1
+            ? playerConstant.INTERFACE_KEY
+            : playerConstant.GTK_THEME_KEY;
         this._themeSettingsId = this._themeSettings.connect(
           `changed::${key}`,
           () => {
@@ -142,7 +137,11 @@ export const PlayerTabs = GObject.registerClass(
       this._pinEnterId = this._pinButton.connect("enter-event", () => {
         if (!this._pinned) {
           this._pinButton.style = _pinHoverStyle(this._dark);
-          this._easeOpacity(this._pinIcon, 210, ANIM_DURATION_MS);
+          this._easeOpacity(
+            this._pinIcon,
+            210,
+            playerConstant.ANIM_DURATION_MS,
+          );
           this._easeScale(this._pinButton, 1.12, 80);
         }
       });
@@ -150,7 +149,11 @@ export const PlayerTabs = GObject.registerClass(
       this._pinLeaveId = this._pinButton.connect("leave-event", () => {
         if (!this._pinned) {
           this._pinButton.style = _pinIdleStyle(this._dark);
-          this._easeOpacity(this._pinIcon, 130, ANIM_DURATION_MS);
+          this._easeOpacity(
+            this._pinIcon,
+            130,
+            playerConstant.ANIM_DURATION_MS,
+          );
           this._easeScale(this._pinButton, 1.0, 80);
         }
       });
@@ -168,23 +171,31 @@ export const PlayerTabs = GObject.registerClass(
       if (this._pinned) {
         this._pinButton.style = _pinActiveStyle(this._dark);
         this._pinIcon.style = _pinIconStyle(true, this._dark);
-        this._easeOpacity(this._pinIcon, 255, ANIM_DURATION_MS);
+        this._easeOpacity(this._pinIcon, 255, playerConstant.ANIM_DURATION_MS);
       } else {
         this._pinButton.style = _pinIdleStyle(this._dark);
         this._pinIcon.style = _pinIconStyle(false, this._dark);
-        this._easeOpacity(this._pinIcon, 130, ANIM_DURATION_MS);
+        this._easeOpacity(this._pinIcon, 130, playerConstant.ANIM_DURATION_MS);
         this._easeScale(this._pinButton, 1.0, 80);
       }
     }
 
     _pulsePinButton() {
       if (!this._pinButton) return;
-      this._easeScale(this._pinButton, PULSE_SCALE_UP, PULSE_UP_MS);
-      const tid = GLib.timeout_add(GLib.PRIORITY_DEFAULT, PULSE_UP_MS, () => {
-        this._pulseTimers.delete(tid);
-        this._easeScale(this._pinButton, 1.0, PULSE_DOWN_MS);
-        return GLib.SOURCE_REMOVE;
-      });
+      this._easeScale(
+        this._pinButton,
+        playerConstant.PULSE_SCALE_UP,
+        playerConstant.PULSE_UP_MS,
+      );
+      const tid = GLib.timeout_add(
+        GLib.PRIORITY_DEFAULT,
+        playerConstant.PULSE_UP_MS,
+        () => {
+          this._pulseTimers.delete(tid);
+          this._easeScale(this._pinButton, 1.0, playerConstant.PULSE_DOWN_MS);
+          return GLib.SOURCE_REMOVE;
+        },
+      );
       this._pulseTimers.add(tid);
     }
 
@@ -205,7 +216,7 @@ export const PlayerTabs = GObject.registerClass(
       this._singleIconButton.set_pivot_point(0.5, 0.5);
 
       this._singleIcon = new St.Icon({
-        icon_size: SINGLE_ICON_SIZE,
+        icon_size: playerConstant.SINGLE_ICON_SIZE,
         gicon: Gio.ThemedIcon.new("audio-x-generic-symbolic"),
         y_align: Clutter.ActorAlign.CENTER,
         x_align: Clutter.ActorAlign.CENTER,
@@ -233,7 +244,7 @@ export const PlayerTabs = GObject.registerClass(
           const deltaMs = (nowUs - this._singleIconLastPressUs) / 1000;
           this._singleIconLastPressUs = nowUs;
 
-          if (deltaMs > 0 && deltaMs <= DOUBLE_CLICK_MS) {
+          if (deltaMs > 0 && deltaMs <= playerConstant.DOUBLE_CLICK_MS) {
             this._singleIconLastPressUs = 0;
 
             this._easeScale(this._singleIconButton, 0.82, 60);
@@ -290,7 +301,7 @@ export const PlayerTabs = GObject.registerClass(
       this._switcherRow.hide();
       this._switcherRow.opacity = 0;
       this._singleRow.show();
-      this._easeOpacity(this._singleRow, 255, ANIM_DURATION_MS);
+      this._easeOpacity(this._singleRow, 255, playerConstant.ANIM_DURATION_MS);
     }
 
     _activateMultiMode() {
@@ -298,7 +309,11 @@ export const PlayerTabs = GObject.registerClass(
       this._singleRow.hide();
       this._singleRow.opacity = 0;
       this._switcherRow.show();
-      this._easeOpacity(this._switcherRow, 255, ANIM_DURATION_MS);
+      this._easeOpacity(
+        this._switcherRow,
+        255,
+        playerConstant.ANIM_DURATION_MS,
+      );
     }
 
     _reparentPin(target) {
@@ -318,7 +333,7 @@ export const PlayerTabs = GObject.registerClass(
       try {
         actor.save_easing_state();
         actor.set_easing_duration(ms);
-        actor.set_easing_mode(ANIM_MODE);
+        actor.set_easing_mode(playerConstant.ANIM_MODE);
         actor.opacity = target;
         actor.restore_easing_state();
       } catch (_) {
@@ -333,7 +348,7 @@ export const PlayerTabs = GObject.registerClass(
       try {
         actor.save_easing_state();
         actor.set_easing_duration(ms);
-        actor.set_easing_mode(ANIM_MODE);
+        actor.set_easing_mode(playerConstant.ANIM_MODE);
         actor.scale_x = scale;
         actor.scale_y = scale;
         actor.restore_easing_state();
@@ -417,7 +432,7 @@ export const PlayerTabs = GObject.registerClass(
 
       const icon = new St.Icon({
         gicon,
-        icon_size: TAB_ICON_SIZE,
+        icon_size: playerConstant.TAB_ICON_SIZE,
         y_align: Clutter.ActorAlign.CENTER,
         x_align: Clutter.ActorAlign.CENTER,
       });
@@ -434,7 +449,7 @@ export const PlayerTabs = GObject.registerClass(
           const deltaMs = (nowUs - lastPressUs) / 1000;
           lastPressUs = nowUs;
 
-          if (deltaMs > 0 && deltaMs <= DOUBLE_CLICK_MS) {
+          if (deltaMs > 0 && deltaMs <= playerConstant.DOUBLE_CLICK_MS) {
             lastPressUs = 0;
 
             const pending = this._clickTimers.get(button);
@@ -481,7 +496,7 @@ export const PlayerTabs = GObject.registerClass(
 
           const tid = GLib.timeout_add(
             GLib.PRIORITY_DEFAULT,
-            DOUBLE_CLICK_MS,
+            playerConstant.DOUBLE_CLICK_MS,
             () => {
               this._clickTimers.delete(button);
               if (!this._currentPlayers || this._currentPlayers.length === 0)
@@ -500,7 +515,7 @@ export const PlayerTabs = GObject.registerClass(
         button.connect("enter-event", () => {
           if (!isActive()) {
             button.style = _tabHoverStyle(this._dark);
-            this._easeOpacity(icon, 215, ANIM_DURATION_MS);
+            this._easeOpacity(icon, 215, playerConstant.ANIM_DURATION_MS);
             this._easeScale(button, 1.06, 80);
           }
         }),
@@ -510,7 +525,7 @@ export const PlayerTabs = GObject.registerClass(
         button.connect("leave-event", () => {
           if (!isActive()) {
             button.style = _tabIdleStyle(this._dark);
-            this._easeOpacity(icon, 128, ANIM_DURATION_MS);
+            this._easeOpacity(icon, 128, playerConstant.ANIM_DURATION_MS);
             this._easeScale(button, 1.0, 80);
           }
         }),
@@ -682,7 +697,7 @@ function _pinActiveStyle(_dark) {
 }
 
 function _pinIconStyle(pinned, dark) {
-  if (pinned) return `color: ${PIN_ACTIVE_RED};`;
+  if (pinned) return `color: ${playerConstant.PIN_ACTIVE_RED};`;
   const alpha = dark ? "rgba(255,255,255,0.45)" : "rgba(0,0,0,0.40)";
   return `color: ${alpha};`;
 }
