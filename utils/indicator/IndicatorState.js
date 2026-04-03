@@ -6,9 +6,13 @@ export class IndicatorState {
     this._manuallySelected = false;
 
     //  Auto-switch gate flags
-
     this._menuOpen = false;
     this._tabPinned = false;
+
+    // Multi-player auto-switch suppression
+    // When >1 player is simultaneously Playing, auto-switch is suppressed
+    // and is only re-enabled once at most one player is Playing.
+    this._multiPlayingActive = false;
 
     this._scrollTimeout = null;
     this._scrollPosition = 0;
@@ -40,11 +44,40 @@ export class IndicatorState {
     this._preventLogout = false;
   }
 
-  // Returns true when automatic player-switching should be suppressed
   get autoSwitchBlocked() {
     if (this._tabPinned) return true;
     if (this._menuOpen && this._manuallySelected) return true;
+    if (this._multiPlayingActive) return true;
     return false;
+  }
+
+  /**
+   * Recalculate multiPlayingActive given the current set of players
+   * Call this whenever a player's PlaybackStatus changes
+   *
+   * @param {object} manager  MprisManager instance (may be null)
+   */
+  refreshMultiPlayingState(manager) {
+    if (!manager) {
+      this._multiPlayingActive = false;
+      return;
+    }
+
+    let playingCount = 0;
+    for (const name of manager.getPlayers()) {
+      const info = manager.getPlayerInfo(name);
+      if (info && info.status === "Playing") playingCount++;
+      if (playingCount > 1) break; // early exit
+    }
+
+    const wasActive = this._multiPlayingActive;
+    this._multiPlayingActive = playingCount > 1;
+
+    // If we just dropped back to ≤1 playing, clear any lingering
+    // manually-selected flag so auto-switch can resume immediately
+    if (wasActive && !this._multiPlayingActive) {
+      this._manuallySelected = false;
+    }
   }
 
   safeExecute(fn) {

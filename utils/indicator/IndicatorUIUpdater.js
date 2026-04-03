@@ -35,6 +35,9 @@ export class IndicatorUIUpdater {
         return;
       }
 
+      // Re-evaluate multi-playing state before visibility decision
+      this._indicator._state.refreshMultiPlayingState(manager);
+
       const currentPlayer = this._indicator._state._currentPlayer;
       const info = currentPlayer ? manager.getPlayerInfo(currentPlayer) : null;
       const currentHasMedia =
@@ -45,7 +48,7 @@ export class IndicatorUIUpdater {
         return;
       }
 
-      // Current player has no active media.
+      // Current player has no active media
       // Only silently switch currentPlayer when auto-switch is not blocked
       if (!this._indicator._state.autoSwitchBlocked) {
         for (const name of players) {
@@ -54,7 +57,7 @@ export class IndicatorUIUpdater {
             pInfo &&
             (pInfo.status === "Playing" || pInfo.status === "Paused")
           ) {
-            // Auto-switch: no user intent, so do NOT set manuallySelected
+            // Auto-switch no user intent, so do NOT set manuallySelected
             this._indicator._state._currentPlayer = name;
             this.updateUI();
             this._indicator.show();
@@ -62,8 +65,6 @@ export class IndicatorUIUpdater {
           }
         }
       } else {
-        // Auto-switch blocked: keep indicator visible as long as any player
-        // has media so the pinned/manually-selected tab stays reachable
         for (const name of players) {
           const pInfo = manager.getPlayerInfo(name);
           if (

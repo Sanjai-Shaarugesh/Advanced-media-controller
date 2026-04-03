@@ -17,6 +17,9 @@ export class IndicatorPlayerHandlers {
 
     this._indicator._manager.startPositionPolling(name);
 
+    // Refresh multi-playing state before making auto-switch decisions
+    this._indicator._state.refreshMultiPlayingState(this._indicator._manager);
+
     // Only auto-promote the new player when auto-switch is not blocked
     if (!this._indicator._state.autoSwitchBlocked) {
       if (info && info.status === "Playing") {
@@ -46,10 +49,8 @@ export class IndicatorPlayerHandlers {
     this._indicator._manager.stopPositionPolling(name);
 
     if (this._indicator._state._currentPlayer === name) {
-      // The currently displayed player is gone — always release any lock and
-      // pick whatever is still available
       this._indicator._state._manuallySelected = false;
-      // If the pin was for this specific player, release it too
+
       if (this._indicator._state._tabPinned) {
         this._indicator._state._tabPinned = false;
         // Sync the pin button visual state in the PlayerTabs widget
@@ -59,6 +60,9 @@ export class IndicatorPlayerHandlers {
       }
       this._selectNextPlayer();
     }
+
+    // Refresh multi-playing state after a player disappears
+    this._indicator._state.refreshMultiPlayingState(this._indicator._manager);
 
     this._indicator._uiUpdater.updateTabs();
     this._indicator._uiUpdater.updateVisibility();
@@ -100,9 +104,10 @@ export class IndicatorPlayerHandlers {
     this._indicator._state._lastUpdateTime = GLib.get_monotonic_time();
     const info = this._indicator._manager.getPlayerInfo(name);
 
+    // Always refresh multi-playing state on every status change
+    this._indicator._state.refreshMultiPlayingState(this._indicator._manager);
+
     if (this._indicator._state._currentPlayer === name) {
-      // Auto-release pin when the pinned player fully stops (not on Pause —
-      // pausing is intentional and the user still owns that tab).
       if (
         this._indicator._state._manuallySelected &&
         info &&
@@ -118,14 +123,16 @@ export class IndicatorPlayerHandlers {
         this._indicator._controls.update(info, name, this._indicator._manager);
       }
     } else if (info && info.status === "Playing") {
-      // A different player started Playing.
-      // Switch to it only when auto-switch is not blocked.
+      // A different player started Playing
+      // Switch to it only when auto-switch is not blocked
       if (!this._indicator._state.autoSwitchBlocked) {
         this._indicator._state._currentPlayer = name;
         this._indicator._uiUpdater.updateUI();
         this._indicator._uiUpdater.updateTabs();
         this._indicator._uiUpdater.updateVisibility();
       }
+    } else if (info && info.status !== "Playing") {
+      this._indicator._uiUpdater.updateVisibility();
     }
   }
 

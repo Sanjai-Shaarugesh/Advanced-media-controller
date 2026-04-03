@@ -24,6 +24,22 @@ function _canvasSize(settings) {
   return 340;
 }
 
+function _connect(obj, signal, fn) {
+  try {
+    return obj.connect(signal, fn);
+  } catch (_e) {
+    return 0;
+  }
+}
+
+function _disconnect(obj, id) {
+  if (id) {
+    try {
+      obj.disconnect(id);
+    } catch (_e) {}
+  }
+}
+
 export const Tonearm = GObject.registerClass(
   class Tonearm extends St.DrawingArea {
     /**
@@ -50,11 +66,14 @@ export const Tonearm = GObject.registerClass(
       this._angle = TONEARM_PARKED_ANGLE;
       this._animationId = null;
 
-      // Listen for popup-width changes and resize the canvas immediately
-
+      // Signal IDs — always store so we can disconnect explicitly
+      this._repaintId = 0;
       this._sizeChangedId = 0;
+
+      // Listen for popup-width changes and resize the canvas immediately
       if (this._settings) {
-        this._sizeChangedId = this._settings.connect(
+        this._sizeChangedId = _connect(
+          this._settings,
           "changed::popup-width",
           () => {
             if (this._isDestroyed) return;
@@ -66,16 +85,18 @@ export const Tonearm = GObject.registerClass(
         );
       }
 
-      this.connectObject("repaint", (area) => this._draw(area), this);
+      this._repaintId = _connect(this, "repaint", (area) => this._draw(area));
     }
 
-    // Animate the arm to its playing position
+    // Public API
+
+    /** Animate the arm to its playing position */
     moveToPlaying() {
       this._isPlaying = true;
       this._animateTo(TONEARM_PLAYING_ANGLE);
     }
 
-    // Animate the arm back to its parked resting position
+    /** Animate the arm back to its parked resting position */
     moveToParked() {
       this._isPlaying = false;
       this._animateTo(TONEARM_PARKED_ANGLE);
@@ -106,7 +127,10 @@ export const Tonearm = GObject.registerClass(
         GLib.PRIORITY_DEFAULT,
         Math.round(1000 / FPS),
         () => {
-          if (this._isDestroyed) return GLib.SOURCE_REMOVE;
+          if (this._isDestroyed) {
+            this._animationId = null;
+            return GLib.SOURCE_REMOVE;
+          }
 
           step++;
           const t = step / totalSteps;
@@ -135,9 +159,25 @@ export const Tonearm = GObject.registerClass(
       }
     }
 
+    // Drawing
+
     _draw(area) {
-      const cr = area.get_context();
-      const [width] = area.get_surface_size();
+      let cr;
+      try {
+        cr = area.get_context();
+      } catch (_e) {
+        return;
+      }
+
+      let width;
+      try {
+        [width] = area.get_surface_size();
+      } catch (_e) {
+        try {
+          cr.$dispose();
+        } catch (__) {}
+        return;
+      }
 
       // Scale factor relative to the original 340 px design
       const S = width / 340;
@@ -182,7 +222,7 @@ export const Tonearm = GObject.registerClass(
       cr.setSourceRGBA(0.1, 0.1, 0.1, 0.8);
       cr.stroke();
 
-      //  Main arm tube
+      // Main arm tube
 
       // Drop shadow
       cr.setLineWidth(5.5 * S);
@@ -232,7 +272,7 @@ export const Tonearm = GObject.registerClass(
       cr.setSourceRGBA(0.75, 0.75, 0.77, 0.7);
       cr.stroke();
 
-      // Cartridge
+      //  Cartridge
 
       const cartR = 4.5 * S;
 
@@ -248,7 +288,7 @@ export const Tonearm = GObject.registerClass(
       cr.setSourceRGBA(0.5, 0.5, 0.52, 0.6);
       cr.fill();
 
-      // Stylus
+      //  Stylus
 
       const stylusLen = 6 * S;
       const stylusEndX = hsEndX - stylusLen * Math.cos(rad);
@@ -272,7 +312,7 @@ export const Tonearm = GObject.registerClass(
         cr.fill();
       }
 
-      // Counterweight
+      //  Counterweight
 
       const cwX = pivotX + 25 * S * Math.cos(rad);
       const cwY = pivotY - 25 * S * Math.sin(rad);
@@ -285,19 +325,27 @@ export const Tonearm = GObject.registerClass(
       cr.setSourceRGBA(0.6, 0.6, 0.62, 0.8);
       cr.fill();
 
-      cr.$dispose();
+      try {
+        cr.$dispose();
+      } catch (_e) {}
     }
 
     destroy() {
       this._isDestroyed = true;
       this._cancelAnimation();
 
+      if (this._repaintId) {
+        _disconnect(this, this._repaintId);
+        this._repaintId = 0;
+      }
+
       if (this._sizeChangedId && this._settings) {
-        this._settings.disconnect(this._sizeChangedId);
+        _disconnect(this._settings, this._sizeChangedId);
         this._sizeChangedId = 0;
       }
 
-      this.disconnectObject(this);
+      this._settings = null;
+
       super.destroy();
     }
   },

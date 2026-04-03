@@ -41,7 +41,7 @@ export class IndicatorEventHandlers {
 
           const players = this._indicator._manager.getPlayers();
           if (!players.includes(name)) {
-            // Player vanished between tab click and timer firing — pick best
+            // Player vanished between tab click and timer firing => pick best
             this._indicator._playerHandlers._selectNextPlayer();
             return;
           }
@@ -129,31 +129,36 @@ export class IndicatorEventHandlers {
     this._indicator._state._menuOpen = open;
 
     if (!open && !this._indicator._state._tabPinned) {
-      // Popup closed without pin — re-enable auto-switch
+      // Popup closed without pin — re-enable manual-selection gate
       this._indicator._state._manuallySelected = false;
 
-      // Immediate re-evaluation if a different player is already Playing,
-      // switch to it now rather than waiting for the next D-Bus property change
       if (
         this._indicator._manager &&
         !this._indicator._state._sessionChanging
       ) {
-        const players = this._indicator._manager.getPlayers();
-        const current = this._indicator._state._currentPlayer;
-        const currentInfo = current
-          ? this._indicator._manager.getPlayerInfo(current)
-          : null;
+        // Refresh multi-playing state so autoSwitchBlocked is up-to-date
+        this._indicator._state.refreshMultiPlayingState(
+          this._indicator._manager,
+        );
 
-        // Only auto-switch if the currently displayed player is NOT playing
-        if (!currentInfo || currentInfo.status !== "Playing") {
-          for (const name of players) {
-            const info = this._indicator._manager.getPlayerInfo(name);
-            if (info && info.status === "Playing") {
-              this._indicator._state._currentPlayer = name;
-              this._indicator._uiUpdater.updateUI();
-              this._indicator._uiUpdater.updateTabs();
-              this._indicator._uiUpdater.updateVisibility();
-              return;
+        if (!this._indicator._state.autoSwitchBlocked) {
+          const current = this._indicator._state._currentPlayer;
+          const currentInfo = current
+            ? this._indicator._manager.getPlayerInfo(current)
+            : null;
+
+          // Only switch away if the currently displayed player is NOT playing
+          if (!currentInfo || currentInfo.status !== "Playing") {
+            const players = this._indicator._manager.getPlayers();
+            for (const name of players) {
+              const info = this._indicator._manager.getPlayerInfo(name);
+              if (info && info.status === "Playing") {
+                this._indicator._state._currentPlayer = name;
+                this._indicator._uiUpdater.updateUI();
+                this._indicator._uiUpdater.updateTabs();
+                this._indicator._uiUpdater.updateVisibility();
+                return;
+              }
             }
           }
         }
