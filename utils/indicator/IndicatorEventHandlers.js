@@ -30,6 +30,10 @@ export class IndicatorEventHandlers {
       "seek",
       (_, position) =>
         this._indicator._state.safeExecute(() => this._onSeek(position)),
+
+      //  Tab click
+      // The user explicitly chose a tab while the popup is open
+
       "player-changed",
       (_, name) => {
         this._indicator._state.safeExecute(() => {
@@ -37,7 +41,7 @@ export class IndicatorEventHandlers {
 
           const players = this._indicator._manager.getPlayers();
           if (!players.includes(name)) {
-            // Player vanished — pick the best remaining one gracefully
+            // Player vanished between tab click and timer firing — pick best
             this._indicator._playerHandlers._selectNextPlayer();
             return;
           }
@@ -47,6 +51,38 @@ export class IndicatorEventHandlers {
           this._indicator._uiUpdater.updateUI();
           this._indicator._uiUpdater.updateTabs();
           this._indicator._uiUpdater.updateVisibility();
+        });
+      },
+
+      // Pin button
+      // pinned = true  => engage pin ,tabPinned = true keeps auto-switch off
+
+      "pin-toggled",
+      (_, pinned, _playerName) => {
+        this._indicator._state.safeExecute(() => {
+          this._indicator._state._tabPinned = pinned;
+
+          if (!pinned) {
+            // Pin released — fully re-enable auto-switch.
+            this._indicator._state._manuallySelected = false;
+
+            if (this._indicator._manager) {
+              const players = this._indicator._manager.getPlayers();
+              for (const name of players) {
+                if (name === this._indicator._state._currentPlayer) continue;
+                const info = this._indicator._manager.getPlayerInfo(name);
+                if (info && info.status === "Playing") {
+                  this._indicator._state._currentPlayer = name;
+                  this._indicator._uiUpdater.updateUI();
+                  this._indicator._uiUpdater.updateTabs();
+                  this._indicator._uiUpdater.updateVisibility();
+                  return;
+                }
+              }
+            }
+          }
+          // pinned = true manuallySelected is already true from the
+          // preceding tab click that preceded the pin toggle
         });
       },
       this,
@@ -87,6 +123,42 @@ export class IndicatorEventHandlers {
       },
       this,
     );
+  }
+
+  onMenuOpenStateChanged(open) {
+    this._indicator._state._menuOpen = open;
+
+    if (!open && !this._indicator._state._tabPinned) {
+      // Popup closed without pin — re-enable auto-switch
+      this._indicator._state._manuallySelected = false;
+
+      // Immediate re-evaluation if a different player is already Playing,
+      // switch to it now rather than waiting for the next D-Bus property change
+      if (
+        this._indicator._manager &&
+        !this._indicator._state._sessionChanging
+      ) {
+        const players = this._indicator._manager.getPlayers();
+        const current = this._indicator._state._currentPlayer;
+        const currentInfo = current
+          ? this._indicator._manager.getPlayerInfo(current)
+          : null;
+
+        // Only auto-switch if the currently displayed player is NOT playing
+        if (!currentInfo || currentInfo.status !== "Playing") {
+          for (const name of players) {
+            const info = this._indicator._manager.getPlayerInfo(name);
+            if (info && info.status === "Playing") {
+              this._indicator._state._currentPlayer = name;
+              this._indicator._uiUpdater.updateUI();
+              this._indicator._uiUpdater.updateTabs();
+              this._indicator._uiUpdater.updateVisibility();
+              return;
+            }
+          }
+        }
+      }
+    }
   }
 
   setupSessionMonitoring() {
@@ -239,46 +311,28 @@ export class IndicatorEventHandlers {
           GLib.PRIORITY_DEFAULT,
           50,
           () => {
-            if (
-              this._indicator.menu &&
-              this._indicator.menu.isOpen &&
-              !this._indicator._state._sessionChanging
-            )
-              this._indicator.menu.close(false);
             this._delayedCloseTimeout1 = null;
-            return GLib.SOURCE_REMOVE;
-          },
-        );
-      },
-      this,
-    );
 
-    global.display.connectObject(
-      "window-created",
-      () => {
-        if (
-          !this._indicator.menu.isOpen ||
-          this._indicator._state._sessionChanging ||
-          this._menuJustOpened
-        )
-          return;
+            if (this._delayedCloseTimeout2) {
+              GLib.source_remove(this._delayedCloseTimeout2);
+              this._delayedCloseTimeout2 = null;
+            }
 
-        if (this._delayedCloseTimeout2) {
-          GLib.source_remove(this._delayedCloseTimeout2);
-          this._delayedCloseTimeout2 = null;
-        }
+            this._delayedCloseTimeout2 = GLib.timeout_add(
+              GLib.PRIORITY_DEFAULT,
+              50,
+              () => {
+                if (
+                  this._indicator.menu &&
+                  this._indicator.menu.isOpen &&
+                  !this._indicator._state._sessionChanging
+                )
+                  this._indicator.menu.close(false);
+                this._delayedCloseTimeout2 = null;
+                return GLib.SOURCE_REMOVE;
+              },
+            );
 
-        this._delayedCloseTimeout2 = GLib.timeout_add(
-          GLib.PRIORITY_DEFAULT,
-          100,
-          () => {
-            if (
-              this._indicator.menu &&
-              this._indicator.menu.isOpen &&
-              !this._indicator._state._sessionChanging
-            )
-              this._indicator.menu.close(false);
-            this._delayedCloseTimeout2 = null;
             return GLib.SOURCE_REMOVE;
           },
         );

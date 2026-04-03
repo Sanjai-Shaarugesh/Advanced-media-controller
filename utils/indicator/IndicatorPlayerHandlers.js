@@ -17,17 +17,21 @@ export class IndicatorPlayerHandlers {
 
     this._indicator._manager.startPositionPolling(name);
 
-    if (info && info.status === "Playing") {
-      // Only auto-switch to the new player if the user hasn't manually chosen
-      if (
-        !this._indicator._state._currentPlayer ||
-        !this._indicator._state._manuallySelected
-      ) {
+    // Only auto-promote the new player when auto-switch is not blocked
+    if (!this._indicator._state.autoSwitchBlocked) {
+      if (info && info.status === "Playing") {
+        if (!this._indicator._state._currentPlayer) {
+          this._indicator._state._currentPlayer = name;
+          this._indicator._uiUpdater.updateUI();
+          this._indicator._uiUpdater.updateVisibility();
+        }
+      } else if (!this._indicator._state._currentPlayer) {
         this._indicator._state._currentPlayer = name;
         this._indicator._uiUpdater.updateUI();
         this._indicator._uiUpdater.updateVisibility();
       }
     } else if (!this._indicator._state._currentPlayer) {
+      // No current player at all — always set one so the UI is not blank
       this._indicator._state._currentPlayer = name;
       this._indicator._uiUpdater.updateUI();
       this._indicator._uiUpdater.updateVisibility();
@@ -42,8 +46,17 @@ export class IndicatorPlayerHandlers {
     this._indicator._manager.stopPositionPolling(name);
 
     if (this._indicator._state._currentPlayer === name) {
-      // Only clear _manuallySelected when the player the user chose goes away
+      // The currently displayed player is gone — always release any lock and
+      // pick whatever is still available
       this._indicator._state._manuallySelected = false;
+      // If the pin was for this specific player, release it too
+      if (this._indicator._state._tabPinned) {
+        this._indicator._state._tabPinned = false;
+        // Sync the pin button visual state in the PlayerTabs widget
+        try {
+          this._indicator._controls._playerTabs?.setPinned(false);
+        } catch (_) {}
+      }
       this._selectNextPlayer();
     }
 
@@ -67,8 +80,7 @@ export class IndicatorPlayerHandlers {
       }
 
       this._updateThrottle = GLib.timeout_add(GLib.PRIORITY_LOW, 50, () => {
-        if (!this._indicator._state._sessionChanging)
-          this._performUpdate(name);
+        if (!this._indicator._state._sessionChanging) this._performUpdate(name);
         this._updateThrottle = null;
         return GLib.SOURCE_REMOVE;
       });
@@ -89,25 +101,32 @@ export class IndicatorPlayerHandlers {
     const info = this._indicator._manager.getPlayerInfo(name);
 
     if (this._indicator._state._currentPlayer === name) {
+      // Auto-release pin when the pinned player fully stops (not on Pause —
+      // pausing is intentional and the user still owns that tab).
+      if (
+        this._indicator._state._manuallySelected &&
+        info &&
+        info.status === "Stopped"
+      ) {
+        this._indicator._state._manuallySelected = false;
+      }
+
       this._indicator._uiUpdater.updateUI();
       this._indicator._uiUpdater.updateVisibility();
 
       if (this._indicator.menu.isOpen && this._indicator._controls) {
         this._indicator._controls.update(info, name, this._indicator._manager);
       }
-    } else if (
-      info &&
-      info.status === "Playing" &&
-      !this._indicator._state._manuallySelected
-    ) {
-      // A different player started playing and the user hasn't pinned a choice
-      this._indicator._state._currentPlayer = name;
-      this._indicator._uiUpdater.updateUI();
-      this._indicator._uiUpdater.updateTabs();
-      this._indicator._uiUpdater.updateVisibility();
+    } else if (info && info.status === "Playing") {
+      // A different player started Playing.
+      // Switch to it only when auto-switch is not blocked.
+      if (!this._indicator._state.autoSwitchBlocked) {
+        this._indicator._state._currentPlayer = name;
+        this._indicator._uiUpdater.updateUI();
+        this._indicator._uiUpdater.updateTabs();
+        this._indicator._uiUpdater.updateVisibility();
+      }
     }
-    // If _manuallySelected is true and this isn't the current player,
-    // we intentionally do nothing — the user's tab choice wins.
   }
 
   onSeeked(name, position) {

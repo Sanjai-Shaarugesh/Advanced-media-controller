@@ -144,7 +144,7 @@
     background-color: rgba(0, 0, 0, 0.15);
 }
 
-/* Active shuffle / repeat â€” Spotify green accent */
+/* Active shuffle / repeat  Spotify green accent */
 .media-button-modern.shuffle-active,
 .media-button-modern.repeat-active {
     background-color: rgba(29, 185, 84, 0.2);

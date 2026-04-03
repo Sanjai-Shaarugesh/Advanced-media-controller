@@ -3,7 +3,7 @@ import Gio from "gi://Gio";
 //  Module-level icon cache
 export const _iconCache = new Map();
 
-//  Well-known MPRIS identity → desktop-id overrides
+//  Well-known MPRIS identity => desktop-id overrides
 
 const _IDENTITY_DESKTOP_MAP = new Map([
   ["firefox", "firefox.desktop"],
@@ -262,7 +262,7 @@ export function resolveGicon(playerName, manager) {
     } catch (_) {}
   }
 
-  //  Identity → known desktop-id override
+  //  Identity => known desktop-id override
   if (!_iconCache.has(playerName)) {
     const knownId = _identityToDesktopId(identity);
     if (knownId) {
@@ -393,7 +393,7 @@ export function resolvePixbuf(playerName, manager, size, scale) {
  * @returns {boolean}
  */
 function _appMatchesIdentity(app, identity) {
-  if (!identity) return true; // no identity → accept anything
+  if (!identity) return true; // no identity => accept anything
   try {
     const dn = (app.get_display_name() || "").toLowerCase();
     const id = (app.get_id() || "").toLowerCase();

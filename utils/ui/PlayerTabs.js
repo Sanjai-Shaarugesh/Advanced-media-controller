@@ -38,7 +38,6 @@ export const PlayerTabs = GObject.registerClass(
   {
     Signals: {
       "player-changed": { param_types: [GObject.TYPE_STRING] },
-
       "pin-toggled": {
         param_types: [GObject.TYPE_BOOLEAN, GObject.TYPE_STRING],
       },
@@ -355,10 +354,9 @@ export const PlayerTabs = GObject.registerClass(
       this._applyPinStyle();
     }
 
-    // Called by the host whenever PlaybackStatus "Playing" moves to a different
-    // player. We store it separately so the tab highlight can follow the actual
-    // playing app without overwriting the user's manual tab selection in
-    // _currentActivePlayer (which controls what the popup shows).
+    // Called by the host when PlaybackStatus "Playing" moves to a different player
+    // Stored separately so the tab highlight can follow the actual playing app
+
     notifyPlayingPlayer(playerName) {
       this._playingPlayer = playerName || null;
     }
@@ -400,13 +398,13 @@ export const PlayerTabs = GObject.registerClass(
     }
 
     _createTab(playerName, currentPlayer, manager) {
-      const isActive = playerName === currentPlayer;
+      const isActive = () => playerName === this._currentActivePlayer;
       const gicon = resolveGicon(playerName, manager);
       const name = resolveDisplayName(playerName, manager);
 
       const button = new St.Button({
         style_class: "media-switcher-tab",
-        style: isActive
+        style: isActive()
           ? _tabActiveStyle(this._dark)
           : _tabIdleStyle(this._dark),
         reactive: true,
@@ -424,7 +422,7 @@ export const PlayerTabs = GObject.registerClass(
         x_align: Clutter.ActorAlign.CENTER,
       });
       icon.set_pivot_point(0.5, 0.5);
-      icon.opacity = isActive ? 255 : 128;
+      icon.opacity = isActive() ? 255 : 128;
       button.set_child(icon);
 
       const handlers = [];
@@ -496,10 +494,11 @@ export const PlayerTabs = GObject.registerClass(
         }),
       );
 
-      // Hover styles only apply when the tab is not the active one
+      // Hover styles query live active state so they're always correct after
+      // updateTabs rebuilds the list with a different currentActivePlayer
       handlers.push(
         button.connect("enter-event", () => {
-          if (!isActive) {
+          if (!isActive()) {
             button.style = _tabHoverStyle(this._dark);
             this._easeOpacity(icon, 215, ANIM_DURATION_MS);
             this._easeScale(button, 1.06, 80);
@@ -509,7 +508,7 @@ export const PlayerTabs = GObject.registerClass(
 
       handlers.push(
         button.connect("leave-event", () => {
-          if (!isActive) {
+          if (!isActive()) {
             button.style = _tabIdleStyle(this._dark);
             this._easeOpacity(icon, 128, ANIM_DURATION_MS);
             this._easeScale(button, 1.0, 80);
@@ -674,8 +673,8 @@ function _pinIdleStyle(_dark) {
   return "padding: 5px;";
 }
 
-function _pinHoverStyle(dark) {
-  return `padding: 5px;`;
+function _pinHoverStyle(_dark) {
+  return "padding: 5px;";
 }
 
 function _pinActiveStyle(_dark) {

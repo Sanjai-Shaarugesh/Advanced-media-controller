@@ -45,17 +45,34 @@ export class IndicatorUIUpdater {
         return;
       }
 
-      // Current player has no active media — scan for any active player
-      // Only auto-switch if the user has not manually selected a tab
-      for (const name of players) {
-        const pInfo = manager.getPlayerInfo(name);
-        if (pInfo && (pInfo.status === "Playing" || pInfo.status === "Paused")) {
-          if (!this._indicator._state._manuallySelected) {
+      // Current player has no active media.
+      // Only silently switch currentPlayer when auto-switch is not blocked
+      if (!this._indicator._state.autoSwitchBlocked) {
+        for (const name of players) {
+          const pInfo = manager.getPlayerInfo(name);
+          if (
+            pInfo &&
+            (pInfo.status === "Playing" || pInfo.status === "Paused")
+          ) {
+            // Auto-switch: no user intent, so do NOT set manuallySelected
             this._indicator._state._currentPlayer = name;
             this.updateUI();
+            this._indicator.show();
+            return;
           }
-          this._indicator.show();
-          return;
+        }
+      } else {
+        // Auto-switch blocked: keep indicator visible as long as any player
+        // has media so the pinned/manually-selected tab stays reachable
+        for (const name of players) {
+          const pInfo = manager.getPlayerInfo(name);
+          if (
+            pInfo &&
+            (pInfo.status === "Playing" || pInfo.status === "Paused")
+          ) {
+            this._indicator.show();
+            return;
+          }
         }
       }
 

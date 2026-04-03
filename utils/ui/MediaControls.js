@@ -12,8 +12,6 @@ import { LyricsWidget } from "../../Lyrics/widgets/LyricsWidget.js";
 
 const LOOP_PAUSE_MS = 1200;
 const BASE_PX_PER_SEC = 50;
-
-// 250 ms gives smooth enough lyric transitions without hammering D-Bus
 const LYRICS_POLL_MS = 250;
 
 /** @param {Gio.Settings} s @returns {number} */
@@ -25,12 +23,10 @@ function _popupWidth(s) {
   }
 }
 
-/** Title viewport: 88 % of popup width */
 function _titleW(s) {
   return Math.round(_popupWidth(s) * 0.88);
 }
 
-/** Artist viewport: 82 % of popup width */
 function _artistW(s) {
   return Math.round(_popupWidth(s) * 0.82);
 }
@@ -45,6 +41,11 @@ export const MediaControls = GObject.registerClass(
       repeat: {},
       seek: { param_types: [GObject.TYPE_DOUBLE] },
       "player-changed": { param_types: [GObject.TYPE_STRING] },
+      // Fired when the user toggles the pin button so the indicator can
+      // update _manuallySelected accordingly.
+      "pin-toggled": {
+        param_types: [GObject.TYPE_BOOLEAN, GObject.TYPE_STRING],
+      },
     },
   },
   class MediaControls extends St.BoxLayout {
@@ -67,7 +68,6 @@ export const MediaControls = GObject.registerClass(
       this._titleScrollLabel = null;
       this._artistScrollLabel = null;
 
-      // Lyrics state
       this._lyricsClient = null;
       this._lyricsView = null;
       this._playerLyricsState = new Map();
@@ -75,10 +75,8 @@ export const MediaControls = GObject.registerClass(
       this._currentTrackInfo = null;
       this._lyricsSyncTimer = null;
 
-      // Signal tracking
-      this._signalIds = []; 
+      this._signalIds = [];
 
-      // Listen for popup-width changes and resize everything live
       const widthId = this._settings.connect("changed::popup-width", () => {
         if (!this._isDestroyed) this._applyPopupWidth();
       });
@@ -86,8 +84,6 @@ export const MediaControls = GObject.registerClass(
 
       this._buildUI();
     }
-
-    //  Width update
 
     _applyPopupWidth() {
       const w = _popupWidth(this._settings);
@@ -123,6 +119,13 @@ export const MediaControls = GObject.registerClass(
         this.emit("player-changed", name),
       );
       this._signalIds.push({ source: this._playerTabs, id: tabsId });
+
+      // Forward pin-toggled so the indicator can manage manuallySelected
+      const pinId = this._playerTabs.connect(
+        "pin-toggled",
+        (_, pinned, playerName) => this.emit("pin-toggled", pinned, playerName),
+      );
+      this._signalIds.push({ source: this._playerTabs, id: pinId });
 
       headerBox.add_child(this._playerTabs);
       this.add_child(headerBox);
@@ -230,8 +233,6 @@ export const MediaControls = GObject.registerClass(
       this.add_child(this._controlButtons);
     }
 
-    // Scroll-label helpers
-
     _calcSpeed(speedPref, status) {
       const eff =
         status === "Paused"
@@ -330,8 +331,6 @@ export const MediaControls = GObject.registerClass(
       }
       if (this._artistSlot) this._artistSlot.destroy_all_children();
     }
-
-    // Main update entry-point 
 
     update(info, playerName, manager) {
       if (!info) return;

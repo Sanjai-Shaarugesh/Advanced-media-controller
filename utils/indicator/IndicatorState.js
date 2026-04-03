@@ -4,6 +4,12 @@ export class IndicatorState {
   constructor() {
     this._currentPlayer = null;
     this._manuallySelected = false;
+
+    //  Auto-switch gate flags
+
+    this._menuOpen = false;
+    this._tabPinned = false;
+
     this._scrollTimeout = null;
     this._scrollPosition = 0;
     this._fullText = "";
@@ -32,6 +38,13 @@ export class IndicatorState {
     this._maxErrors = 10;
     this._lastErrorTime = 0;
     this._preventLogout = false;
+  }
+
+  // Returns true when automatic player-switching should be suppressed
+  get autoSwitchBlocked() {
+    if (this._tabPinned) return true;
+    if (this._menuOpen && this._manuallySelected) return true;
+    return false;
   }
 
   safeExecute(fn) {
