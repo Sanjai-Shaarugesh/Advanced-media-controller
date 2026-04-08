@@ -1,7 +1,6 @@
 import Adw from "gi://Adw";
 import Gtk from "gi://Gtk";
 import Gio from "gi://Gio";
-import GLib from "gi://GLib";
 import {
   ExtensionPreferences,
   gettext as _,
@@ -339,9 +338,10 @@ export default class MediaControlsPreferences extends ExtensionPreferences {
     if (!(parent instanceof Gtk.Window)) parent = null;
     dialog.present(parent);
 
-    GLib.idle_add(GLib.PRIORITY_DEFAULT_IDLE, () => {
+   
+    const mapId = entryRow.connect("map", () => {
       entryRow.grab_focus();
-      return GLib.SOURCE_REMOVE;
+      entryRow.disconnect(mapId);
     });
   }
 

@@ -12,7 +12,7 @@ LOCALE_DIR="locale"
 POT_FILE="$LOCALE_DIR/$EXTENSION_NAME.pot"
 
 # All shipped languages (en is the identity/fallback locale required by GJS)
-SUPPORTED_LANGUAGES=("en" "de" "es" "fr" "ja" "zh_CN" "zh_TW")
+SUPPORTED_LANGUAGES=("de" "es" "fr" "ja" "zh_CN" "zh_TW")
 
 # Spanish locale aliases — compiled from es and copied so GJS resolves
 # es_ES, es@latin, and es_ES.UTF-8 without extra work in the extension.
