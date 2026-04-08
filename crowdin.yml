@@ -1,3 +1,0 @@
-files:
-  - source: /locale/en/LC_MESSAGES/advanced-media-controller.pot
-    translation: /locale/%locale%/LC_MESSAGES/advanced-media-controller.po
