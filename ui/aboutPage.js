@@ -61,7 +61,7 @@ export function createAboutPage(extensionDirPath) {
   );
   infoBox.append(
     new Gtk.Label({
-      label: _("Version 5.2"),
+      label: _("Version 6.0"),
       halign: Gtk.Align.START,
       css_classes: ["caption"],
     }),

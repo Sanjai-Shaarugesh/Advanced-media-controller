@@ -757,8 +757,8 @@ msgid "Beautiful and modern media controls with multi-instance support"
 msgstr "मल्टी-इंस्टेंस सपोर्ट के साथ सुंदर और आधुनिक मीडिया नियंत्रण"
 
 #: prefs.js:2394
-msgid "Version 5.4"
-msgstr "संस्करण 5.4"
+msgid "Version 6.0"
+msgstr "संस्करण 6.0"
 
 #: prefs.js:2401
 msgid "Modern media controls with native GNOME design"

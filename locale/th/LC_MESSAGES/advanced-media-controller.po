@@ -547,8 +547,8 @@ msgstr "เกี่ยวกับ"
 msgid "Beautiful and modern media controls with multi-instance support"
 msgstr "ตัวควบคุมสื่อที่สวยงามและทันสมัยพร้อมรองรับหลายอินสแตนซ์"
 
-msgid "Version 5.4"
-msgstr "เวอร์ชัน 5.4"
+msgid "Version 6.0"
+msgstr "เวอร์ชัน 6.0"
 
 msgid "Modern media controls with native GNOME design"
 msgstr "ตัวควบคุมสื่อทันสมัยพร้อมการออกแบบ GNOME ดั้งเดิม"
