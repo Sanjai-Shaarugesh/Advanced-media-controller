@@ -11,7 +11,7 @@ export class IndicatorState {
 
     // Multi-player auto-switch suppression
     // When >1 player is simultaneously Playing, auto-switch is suppressed
-    // and is only re-enabled once at most one player is Playing.
+    // and is only re-enabled once at most one player is Playing
     this._multiPlayingActive = false;
 
     this._scrollTimeout = null;

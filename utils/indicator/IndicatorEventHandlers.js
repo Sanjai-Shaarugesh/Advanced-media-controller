@@ -496,7 +496,7 @@ export class IndicatorEventHandlers {
 
     this._indicator._manager
       .playPause(this._indicator._state._currentPlayer)
-      .catch((e) => console.error("Failed to toggle play/pause:", e));
+      .catch((_e) => {});
   }
 
   _onNext() {
@@ -508,7 +508,7 @@ export class IndicatorEventHandlers {
 
     this._indicator._manager
       .next(this._indicator._state._currentPlayer)
-      .catch((e) => console.error("Failed to skip next:", e));
+      .catch((_e) => {});
   }
 
   _onPrevious() {
@@ -520,7 +520,7 @@ export class IndicatorEventHandlers {
 
     this._indicator._manager
       .previous(this._indicator._state._currentPlayer)
-      .catch((e) => console.error("Failed to skip previous:", e));
+      .catch((_e) => {});
   }
 
   _onShuffle() {
@@ -532,7 +532,7 @@ export class IndicatorEventHandlers {
 
     this._indicator._manager
       .toggleShuffle(this._indicator._state._currentPlayer)
-      .catch((e) => console.error("Failed to toggle shuffle:", e));
+      .catch((_e) => {});
   }
 
   _onRepeat() {
@@ -544,7 +544,7 @@ export class IndicatorEventHandlers {
 
     this._indicator._manager
       .cycleLoopStatus(this._indicator._state._currentPlayer)
-      .catch((e) => console.error("Failed to cycle repeat:", e));
+      .catch((_e) => {});
   }
 
   _onSeek(position) {
@@ -580,7 +580,7 @@ export class IndicatorEventHandlers {
 
     this._indicator._manager
       .setPosition(this._indicator._state._currentPlayer, trackId, position)
-      .catch((e) => console.error("Failed to seek:", e));
+      .catch((_e) => {});
   }
 
   destroy() {

@@ -7,8 +7,8 @@ import { AlbumArt } from "./AlbumArt.js";
 import { ProgressSlider } from "./ProgressSlider.js";
 import { PlayerTabs } from "./PlayerTabs.js";
 import { ScrollingLabel } from "./ScrollingLabel.js";
-import { LyricsClient } from "../../Lyrics/client/LyricsClient.js";
-import { LyricsWidget } from "../../Lyrics/widgets/LyricsWidget.js";
+import { LyricsClient } from "../../Lyrics/client/_LyricsClient.js";
+import { LyricsWidget } from "../../Lyrics/widgets/_LyricsWidget.js";
 
 const LOOP_PAUSE_MS = 1200;
 const BASE_PX_PER_SEC = 50;
