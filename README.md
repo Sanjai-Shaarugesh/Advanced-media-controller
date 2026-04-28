@@ -338,8 +338,11 @@ If you find this extension useful, consider:
 
 ---
 
+<div align="center">
+
 [![Translation status](https://hosted.weblate.org/widget/advanced-media-controller/advanced-media-controller/multi-green.svg)](https://hosted.weblate.org/engage/advanced-media-controller/)
 
+</div>
 <div align="center">
 
 ## ⭐ Star History
