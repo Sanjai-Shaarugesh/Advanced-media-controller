@@ -12,6 +12,7 @@
 [![Made with GJS](https://img.shields.io/badge/Made%20with-GJS-orange.svg)](https://gjs.guide/)
 [![JavaScript](https://img.shields.io/badge/Language-JavaScript-yellow.svg)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 
+
 [Features](#-features) • [Installation](#-installation) • [Usage](#-usage) • [Screenshots](#-screenshots) • [Contributing](#-contributing)
 
 </div>
@@ -337,6 +338,8 @@ If you find this extension useful, consider:
 
 ---
 
+[![Translation status](https://hosted.weblate.org/widget/advanced-media-controller/advanced-media-controller/multi-green.svg)](https://hosted.weblate.org/engage/advanced-media-controller/)
+
 <div align="center">
 
 ## ⭐ Star History
@@ -348,4 +351,5 @@ If you find this extension useful, consider:
 Made with ❤️ by [Sanjai Shaarugesh](https://github.com/Sanjai-Shaarugesh)
 
 </div>
+
 
