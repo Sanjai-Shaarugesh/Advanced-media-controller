@@ -183,7 +183,13 @@ export class PanelUI {
 
     const labelW = _labelWidth(settings);
     const isPlaying = status === "Playing";
+    const isActiveMedia = status === "Playing" || status === "Paused";
     const enabled = settings.get_boolean("enable-panel-scroll");
+
+    if (!isActiveMedia) {
+      this.stopScrolling();
+      return;
+    }
 
     if (!isPlaying || !enabled) {
       if (this._scrollLabel) {

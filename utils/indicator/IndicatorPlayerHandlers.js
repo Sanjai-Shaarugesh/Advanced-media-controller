@@ -173,10 +173,14 @@ export class IndicatorPlayerHandlers {
     }
 
     if (players.length > 0) {
+      // Keep the current player set so the indicator stays visible even when
+      // the player reports Stopped (GSConnect, Shortwave, remote streams).
       this._indicator._state._currentPlayer = players[0];
       this._indicator._uiUpdater.updateTabs();
+      // updateVisibility will decide show/hide based on the full player list.
       this._indicator._uiUpdater.updateVisibility();
     } else {
+      // No players at all — safe to hide.
       this._indicator._state._currentPlayer = null;
       this._indicator._panelUI.stopScrolling();
       this._indicator._panelUI.label.hide();
