@@ -267,21 +267,59 @@ If you find this extension useful, consider:
 
 <div align="center">
 
+<div align="center">
+
 ### ☕ Support Development
 
-<a href="https://buymeacoffee.com/sanjai">
-<img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" height="41" width="174">
+<!-- Buy Me a Coffee -->
+<a href="https://buymeacoffee.com/sanjai" target="_blank">
+  <img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png"
+       alt="Buy Me A Coffee" height="45">
 </a>
 
 <br><br>
 
-<a href="https://buymeacoffee.com/sanjai">
-<img src="icons/qr.png" alt="Buy Me A Coffee QR Code" height="300" style="border-radius: 12px;">
+<a href="https://buymeacoffee.com/sanjai" target="_blank">
+  <img src="https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=https://buymeacoffee.com/sanjai"
+       alt="Buy Me A Coffee QR" height="260"
+       style="border-radius: 12px;">
 </a>
 
-<br>
+<br><br><br>
 
-*Your support helps maintain and improve this extension!* 💙
+<!-- Ko-fi -->
+<a href="https://ko-fi.com/sanjai_shaarugesh" target="_blank">
+  <img src="https://ko-fi.com/img/githubbutton_sm.svg"
+       alt="Ko-fi" height="45">
+</a>
+
+<br><br>
+
+<a href="https://ko-fi.com/sanjai_shaarugesh" target="_blank">
+  <img src="https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=https://ko-fi.com/sanjai_shaarugesh"
+       alt="Ko-fi QR" height="260"
+       style="border-radius: 12px;">
+</a>
+
+<br><br><br>
+
+<!-- GitHub Sponsors -->
+<a href="https://github.com/sponsors/Sanjai-Shaarugesh" target="_blank">
+  <img src="https://img.shields.io/badge/Sponsor-GitHub-%23EA4AAA?style=for-the-badge&logo=githubsponsors&logoColor=white"
+       alt="GitHub Sponsors" height="45">
+</a>
+
+<br><br>
+
+<a href="https://github.com/sponsors/Sanjai-Shaarugesh" target="_blank">
+  <img src="https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=https://github.com/sponsors/Sanjai-Shaarugesh"
+       alt="GitHub Sponsors QR" height="260"
+       style="border-radius: 12px;">
+</a>
+
+<br><br>
+
+<sub><i>Your support helps maintain and improve this project 💙</i></sub>
 
 </div>
 
