@@ -1,31 +1,15 @@
-# Advanced Media Controller
+> [!WARNING]
+> This project was moved away from GitHub after repeated outage issues, platform instability, and growing concerns around centralized hosting and repository security.
 
-Advanced Media Controller is a powerful media control extension/application ported from GitHub to Codeberg for better open-source hosting, reliability, and accessibility.
+> [!IMPORTANT]
+> The official home of this project is now on Codeberg:  
+> https://codeberg.org/sanjai-shaarugesh/Advanced-media-controller
 
-## 🔗 Project Links
+> [!NOTE]
+> GitHub mirrors may be outdated, broken, missing commits, or no longer maintained.
 
-- Codeberg: https://codeberg.org/sanjai-shaarugesh/Advanced-media-controller
+> [!TIP]
+> If you're a Linux/FOSS nerd who likes decentralized infrastructure and community-driven platforms, you'll probably feel more at home on Codeberg anyway :)
 
-## 📦 About
-
-This project was ported from GitHub to Codeberg to ensure long-term availability and independence from a single platform.
-
-The move also helps reduce dependency on centralized hosting platforms, especially during:
-- Git hosting service outages
-- Platform instability
-- Repository restrictions
-- Security concerns affecting developer accounts and repositories
-
-Codeberg provides a clean, community-focused, open-source-friendly alternative platform.
-
-## ✨ Features
-
-- Advanced media playback controls
-- Clean and lightweight implementation
-- Linux-friendly workflow
-- Open-source and community driven
-
-## 🚀 Clone Repository
-
-```bash
-git clone https://codeberg.org/sanjai-shaarugesh/Advanced-media-controller.git
+> [!CAUTION]
+> Random forks, stale mirrors, or archived GitHub copies can contain old code, missing fixes, or experimental commits not meant for production use.
